@@ -1,5 +1,5 @@
 .SUFFIXES: .F90 .o
-TARGET = ../cafemol
+TARGET = ../cfml
 
 # .. utilites
 UTIL1 = ../crd2pdb
@@ -7,7 +7,6 @@ UTIL2 = ../pdb2crd
 UTIL3 = ../movie2dcd
 UTIL4 = ../dcd2movie
 UTIL5 = ../aa2cg
-UTIL6 = ../cafe_calc_rmsd
 UTIL7 = ../utility/show_rst
 UTIL8 = ../utility/a2rst
 
@@ -45,10 +44,10 @@ UTIL8 = ../utility/a2rst
 # --------------------------------------------------------------------
 #  Revision numbers to be written in data files.
 #  (SVNREV should be commented out when release.)
-SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
-VERSION  = -DVERMAJOR=2 -DVERMINOR=1 # Major and minor revision
-VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
-#VERSION += -DVERBUILD=1500 # Build number
+#SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
+#VERSION  = -DVERMAJOR=2 -DVERMINOR=1 # Major and minor revision
+#VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
+VERSION += -DVERBUILD=0000 # Build number
 # Notice to trunk users:
 #   If 'svn' command does not work on your computer, please comment out(#) SVNREV
 #   and switch DVERBUILD line to the second one.
@@ -89,14 +88,6 @@ VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when rel
 #OPT = -pc -intel -high -omp
 #LIB =
 
-
-#------ K computer
-#FC = frtpx
-#FC = mpifrtpx
-#CPP = -DTIME
-#CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP
-#OPT = -Kopenmp
-#OPT = -V -Kvisimpact,ocl,preex,array_private,auto,openmp,optmsg=2,simd=2 -Qt
 
 #------ pgf
 #FC = pgf95
@@ -355,7 +346,7 @@ SUB3    = movie2dcd.o
 SUB4    = dcd2movie.o
 
 all : $(TARGET)
-#all : $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL6) $(UTIL7) $(UTIL8)
+#all : $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL7) $(UTIL8)
 aa2cg : $(UTIL5)
 
 $(TARGET): $(OBJS) main.o
@@ -380,15 +371,13 @@ $(UTIL4) : $(SUB4)
 	$(FC_UTIL) $(FLAG) -o $@  $(SUB4)
 $(UTIL5) : $(OBJS)
 	$(FC_UTIL) $(FLAG) -o $@  $(OBJS) aa2cg.o
-$(UTIL6) : $(OBJS) cafe_calc_rms.o
-	$(FC) $(FLAG) -o $@  $(OBJS) cafe_calc_rms.o
 $(UTIL7) : $(OBJS) show_rst.o
 	$(FC) $(FLAG) -o $@  $(OBJS) show_rst.o
 $(UTIL8) : $(OBJS) a2rst.o
 	$(FC) $(FLAG) -o $@  $(OBJS) a2rst.o
 
 clean:
-	/bin/rm -f *.o *.mod $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL5) $(UTIL6) $(UTIL7) $(UTIL8)
+	/bin/rm -f *.o *.mod $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL5) $(UTIL7) $(UTIL8)
 
 # suffix rule
 .F90.o:

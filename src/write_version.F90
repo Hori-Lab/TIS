@@ -12,12 +12,12 @@ subroutine write_version( lunout )
 #ifdef VERMAJOR
    integer, parameter :: VERSION_MAJOR = VERMAJOR
 #else
-   integer, parameter :: VERSION_MAJOR = 2
+   integer, parameter :: VERSION_MAJOR = 0
 #endif
 #ifdef VERMINOR
    integer, parameter :: VERSION_MINOR = VERMINOR
 #else
-   integer, parameter :: VERSION_MINOR = 1
+   integer, parameter :: VERSION_MINOR = 0
 #endif
 #ifdef VERBUILD
    integer, parameter :: VERSION_BUILD = VERBUILD  
