@@ -1,0 +1,395 @@
+.SUFFIXES: .F90 .o
+TARGET = ../cafemol
+
+# .. utilites
+UTIL1 = ../crd2pdb
+UTIL2 = ../pdb2crd
+UTIL3 = ../movie2dcd
+UTIL4 = ../dcd2movie
+UTIL5 = ../aa2cg
+UTIL6 = ../cafe_calc_rmsd
+UTIL7 = ../utility/show_rst
+UTIL8 = ../utility/a2rst
+
+# --------------------------------------------------------------------
+# options
+# --------------------------------------------------------------------
+# MPI
+# -DMPI_PAR       : enable parallelization for force calculation
+# -DMPI_PAR2      : enable parallelization for neighborlist construction
+# -DMPI_PAR3      : enable parallelization for energy calculation
+# -DMPI_REP       : enable parallelization for replica exchange
+# --------------------------------------------------------------------
+# Other
+# -DUSE_SIZEOF    : for sizeof-supported compiler
+# -DPREC_INTEL16  : enable quadraple precision 
+# -DTIME          : enable timing measurement
+# -DUNFORMATTED
+# -DSHARE_NEIGH      : share neighboring list for electrostatic interaction
+# -DSHARE_NEIGH_PNL  : share neighboring list for pnl interactions
+# -DSHARE_NEIGH_SOLV : share neighboring list for solvation interaction
+# -DSHARE_NEIGH_HP   : share neighboring list for hydrophobic interaction
+# -DSUB_COPY      : copy subroutine of random number generator
+# --------------------------------------------------------------------
+# Debug
+# -D_DEBUG        : output processing status to STD
+# -D_DEBUG_REP    : using consistent random numbers,
+#                   regardless of the number of processes
+# -D_DUMP_COMMON  : necessary for any type of DUMP
+# -D_DUMP         : dump all
+# -D_DUMP_ENERGY  : dump energy
+# -D_DUMP_QSCORE  : dump Q-score
+# -D_DUMP_FORCE   : dump force
+# -D_DUMP_REPLICA : dump replica variable
+# -D_DUMP_REP_EX
+# --------------------------------------------------------------------
+#  Revision numbers to be written in data files.
+#  (SVNREV should be commented out when release.)
+SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
+VERSION  = -DVERMAJOR=2 -DVERMINOR=1 # Major and minor revision
+VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
+#VERSION += -DVERBUILD=1500 # Build number
+# Notice to trunk users:
+#   If 'svn' command does not work on your computer, please comment out(#) SVNREV
+#   and switch DVERBUILD line to the second one.
+# --------------------------------------------------------------------
+
+
+#------ intel (single)
+#FC = ifort
+#FC_UTIL = ifort
+#CPP = -cpp -DTIME
+#CPP = -cpp -DTIME -DPREC_INTEL16 -D_DEBUG_REP
+#INC =
+#OPT = -O3 -openmp
+#OPT = -O2 -i-static -traceback -fpe0 -check all
+#OPT = -O3 -i-static -xHost -ipo -vec-threshold=70
+#OPT = -O0 -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -fp-model strict -fp-speculation=off -prec-div -prec-sqrt
+#LIB =
+
+#------ intel (MPI)
+#FC = mpiifort
+#FC_UTIL = mpiifort
+#CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP
+#CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP -DSUB_COPY
+##CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP -D_DEBUG_REP -DPREC_INTEL16
+#INC =
+#LIB =
+#OPT = -O3 -i-static -openmp
+##OPT = -O2 -i-static -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -openmp
+##OPT = -O2 -openmp -openmp-report1 -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -fp-model strict -fp-speculation=off -prec-div -prec-sqrt
+##OPT = -O3 -i-static -openmp -xHost
+##OPT = -O3 -i-static -openmp -axSSE4.2 -xSSE4.1
+
+#------ intel (RICC+MPI)
+#FC = mpif90
+#FC_UTIL = mpif90
+#CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP
+#INC =
+#OPT = -pc -intel -high -omp
+#LIB =
+
+
+#------ K computer
+#FC = frtpx
+#FC = mpifrtpx
+#CPP = -DTIME
+#CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP
+#OPT = -Kopenmp
+#OPT = -V -Kvisimpact,ocl,preex,array_private,auto,openmp,optmsg=2,simd=2 -Qt
+
+#------ pgf
+#FC = pgf95
+#FC_UTIL = pgf95   
+#CPP =
+#INC =
+##OPT = -fast
+#OPT = -C -Mbounds -Mdclchk -Minform=inform -Ktrap=fp -traceback
+#LIB =
+
+#------ gfortran
+FC = gfortran
+FC_UTIL = gfortran
+CPP = -cpp -DTIME 
+INC =
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+##OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
+LIB =
+
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# To gfortran users:
+#  If you fail to compile, try to add "-fno-range-check" option.
+#  (This may occur in GNU gfortran 4.4 or later.)
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
+### FOR DEBUG
+#OPT = -static -g -Wall -ffree-line-length-none -fbounds-check
+#OPT = -O -g -Wall -ffree-line-length-none -fbounds-check -pedantic -Wuninitialized -ffpe-trap=invalid,zero,overflow -fno-range-check
+
+
+#------ g95
+#FC = g95
+#FC_UTIL = g95
+#CPP =
+##CPP = -DUNFORMATTED
+##OPT = -O2 -static
+#OPT = -O -ffree-form -ffree-line-length-huge -g -Wall -Wuninitialized -ftrace=full -fbounds-check
+##OPT = -O  -g -Wall -Wuninitialized -ftrace=full -pedantic -std=f95 -fbounds-check
+#INC =
+#LIB =
+
+#------ BG/L
+#FC = blrts_xlf90
+#FC = mpixlf90
+#FC_UTIL = xlf90
+#CPP = -WF,-DMPI_PAR -WF,-DMPI_PAR2
+#INC = -I/bgl/BlueLight/ppcfloor/bglsys/include
+#OPT = -qarch=440d -qtune=440 -qhot
+#LIB = -L/bgl/BlueLight/ppcfloor/bglsys/lib -lmpich.rts -lmsglayer.rts -lrts.rts -ldevices.rts
+
+FLAG = $(VERSION) $(CPP) $(INC) $(OPT)
+
+# ------------------------------------------
+
+# MT stream
+MTDIR = mt_stream_cafe
+MTMOD = mt_kind_defs.o mt_stream.o gf2xe.o
+MTSUB = f_get_coeff.o
+MTOBJ = $(MTMOD) $(MTSUB)
+
+# constant values
+FMOD1 = const_maxsize.o const_index.o const_physical.o
+
+# variable
+FMOD2 = var_inp.o var_struct.o var_setp.o\
+	var_enm.o var_mgo.o var_replica.o\
+	var_implig.o var_simu.o var_flp.o\
+	var_fmat.o var_mpc.o\
+	var_cafe.o
+
+# MPI parameter
+FMOD3 = mpiconst.o time.o
+
+# interface
+FMOD4 = if_write.o if_mloop.o if_energy.o if_neighbor.o if_readpdb.o
+
+# sub programs
+
+FSUB1 = ifunc_seq2id.o  ifunc_char2int.o\
+	ifunc_seq2hanum.o ifunc_nn2id.o\
+	cfunc_name2one.o cfunc_int2char.o\
+	cfunc_id2seq.o \
+	rfunc_propensity.o rfunc_cubiceq.o\
+	rfunc_boxmuller.o var_emin.o
+
+FSUB2 = read_xyz.o read_xyz_cg.o\
+	read_pdb_pro.o read_pdb_dna.o read_pdb_dna2.o read_pdb_lipid.o\
+	read_seq.o read_nativeinfo.o read_pdb_ligand.o read_pdb_cg.o\
+	read_pdbatom.o read_pdbatom_pro.o read_pdbatom_dna.o\
+	read_crd.o read_rst.o read_dcd.o\
+	write_seq.o write_nativeinfo.o write_psf.o\
+	write_record_file.o\
+	write_xyz_pdb.o write_crd.o\
+	write_traject_file.o\
+	write_xyz_movie.o write_xyz_dcd.o\
+	write_tseries.o\
+	write_rst.o\
+	util_error.o util_unitstate.o util_posmass.o\
+	util_bondangle.o util_dihangle.o util_sort_contact.o\
+	util_sort_rna_bp.o util_sort_rna_st.o\
+	util_ppgauss.o util_bestfit.o\
+	util_posmass_rna.o util_posmass_dna2.o\
+	util_periodic.o util_pbneighbor.o util_pbindex.o\
+	util_char_type.o\
+	recipe_rand01.o recipe_gasdev.o\
+	util_uintra2xyz.o\
+	ukoto_uiread2.o\
+	ukoto_uiequa2.o\
+	ukoto_uvvalu2.o\
+	ukoto_uichec2.o ukoto_uiunpk2.o
+
+FSUB3 = cafe_read_ref.o cafe_read_dcd.o cafe_write_dcd.o
+
+# programs
+
+FOBJ1 = \
+	allocate_neighbor.o allocate_replica.o allocate_nativestruct.o\
+	allocate_fmat.o allocate_mgo.o allocate_simu.o\
+	calc_size_structures.o\
+	input.o\
+	inp_runmode.o inp_split_mpi.o\
+	inp_replica_para.o inp_replica_tables.o\
+	inp_filename.o inp_job.o\
+	inp_unitstate.o inp_energy_func.o\
+	inp_datafile.o\
+	setpara.o\
+	setp_mapara.o setp_mapara_pro.o setp_mapara_dna.o setp_mapara_dna2.o\
+	setp_mapara_lipid.o\
+	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
+	setp_mapara_ion.o\
+	setp_redef_para.o\
+	setp_mapara_rna.o\
+	setp_md_info.o setp_group.o\
+	setp_anneal_para.o setp_searchingtf_para.o setp_minimize_para.o\
+	setp_energy_para.o\
+	setp_neigh_dist.o setp_mass_fric.o\
+	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o\
+	setp_para_enm.o setp_para_mgo.o\
+	setp_energy_unit.o\
+	setp_bridge_para.o setp_pulling_para.o setp_cylinder_para.o\
+	setp_anchor_para.o setp_rest1d_para.o setp_fix_para.o\
+	setp_hydrophobic.o\
+	setp_make_dna.o setp_make_dna_setframe.o\
+	setp_para_ion.o\
+	setp_para_lipid.o setp_make_lipid.o\
+	setp_nativestruct.o setp_native_secstruct.o\
+	setp_native_bond.o setp_native_bangle.o setp_native_dih.o\
+	setp_native_charge.o setp_native_hp.o\
+	setp_native_stack_dna.o\
+	setp_native_neighbor_list.o setp_native_go.o\
+        setp_native_sasa.o\
+	setp_native_dna2.o\
+	setp_para_implig.o\
+	setp_con_implig.o\
+	setp_bindsite_implig.o\
+	setp_mapara_aicg.o setp_aicg.o\
+        setp_mapara_aicg2.o setp_aicg2.o\
+	setp_mapara_flp.o\
+        setp_mapara_sasa.o\
+        setp_mapara_exv.o\
+	setp_modified_muca.o setp_electrostatic.o\
+	setp_para_mpc.o setp_dtrna15.o\
+	main_loop.o\
+	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
+	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
+	mloop_nativeinfo.o mloop_ninfo_inp.o\
+	mloop_simulator.o\
+	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o\
+	simu_checkforce.o\
+	simu_para.o\
+	simu_initial.o simu_initial_xyz.o simu_md_plotxyz.o \
+	simu_initial_ion.o\
+	simu_para2.o simu_ele_set.o simu_solv_set.o\
+	simu_set_dtrna.o\
+	simu_tintegral_pre.o simu_tintegral.o simu_tintegral_post.o\
+	simu_minimize.o\
+	simu_neighbor.o simu_neighbor_pre.o simu_neighbor_list.o\
+	simu_neighbor_assign.o simu_neighbor_sort.o\
+	simu_neighbor_list_ele.o simu_neighbor_list_ele2.o\
+	simu_neighbor_list_solv.o simu_neighbor_list_tail.o\
+	simu_neighbor_list_hp.o simu_neighbor_list_hb.o\
+	simu_copyxyz.o simu_copyxyz_ele.o\
+	simu_copyxyz_mgo.o simu_copyxyz_replica.o simu_copyxyz_ref.o\
+	simu_xyz_adjst.o simu_velo_mrand.o simu_velo_mrand_old.o\
+	simu_velo_adjst.o\
+	simu_velo_settemp.o simu_velo_nosehoover.o\
+	simu_anneal.o simu_searchingtf.o\
+	simu_radiusg.o simu_rmsd.o\
+	simu_initialset_mpc.o\
+	simu_collision_mpc4.o simu_stream_mpc4.o\
+	simu_grid_devision_mpc4.o simu_rotate_velo_mpc_rev4.o\
+	simu_energy.o simu_energy_allrep.o\
+	simu_energy_velo.o simu_energy_bond.o simu_energy_dih_gauss.o\
+        simu_energy_dih_3spn2c.o\
+	simu_energy_bangle.o simu_energy_dih.o simu_energy_dih_harmonic.o\
+	simu_energy_rna_stack.o \
+	simu_energy_nlocal_mgo.o simu_energy_mgo.o simu_energy_enm.o\
+	simu_energy_nlocal_go.o simu_energy_nlocal_morse.o \
+	simu_energy_nlocal_rna_bp.o \
+	simu_energy_orderpara.o\
+	simu_energy_pnl.o simu_energy_pnl2.o simu_energy_pnl3.o simu_energy_pnl_restype.o\
+	simu_energy_exv_wca.o simu_energy_exv_dt15.o\
+	simu_energy_hp.o simu_energy_sasa.o\
+	simu_energy_ion.o\
+	simu_energy_box.o simu_energy_cap.o simu_energy_cylinder.o simu_energy_anchor.o\
+	simu_energy_rest1d.o simu_energy_bridge.o simu_energy_pulling.o\
+	simu_energy_implig.o\
+	simu_energy_ele.o simu_energy_ele2.o simu_energy_ele3.o simu_energy_ele_coulomb.o\
+	simu_energy_window.o simu_energy_winz.o\
+	simu_energy_fbangle.o simu_energy_fdih.o\
+	simu_energy_aicg13_gauss.o simu_energy_aicg14_gauss.o\
+	simu_energy_dtrna_stack.o simu_energy_dtrna_stack_nlocal.o\
+	simu_energy_dtrna_hbond13.o simu_energy_dtrna_hbond15.o\
+	simu_energy_dna2_stack.o simu_energy_dna2_bp.o simu_energy_dna2_ex.o \
+	simu_mc_implig.o\
+	simu_calc_energy_dcd.o\
+	simu_force.o\
+	simu_force_bond.o simu_force_bangle.o simu_force_dih.o simu_force_dih_gauss.o\
+        simu_force_dih_3spn2c.o\
+	simu_force_fbangle.o simu_force_fdih.o\
+	simu_force_aicg13_gauss.o simu_force_aicg14_gauss.o\
+	simu_force_dih_harmonic.o simu_force_rna_stack.o \
+	simu_force_nlocal_go.o simu_force_nlocal_morse.o \
+	simu_force_nlocal_rna_bp.o \
+	simu_force_dna2_stack.o simu_force_dna2_bp.o simu_force_dna2_ex.o \
+	simu_force_nlocal_mgo.o simu_force_mgo.o simu_force_enm.o\
+	simu_force_pnl.o simu_force_pnl2.o simu_force_pnl3.o simu_force_pnl_restype.o\
+	simu_force_exv_wca.o simu_force_exv_dt15.o\
+	simu_force_hp.o simu_force_ion.o simu_force_sasa.o\
+	simu_force_bridge.o simu_force_pulling.o\
+	simu_force_anchor.o simu_force_rest1d.o simu_force_box.o simu_force_cap.o simu_force_cylinder.o\
+	simu_force_implig.o\
+	simu_force_ele.o simu_force_ele2.o simu_force_ele3.o simu_force_ele_coulomb.o\
+	simu_force_dtrna_stack.o simu_force_dtrna_stack_nlocal.o\
+	simu_force_dtrna_hbond13.o simu_force_dtrna_hbond15.o\
+	simu_force_window.o simu_force_winz.o\
+	simu_logicalcheck.o simu_replica_exchange.o simu_replica_opt_temp.o\
+	simu_fmat.o simu_ppr.o\
+	min_steep_desc.o min_conj_grad.o\
+	write_rep_traject.o write_rep_result.o write_rep_table.o\
+	step_adjustment.o\
+	write_rep_adjust.o\
+	read_pull.o read_pdb_rna.o\
+	read_dssp.o read_dssp_pro.o read_paraaicg.o read_paraaicg2.o\
+	write_version.o\
+	dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
+	setp_fmat_para.o mloop_fmat_homo.o mloop_fmat_hetero.o\
+	write_fmat.o mloop_recalc_coef.o
+
+
+OBJS = $(MTOBJ) $(FMOD1) $(FMOD2) $(FMOD3) $(FMOD4) $(FSUB1) $(FSUB2) $(FSUB3) $(FOBJ1)
+
+SUB1    = crd2pdb.o
+SUB2    = pdb2crd.o
+SUB3    = movie2dcd.o
+SUB4    = dcd2movie.o
+
+all : $(TARGET)
+#all : $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL6) $(UTIL7) $(UTIL8)
+aa2cg : $(UTIL5)
+
+$(TARGET): $(OBJS) main.o
+	$(FC) -o $@ $(FLAG) $(OBJS) $(LIB) main.o
+
+mt_kind_defs.o : $(MTDIR)/mt_kind_defs.F90
+	$(FC) $(FLAG) -c $< 
+mt_stream.o : $(MTDIR)/mt_stream.F90
+	$(FC) $(FLAG) -c $< 
+gf2xe.o : $(MTDIR)/gf2xe.F90
+	$(FC) $(FLAG) -c $< 
+f_get_coeff.o : $(MTDIR)/f_get_coeff.F90
+	$(FC) $(FLAG) -c $< 
+
+$(UTIL1) : $(SUB1)
+	$(FC_UTIL) $(FLAG) -o $@  $(SUB1)
+$(UTIL2) : $(SUB2)
+	$(FC_UTIL) $(FLAG) -o $@  $(SUB2)
+$(UTIL3) : $(SUB3)
+	$(FC_UTIL) $(FLAG) -o $@  $(SUB3)
+$(UTIL4) : $(SUB4)
+	$(FC_UTIL) $(FLAG) -o $@  $(SUB4)
+$(UTIL5) : $(OBJS)
+	$(FC_UTIL) $(FLAG) -o $@  $(OBJS) aa2cg.o
+$(UTIL6) : $(OBJS) cafe_calc_rms.o
+	$(FC) $(FLAG) -o $@  $(OBJS) cafe_calc_rms.o
+$(UTIL7) : $(OBJS) show_rst.o
+	$(FC) $(FLAG) -o $@  $(OBJS) show_rst.o
+$(UTIL8) : $(OBJS) a2rst.o
+	$(FC) $(FLAG) -o $@  $(OBJS) a2rst.o
+
+clean:
+	/bin/rm -f *.o *.mod $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL5) $(UTIL6) $(UTIL7) $(UTIL8)
+
+# suffix rule
+.F90.o:
+	$(FC) $(FLAG) -c $< 

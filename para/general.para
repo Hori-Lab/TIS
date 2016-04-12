@@ -1,0 +1,119 @@
+* General parameters for simulation
+<<<< para_cafemol_gen
+* the coupling parameter of Berendsen thermostat
+velo_adjst = 1.0 
+
+* Nose-Hoover parameter
+* mass of thermal particle per bead
+csmass_per = 1.0
+* mass of thermal particle per solvent (MPC)
+csmass_mpc_per = 1.0
+
+* the cutoff distance to define a neighbor
+rneighbor_dist = 24.0
+
+* default value of particle mass
+rmass = 10.0
+
+* friction constant for Langevin dynamics simulation
+fric_const = 0.25
+
+* Viscosity to calculate friction coefficient using Stokes' law.
+*    This parameter is effective only if i_fric = 1 in the input.
+*    The value should be given in units of (Pa)(s) = (kg)(m^-1)(s^-1).
+*    To use this, mass and radius of each particle-type must be specified in
+*    "chemical_property" field below. 
+viscosity = 0.001
+>>>>
+
+
+
+
+*-------------------------------------------------------------------
+* supporting information for friction coefficient ("fric_const")
+*-------------------------------------------------------------------
+* From the standpoint of the calculation cost (efficiency), and so on,  
+* we recommend 0.25 (default value) as friction constant ("fric_const").
+*
+* However, if you want to reproduce the water viscosity {\mu = 8.0 \times 10^-4  [kg/(m s)] at room temperature (303K)} accurately in Langevin dynamics,
+* by taking account of Stokes' law you had better set the friction coefficient \gamma ("fric_const") for one C_{\alpha} bead as follows:
+*
+*    fric_const = 6 \pi \mu radi/rmass = 4.54   [in CafeMol unit].
+*
+* where radi corresponds to the typical radius of one aminoacid (e.g. 3.8 \AA) and rmass is default value of particle mass (10.0).
+*-------------------------------------------------------------------
+
+
+<<<< chemical_property
+MASS  ALA   71.09
+MASS  ARG   156.19
+MASS  ASN   114.11
+MASS  ASP   115.09
+MASS  CYS   103.15
+MASS  GLN   128.14
+MASS  GLU   129.12
+MASS  GLY   57.05
+MASS  HIS   137.14
+MASS  ILE   113.16
+MASS  LEU   113.16
+MASS  LYS   128.17
+MASS  MET   131.19
+MASS  PHE   147.18
+MASS  PRO   97.12
+MASS  SER   87.08
+MASS  THR   101.11
+MASS  TRP   186.21
+MASS  TYR   163.18
+MASS  VAL   99.14
+
+MASS  DP  94.97
+MASS  DS  83.11
+MASS  DA  134.1
+MASS  DG  150.1
+MASS  DC  110.1
+MASS  DT  125.1
+
+MASS  P   62.972561
+MASS  S  131.10668
+MASS  A  134.11876
+MASS  G  150.11816
+MASS  C  110.09406
+MASS  U  111.07882
+
+MASS MG  24.3050
+MASS CL  35.4500
+MASS K   39.1000
+
+RADIUS  ALA   6.0
+RADIUS  ARG   6.0
+RADIUS  ASN   6.0
+RADIUS  ASP   6.0
+RADIUS  CYS   6.0
+RADIUS  GLN   6.0
+RADIUS  GLU   6.0
+RADIUS  GLY   6.0
+RADIUS  HIS   6.0
+RADIUS  ILE   6.0
+RADIUS  LEU   6.0
+RADIUS  LYS   6.0
+RADIUS  MET   6.0
+RADIUS  PHE   6.0
+RADIUS  PRO   6.0
+RADIUS  SER   6.0
+RADIUS  THR   6.0
+RADIUS  TRP   6.0
+RADIUS  TYR   6.0
+RADIUS  VAL   6.0
+
+RADIUS  P  2.0
+RADIUS  S  2.9
+RADIUS  A  2.8
+RADIUS  G  3.0
+RADIUS  C  2.7
+RADIUS  U  2.7
+
+RADIUS MG  0.7926
+RADIUS CL  1.9480
+RADIUS K   2.6580
+>>>>
+

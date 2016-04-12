@@ -1,0 +1,1106 @@
+<<<< filenames
+** defining the directory where output date are saved
+path = ./data
+** the output file names up to the suffix
+filename = cafemol_all
+
+** There are 3 output formats for record:
+**    pdb: PDB file format (coordinate)
+**    crd: CARD file format (coordinate)
+**    velo: CARD file format (velocity)
+** There are 3 output formats for trajectory:
+**    movie: PDB file format for trajectory (coordinate)
+**    dcd: DCD file format for trajectory (coordinate)
+**    vdcd: DCD file format for trajectory (velocity)
+** There is 1 output format for other purpose.
+**    psf: Protein Structure File can be used by VMD to visualize DCD data.
+** 
+** If you want above format file, write the extension name following 'OUTPUT'.
+**OUTPUT pdb crd velo dcd vdcd movie psf rst
+
+** define the directory where the native (reference) structures are prepared
+path_pdb = ./pdb
+
+** define the directory where initial structures are prepared
+path_ini = ./pdb
+
+** define the directory where native info files are prepared
+path_natinfo = ./ninfo
+
+** define the directory where the secondary structure dssp are prepared
+**path_aicg = ./aicg
+
+** define the directory where parameter files are prepared
+**path_para=./para
+
+** define the directory where fluctuation files are prepared
+**path_msf = ./msf
+>>>> 
+
+
+**************************************************************
+** job_cntl (required)
+**************************************************************
+<<<< job_cntl
+**** Setting Job Control 
+** i_run_mode: define basic run mode 
+**           = 1 : Debug Mode, Check the consistence between force and energy
+**           = 2 : Constant temperature simulation 
+**           = 3 : Simulated annealing (require "<<<< annealing" block)
+**           = 4 : Auto-search of T_f (require "<<<< searching_tf" block)
+**           = 5 : Energy calculation at single point
+**           = 6 : Replica exchange method
+**           = 7 : Fluctuation matching method (not available)
+**           = 8 : Energy calculation for DCD trajectory (i_periodic shold be 0)
+**           = 9 : Energy minimization
+i_run_mode = 2
+
+** i_simulate_type: define dynamics 
+**           = 0 : Newtonian dynamics  (velocity Verlet)
+**                 with the constant energy
+**           = 1 : Langevin dynamics (recommended)
+**           = 2 : Newtonian dynamics (velocity Verlet)
+**                 with Berendsen thermostat
+**           = 3 : Newtonian dynamics (RESPA)
+**                 with Nose-Hoover thermostat
+**           = 4 : MPC dynamics 
+i_simulate_type = 1
+
+** i_initial_state: define initial configuration 
+**           = 1 : Random configuration (Extended)
+**           = 2 : Native configuration 
+**           = 3 : Configuration given in the input
+**                 (require "<<<< initial_struct")
+**           = 4 : B-type DNA configuration (not yet released)
+**           = 5 : Rectangle lipid-sheet configuration (not yet released)
+**           = 6 : Configuration given in the input with the CafeMol(CG) style
+**           = 7 : Configuration given in CARD-style file
+**                 (require "<<<< initial_struct")
+i_initial_state = 3
+
+** i_initial_velo: define initial velosities
+**           = 0 : Maxwell-Boltzmann distribution using random numbers (default)
+**           = 1 : Velosity given in CARD-style file
+**                 (require "<<<< initial_velo")
+i_initial_velo = 0
+
+** using periodic boundary condition
+i_periodic   = 0 : not using (default)
+             = 1 : using periodic boundary condition
+>>>>
+
+
+** periodic boudnary (required only when using periodic boundary condition)
+**<<<<periodic_bound
+psizex = 100.0
+psizey = 100.0
+psizez = 100.0
+>>>>
+
+** Path to DCD file to read. (Not only filename!)
+** <<<< energy_dcd
+1 = data/cafemol_go_1chain.dcd
+>>>>
+
+
+**************************************************************
+** unit_and_state (required)
+**************************************************************
+<<<< unit_and_state
+** Reading sequence information
+**         = 1 : from PDB files (The pdb file names
+**               needed to be specified below in this input block)
+**         = 2 : directly from the input file
+**              (This requires "<<<< sequence" block)
+**         = 3 : from initial_lipid block(not released)
+**         = 4 : from CafeMol(CG) style (The pdb file names
+**               needed to be specified below in this input block)
+i_seq_read_style = 1
+
+** Reading native structure information
+**         = 1 : from PDB files (The pdb file names
+**               needed to be specified below in this input block)
+**         = 2 : from "native_info" files
+**              (This requires "<<<< native_info_simN" block, N=1,2,,,)
+**         = 3 : none (in case no Go interaction is used at all)
+i_go_native_read_style = 1
+
+** Define units and states of the simulated system.
+** Unit is equal to "chain" for proteins.
+** State is used in multiple basin model.
+** List all the units (by integer) and states (by an alphabet)
+** State alphabet should be specified
+** only when multiple basin model is used for this chain.
+** The molecular_type is either protein, dna, rna, lipid, or ligand.
+** When pdb file include more than one molecular_type,
+** you should divide pdb file into each molecuar_type.
+** When "i_seq_read_style = 2" or "i_seq_read_style = 3",
+** you should write "sequence" for "native_structure" block.
+** unit&state  molecular_type   native_structure 
+1a     protein                  1GGG_2.pdb
+1b     protein                  1WDN_2.pdb
+
+** When you use a pdb file that contains more than one chain,
+** use the following style,
+** where 3 chains (chain 2, 3, and 4)
+** and the state "a" of protein is defined in a pdb file hoge.pdb.
+** 2-4a protein                     hoge.pdb
+** Define the reference structural info
+** There are 3 ways to specify the native sequence & structural information. 
+**   1) Specify both seq&struct by single pdb file
+**      For this route, specify the pdb file here.
+**   2) Specify seq-info by pdb file and structural info
+**      by "<<<< native-info" block
+**      For this route, both this block and "native-info" block
+**      should be given.
+**   3) Specify seq-info by "<<<< sequence" block
+**      and structural info by "<<<< native-info" block
+**      For this route, this block should not be used.
+**      Instead, use the block "<<<< sequence".
+** Route 1) is easy, but not as flexible as routes 2) and 3). 
+** E.g, For switching native structural info during MD,
+** the route 1) cannot be used.
+>>>>
+
+
+**************************************************************
+** native_info_sim (required only when "i_go_native_read_style = 2")
+**************************************************************
+**<<<< native_info_sim1
+** all-in-one-file style
+NINFO(all/all) test.info
+>>>>
+**<<<< native_info_sim1
+** one-by-one-file-style
+** Unit_and_state or its interaction = file-ID
+NINFO(1/1) 1
+NINFO(2/2) 2
+NINFO(3/3) 8 
+NINFO(1/2) 3
+NINFO(1/3) 4
+
+** INTRA(1a)    = 1
+** INTER(1a/2)  = 3
+
+**path = ./ninfo
+** (optional) If this line is absent, "path_natinfo" in the "filenames" block is used.
+
+1 = part_k001_Ra6.5_headA_amp2.dat
+2 = k001_Ra6.5_headA_adp_dockcut.dat
+3 = head_inter_AB_R10amp.dat 
+>>>>
+
+
+**************************************************************
+** initial_struct (required only when "i_initial_state = 3")
+**************************************************************
+<<<< initial_struct
+** When i_initial_state = 3 in "<<<< job_cntl" block,
+** structures of each unit should be specified here.      
+1   1WDN_2b.pdb
+
+** When you have a pdb file that contains initial structures
+** more than one chain, 
+** use the following format,
+** where hoge.pdb contains the initial structures of 3 chains (2, 3, and 4).
+** 2-4 hoge.pdb
+>>>>
+
+
+**************************************************************
+** initial_velo (required only when "i_initial_velo = 1")
+**************************************************************
+<<<< initial_velo
+** When i_initial_velo = 1 in "<<<< job_cntl" block,
+data/1WDN_2b_pre.velo
+>>>>
+
+
+**************************************************************
+** initial_lipid (required only when "i_initial_state = 5")
+**************************************************************
+**<<<< initial_lipid
+** initial parameter for lipid
+** the number of lipid molecules in x-direction
+nmp_transverse_lipid = 10
+** the number of lipid molecules in y-direction
+nmp_longitudinal_lipid = 10
+nlayer_lipid = 1
+grid_size_lipid = 1.075
+z_coord_lipid(1) = 1.0
+>>>>
+
+
+**************************************************************
+** initial_ion (required only when using explicit ion model)
+**************************************************************
+**<<<< initial_ion
+num_na_ion = 0
+num_cl_ion = 0
+num_mg_ion = 100
+>>>>
+
+
+**************************************************************
+** sequence (required only when "i_seq_read_style = 2")
+**************************************************************
+**<<<< sequence
+*** Sequence input is needed when you do not set PDB file.
+*** SEQRES style in PDB format is used.
+SEQRES   1 A   64  GLY ALA LEU ALA GLY GLY VAL THR THR PHE VAL ALA LEU          
+SEQRES   2 A   64  TYR ASP TYR GLU SER ARG THR GLU THR ASP LEU SER PHE          
+SEQRES   3 A   64  LYS LYS GLY GLU ARG LEU GLN ILE VAL ASN ASN THR GLU          
+SEQRES   4 A   64  GLY ASP TRP TRP LEU ALA HIS SER LEU THR THR GLY GLN          
+SEQRES   5 A   64  THR GLY TYR ILE PRO SER ASN TYR VAL ALA PRO SER                   
+>>>>
+
+
+**************************************************************
+** dssp_file (required only when "i_aicg /= 0")
+**************************************************************
+<<<< dssp_file
+** When i_aicg >= 1 in "<<<< job_cntl" block,
+** dssp file should be specified here.     
+1    igd.dssp
+>>>>
+
+
+**************************************************************
+** energy_function (required)
+**************************************************************
+<<<< energy_function        
+** WHAT ABOUT THE LOCAL ENERGY FUNCTION
+** default interaction is determiend from nonlolca interaction
+LOCAL(1)     L_GO
+LOCAL(2)     L_BOND
+
+**NOTHING       : no interaction
+**L_GO          : local Go interaction
+**L_AICG1       : local AICG1
+**L_AICG2       : local AICG2(automatically includeing L_FLP)
+**L_AICG2_PLUS  : modified local AICG2
+**L_FLP         : flexible local potential
+**L_BOND        : bond potential only
+**L_ENM         : local elastic network model(=NOTHING)
+**L_BDNA        : local DNA interaction 
+**L_DNA2        : local DNA interaction for DNA2 model
+**L_DNA2C       : local DNA interaction for DNA2C model
+**L_LIP_BROWN   : local lipid-lipid(Brown, not yet released)
+**L_LIP_NOGU    : local lipid-lipid(Noguchi, not yet released)
+**L_RIGID_LIG   : ligand rigid interaction (not yet released)
+**L_DTRNA       : DT-RNA model
+
+
+** WHAT ABOUT THE NONLOCAL ENERGY FUNCTION
+** WORD style is recommended
+** NUMBER style is not recommended
+NLOCAL(1-2a/1-2a)     GO EXV
+NLOCAL(1-2b/1-2b)     GO EXV
+
+**NOTHING[1]    : no interaction (default)
+**GO[2]         : 12-10 Go potential for native contact pairs
+**EXV[3]        : (c/r)**12 repulsive interaction
+**ELE[7]        : electrostatic interaction (Debye-Huckel form)
+**DNA[11]       : DNA-DNA interaction 
+**DNA2          : DNA-DNA interaction in DNA2 model
+**DNA2C         : DNA-DNA interaction in DNA2C model
+**LIP_BROWN[13] : lipid-lipid (Brown, not yet relesed)
+**LOP_NOGU[17]  : lipid-lipid (Noguchi, without solvation, not yet released)
+**LIP_SOLV[19]  : solvation (lipid-lipid, lipid-protein, not yet released)
+**ENM[23]       : elastic network model (protein)
+**HP[29]        : hydorophobic interaction
+**MORSE[31]     : Morse Go potential (not yet released)
+**PAIR_RNA[37]  : RNA-RNA base pair (not yet released)
+**ION_HYD[41]   : ION_HYD (not yet released)
+**ION_EXV[43]   : ION_EXV (not yet released)
+**AICG1[47]     : AICG1 (protein)
+**AICG2[53]     : AICG2 (protein)
+**DTRNA         : DT-RNA model
+**EXV_WCA       : Excluded volume by Weeks-Chandler-Andersen potential
+
+
+** using flexible local potential (Parameters is defined in flexible_local block)
+**           = 0 : not used (default)
+**           = 1 : use flexible local potential
+**i_flp = 1
+
+
+** MULTIGO_SYSYTEM() state serial number = list all of "unit&state" id 
+MULTIGO_SYSTEM(1a)   1a/1a
+MULTIGO_SYSTEM(1b)   1b/1b
+
+** for the case where interaction is included in the multiple basin system 
+** MULTIGO_SYSTEM(1a)    2a/2a  3a/3a  2a/3a
+** MULTIGO_SYSTEM(1b)    2b/2b  3b/3b  2b/3b
+
+** define which of atoms to be used as the representative for the CG particle
+**       = 0 : for using CA atom (default)
+**       = 1 : for using CB atom
+**       = 2 : for using the center of mass of side chain
+i_use_atom_protein = 0
+
+
+** for DNA
+**       = 0 : for using the center of mass of phosphate and sugar (default)
+i_use_atom_dna = 0
+
+** for excluded volume interactions
+**       = 0 : using same sigmas for all amino-acids (now default, but will be obsolete next version)
+**       = 1 : using type dependent sigmas for different residues (recommended for protein and DNA2)
+i_residue_exv_radii = 0
+
+
+** which atom using for Go interaction in DNA
+**       = 0 : all three CG atoms
+**       = 1 : not use phosphate (default)
+i_go_atom_dna = 1
+
+
+** for output style of energy
+**       = 0 : output inter energy are summed up intra energy half and half (default)
+**       = 1 :  output intra and inter energy separately
+i_output_energy_style = 0
+
+
+** Use coef values in .ninfo file as parameters.
+**       = 0 : not use parameters in ninfo (default)
+**       = 1 :     use parameters in ninfo
+**i_coef_from_ninfo = 0
+
+** Calculate temperature-independent energy (for reweighting)
+**       = 0 : disabled (default)
+**       = 1 : enabled  (tempk_ref should be specified in <<<< md_information)
+**i_temp_independent = 0
+
+**i_dtrna_model = 2013 (default)
+**              = 2015
+>>>>
+
+
+**************************************************************
+** para_aicg_file (required only when AICG1 or AICG2 was specifiedf
+** as local or nonlocal interactions in the "<<<< energy_function" block.)
+*********************************************
+<<<< aicg
+** how to build AICG parameters
+**       = 1 : AICG parameters auto-generated by CafeMol (default)
+**       = 2 : AICG parameters given by users
+i_aicg = 2
+
+** if i_aicg = 2, you should specify AICG parameter file
+**filename_aicg = igd.para
+filename_aicg = igd.para
+>>>>
+
+
+**************************************************************
+** multiple_go (required only when multiple basin model is used)
+**************************************************************
+<<<< multiple_go
+bdemax_mgo = 100.0
+baemax_mgo = 1.0
+dihemax_mgo = 0.5
+
+** (istep_sim)(system_number) enegap_state1, enegap_state2 ,,,,,
+ENEGAP(1)(1)  0.0   -1.8
+
+** (system_number, a pair of states) value of delta 
+DELTA(1ab)    28.0
+>>>>
+
+
+**************************************************************
+** elastic_network (required only when elastic network model is used)
+**************************************************************
+**<<<< elastic_network 
+cenm = 10.0
+dfcontact_enm = 6.5
+>>>>
+
+
+**************************************************************
+** electrostatic (required only when electrostatic interaction is used)
+**************************************************************
+**<<<< electrostatic
+cutoff_ele = 20.0
+** cutoff_ele is scaled by Debye length.
+ionic_strength = 0.05
+diele_water = 78.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature and concentration of cation
+i_diele = 0
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 1
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+i_function_form = 0 
+
+** calculation method for electrostatic interaction in K computer (optional)
+**            = 0 neighboring list (default)
+**            = 1 neighboring list for K computer
+**            = 2 direct caluculation for K computer
+i_calc_method = 0
+
+** charge of DNA2/DNA2C phosphate for DNA-protein interaction.
+** NOTICE that for ele interactions inside DNA, it's still -0.6.
+dna2_phos_pro_charge = -1.0
+
+** define the charges of each type
+**          type charge
+CHARGE_TYPE LYS  1.5
+CHARGE_TYPE ARG  0.9
+CHARGE_TYPE HIS  0.3
+CHARGE_TYPE ASP  -1.3
+CHARGE_TYPE GLU  -0.8
+
+** charge add and del
+**         u&s u (intra) residue number
+CHARGE_DEL 2-4 u 51-120
+CHARGE_ADD 3   u 89-93
+
+** Change the value of "imp"th charge to "value"
+CHARGE_CHANGE imp(integer) value(real)
+CHARGE_CHANGE 100 0.500
+>>>>
+
+
+**************************************************************
+** hydrophobic (required only when hydrophobic interaction is used)
+**************************************************************
+**<<<< hydrophobic
+coef_hp = 0.43
+HPE_DEL    1      u 1-442
+HPE_ADD    1      u 18 20 21 148 149
+HPE_ADD    1      u 159 161-163 170 173
+HPE_ADD    1      u 262-264 267 278
+>>>>
+
+
+**************************************************************
+**<<<< flexible_local
+**************************************************************
+*Force constants for flexible local potential
+k_dih = 1.00000
+k_ang = 1.00000
+DEL_LGO_ADD_FLP(10-15)
+FLP_ADD(30-35)
+FLP_DEL(40-45)
+>>>>
+
+
+**************************************************************
+** MPC
+**************************************************************
+** explanation
+**pbbox_min_x: periodic boundary box xmin
+**pbbox_max_x: periodic boundary box xmax
+**ngrid_x: number of grid x-axis
+**n_step_collision: the number of ratio for collision process
+**n_step_correct: the number of steps to correct [velocity, temperature]
+**n_av_solvent: the average number of solvent particle in one grid for mpc
+**total solvent particle = ngrid_x*ngrid_y*ngrid_z*n_av_solvent
+**rmass_solvent: the mass for mpc solvent particle
+**rotate_angle:  the rotation angle for collision process [degree]
+<<<< mpc_dynamics
+** thermal bath for solvent particles
+**   = 1 velocity scaling (default)
+**   = 2 Nose-Hoover
+i_thermal_mpc=1
+i_flag_check_mpc=0
+i_flag_check2_mpc=0
+pbbox_min_x = -25.0
+pbbox_max_x =  25.0
+pbbox_min_y = -25.0
+pbbox_max_y = 25.0
+pbbox_min_z = -25.0
+pbbox_max_z = 25.0
+ngrid_x = 25
+ngrid_y = 25
+ngrid_z = 25
+n_step_collision = 100
+nratio_vcorrect_step= 100
+n_av_solvent = 5
+rmass_solvent = 1.0
+rotate_angle = 90.0
+>>>>
+
+
+**************************************************************
+** md_information (required)
+**************************************************************
+<<<< md_information
+** the number of switching the potential
+n_step_sim = 1
+
+** number of MD steps
+n_tstep(1) = 10000
+
+** a time length in each MD step (typical value: 0.1 or 0.2)
+tstep_size = 0.2
+
+** how often information is saved in output files
+n_step_save = 100
+
+** how often information is saved in restart file 
+** (optional, same as n_step_save if this line is omited.)
+n_step_rst = 1000
+
+** how often the neighbor list is to be updated (typical value: 100)
+n_step_neighbor = 100
+
+** temperature used in simulation (in Kelvin)
+tempk = 300.0
+
+** Reference temperature to be referred in Taylor expansion 
+** of electrostatic energy when i_temp_independent=1
+tempk_ref = 300.0
+
+** type of random number
+**    = 0 : serial mt_stream (default)
+**    = 1 : parallel mt_stream
+**    = 2 : parallel(only open MP) mt_stream
+i_rand_type = 0
+
+** seed of the random initial conformation and velocity
+** n_seed is any 32-bit integer larger than 1
+** When n_seed = -1, the seed of random number is determined from system time
+** (using system_clock subroutine)
+n_seed = 2
+
+** move center of mass of initial structure
+**    = 0 : no operation (default)
+**    = 1 : move the center of mass of initial structure to the origin
+**    = 2 : move the center of mass of initial structure to (4500, 4500, 4500)
+i_com_zeroing_ini = 0
+
+** move center of mass (only for output)
+**    = 0 : no operation
+**    = 1 : fix the center of mass of the system at the origin
+**    = 2 : fix the center of mass of the system at (4500, 4500, 4500)
+i_com_zeroing = 0
+
+** translation and rotation
+**    = 0 : no operation
+**         (recommended for Langevin dynamics) 
+**    = 1 : prohibit overall translation and rotation
+**          of the entire molecular sysytem
+**         (recommended for Newtonian dynamics)
+i_no_trans_rot = 0
+
+** optional parameters
+
+**i_implig = 0 : no operation (default)
+**         = 1 : use implicit ligand model with MD-MC scheme
+**              (requires <<<< implicit_ligand", and "<<<< binding_site")
+i_implig = 0
+
+** i_redef_para = 0 : noperation (default)
+**              = 1 : re-define some default parameters
+**                   (requires the input block "<<<< redefine_para")
+i_redef_para = 1
+
+** i_energy_para = 0 : no operation (default)
+**               = 1 : re-scale some energy parameters
+**                    (requires the input block "<<<< energy_para"
+i_energy_para = 0
+
+** i_neigh_dist = 0 : no operation (default)
+**              = 1 : re-define radius threshold for making the neighbor list
+**                   (requires the input block "<<<< neighbor_dist")
+i_neigh_dist = 0
+
+** i_mass = 0 : All particles have mass of "rmass" value in para/general.para. (default)
+**        = 1 : Each particle has residue-type dependent mass
+**              specified in "chemical_property" field in para/general.para.
+i_mass = 0
+
+** i_fric = 0 : All particles are subject to a friction of "fric_const"
+**              in para/gerneral.para (default)
+**        = 1 : Each particle is subject to a friction derived by Stokes' law
+** NOTE: This flag is relevant only in Langevin dynamics (i_simulate_type = 1)
+i_fric = 0
+
+** i_mass_fric = 0 : no operation (default)
+**             = 1 : re-define mass and/or friction coefficient of some portions
+**                  (requires the input block "<<<< mass_friction")
+i_mass_fric = 0
+
+** i_del_int = 0 : no operation (default)
+**           = 1 : delete some interactions in a particular range
+**                (requires the input block "<<<< del_interaction")
+i_del_int = 0
+
+** i_anchor = 0 : no operation (default)
+**          = 1 : anchor some mass-points by springs to some positions
+**               (requires the input block "<<<< anchor para"
+i_anchor = 0
+
+** i_rest1d = 0 : no operation (default)
+**          = 1 : restrain some mass-points by one-dimensional harmonic potential
+i_rest1d = 0
+
+** i_bridge = 0 : no operation (default)
+**          = 1 : to bridge two mass-points by springs
+**               (requires the input block "<<<< bridge_para")
+i_bridge = 0
+
+** i_pulling = 0 : no operation (default)
+**           = 1 : to pull mass-points by constant forces or constant speed
+**                 (requires the input block "<<<< pulling_para")
+i_pulling = 0
+
+** i_fix = 0 : no operation (default)
+**       = 1 : fix some mass-points to their initial positions
+**             (requires the input block "<<<< anchor_para")
+i_fix = 0
+
+** i_in_box = 0 : no operation (default)
+**          = 1 : put the entire system into a box of rectangular solid
+**               (requires the input block <<<< in_box")
+i_in_box = 0
+
+** i_in_cap = 0 : no operation (default)
+**          = 1 : put the entire system into a spherical cap
+**               (requires the input block <<<< in_cap")
+i_in_cap = 0
+
+** modified multicanonical
+**   = 0 not using modified multicanonical sampling; default
+**   = 1 using modified multicanonical sampling
+**       (based on Gosavi et al. JMB,2006,357,986) ;
+**       input block "modified_muca" should be specified
+i_modified_muca = 0
+>>>>
+
+
+**************************************************************
+** group : Grouping mass-particles
+**************************************************************
+<<<< group
+**** eg.) GROUP(n)  (imp1-imp2/imp3/imp4/imp5-imp6/ ..... /impM)
+****
+**** # "n" is a group ID.
+**** # Maximum of "n" is defined by MXGRP in const_maxsize.F90
+**** # Maximum number of particles belonging to each group is 
+****   defined by MXMPGRP in const_maxsize.F90
+**** # Particle IDs can be specified in no particular order.
+**** # For example, the first group GROUP(1) contains 9 mass-particles, 
+****   imp = 1,2,5,6,7,8,10,11,and 12.
+****
+GROUP(1) (1-2/5-8/10-12)
+GROUP(2)  (3/15/20-25)
+GROUP(4) (10-189)
+GROUP(5) (7-9/45/35-38/120)
+>>>>
+
+
+**************************************************************
+** energy_minimize (required only when "i_run_mode=9" (Energy minimization))
+**************************************************************
+**<<<< energy_minimize
+**** i_method (required)
+****   = 1 : Steepest Descent (with Arbitrary Step Approach)
+****   = 2 : Conjugate Gradient (with the Polak-Riviere method and the line-search approach)
+i_method(1) = 1
+i_method(2) = 2
+
+**** Whether to output time-series of minimization parameter (optional)
+****         i_out = 0 : nothing (default) 
+****               = 1 : output to .data file
+****               = 2 : output to .opt file  ("opt" must be specified in the OUTPUT line above)
+i_out = 1
+**** How often information is saved in output files (required when i_out > 0)
+n_out_step = 50
+
+*** Criterion of convergence (common to both methods) (optional)
+*** The default value is 10.0*MACHINE_EPSILON
+epsilon = 1.0e-6
+
+**** ### FOR THE STEEPEST DESCENT METHOD ###
+**** The initial value of the maximum displacement (optional, default = 0.1)
+sd_lambda_init = 0.1
+**** Change rates of lambda in each step (optional, defulat = 1.2 and 0.2)
+sd_rho_accept = 1.2
+sd_rho_reject = 0.2
+
+**** ### FOR THE CONJUGATE GRADIENT METHOD ###
+**** The initial value of the maximum displacement (optional, default = 1.0) 
+cg_lambda_init = 1.0
+**** Change rate of lambda when rejected. (optional, default = 0.95)
+cg_rho = 0.95
+**** Coefficients of strong Wolfe condition. (optional, default = 0.0001 and 0.1)
+****   0.0 < c1 < c2 < 0.5 should be satisfied.
+cg_wolfe_c1 = 1.0e-4
+cg_wolfe_c2 = 1.0e-1
+>>>>
+
+
+**************************************************************
+** implicit_ligand (required only when "i_implig= 1")
+**************************************************************
+**<<<< implicit_ligand
+** For implicit ligand model with MD-MC
+** number of ligand site
+nsite_implig = 1
+
+** initial state of implicit ligand
+** initaial_state_implig(isite) = STATE
+** 1:BOUND_STATE, 0:UN_BOUND_STATE
+
+** initial_state_allimplig = 1
+** initaial_state_implig(1-3) = 1
+initial_state_implig(1) = 1
+
+** time steps that are related to the time constants for implicit-ligand binding and unbinding process.
+istep_implig = 100
+istep_un_implig = 100
+
+**the ligand-binding rate constant k_b [1/step]
+**bind_rate_allimplig = 0.0000360
+**bind_rate_implig(1-3) = 0.0000360
+bind_rate_implig(1) = 0.0000360
+
+** interaction (energy) type for implicit ligand (ligand-mediated contact) 
+** 0:LJ12-10, 1:gaussian
+itype_ene_implig = 1
+
+** if itype_ene_implig = 1, gauss_d_implig should be set.
+** gauss_d_implig decids the ineraction range.
+**gauss_d_allimplig = 0.05
+**gauss_d_implig(1-3) = 0.05
+gauss_d_implig(1) = 0.05
+
+** control parameter that changes the strength of ligand-mediated contact
+**pre_allimplig = 0.95
+**pre_implig(1-3) = 0.95
+pre_implig(1) = 0.95
+>>>>
+
+
+**************************************************************
+** bindng_site (required only when "i_implig= 1")
+**************************************************************
+**<<<< binding_site
+** for implicit-ligand model with MD-MC
+** keyword ligand_site_number unit&state "u" binding_residues
+IMPLIGSITE 1 1b u 6 9 46 63 64 66 71 111 114 115 152 153 181
+>>>>
+
+
+**************************************************************
+** redefine_para (required only when "i_redef_para = 1")
+**************************************************************
+<<<< redefine_para
+rneighbor_dist = 20.0
+
+** user can change the following two, if i_residue_exv_radii = 1
+** exv_cutoff = 2.0       ** recommended value is 3.2
+** exv_coef = 0.6
+>>>>
+
+
+**************************************************************
+** energy_para (required only when "i_energy_para = 1")
+**************************************************************
+**<<<< energy_para
+rlocal_all = 2.0
+rlocal_unit(1/2) = 3.0
+go_all = 1.0
+go_unit(1/2) = 2.0
+>>>>
+
+
+**************************************************************
+** neighbor_dist (required only when "i_neigh_dist = 1")
+**************************************************************
+**<<<< neighbor_dist
+rndist_all = 20.0
+rndist_unit(1-2/1-2) 10.0
+>>>>
+
+
+**************************************************************
+** mass_friction (required only when "i_mass_fric = 1")
+**************************************************************
+**<<<< mass_friction
+rmass_all = 10.0
+rmass_unit(1-2) = 20.0
+rmass_mp(10-20) = 100.0
+fric_all = 0.5
+fric_unit(1-2) = 20.0
+fric_mp(10-20) = 100.0
+>>>>
+
+
+**************************************************************
+** del_interaction (required only when "i_del_int = 1")
+**************************************************************
+**<<<< del_interaction
+DEL_BA_DIH(10-20)
+DEL_GO(20-30/1-300)
+>>>>
+
+
+**************************************************************
+** anchor_para (required only when "i_anchor = 1")
+**************************************************************
+**<<<< anchor_para
+* imp k_d d_0 x y z
+ANCH 3 5.0 0.0 10.0 10.0 10.0
+*        header groupID coefficient distance
+ANCH_CENTER_INI       1       500.0     10.0
+>>>>
+
+
+**************************************************************
+** rest1d_para (required only when "i_rest1d = 1")
+**************************************************************
+**<<<< rest1d_para
+*      imp   k      imp_sa imp_sb s0
+REST1D 19849 0.0002 12487  12808  -40.0
+REST1D_CENTER(1524-1554/1917-1947/2310-2340/2703-2733) 0.0002 1 598 50
+>>>>
+
+**************************************************************
+** bridge_para (required only when "i_bridge = 1")
+**************************************************************
+**<<<< bridge_para
+* Distance is restrained to r when i_lower_bound = 1
+i_lower_bound = 0
+*      imp jmp k_d d_0
+BRIDGE  3  15  2.0 5.8
+
+*         groupID  groupID     k_d   d_0
+BRIDGE_CENTER   1        2    20.0  28.0
+
+** Push-Pull-Release
+****         gID_com  gID_r     k    Rmin  Rcut  Rmax  r_0  cycle
+BRIDGE_PPR    1   2   1   2  100.0  25.0  30.0  40.0  6.5  100000
+
+**** for advanced user
+******         gID_com  gID_r    k    Rmin  Rcut  Rmax  r_0  cycle   opt
+**BRIDGE_PPR    1   2   1   2  100.0  25.0  30.0  40.0  6.5  100000   1
+*** opt = 1: The reference is not flattened at Rcut.
+>>>>
+
+
+**************************************************************
+** pulling_para (required only when "i_pulling = 1")
+**************************************************************
+**<<<< pulling_para
+* imp f_x f_y f_z
+PULL_CF 3 1.0 0.0 0.0
+PULL_MP_CF(5-10) 0.1 0.1 0.1
+PULL_UNIT_CF(1-2) 0.1 0.1 0.1
+PULL_ALL_CF 0.1 0.1 0.1
+
+* imp k_d v_x v_y v_z x y z
+PULL_CV 3 1.0 1.0 0.0 0.0 10.0 20.0 30.0
+
+** Apply constant force to two particles, imp and jmp. 
+** "imp" is pulled by force=(f_x, f_y, f_z), and "jmp" is pulled by force=(-f_x,-f_y,-f_z).
+*                imp jmp  f_x  f_y  f_z
+PULL_UNRAVEL_CF   1   54  0.0  0.0  10.0
+** NOTE: 
+**      Although users can do the exactly same simulation using two PULL_CF 
+**  lines (specifying opposite direction), output energy written in .ts file 
+**  in the two ways are different. Namely, if two PULL_CF lines are used, 
+**  there is no energy contribution regarding the pulling force. In contrast,
+**  PULL_UNRAVEL_CF counts the energy contribution from the external force,
+**  E(pull) = dot_product(f, (R2-R1)), where f is the force vector and R are 
+**  coordinate vectors. This difference is important when the force-replica 
+**  exchange is performed.
+
+** Options
+** i_force_unit = 0  (default)
+**              = 1: unit is pN  
+i_force_unit = 0
+>>>>
+
+
+**************************************************************
+** fix_para (required only when "i_fix = 1")
+**************************************************************
+**<<<< fix_para
+FIX_UNIT(1-2)
+FIX_MP(10-20)
+>>>>
+
+
+**************************************************************
+** in_box (required only when "i_in_box = 1")
+**************************************************************
+**<<<< in_box
+xbox = 90.0
+ybox = 90.0
+zbox = 187.5
+boxsigma = 7.5
+>>>>
+
+**************************************************************
+** in_cap (required only when "i_in_cap = 1")
+**************************************************************
+**<<<< in_cap
+rcap = 100.0
+kcap = 500.0
+CENTER 0.0 0.0 0.0
+>>>>
+
+**************************************************************
+** searching_tf (required only when "i_run_mode = 4")
+**************************************************************
+**<<<< searching_tf   
+tempk_upper = 500.0
+tempk_lower = 100.0
+>>>>
+
+
+**************************************************************
+** annealing (required only when "i_run_mode = 3")
+**************************************************************
+**<<<< annealing 
+tempk_init = 500.0 
+tempk_last = 100.0
+n_time_change = 10
+>>>>
+
+
+**************************************************************
+** replica (required only when "i_run_mode = 6")
+**************************************************************
+**<<<< replica
+n_replica_temp = 8
+**n_replica_ion = 4
+**n_replica_pull = 16
+
+** Number of windows which sholud be > 1 when you perform 
+** window exchange umblella sampling simulation.
+**n_replica_wind = 8
+
+n_step_exchange = 10
+n_step_save_rep = 100
+**n_period_prob = 2
+**npar_rep = 1
+
+** perform exchange? (0:No, 1:Yes(default))
+** i_exchange = 1
+
+** optimized REMD (optional)
+**i_opt_temp = 1
+**n_step_opt_temp = 1000000
+**n_stage_opt_temp = 8
+>>>>
+
+
+**************************************************************
+** replica_temp (required only when "i_run_mode = 6" 
+**                              and "n_replica_temp > 1")
+**************************************************************
+**<<<< replica_temp
+** i_style = 1   : Linear
+**           10  : Exponential
+**           100 : Explicitly define
+i_style = 10
+
+** Linear or Exponential
+value_lowest  = 300.0
+value_highest = 380.0
+
+**exponent = 2.0
+
+** ** Explicitly define
+** REPLICA(1)  = 300.0
+** REPLICA(2)  = 310.0
+** REPLICA(3)  = 320.0
+** REPLICA(4)  = 330.0
+** REPLICA(5)  = 335.0
+** REPLICA(6)  = 340.0
+** REPLICA(7)  = 345.0
+** REPLICA(8)  = 350.0
+** REPLICA(9)  = 360.0
+** REPLICA(10) = 370.0
+>>>>
+
+
+**************************************************************
+** replica_ion (required only when "i_run_mode = 6" 
+**                              and "n_replica_ion > 1")
+**************************************************************
+**<<<< replica_ion
+** i_style = 1   : Linear
+**           10  : Exponential
+**           100 : Explicitly define
+i_style = 1
+
+** Linear or Exponential
+**value_lowest  = 0.050
+**value_highest = 0.250
+
+**exponent = 2.0
+
+** ** Explicitly define
+** REPLICA(1)  = 0.050
+** REPLICA(2)  = 0.060
+** REPLICA(3)  = 0.075
+** REPLICA(4)  = 0.095
+** REPLICA(5)  = 0.120
+** REPLICA(6)  = 0.150
+** REPLICA(7)  = 0.200
+** REPLICA(8)  = 0.250
+>>>>
+
+**<<<< modified_muca
+em_depth = 10.0
+em_mid = 90.0
+em_sigma = 60.0
+>>>>
+
+**************************************************************
+** replica_wind (required only when "i_run_mode = 6" 
+**                             and "n_replica_wind > 1")
+** for window exchange umbllela sampling simulation
+**************************************************************
+<<<< replica_wind
+** This flag have no mean at this stage
+** but you SHOULD specify 100...
+i_style = 100
+
+** WINDOW(irep) imp(int) jmp(int) coef(real) length(real)
+WINDOW(1) 1 61 1.0 10.0
+WINDOW(2) 1 61 1.0 11.0
+WINDOW(3) 1 61 1.0 12.0
+WINDOW(4) 1 61 1.0 13.0
+WINDOW(5) 1 61 1.0 14.0
+WINDOW(6) 1 61 1.0 15.0
+WINDOW(7) 1 61 1.0 16.0
+WINDOW(8) 1 61 1.0 17.0
+>>>>
+
+<<<< replica_pull
+i_style = 100
+
+PULL_UNRAVEL_CF   1   56  0.0  0.0  1.0
+REPLICA(1)  =  0.0
+REPLICA(2)  =  1.0
+REPLICA(3)  =  2.0  
+REPLICA(4)  =  3.0 
+REPLICA(5)  =  4.0  
+REPLICA(6)  =  5.0
+REPLICA(7)  =  6.0
+REPLICA(8)  =  7.0
+REPLICA(9)  =  8.0
+REPLICA(10) =  9.0
+REPLICA(11) = 10.0
+REPLICA(12) = 11.0
+REPLICA(13) = 12.0
+REPLICA(14) = 13.0
+REPLICA(15) = 14.0
+REPLICA(16) = 15.0
+>>>>
