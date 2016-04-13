@@ -26,8 +26,19 @@ module const_index
      integer :: BERENDSEN    !< 2: Newtonian dynamics (velocity Verlet) with Berendsen thermostat
      integer :: NOSEHOOVER   !< 3: Newtonian dynamics (velocity Verlet) with Nose-Hoover thermostat
      integer :: MPC          !< 4: MPC dynamics
+     integer :: BROWNIAN     !< 5: Brownian dynamics without hydrodynamic interaction
+     integer :: BROWNIAN_HI  !< 6: Brownian dynamics with hydrodynamic interaction
   endtype simu_type
-  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4)
+  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6)
+
+  ! i_hydro_tensor: define tensor type of hydrodynamic interaction (only when SIM%BROWNIAN_HI)
+  type tensor_type
+     integer :: RPY        !< 1: Rotne-Prager-Yamakawa (RPY)
+     integer :: RPY_OVER   !< 2: RPY (overlap allowed)
+     integer :: ERMAK_OVER !< 3: Ermak-McCammon's modified RPY (overlap allowed)
+     integer :: ZUK_RPY    !< 4: Zuk et al's modified RPY (overlap and different radii allowed)
+  endtype tensor_type
+  type(tensor_type), parameter :: HI_TENSOR = tensor_type(1,2,3,4)
 
   type initial_state
      integer :: VOID    !< 0: Invalid
@@ -208,9 +219,9 @@ module const_index
      integer :: SASA      !< 18: SASA(protein) !sasa
      integer :: DTRNA     !< 19: Denesyuk-Thirumalai RNA model
      integer :: EXV_WCA   !< 20: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: EXV_DT15  !< 20: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: DNA2C     !< 21: DNA-DNA interaction for 3SPN.2C model
-     integer :: MAX       !< 21: Maximum value
+     integer :: EXV_DT15  !< 21: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: DNA2C     !< 22: DNA-DNA interaction for 3SPN.2C model
+     integer :: MAX       !< 22: Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
      = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,22)

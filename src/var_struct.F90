@@ -31,6 +31,7 @@ module var_struct
   real(PREC), save :: exv_radius_mp(MXMP) !< excluded-volume radius (half of sigma) of mp
   real(PREC), save :: exv_epsilon_mp(MXMP)
   real(PREC), save :: fric_mp(MXMP) !< friction constant of mp
+  real(PREC), save :: radius(MXMP)  !< radius of mp (to be used in viscosity calculation)
   character(3), save :: cmp2seq(MXMP) !< residue name of mp
   character(4), save :: cmp2atom(MXMP) !< atom name of mp
 

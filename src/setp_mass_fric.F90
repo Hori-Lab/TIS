@@ -8,9 +8,9 @@ subroutine setp_mass_fric()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile
+  use var_inp, only : infile, outfile, i_simulate_type
   use var_setp, only : inmisc, inpara
-  use var_struct, only : lunit2mp, cmass_mp, fric_mp, cmp2atom, nmp_all
+  use var_struct, only : lunit2mp, cmass_mp, fric_mp, cmp2atom, nmp_all, radius
 
 #ifdef MPI_PAR
   use mpiconst
@@ -24,7 +24,7 @@ subroutine setp_mass_fric()
   integer :: inunit(2), instate
   integer :: luninp, lunout
   integer :: iline, nlines, iequa, nequat
-  real(PREC) :: rmass, fric, visc, radius, mass
+  real(PREC) :: rmass, fric, visc, mass
 
   character(4) :: kfind
   character(12) :: char12
@@ -62,16 +62,26 @@ subroutine setp_mass_fric()
 
      do imp = 1, nmp_all
         ichemical = imp2chemicaltype(imp)
-        radius = inpara%radius(ichemical)
+        radius(imp) = inpara%radius(ichemical)
         mass = inpara%cmass(ichemical)
 
-        fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius / mass
-        !! Notice:
-        !! This friction coefficient is divided by mass for a technical reason.
-        !! In CafeMol, the Langevin equation contains a friction term
-        !! represented as (mass x gamma x dr/dt). [See eq. 3.77 in the manual]
-        !! Thus this mass-divided friction (gamma) will be multiplied back by mass
-        !! in the velocity-Verlet procedure.
+        if (i_simulate_type == SIM%LANGEVIN) then
+           fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp) / mass
+           !! Notice: 
+           !! This friction coefficient is divided by mass for a technical reason.
+           !! In CafeMol, the Langevin equation contains a friction term
+           !! represented as (mass x gamma x dr/dt). [See eq. 3.77 in the manual]
+           !! Thus this mass-divided friction (gamma) will be multiplied back by mass 
+           !! in the velocity-Verlet procedure.
+
+        else if(i_simulate_type == SIM%BROWNIAN) then
+           fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
+
+        else if(i_simulate_type == SIM%BROWNIAN_HI) then
+           !fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius
+           !radius(imp) = radius
+
+        endif
      enddo
 
 #ifdef MPI_PAR
@@ -86,6 +96,8 @@ subroutine setp_mass_fric()
 #ifdef MPI_PAR
      end if
 #endif
+
+     inpara%viscosity = visc
   endif
 
 

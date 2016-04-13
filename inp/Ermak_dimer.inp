@@ -1,0 +1,59 @@
+<<<< filenames
+path = ./data
+filename = Ermak_dimer
+OUTPUT pdb dcd psf rst
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para = ./para_Ermak
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 2
+i_simulate_type = 5
+i_initial_state = 2
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    protein    Ermak_dimer.pdb
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all)  Ermak_dimer.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 10000
+tstep_size = 0.00125
+n_step_save = 1
+n_step_neighbor = 10000
+n_step_rst = 10000
+i_com_zeroing = 0
+i_no_trans_rot = 0
+#tempk = 293.15
+tempk = 503.46603311252903
+n_seed = 3
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_BOND
+NLOCAL(1/1)   NOTHING
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+>>>>
+
+
+<<<< redefine_para
+rneighbor_dist = 999.0
+viscosity = 0.05305164769729845
+>>>>

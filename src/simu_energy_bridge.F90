@@ -36,8 +36,9 @@ subroutine simu_energy_bridge(irep, pnle_unit, pnlet)
    
      dist = sqrt(dx**2 + dy**2 + dz**2)
 
-     if((inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_dist(ibrid)) &
-          .or. inmisc%i_lower_bound /= 0) then
+     if(     (inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_dist(ibrid)) &
+         .or. inmisc%i_lower_bound == 1 &
+         .or.(inmisc%i_lower_bound == 2 .and. dist < inmisc%brid_dist(ibrid)) ) then
         cbd2 = inmisc%coef_brid(ibrid)
         efull = cbd2 * (dist - inmisc%brid_dist(ibrid))**2
         

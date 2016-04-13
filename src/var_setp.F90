@@ -687,6 +687,9 @@ module var_setp
      integer    :: i_window
      integer    :: i_winz
 
+     ! Tensor type of hydrodynamic interaction in Brownian dynamics
+     integer    :: i_hydro_tensor
+
      ! cylinder
      integer    :: i_cylinder
      real(PREC) :: cylinder_bgn

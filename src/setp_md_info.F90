@@ -7,7 +7,7 @@ subroutine setp_md_info()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile, flg_rst
+  use var_inp, only : infile, outfile, flg_rst, i_simulate_type
   use var_setp, only: insimu, inmisc, irand, mts, &
                       inmmc   !mcanonical
   use var_replica, only : exchange_step, flg_rep,&
@@ -28,6 +28,7 @@ subroutine setp_md_info()
   ! local variables
 
   integer       :: i
+  integer(L_INT):: il
   integer       :: icol, isim
   integer       :: luninp, lunout
   integer       :: iline, nlines, iequa, nequat
@@ -86,9 +87,10 @@ subroutine setp_md_info()
   inmisc%i_rest1d         = 0
   inmisc%i_fix            = 0
   inmisc%i_implig         = 0
+  inmisc%i_reset_struct   = 0
+  inmisc%i_hydro_tensor   = 0
 
   inmmc%i_modified_muca   = 0
-  inmisc%i_reset_struct   = 0
   ! ---------------------------------------------------------------------
 
   if (flg_rst) then
@@ -252,6 +254,10 @@ subroutine setp_md_info()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_reset_struct, cvalue)
 
+        cvalue = 'i_hydro_tensor'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_hydro_tensor, cvalue)
+
         cvalue = 'tempk'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              insimu%tempk, cvalue)
@@ -284,11 +290,11 @@ subroutine setp_md_info()
 
   else if (flg_rst) then
      ! The random seed is changed when restarted.
-     i = insimu%i_tstep_init
-     do while (i > 1000000000)
-        i = i / 1000000000
+     il = insimu%i_tstep_init
+     do while (il > 1000000000)
+        il = il / 1000000000
      enddo
-     irand = insimu%n_seed + int(i)
+     irand = insimu%n_seed + int(il)
      write (*, *) 'reset random seed from n_seed+i_tstep_init: irand = ', irand
      write (lunout, *) 'reset random seed from n_seed+i_tstep_init: irand = ' , irand
 
@@ -566,6 +572,22 @@ subroutine setp_md_info()
      error_message = 'Error: invalid value for n_seed'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
+
+  if (i_simulate_type == SIM%BROWNIAN_HI) then
+     if(inmisc%i_hydro_tensor == HI_TENSOR%ZUK_RPY ) then
+        write (lunout, *) "Diffusion tensor is Zuk et al.'s Rotne-Prager tensor (default)"
+     else if(inmisc%i_hydro_tensor == HI_TENSOR%RPY) then
+        write (lunout, *) 'Diffusion tensor is Rotne-Prager tensor without overlap'
+     else if(inmisc%i_hydro_tensor == HI_TENSOR%RPY_OVER) then
+        write (lunout, *) 'Diffusion tensor is Rotne-Prager tensor considering overlapped beads'
+     else if(inmisc%i_hydro_tensor == HI_TENSOR%ERMAK_OVER) then
+        write (lunout, *) 'Diffusion tensor is modified Rotne-Prager tensor in Ermak and McCammon'
+     else
+        error_message = 'Error: invalid value for i_hydro_tensor'
+        call util_error(ERROR%STOP_ALL, error_message)
+     end if
+  endif
+
 
 #ifdef MPI_PAR
   end if

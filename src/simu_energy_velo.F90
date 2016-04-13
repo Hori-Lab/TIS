@@ -5,6 +5,7 @@ subroutine simu_energy_velo(velo_mp, pnle_unit, pnlet)
       
   use const_maxsize
   use const_index
+  use var_inp,     only : i_simulate_type
   use var_setp,    only : ifix_mp
   use var_struct,  only : nmp_real, cmass_mp, imp2unit
   use var_replica, only : n_replica_mpi
@@ -29,6 +30,12 @@ subroutine simu_energy_velo(velo_mp, pnle_unit, pnlet)
 #endif
 
   ! ---------------------------------------------------------------------
+  if(i_simulate_type == SIM%BROWNIAN) then
+     pnlet(E_TYPE%VELO) = 0.0e0_PREC
+     pnle_unit(:, :, E_TYPE%VELO) = 0.0e0_PREC
+     return
+  endif
+
 #ifdef MPI_PAR3
   klen=(nmp_real-1+npar_mpi)/npar_mpi
   ksta=1+klen*local_rank_mpi

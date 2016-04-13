@@ -50,7 +50,6 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           pnlet_muca, pnle_unit_muca, &
                           r_force, rlan_const, &
-                          tstep_fric_h, ulconst1, ulconst2, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           pnlet, pnle_unit, qscore, qscore_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, &
@@ -212,6 +211,11 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
         do imp = 1, nmp_real
            rlan_const(1, imp, 1) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZC * tempk &
                 / (tstep * cmass_mp(imp) )        )   
+           !NOTE: SA should be only 1 replica.
+        end do
+     elseif (i_simulate_type == SIM%BROWNIAN) then
+        do imp = 1, nmp_real
+           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZC * tempk * tstep / fric_mp(imp))
            !NOTE: SA should be only 1 replica.
         end do
      end if

@@ -24,14 +24,13 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
                           n_replica_all, n_replica_mpi, irep2grep
   use var_simu,    only : istep_sim, &
                           ntstep, nstep_opt_temp, ibefore_time, &
-                          tstep, tstep2, tsteph, tempk, accelaf, &
+                          tstep, tsteph, tempk, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, &
                           cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           pnlet_muca, pnle_unit_muca, &
                           rlan_const, &
-                          tstep_fric_h, ulconst1, ulconst2, &
-                          ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
+                          ics, ncs, velo_yojou, xyz_cs, velo_cs, &
                           pnlet, pnle_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, &
                           replica_energy
@@ -54,6 +53,7 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   ! local variables
   integer :: imp, irep, grep, idimn, istream
   integer(L_INT) :: istep_dummy
+  real(PREC) :: tstep_fric_h, ulconst1, ulconst2
   real(PREC) :: r_force(1:SPACE_DIM)
 
   real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
@@ -205,6 +205,20 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
         do ics = 2, ncs
            velo_yojou(ics) = cmass_cs(ics-1) * velo_cs(ics-1)**2 - BOLTZC * tempk
         end do
+
+     else if(i_simulate_type == SIM%BROWNIAN) then
+        velo_mp(:,:,:) = 0.0e0_PREC
+        rlan_const(:,:,:) = 0.0e0_PREC
+        do imp = 1, nmp_real
+           rlan_const(1, imp, irep) = tstep / fric_mp(imp) 
+           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZC * tempk * tstep / fric_mp(imp))
+        enddo
+
+     else if(i_simulate_type == SIM%BROWNIAN_HI) then
+        velo_mp(:,:,:) = 0.0e0_PREC
+        rlan_const(:,:,:) = 0.0e0_PREC
+        rlan_const(1, :, irep) = tstep / (BOLTZC * tempk)
+        rlan_const(2, :, irep) = sqrt( 2.0e0_PREC * tstep )
      endif
      
   enddo ! irep -----------------------------------------------

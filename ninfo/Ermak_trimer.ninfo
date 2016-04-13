@@ -1,0 +1,7 @@
+<<<< native bond length 
+** coef_bd(kcal/mol) = factor_bd * correct_bd_mgo * cbd * energy_unit_protein
+**      ibd iunit1-iunit2   imp1 - imp2 imp1un-imp2un      bd_nat    factor_bd  correct_mgo      coef_bd
+bond      1      1      1      1      2      1      2       1.0000       1.0000       1.0000     50.000 pp
+bond      2      1      1      2      3      2      3       1.0000       1.0000       1.0000     50.000 pp
+>>>>
+

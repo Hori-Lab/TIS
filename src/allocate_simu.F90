@@ -3,6 +3,7 @@ subroutine allocate_simu()
   use const_maxsize
   use const_physical
   use const_index
+  use var_inp,     only : i_simulate_type
   use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : velo_mp, accel_mp, force_mp, rcmass_mp, &
@@ -13,7 +14,8 @@ subroutine allocate_simu()
                           replica_energy_l, &
 #endif
                           replica_energy, &
-                          sasa  !sasa
+                          sasa, &
+                          diffuse_tensor, random_tensor
 !                          r_boxmuller
   use var_implig,  only : inimplig
 
@@ -94,6 +96,15 @@ subroutine allocate_simu()
   allocate( sasa(nmp_all), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
 
+  ! Tensor used for Brownian dynamics with hydrodynamic interaction
+  if(i_simulate_type == SIM%BROWNIAN_HI) then
+     allocate(diffuse_tensor(1:3*nmp_real, 1:3*nmp_real), stat=ier)
+     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+
+     allocate(random_tensor(1:3*nmp_real, 1:3*nmp_real), stat=ier)
+     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+  endif
+
 ! **********************************************************************
 contains
 
@@ -119,7 +130,9 @@ contains
 #ifdef MPI_PAR
          allocated(replica_energy_l) .OR.&
 #endif
-         allocated(sasa) .OR.&  !sasa
+         allocated(sasa) .OR.&
+         allocated(diffuse_tensor) .OR. &
+         allocated(random_tensor) .OR. &
          .FALSE.) then
        error_message = 'defect at allocate_simu::check, PROGRAM STOP'
        call util_error(ERROR%STOP_ALL,error_message)
@@ -153,6 +166,8 @@ subroutine deallocate_simu()
 #ifdef MPI_PAR
   if (allocated(replica_energy_l)) deallocate(replica_energy_l)
 #endif
-  if (allocated(sasa)) deallocate(sasa) !sasa
+  if (allocated(sasa)) deallocate(sasa)
+  if (allocated(diffuse_tensor)) deallocate(diffuse_tensor)
+  if (allocated(random_tensor)) deallocate(random_tensor)
 
 end subroutine deallocate_simu

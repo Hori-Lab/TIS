@@ -31,8 +31,9 @@ subroutine simu_force_bridge(irep, force_mp)
      d(:) = xyz_mp_rep(:, imp, irep) - xyz_mp_rep(:, jmp, irep)
 
      dist = sqrt(dot_product(d,d))
-     if((inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_dist(ibrid)) &
-          .or. inmisc%i_lower_bound /= 0) then
+     if(     (inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_dist(ibrid)) &
+         .or. inmisc%i_lower_bound == 1 &
+         .or.(inmisc%i_lower_bound == 2 .and. dist < inmisc%brid_dist(ibrid)) ) then
         cbd2 = -2.0e0_PREC * inmisc%coef_brid(ibrid)
         for = cbd2 * (dist - inmisc%brid_dist(ibrid)) / dist
         force(:) = for * d(:)

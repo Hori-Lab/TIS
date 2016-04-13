@@ -34,8 +34,8 @@ subroutine simu_tintegral(flg_step_each_replica)
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           pnlet_muca, pnle_unit_muca, &
                           rlan_const, &
-!                          tstep_fric_h, ulconst1, ulconst2, &
-                          ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs
+                          ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
+                          diffuse_tensor, random_tensor
 
   
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
@@ -53,9 +53,12 @@ subroutine simu_tintegral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   ! local variables
-  integer    :: imp, irep, grep
+  integer    :: i,k,n,imp, irep, grep
   real(PREC) :: r_force(1:SPACE_DIM), dxyz(1:3)
   real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
+  real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
+  real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
+  real(PREC) :: x
 
   ! --------------------------------------------------------------
   ! calc neighbour list
@@ -79,7 +82,8 @@ subroutine simu_tintegral(flg_step_each_replica)
   ! prepare random numbers for Langevin
   ! -------------------------------------
   r_boxmuller(:,:,:) = 0.0
-  if (i_simulate_type == SIM%LANGEVIN) then
+  if (i_simulate_type == SIM%LANGEVIN .OR. &
+      i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI) then
      !call get_random_number(r_boxmuller)
      call get_random_number()
   end if
@@ -325,6 +329,65 @@ subroutine simu_tintegral(flg_step_each_replica)
            
            TIME_E( tm_update )
            
+        else if(i_simulate_type == SIM%BROWNIAN) then
+           
+           TIME_S( tm_update )
+           do imp = 1, nmp_real
+              if(ifix_mp(imp) == 1) cycle
+              
+              dxyz(1:3) =  rlan_const(1, imp, irep) * force_mp(1:3, imp)  &
+                         + rlan_const(2, imp, irep) * r_boxmuller(1:3, imp, irep)
+
+              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+           enddo
+           TIME_E( tm_update )
+           
+           TIME_S( tm_copyxyz )
+           call simu_copyxyz(irep)
+           TIME_E( tm_copyxyz )
+   
+           TIME_S( tm_force )
+           call simu_force(force_mp, irep)
+           TIME_E( tm_force )
+           
+        else if(i_simulate_type == SIM%BROWNIAN_HI) then
+           
+           call simu_hydro_tensors(irep,tempk)
+
+           random_vector = reshape(r_boxmuller(:,:,irep), (/ 3*nmp_real /) )
+           force_vector = reshape(force_mp(:, 1:nmp_real), (/ 3*nmp_real /) )
+
+           TIME_S( tm_update )
+           do imp = 1, nmp_real
+              if(ifix_mp(imp) == 1) cycle
+
+              do i=1,3
+                 k = 3*(imp-1) + i
+                 dxyz(i) = rlan_const(1,imp,irep)  &
+                              * dot_product( diffuse_tensor(:,k), force_vector(:) ) &
+                           + rlan_const(2,imp,irep)  &
+                              * dot_product( random_tensor(k, 1:k), random_vector(1:k) )
+              enddo
+
+              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+           enddo
+           TIME_E( tm_update )
+           
+           TIME_S( tm_copyxyz )
+           call simu_copyxyz(irep)
+           TIME_E( tm_copyxyz )
+   
+           TIME_S( tm_force )
+           call simu_force(force_mp, irep)
+           TIME_E( tm_force )
+           !----------------------------------------------
+#ifdef _DEBUG
+           do imp=1, nmp_real
+              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
+           enddo
+#endif
         end if
         
         if (i_run_mode == RUN%REPLICA .and. inrep%flg_exchange) then

@@ -45,7 +45,7 @@ UTIL8 = ../utility/a2rst
 #  Revision numbers to be written in data files.
 #  (SVNREV should be commented out when release.)
 #SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
-#VERSION  = -DVERMAJOR=2 -DVERMINOR=1 # Major and minor revision
+VERSION  = -DVERMAJOR=0 -DVERMINOR=0 # Major and minor revision
 #VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
 VERSION += -DVERBUILD=0000 # Build number
 # Notice to trunk users:
@@ -326,6 +326,7 @@ FOBJ1 = \
 	simu_force_window.o simu_force_winz.o\
 	simu_logicalcheck.o simu_replica_exchange.o simu_replica_opt_temp.o\
 	simu_fmat.o simu_ppr.o\
+	simu_hydro_tensors.o\
 	min_steep_desc.o min_conj_grad.o\
 	write_rep_traject.o write_rep_result.o write_rep_table.o\
 	step_adjustment.o\

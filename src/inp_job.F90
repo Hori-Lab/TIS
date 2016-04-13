@@ -140,6 +140,10 @@ subroutine inp_job()
      write (lunout, *) 'Newtonian dynamics (volocity Verlet) with Nose-Hoover thermostat'
   else if(i_simulate_type == SIM%MPC) then
      write (lunout, *) 'MPC dynamics'
+  else if(i_simulate_type == SIM%BROWNIAN) then
+     write (lunout, *) 'Brownian dynamics'
+  else if(i_simulate_type == SIM%BROWNIAN_HI) then
+     write (lunout, *) 'Brownian dynamics with hydrodynamic interaction'
   else
      error_message = 'Error: invalid value about i_simulate_type'
      call util_error(ERROR%STOP_ALL, error_message)

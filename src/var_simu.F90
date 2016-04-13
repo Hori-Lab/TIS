@@ -38,6 +38,10 @@ module var_simu
   real(PREC), save              :: tstep_fric_h, ulconst1, ulconst2
   real(PREC), allocatable, save :: rlan_const(:,:,:) ! (nLAN_CONST, mp, replica)
 
+  ! Brownian with hydrodynamic interaction
+  real(PREC), allocatable, save :: diffuse_tensor(:,:)
+  real(PREC), allocatable, save :: random_tensor(:,:)
+
   ! Nose-Hoover  
   ! Now, Replica is not available
   integer, save    :: ics, jcs, ncs
