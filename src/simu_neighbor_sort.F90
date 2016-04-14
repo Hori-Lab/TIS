@@ -67,36 +67,6 @@ subroutine simu_neighbor_sort(irep, npnl, ipnl2mp_in, ipnl2mp_out, npnl_lall)
   end if
 
   ! ------------------------------------------------------------
-  ! DNA
-  if(inmisc%force_flag(INTERACT%DNA)) then
-     call sort( E_TYPE%BP_AT   )
-     call sort( E_TYPE%BP_GC   )
-     call sort( E_TYPE%MBP     )
-     call sort( E_TYPE%EXV_DNA )
-  end if
-
-  ! ------------------------------------------------------------
-  ! DNA 2
-  if(inmisc%force_flag(INTERACT%DNA2) .OR. inmisc%force_flag(INTERACT%DNA2C)) then
-     call sort( E_TYPE%EXV_DNA2 )
-  end if
-  
-  ! ------------------------------------------------------------
-  ! lipid (Brown)
-  if(inmisc%force_flag(INTERACT%LIP_BROWN)) then
-     call sort( E_TYPE%CORE )
-     call sort( E_TYPE%INT )
-     call sort( E_TYPE%TAIL )
-  end if
-
-  ! ------------------------------------------------------------
-  ! lipid (Noguchi)
-  if(inmisc%force_flag(INTERACT%LIP_NOGU)) then
-!     call sort( E_TYPE%TAIL_NOGU )
-     call sort( E_TYPE%CORE_NOGU )
-  end if
-
-  ! ------------------------------------------------------------
   !ion
   if(inmisc%force_flag(INTERACT%ION_HYD) .or. inmisc%force_flag(INTERACT%ION_EXV)) then
      

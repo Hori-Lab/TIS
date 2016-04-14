@@ -11,7 +11,7 @@ subroutine write_xyz_movie(ibefore_time, istep, tempk_in)
   use const_index
   use var_inp,     only : outfile
   use var_struct,  only : nunit_real, nmp_real, lunit2mp, ires_mp, &
-                          xyz_mp_rep, pxyz_mp_rep, cmp2seq, cmp2atom, iclass_mp
+                          pxyz_mp_rep, cmp2seq, cmp2atom, iclass_mp
   use var_replica, only : n_replica_mpi, irep2grep, flg_rep, rep2val
 #ifdef MPI_PAR
   use mpiconst

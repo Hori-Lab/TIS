@@ -10,12 +10,13 @@ subroutine setp_native_sasa()
   use const_maxsize
   use const_index
   use var_inp, only : outfile
-  use var_setp, only : inmisc, insasa
-  use var_struct, only : nmp_all, nmp_real, cmp2seq, iclass_mp,para_sasa, rad_sasa, & 
+  use var_setp, only : insasa
+  use var_struct, only : nmp_real, cmp2seq, iclass_mp,para_sasa, rad_sasa, & 
                          surf, connect, imp2unit, cmp2atom
 
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : nmp_all
 #endif
 
   implicit none
@@ -46,7 +47,7 @@ subroutine setp_native_sasa()
 
      do imp = 1, nmp_real
         iunit = imp2unit(imp)
-        if(iclass_mp(imp) /= CLASS%PRO .and. iclass_mp(imp) /= CLASS%RNA .and.iclass_mp(imp) /= CLASS%DNA) then
+        if(iclass_mp(imp) /= CLASS%PRO .and. iclass_mp(imp) /= CLASS%RNA) then
            i = SEQID%MAX + 1
         else
            i = ifunc_seq2id(cmp2seq(imp))

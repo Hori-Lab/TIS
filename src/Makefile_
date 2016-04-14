@@ -26,7 +26,6 @@ UTIL8 = ../utility/a2rst
 # -DUNFORMATTED
 # -DSHARE_NEIGH      : share neighboring list for electrostatic interaction
 # -DSHARE_NEIGH_PNL  : share neighboring list for pnl interactions
-# -DSHARE_NEIGH_SOLV : share neighboring list for solvation interaction
 # -DSHARE_NEIGH_HP   : share neighboring list for hydrophobic interaction
 # -DSUB_COPY      : copy subroutine of random number generator
 # --------------------------------------------------------------------
@@ -155,7 +154,7 @@ FMOD1 = const_maxsize.o const_index.o const_physical.o
 FMOD2 = var_inp.o var_struct.o var_setp.o\
 	var_enm.o var_mgo.o var_replica.o\
 	var_implig.o var_simu.o var_flp.o\
-	var_fmat.o var_mpc.o\
+	var_fmat.o\
 	var_cafe.o
 
 # MPI parameter
@@ -174,9 +173,9 @@ FSUB1 = ifunc_seq2id.o  ifunc_char2int.o\
 	rfunc_boxmuller.o var_emin.o
 
 FSUB2 = read_xyz.o read_xyz_cg.o\
-	read_pdb_pro.o read_pdb_dna.o read_pdb_dna2.o read_pdb_lipid.o\
+	read_pdb_pro.o\
 	read_seq.o read_nativeinfo.o read_pdb_ligand.o read_pdb_cg.o\
-	read_pdbatom.o read_pdbatom_pro.o read_pdbatom_dna.o\
+	read_pdbatom.o read_pdbatom_pro.o\
 	read_crd.o read_rst.o read_dcd.o\
 	write_seq.o write_nativeinfo.o write_psf.o\
 	write_record_file.o\
@@ -189,9 +188,8 @@ FSUB2 = read_xyz.o read_xyz_cg.o\
 	util_bondangle.o util_dihangle.o util_sort_contact.o\
 	util_sort_rna_bp.o util_sort_rna_st.o\
 	util_ppgauss.o util_bestfit.o\
-	util_posmass_rna.o util_posmass_dna2.o\
+	util_posmass_rna.o\
 	util_periodic.o util_pbneighbor.o util_pbindex.o\
-	util_char_type.o\
 	recipe_rand01.o recipe_gasdev.o\
 	util_uintra2xyz.o\
 	ukoto_uiread2.o\
@@ -214,8 +212,7 @@ FOBJ1 = \
 	inp_unitstate.o inp_energy_func.o\
 	inp_datafile.o\
 	setpara.o\
-	setp_mapara.o setp_mapara_pro.o setp_mapara_dna.o setp_mapara_dna2.o\
-	setp_mapara_lipid.o\
+	setp_mapara.o setp_mapara_pro.o\
 	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
 	setp_mapara_ion.o\
 	setp_redef_para.o\
@@ -230,16 +227,12 @@ FOBJ1 = \
 	setp_bridge_para.o setp_pulling_para.o setp_cylinder_para.o\
 	setp_anchor_para.o setp_rest1d_para.o setp_fix_para.o\
 	setp_hydrophobic.o\
-	setp_make_dna.o setp_make_dna_setframe.o\
 	setp_para_ion.o\
-	setp_para_lipid.o setp_make_lipid.o\
 	setp_nativestruct.o setp_native_secstruct.o\
 	setp_native_bond.o setp_native_bangle.o setp_native_dih.o\
 	setp_native_charge.o setp_native_hp.o\
-	setp_native_stack_dna.o\
 	setp_native_neighbor_list.o setp_native_go.o\
         setp_native_sasa.o\
-	setp_native_dna2.o\
 	setp_para_implig.o\
 	setp_con_implig.o\
 	setp_bindsite_implig.o\
@@ -249,7 +242,7 @@ FOBJ1 = \
         setp_mapara_sasa.o\
         setp_mapara_exv.o\
 	setp_modified_muca.o setp_electrostatic.o\
-	setp_para_mpc.o setp_dtrna15.o\
+	setp_dtrna15.o\
 	main_loop.o\
 	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
 	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
@@ -260,14 +253,13 @@ FOBJ1 = \
 	simu_para.o\
 	simu_initial.o simu_initial_xyz.o simu_md_plotxyz.o \
 	simu_initial_ion.o\
-	simu_para2.o simu_ele_set.o simu_solv_set.o\
+	simu_para2.o simu_ele_set.o\
 	simu_set_dtrna.o\
 	simu_tintegral_pre.o simu_tintegral.o simu_tintegral_post.o\
 	simu_minimize.o\
 	simu_neighbor.o simu_neighbor_pre.o simu_neighbor_list.o\
 	simu_neighbor_assign.o simu_neighbor_sort.o\
 	simu_neighbor_list_ele.o simu_neighbor_list_ele2.o\
-	simu_neighbor_list_solv.o simu_neighbor_list_tail.o\
 	simu_neighbor_list_hp.o simu_neighbor_list_hb.o\
 	simu_copyxyz.o simu_copyxyz_ele.o\
 	simu_copyxyz_mgo.o simu_copyxyz_replica.o simu_copyxyz_ref.o\
@@ -276,19 +268,15 @@ FOBJ1 = \
 	simu_velo_settemp.o simu_velo_nosehoover.o\
 	simu_anneal.o simu_searchingtf.o\
 	simu_radiusg.o simu_rmsd.o\
-	simu_initialset_mpc.o\
-	simu_collision_mpc4.o simu_stream_mpc4.o\
-	simu_grid_devision_mpc4.o simu_rotate_velo_mpc_rev4.o\
 	simu_energy.o simu_energy_allrep.o\
 	simu_energy_velo.o simu_energy_bond.o simu_energy_dih_gauss.o\
-        simu_energy_dih_3spn2c.o\
 	simu_energy_bangle.o simu_energy_dih.o simu_energy_dih_harmonic.o\
 	simu_energy_rna_stack.o \
 	simu_energy_nlocal_mgo.o simu_energy_mgo.o simu_energy_enm.o\
 	simu_energy_nlocal_go.o simu_energy_nlocal_morse.o \
 	simu_energy_nlocal_rna_bp.o \
 	simu_energy_orderpara.o\
-	simu_energy_pnl.o simu_energy_pnl2.o simu_energy_pnl3.o simu_energy_pnl_restype.o\
+	simu_energy_pnl.o simu_energy_pnl_restype.o\
 	simu_energy_exv_wca.o simu_energy_exv_dt15.o\
 	simu_energy_hp.o simu_energy_sasa.o\
 	simu_energy_ion.o\
@@ -301,20 +289,17 @@ FOBJ1 = \
 	simu_energy_aicg13_gauss.o simu_energy_aicg14_gauss.o\
 	simu_energy_dtrna_stack.o simu_energy_dtrna_stack_nlocal.o\
 	simu_energy_dtrna_hbond13.o simu_energy_dtrna_hbond15.o\
-	simu_energy_dna2_stack.o simu_energy_dna2_bp.o simu_energy_dna2_ex.o \
 	simu_mc_implig.o\
 	simu_calc_energy_dcd.o\
 	simu_force.o\
 	simu_force_bond.o simu_force_bangle.o simu_force_dih.o simu_force_dih_gauss.o\
-        simu_force_dih_3spn2c.o\
 	simu_force_fbangle.o simu_force_fdih.o\
 	simu_force_aicg13_gauss.o simu_force_aicg14_gauss.o\
 	simu_force_dih_harmonic.o simu_force_rna_stack.o \
 	simu_force_nlocal_go.o simu_force_nlocal_morse.o \
 	simu_force_nlocal_rna_bp.o \
-	simu_force_dna2_stack.o simu_force_dna2_bp.o simu_force_dna2_ex.o \
 	simu_force_nlocal_mgo.o simu_force_mgo.o simu_force_enm.o\
-	simu_force_pnl.o simu_force_pnl2.o simu_force_pnl3.o simu_force_pnl_restype.o\
+	simu_force_pnl.o simu_force_pnl_restype.o\
 	simu_force_exv_wca.o simu_force_exv_dt15.o\
 	simu_force_hp.o simu_force_ion.o simu_force_sasa.o\
 	simu_force_bridge.o simu_force_pulling.o\

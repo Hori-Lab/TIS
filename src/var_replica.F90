@@ -147,7 +147,7 @@ contains
 
 
   !> rep2step
-  integer function rep2step (ireplica)
+  integer(L_INT) function rep2step (ireplica)
      implicit none
      integer :: ireplica
      rep2step = lab2step(rep2lab(ireplica))

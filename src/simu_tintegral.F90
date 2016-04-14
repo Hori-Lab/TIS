@@ -18,29 +18,22 @@ subroutine simu_tintegral(flg_step_each_replica)
   use if_mloop
   use if_write
   use if_energy
-  use var_inp,     only : i_run_mode, i_simulate_type, ifile_out_rep
-  use var_setp,    only : indna, insimu, inann, ifix_mp, &
-                          inmmc, inmisc, inele
+  use var_inp,     only : i_run_mode, i_simulate_type
+  use var_setp,    only : insimu, ifix_mp, inmmc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
-                          n_replica_all, n_replica_mpi, irep2grep, &
-                          exchange_step, step_ratio
-  use var_simu,    only : imstep, mstep, &
-                          istep, ntstep, nstep_opt_temp, &
-                          n_exchange, max_exchange, iopt_stage, &
-                          tstep, tstep2, tsteph, tempk, accelaf, &
-                          accel_mp, velo_mp, force_mp, rcmass_mp, &
-                          cmass_cs, &
+                          n_replica_all, n_replica_mpi, irep2grep, exchange_step
+  use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
+                          accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          pnlet_muca, pnle_unit_muca, &
-                          rlan_const, &
+                          pnlet_muca, pnle_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor
 
   
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
-                   time_s, time_e, tm_mpc
+                   time_s, time_e
 
 #ifdef MPI_PAR
   use mpiconst
@@ -58,7 +51,6 @@ subroutine simu_tintegral(flg_step_each_replica)
   real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
-  real(PREC) :: x
 
   ! --------------------------------------------------------------
   ! calc neighbour list
@@ -95,7 +87,7 @@ subroutine simu_tintegral(flg_step_each_replica)
 
      if (.not. flg_step_each_replica(irep)) then
         
-        grep = irep2grep(irep)
+!        grep = irep2grep(irep)
         
         if (flg_rep(REPTYPE%TEMP)) then
            tempk = rep2val(grep, REPTYPE%TEMP)
@@ -176,7 +168,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            end if
            
         ! Berendsen
-        else if(i_simulate_type == SIM%BERENDSEN .or. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
+        else if(i_simulate_type == SIM%BERENDSEN .or. i_simulate_type == SIM%CONST_ENERGY) then
            TIME_S( tm_update )
            ! xyz(t+h) update coordinates
            do imp = 1, nmp_real
@@ -192,20 +184,6 @@ subroutine simu_tintegral(flg_step_each_replica)
            call simu_copyxyz(irep)
            TIME_E( tm_copyxyz )
            
-           !! collision step for mpc dyanamics
-           TIME_S( tm_mpc )
-           if(i_simulate_type == SIM%MPC) then
-              ! kanada san's version
-              ! call simu_collision_mpc(irep)
-              ! serial version
-              ! call simu_collision_mpc2(irep)
-              ! mpi version
-              ! call simu_collision_mpc3(irep)
-              ! OpenMP version
-              call simu_collision_mpc4(irep)
-           end if
-           TIME_E( tm_mpc )
-
            TIME_S( tm_force )
            call simu_force(force_mp, irep)
            TIME_E( tm_force )

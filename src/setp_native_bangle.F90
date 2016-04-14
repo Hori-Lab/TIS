@@ -2,16 +2,16 @@
 !> @brief This subroutine is to calculate the native bond angle.
 
 ! ************************************************************************
-subroutine setp_native_bangle(xyz_mp_init, xyz_dna) 
+subroutine setp_native_bangle(xyz_mp_init) 
 
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : inpro, inmisc, indna, indna2, inlip, &
+  use var_setp, only : inpro, inmisc, &
                        inrna, indtrna13, indtrna15, inarna, &
-                       inligand, insimu
+                       inligand
   use var_struct, only : nunit_all, lunit2mp, iclass_unit, &
-                         cmp2seq, nba, iba2mp, ba_nat, factor_ba, coef_ba, &
+                         nba, iba2mp, ba_nat, factor_ba, coef_ba, &
                          imp2type, iba2type, iunit2ba, ires_mp, cmp2atom, &
                          imp2unit, &
                          aicg13_nat, factor_aicg13   !aicg2
@@ -25,8 +25,6 @@ subroutine setp_native_bangle(xyz_mp_init, xyz_dna)
 
   ! -----------------------------------------------------------------
   real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
-  real(PREC), intent(in) :: xyz_dna(SPACE_DIM, MXMP)
-  ! intent(out) :: nba, iba2mp, ba_nat, factor_ba
 
   ! -----------------------------------------------------------------
   ! function
@@ -56,7 +54,6 @@ subroutine setp_native_bangle(xyz_mp_init, xyz_dna)
 !  sumba(1:10) = 0.0
   do iunit = 1, nunit_all
 
-!     if (mod(inmisc%itype_nlocal(iunit, iunit), INTERACT%ENM) == 0) cycle
      if (inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%ENM)) cycle
 
      lmp = lunit2mp(1, iunit)
@@ -75,178 +72,6 @@ subroutine setp_native_bangle(xyz_mp_init, xyz_dna)
               call nat_bangle(iba, imp1, imp2, imp3, xyz_mp_init)
            end do
         end if
-
-     else if(iclass_unit(iunit) == CLASS%LIP) then
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_LIP_BROWN) .or. inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_LIP_NOGU)) then
-           do imp = lunit2mp(1, iunit), lunit2mp(2, iunit) - 2
-              impmod = mod(imp - lmp, inlip%num_lip_total)
-              if(impmod < inlip%num_lip_total - 2) then
-                 imp1 = imp
-                 imp2 = imp + 1
-                 imp3 = imp + 2
-                 impmod = impmod + 1
-!              call nat_bangle_lipid(iba, imp1, imp2, imp3, xyz_mp_rep(:,:,1))
-                 call nat_bangle_lipid(iba, imp1, imp2, imp3)
-              end if
-           end do
-        end if
-
-     else if(iclass_unit(iunit) == CLASS%DNA) then
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BDNA)) then
-           do imp = lunit2mp(1, iunit), lunit2mp(2, iunit) - 2
-!              impmod = mod(imp - lmp, 3)
-!              if(impmod == 0) then
-              if(imp2type(imp) == MPTYPE%DNA_SUGAR) then
-                 ! b-S(3')-P A:108.38 T:112.71 G:108.12 C:112.39
-                 imp1 = imp + 1 
-                 imp2 = imp
-                 imp3 = imp + 2
-                 call nat_bangle_dna(iba, imp1, imp2, imp3, xyz_dna)
-                 if(cmp2seq(imp1) == ' DA') then
-!                 sumba(3) = sumba(3) + ba_nat(iba)
-!                 isumba(3) = isumba(3) + 1
-                 else if(cmp2seq(imp1) == ' DT') then
-!                 sumba(4) = sumba(4) + ba_nat(iba)
-!                 isumba(4) = isumba(4) + 1
-                 else if(cmp2seq(imp1) == ' DG') then
-!                 sumba(5) = sumba(5) + ba_nat(iba)
-!                 isumba(5) = isumba(5) + 1
-                 else if(cmp2seq(imp1) == ' DC') then
-!                 sumba(6) = sumba(6) + ba_nat(iba)
-!                 isumba(6) = isumba(6) + 1
-                 else
-                    error_message = 'Error: not DNA sequence in setp_native_bangle'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 end if
-                 
-                 if(imp - 1 < lunit2mp(1, iunit)) cycle
-                 ! P-(5')S(3')-P 120.15
-                 imp1 = imp - 1 
-                 imp2 = imp
-                 imp3 = imp + 2
-                 call nat_bangle_dna(iba, imp1, imp2, imp3, xyz_dna)
-!              sumba(1) = sumba(1) + ba_nat(iba)
-!              isumba(1) = isumba(1) + 1
-                 
-!              else if(impmod == 1) then
-              else if(imp2type(imp) == MPTYPE%DNA_BASE) then
-                 if(imp - 1 < lunit2mp(1, iunit)) cycle
-                 ! S(3')-P-(5')S 94.49
-                 imp1 = imp - 1
-                 imp2 = imp + 1
-                 imp3 = imp + 2
-                 call nat_bangle_dna(iba, imp1, imp2, imp3, xyz_dna)
-!              sumba(2) = sumba(2) + ba_nat(iba)
-!              isumba(2) = isumba(2) + 1
-
-              else
-                 ! P-(5')S-b A:113.13 T:102.79 G:113.52 C:103.49
-                 imp1 = imp
-                 imp2 = imp + 1
-                 imp3 = imp + 2
-                 call nat_bangle_dna(iba, imp1, imp2, imp3, xyz_dna)
-                 if(cmp2seq(imp3) == ' DA') then
-!                 sumba(7) = sumba(7) + ba_nat(iba)
-!                 isumba(7) = isumba(7) + 1
-                 else if(cmp2seq(imp3) == ' DT') then
-!                 sumba(8) = sumba(8) + ba_nat(iba)
-!                 isumba(8) = isumba(8) + 1
-                 else if(cmp2seq(imp3) == ' DG') then
-!                 sumba(9) = sumba(9) + ba_nat(iba)
-!                 isumba(9) = isumba(9) + 1
-                 else if(cmp2seq(imp3) == ' DC') then
-!                 sumba(10) = sumba(10) + ba_nat(iba)
-!                 isumba(10) = isumba(10) + 1
-                 else
-                    error_message = 'Error: not DNA sequence in setp_native_bangle'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 end if
-              end if
-           end do
-        end if
-
-     else if(iclass_unit(iunit) == CLASS%DNA2) then
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_DNA2) .OR. &
-           inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_DNA2C)) then
-           select case (imp2type(lmp))
-           case (MPTYPE%DNA2_PHOS) ! chain starts with P
-              impmod_P = 0
-              impmod_S = 1
-              impmod_B = 2
-           case (MPTYPE%DNA2_SUGAR) ! chain starts with S
-              impmod_S = 0
-              impmod_B = 1
-              impmod_P = 2
-           case (MPTYPE%DNA2_BASE) ! chain must NOT start with B
-              error_message = 'Error: DNA sequence is broken in setp_native_bangle'
-              call util_error(ERROR%STOP_ALL, error_message)
-           case default
-              error_message = 'Error: not DNA sequence in setp_native_bangle'
-              call util_error(ERROR%STOP_ALL, error_message)
-           end select
-
-           do imp = lmp + 2, lunit2mp(2, iunit)
-              impmod = mod(imp - lmp, 3)
-              
-              if(impmod == impmod_S) then
-                 ! S-P-S
-                 imp1 = imp - 3
-                 imp2 = imp - 1
-                 imp3 = imp
-                 call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_SPS, xyz_mp_init)
-                 
-              else if(impmod == impmod_B) then
-
-                 ! P-S-B
-                 imp1 = imp - 2
-                 imp2 = imp - 1
-                 imp3 = imp
-                 if (cmp2seq(imp3) == 'DA ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_PSA, xyz_mp_init)
-                 else if (cmp2seq(imp3) == 'DT ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_PST, xyz_mp_init)
-                 else if (cmp2seq(imp3) == 'DC ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_PSC, xyz_mp_init)
-                 else if (cmp2seq(imp3) == 'DG ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_PSG, xyz_mp_init)
-                 else
-                    error_message = 'Error: (1) logical defect in setp_native_bangle, invalid cmp2seq(imp3)'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 endif
-                 
-              else if (impmod == impmod_P) then
-                 ! B-S-P
-                 imp1 = imp - 1 
-                 imp2 = imp - 2
-                 imp3 = imp 
-                 if (cmp2seq(imp1) == 'DA ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_ASP, xyz_mp_init)
-                 else if (cmp2seq(imp1) == 'DT ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_TSP, xyz_mp_init)
-                 else if (cmp2seq(imp1) == 'DC ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_CSP, xyz_mp_init)
-                 else if (cmp2seq(imp1) == 'DG ') then
-                    call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_GSP, xyz_mp_init)
-                 else
-                    error_message = 'Error: (2) logical defect in setp_native_bangle, invalid cmp2seq(imp3)'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 endif
-
-                 
-                 if (imp < lunit2mp(1, iunit) + 3) cycle
-                 ! P-S-P
-                 imp1 = imp - 3
-                 imp2 = imp - 2
-                 imp3 = imp 
-                 call nat_bangle_dna2(iba, imp1, imp2, imp3, BATYPE%DNA2_PSP ,xyz_mp_init)
-                 
-              else 
-                 error_message = 'Error: (3) logical defect in setp_native_bangle'
-                 call util_error(ERROR%STOP_ALL, error_message)
-              end if
-           end do
-        end if
-
 
      else if(iclass_unit(iunit) == CLASS%RNA) then
         if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) .OR. &
@@ -355,20 +180,6 @@ subroutine setp_native_bangle(xyz_mp_init, xyz_dna)
 
   end do
   nba = iba
-!  if(iclass_unit(1) == CLASS%DNA) then
-!     sumba(1:10) = 180.0/3.1416*sumba(1:10)/isumba(1:10)
-!     write (*, *) "P-(5')S(3')-P(120.15):", sumba(1)
-!     write (*, *) "S(3')-P-(5')S(94.49):", sumba(2)
-!     write (*, *) "Ab-S(3')-P(108.38):", sumba(3)
-!     write (*, *) "Tb-S(3')-P(112.72):", sumba(4)
-!     write (*, *) "Gb-S(3')-P(108.12):", sumba(5)
-!     write (*, *) "Cb-S(3')-P(112.39):", sumba(6)
-!     write (*, *) "P-(5')S-Ab(113.13):", sumba(7)
-!     write (*, *) "P-(5')S-Tb(102.79):", sumba(8)
-!     write (*, *) "P-(5')S-Gb(113.52):", sumba(9)
-!     write (*, *) "P-(5')S-Cb(103.49):", sumba(10)
-!  end if
-
   ! -----------------------------------------------------------------
   ! bond angle coefficient
 !  if(imodel(2) == 2) then 
@@ -525,91 +336,6 @@ contains
     coef_ba(2, iba) = 0.0
 
   end subroutine nat_bangle
-
-  subroutine nat_bangle_dna(iba, imp1, imp2, imp3, xyz_ba)
-
-    ! ---------------------------------------------------------------
-    integer, intent(in) :: imp1, imp2, imp3
-    integer, intent(inout) :: iba
-    real(PREC), intent(in) :: xyz_ba(3, MXMP)
-
-    ! ---------------------------------------------------------------
-    ! local variables
-    real(PREC) :: co_theta
-
-    ! ---------------------------------------------------------------
-    iba = iba + 1
-    iba2mp(1, iba) = imp1
-    iba2mp(2, iba) = imp2
-    iba2mp(3, iba) = imp3
-    call util_bondangle(imp1, imp2, imp3, co_theta, xyz_ba)
-    ba_nat(iba) = acos(co_theta)
-    call check_angle(iba,imp1,imp2,imp3,ba_nat(iba))
-    factor_ba(iba) = inmisc%factor_local_unit(iunit, iunit)
-    coef_ba(1, iba) = factor_ba(iba) * indna%cba_dna
-    coef_ba(2, iba) = 0.0
-
-  end subroutine nat_bangle_dna
-
-  subroutine nat_bangle_dna2(iba, imp1, imp2, imp3, i_type_ba, xyz_ba)
-
-    ! ---------------------------------------------------------------
-    integer, intent(in) :: imp1, imp2, imp3
-    integer, intent(inout) :: iba
-    integer, intent(in) :: i_type_ba
-    real(PREC), intent(in) :: xyz_ba(SPACE_DIM, MXMP)
-
-    ! ---------------------------------------------------------------
-    ! local variables
-    real(PREC) :: co_theta
-
-    ! ---------------------------------------------------------------
-    iba = iba + 1
-    iba2type(iba) = i_type_ba
-    iba2mp(1, iba) = imp1
-    iba2mp(2, iba) = imp2
-    iba2mp(3, iba) = imp3
-    factor_ba(iba) = inmisc%factor_local_unit(iunit, iunit)
-
-    select case (i_type_ba)
-    case (BATYPE%DNA2_SPS)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_SPS
-       ba_nat(iba) = indna2%nba_SPS * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_PSP)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_PSP
-       ba_nat(iba) = indna2%nba_PSP * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_PSA)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_PSA
-       ba_nat(iba) = indna2%nba_PSA * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_PST)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_PST
-       ba_nat(iba) = indna2%nba_PST * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_PSC)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_PSC
-       ba_nat(iba) = indna2%nba_PSC * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_PSG)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_PSG
-       ba_nat(iba) = indna2%nba_PSG * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_ASP)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_ASP
-       ba_nat(iba) = indna2%nba_ASP * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_TSP)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_TSP
-       ba_nat(iba) = indna2%nba_TSP * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_CSP)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_CSP
-       ba_nat(iba) = indna2%nba_CSP * F_PI / 180.0e0_PREC
-    case (BATYPE%DNA2_GSP)
-       coef_ba(1, iba) = factor_ba(iba) * indna2%cba_GSP
-       ba_nat(iba) = indna2%nba_GSP * F_PI / 180.0e0_PREC
-    case default
-       error_message = 'Error: (4) logical defect in setp_native_bangle'
-       call util_error(ERROR%STOP_ALL, error_message)
-    end select
-
-    coef_ba(2, iba) = 0.0e0_PREC
-
-  end subroutine nat_bangle_dna2
 
   subroutine nat_bangle_rna(iba, iunit, imp1, imp2, imp3, cmp, i_type_ba, xyz_ba)
 
@@ -776,26 +502,6 @@ contains
     endif
 
   end subroutine nat_bangle_rna
-
-!  subroutine nat_bangle_lipid(iba, imp1, imp2, imp3, xyz_ba)
-  subroutine nat_bangle_lipid(iba, imp1, imp2, imp3)
-
-    ! ---------------------------------------------------------------
-    integer, intent(in) :: imp1, imp2, imp3
-    integer, intent(inout) :: iba
-!    real(PREC), intent(in) :: xyz_ba(3, MXMP)
-
-    ! ---------------------------------------------------------------
-    iba = iba + 1
-    iba2mp(1, iba) = imp1
-    iba2mp(2, iba) = imp2
-    iba2mp(3, iba) = imp3
-    ba_nat(iba) = 0.0
-    factor_ba(iba) = inmisc%factor_local_unit(iunit, iunit)
-    coef_ba(1, iba) = 0.0
-    coef_ba(2, iba) = factor_ba(iba) * inlip%cba_lipid
-
-  end subroutine nat_bangle_lipid
 
   subroutine nat_bangle_ligand(iba, imp1, imp2, imp3, xyz_ba)
 

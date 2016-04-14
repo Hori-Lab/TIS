@@ -40,7 +40,6 @@ subroutine setp_native_neighbor_list(xyz_mp_init, ineigh2mp, lmp2neigh)
         junit = imp2unit(jmp)
 
         if(ineigh_unit(iunit, junit) == 1) then
-!        if(inmisc%itype_nlocal(iunit, junit) /= 1) then
            dist2 = (xyz_mp_init(1, jmp) - xyz_mp_init(1, imp))**2  &
                  + (xyz_mp_init(2, jmp) - xyz_mp_init(2, imp))**2  &
                  + (xyz_mp_init(3, jmp) - xyz_mp_init(3, imp))**2

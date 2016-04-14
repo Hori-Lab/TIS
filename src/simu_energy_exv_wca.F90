@@ -27,7 +27,7 @@ subroutine simu_energy_exv_wca(irep, pnle_unit, pnlet)
   use var_inp,     only : inperi
   use var_setp,    only : indtrna13
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lpnl, ipnl2mp, iclass_mp
+                          lpnl, ipnl2mp
 #ifdef MPI_PAR3
   use mpiconst
 #endif

@@ -10,8 +10,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : inmisc, indna
-  use var_struct, only : lunit2mp, imp2unit, iclass_unit, cmp2seq,&
+  use var_setp, only : inmisc
+  use var_struct, only : lunit2mp, imp2unit, cmp2seq,&
        nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
        nba, iba2mp, ba_nat, factor_ba, coef_ba, &
        ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, &
@@ -124,12 +124,6 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         factor_bd(ibd) = factor
         if (inmisc%flg_coef_from_ninfo) then
            coef_bd(1,ibd ) = coef
-           if (iclass_unit(kunit1) == CLASS%DNA) then
-              coef_bd(2, ibd) = factor_bd(ibd) * indna%cbd2_dna
-           endif
-           if (iclass_unit(kunit1) == CLASS%DNA2) then
-              coef_bd(2, ibd) = 100.0e0_PREC * coef_bd(1, ibd)
-           endif
         endif
 
         if (ctype2 /= '  ') then
@@ -239,22 +233,17 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         factor_dih(idih) = factor
         if (inmisc%flg_coef_from_ninfo) then
 
-           if (iclass_unit(kunit1) == CLASS%DNA2) then
-              coef_dih_gauss(idih) = coef
-              wid_dih_gauss(idih) = coef3
-           else 
-              coef_dih(1, idih) = coef
-              if (inmisc%i_triple_angle_term == 0) then
-                 coef_dih(2, idih) = 0.0e0_PREC
-              elseif (inmisc%i_triple_angle_term == 1) then
-                 coef_dih(2, idih) = 0.5e0_PREC * coef
-              elseif (inmisc%i_triple_angle_term == 2) then
-                 coef_dih(2, idih) = coef3
-              else
-                 error_message = 'Error: invalid value for i_triple_angle_term in read_nativeinfo.F90'
-                 call util_error(ERROR%STOP_ALL, error_message)
-              endif
-           end if
+           coef_dih(1, idih) = coef
+           if (inmisc%i_triple_angle_term == 0) then
+              coef_dih(2, idih) = 0.0e0_PREC
+           elseif (inmisc%i_triple_angle_term == 1) then
+              coef_dih(2, idih) = 0.5e0_PREC * coef
+           elseif (inmisc%i_triple_angle_term == 2) then
+              coef_dih(2, idih) = coef3
+           else
+              error_message = 'Error: invalid value for i_triple_angle_term in read_nativeinfo.F90'
+              call util_error(ERROR%STOP_ALL, error_message)
+           endif
         endif
      end if
 
@@ -1107,12 +1096,6 @@ contains
          str2dihtype = DIHTYPE%RNA_SPSR
       else if (c4 == 'SPSU' .OR. c4 == 'SPSC' .OR. c4 == 'SPSY') then
          str2dihtype = DIHTYPE%RNA_SPSY
-      else if (c4 == 'N2P1') then
-         str2dihtype = DIHTYPE%DNA_PER1
-      else if (c4 == 'N2P2') then
-         str2dihtype = DIHTYPE%DNA_PER2
-      else if (c4 == 'N2P3') then
-         str2dihtype = DIHTYPE%DNA_PER3
       else if (c4 == 'ASSA' .OR. c4 == 'ASSG' .OR. c4 == 'ASSR' .OR. &
                c4 == 'GSSA' .OR. c4 == 'GSSG' .OR. c4 == 'GSSR' .OR. &
                c4 == 'RSSA' .OR. c4 == 'RSSG' .OR. c4 == 'RSSR' .OR. &

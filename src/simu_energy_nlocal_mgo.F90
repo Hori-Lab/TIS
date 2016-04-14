@@ -23,7 +23,6 @@ subroutine simu_energy_nlocal_mgo(irep, now_con, pnle_unit, pnlet)
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           ncon, icon2mp, coef_go, go_nat
   use var_mgo,     only : ncontype_mgo, irefcon_mgo
-  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
   use mpiconst
 #endif

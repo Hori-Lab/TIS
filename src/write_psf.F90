@@ -11,7 +11,6 @@ subroutine write_psf()
                           cmp2seq, ires_mp, cmp2atom, imp2type, &
                           cmass_mp, nbd, ibd2mp, lmp2charge, coef_charge
    use var_inp,    only : outfile
-   use var_setp,   only : inmisc
 #ifdef MPI_PAR
    use mpiconst
 #endif

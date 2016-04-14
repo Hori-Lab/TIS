@@ -8,7 +8,7 @@ subroutine setp_hydrophobic()
   use const_maxsize
   use const_index
   use var_inp, only : infile, outfile
-  use var_struct, only : nunit_real, nmp_real, lunit2mp
+  use var_struct, only : nunit_real, lunit2mp
   use var_setp, only : inhp, inmisc
 
 #ifdef MPI_PAR
@@ -52,7 +52,6 @@ subroutine setp_hydrophobic()
   icalc(1:MXUNIT) = .false. 
   do iunit = 1, nunit_real
      do junit = iunit, nunit_real
-!        if(mod(inmisc%itype_nlocal(iunit, junit), INTERACT%HP) == 0) then
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%HP)) then
            do imp = lunit2mp(1, iunit), lunit2mp(2, iunit)
               inhp%flag_hp(imp) = .true.

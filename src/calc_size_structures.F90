@@ -5,7 +5,7 @@ subroutine calc_size_structures()
 
   use const_maxsize, only : M_INT, S_REAL
   use var_inp,  only : infile, outfile, num_file, inperi
-  use var_setp, only : inpara, inpro, indna, indna2, inion, inlip, &
+  use var_setp, only : inpara, inpro, inion,&
                        inrna, indtrna13, indtrna15, inarna, &
                        insimu, inann, insear, inmisc, &
                        inmmc, inaicg, inaicg2, inligand, inele, inhp, inflp,&
@@ -13,10 +13,9 @@ subroutine calc_size_structures()
   use var_enm,     only : inenm
   use var_mgo,     only : inmgo
   use var_replica, only : inrep
-  use var_mpc,     only : inmpc
   use var_implig,  only : inimplig, inimplig_bindsite
-  use var_fmat,    only : infmat, fix_pro, fix_rna, fix_dna, &
-                          aamsf_pro, aamsf_rna, aamsf_dna
+  use var_fmat,    only : infmat, fix_pro, fix_rna, &
+                          aamsf_pro, aamsf_rna
   use var_emin,    only : inemin
   use var_struct,  only : grp
 
@@ -46,10 +45,7 @@ subroutine calc_size_structures()
   ! var_setp
   inpara%sz = sizeof(inpara)
   inpro%sz  = sizeof(inpro)
-  indna%sz  = sizeof(indna)
-  indna2%sz  = sizeof(indna2)
   inion%sz  = sizeof(inion)
-  inlip%sz  = sizeof(inlip)
   inrna%sz  = sizeof(inrna)
   indtrna13%sz= sizeof(indtrna13)
   indtrna15%sz= sizeof(indtrna15)
@@ -77,9 +73,6 @@ subroutine calc_size_structures()
   ! var_replica
   inrep%sz  = sizeof(inrep)
 
-  ! var_mpc
-  inmpc%sz  = sizeof(inmpc)
-
   ! var_implig
   inimplig%sz = sizeof(inimplig)
   inimplig_bindsite%sz = sizeof(inimplig_bindsite)
@@ -88,10 +81,8 @@ subroutine calc_size_structures()
   infmat%sz = sizeof(infmat)
   aamsf_pro%sz = sizeof(aamsf_pro)
   aamsf_rna%sz = sizeof(aamsf_rna)
-  aamsf_dna%sz = sizeof(aamsf_dna)
   fix_pro%sz = sizeof(fix_pro)
   fix_rna%sz = sizeof(fix_rna)
-  fix_dna%sz = sizeof(fix_dna)
   
   ! var_emin
   inemin%sz = sizeof(inemin)

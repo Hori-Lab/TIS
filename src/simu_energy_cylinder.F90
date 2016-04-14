@@ -6,7 +6,7 @@ subroutine simu_energy_cylinder(irep, pnle_unit, pnlet)
 
   use const_maxsize
   use const_index
-  use var_struct, only : nunit_all, nunit_real, lunit2mp, xyz_mp_rep, cmass_mp, nmp_real
+  use var_struct, only : nunit_all, nunit_real, lunit2mp, xyz_mp_rep
   use var_setp, only: inmisc
 
   implicit none

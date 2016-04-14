@@ -2,55 +2,38 @@
 !> @brief Constructs "native" information about dihedral angles.  &
 !>        Related coefficients are also calculated.
 
-subroutine setp_native_dih(xyz_mp_init, xyz_dna)
+subroutine setp_native_dih(xyz_mp_init)
       
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inmisc, indna, inrna, inligand, insimu
+  use var_setp,   only : inpro, inmisc, inligand
   use var_struct, only : nunit_all, lunit2mp, iclass_unit, &
-                         cmp2seq, ndih, coef_dih, factor_dih, &
-                         coef_dih_gauss, wid_dih_gauss, &
+                         ndih, coef_dih, factor_dih, &
                          idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, &
                          imp2type, idih2type, iunit2dih, ires_mp, &
                          nrna_st, irna_st2mp, irna_st2unit, &
                          coef_rna_st, coef_rna_st_a, coef_rna_st_fD, &
                          factor_rna_st, rna_st_nat, rna_st_nat2, &
-                         rna_base_type, fdih_para, &
+                         rna_base_type, &
                          imp2unit, &
                          aicg14_nat, factor_aicg14 !aicg2
-!#ifdef MPI_PAR
-!  use mpiconst
-!#endif
   
   implicit none
 
-  ! ----------------------------------------------------------------------
   real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
-  real(PREC), intent(in) :: xyz_dna(SPACE_DIM, MXMP)
-  ! intent(out) :: ndih, factor_dih, idih2mp, dih_nat
 
   ! ----------------------------------------------------------------------
   ! function
 !  integer :: ifunc_seq2id
 !  real(PREC) :: rfunc_propensity
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: idih, iunit, imp, impmod, imp1, imp2, imp3, imp4, lmp
   integer :: irna_st
   integer :: impmod_P, impmod_S, impmod_B
   integer :: imp_start
   integer :: isumdih(10)
   real(PREC) :: sumdih(10)
-!  integer :: id_mp, itype
-!  integer :: idel, ini, las
-!  integer :: ier
-!  integer :: id1, id2
-!  integer :: ip
-!  real(PREC) :: ave, sum
-!  real(PREC) :: pre(4), pre_dih(MXDIH) 
-!  character(3) :: char3
   character(CARRAY_MSG_ERROR) :: error_message
 
   ! ----------------------------------------------------------------------
@@ -61,7 +44,6 @@ subroutine setp_native_dih(xyz_mp_init, xyz_dna)
   sumdih(1:10) = 0.0
   do iunit = 1, nunit_all
      
-!     if (mod(inmisc%itype_nlocal(iunit, iunit), INTERACT%ENM) == 0) cycle
      if (inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%ENM)) cycle
 
      lmp = lunit2mp(1, iunit)
@@ -81,149 +63,6 @@ subroutine setp_native_dih(xyz_mp_init, xyz_dna)
               call nat_dih(idih, imp1, imp2, imp3, imp4, xyz_mp_init)        
            end do
         end if
-
-     else if(iclass_unit(iunit) == CLASS%LIP) then
-
-     else if(iclass_unit(iunit) == CLASS%DNA) then
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BDNA)) then
-           do imp = lunit2mp(1, iunit), lunit2mp(2, iunit) - 3
-!              impmod = mod(imp - lmp, 3)
-
-!              if(impmod == 0) then
-              if(imp2type(imp) == MPTYPE%DNA_SUGAR) then
-                 ! b-S(3')-P-(5')S A:-22.69 T:-33.42 G:-22.30 C:-32.72
-                 imp1 = imp + 1
-                 imp2 = imp
-                 imp3 = imp + 2
-                 imp4 = imp + 3
-                 call nat_dih_dna(idih, imp1, imp2, imp3, imp4, xyz_dna)
-                 if(cmp2seq(imp1) == ' DA') then
-                    sumdih(3) = sumdih(3) + dih_nat(idih)
-                    isumdih(3) = isumdih(3) + 1
-                 else if(cmp2seq(imp1) == ' DT') then
-                    sumdih(4) = sumdih(4) + dih_nat(idih)
-                    isumdih(4) = isumdih(4) + 1
-                 else if(cmp2seq(imp1) == ' DG') then 
-                    sumdih(5) = sumdih(5) + dih_nat(idih)
-                    isumdih(5) = isumdih(5) + 1
-                 else if(cmp2seq(imp1) == ' DC') then
-                    sumdih(6) = sumdih(6) + dih_nat(idih)
-                    isumdih(6) = isumdih(6) + 1
-                 else
-                    error_message = 'Error: not DNA sequence in setp_native_dih'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 end if
-                 
-                 if(imp - 1 < lunit2mp(1, iunit)) cycle
-                 ! P-(5')S(3')-P-(5')S -154.80
-                 imp1 = imp - 1
-                 imp2 = imp
-                 imp3 = imp + 2
-                 imp4 = imp + 3
-                 call nat_dih_dna(idih, imp1, imp2, imp3, imp4, xyz_dna)
-                 if(dih_nat(idih) < 0.0) then
-                    sumdih(1) = sumdih(1) + dih_nat(idih)
-                 else
-                    sumdih(1) = sumdih(1) + dih_nat(idih) - 2*F_PI
-                 end if
-                 isumdih(1) = isumdih(1) + 1
-                 
-!              else if(impmod == 1) then
-              else if(imp2type(imp) == MPTYPE%DNA_BASE) then
-                 if(imp - 1 < lunit2mp(1, iunit)) cycle
-                 ! S(3')-P-(5')S-b A:50.69 T:54.69 G:50.66 C:54.50
-                 imp1 = imp - 1
-                 imp2 = imp + 1
-                 imp3 = imp + 2
-                 imp4 = imp + 3
-                 call nat_dih_dna(idih, imp1, imp2, imp3, imp4, xyz_dna)
-                 if(cmp2seq(imp4) == ' DA') then
-                    sumdih(7) = sumdih(7) + dih_nat(idih)
-                    isumdih(7) = isumdih(7) + 1
-                 else if(cmp2seq(imp4) == ' DT') then
-                    sumdih(8) = sumdih(8) + dih_nat(idih)
-                    isumdih(8) = isumdih(8) + 1
-                 else if(cmp2seq(imp4) == ' DG') then
-                    sumdih(9) = sumdih(9) + dih_nat(idih)
-                    isumdih(9) = isumdih(9) + 1
-                 else if(cmp2seq(imp4) == ' DC') then
-                    sumdih(10) = sumdih(10) + dih_nat(idih)
-                    isumdih(10) = isumdih(10) + 1
-                 else
-                    error_message = 'Error: not DNA sequence in setp_native_dih'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 end if
-                 
-              else
-                 if(imp - 2 < lunit2mp(1, iunit)) cycle
-                 ! S(3')-P-(5')S(3')-P -179.17
-                 imp1 = imp - 2
-                 imp2 = imp
-                 imp3 = imp + 1
-                 imp4 = imp + 3
-                 call nat_dih_dna(idih, imp1, imp2, imp3, imp4, xyz_dna)
-                 if(dih_nat(idih) < 0.0) then
-                    sumdih(2) = sumdih(2) + dih_nat(idih)
-                 else
-                    sumdih(2) = sumdih(2) + dih_nat(idih) - 2*F_PI
-                 end if
-                 isumdih(2) = isumdih(2) + 1
-              end if
-           end do
-        end if
-
-     else if(iclass_unit(iunit) == CLASS%DNA2) then
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_DNA2) .OR. &
-           inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_DNA2C)) then
-           select case (imp2type(lmp))
-           case (MPTYPE%DNA2_PHOS) ! chain starts with P
-              impmod_P = 0
-              impmod_S = 1
-              impmod_B = 2
-              imp_start = lmp + 4
-           case (MPTYPE%DNA2_SUGAR) ! chain starts with S
-              impmod_S = 0
-              impmod_B = 1
-              impmod_P = 2
-              imp_start = lmp + 3
-           case (MPTYPE%DNA2_BASE) ! chain must NOT start with B
-              error_message = 'Error: DNA sequence is broken in setp_native_dih'
-              call util_error(ERROR%STOP_ALL, error_message)
-           case default
-              error_message = 'Error: not DNA sequence in setp_native_dih'
-              call util_error(ERROR%STOP_ALL, error_message)
-           end select
-           
-           do imp = imp_start, lunit2mp(2, iunit)
-              impmod = mod(imp - lmp, 3)
-              
-              if(impmod == impmod_S) then
-                 if (imp-4 >= lmp) then
-                    ! P-S-P-S
-                    imp1 = imp - 4
-                    imp2 = imp - 3
-                    imp3 = imp - 1
-                    imp4 = imp 
-                    call nat_dih_dna2(idih, imp1, imp2, imp3, imp4, DIHTYPE%DNA2_PSPS, xyz_mp_init)
-                 endif
-                 
-              else if (impmod == impmod_P) then
-                 ! S-P-S-P 
-                 imp1 = imp - 5
-                 imp2 = imp - 3
-                 imp3 = imp - 2
-                 imp4 = imp 
-                 call nat_dih_dna2(idih, imp1, imp2, imp3, imp4, DIHTYPE%DNA2_SPSP, xyz_mp_init)
-                 
-              else if (impmod == impmod_B) then
-                 cycle
-              else 
-                 error_message = 'Error: logical defect in setp_native_dih'
-                 call util_error(ERROR%STOP_ALL, error_message)
-              end if
-           end do
-        end if
-
         
      else if(iclass_unit(iunit) == CLASS%RNA) then
         if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO)) then
@@ -346,19 +185,6 @@ subroutine setp_native_dih(xyz_mp_init, xyz_dna)
   end do
   ndih = idih
   nrna_st = irna_st
-!  if(iclass_unit(1) == CLASS%DNA) then
-!     sumdih(1:10) = 180.0/F_PI*sumdih(1:10)/isumdih(1:10)
-!     write (*, *) "P-(5')S(3')-P-(5')S(-154.80):", sumdih(1)
-!     write (*, *) "S(3')-P-(5')S(3')-S(-179.17):", sumdih(2)
-!     write (*, *) "Ab-S(3')-P-(5')(-22.60):", sumdih(3)
-!     write (*, *) "Tb-S(3')-P-(5')(-33.42):", sumdih(4)
-!     write (*, *) "Gb-S(3')-P-(5')(-22.30):", sumdih(5)
-!     write (*, *) "Cb-S(3')-P-(5')(-32.72):", sumdih(6)
-!     write (*, *) "S(3')-P-(5')S-Ab(50.69):", sumdih(7)
-!     write (*, *) "S(3')-P-(5')S-Tb(54.69):", sumdih(8)
-!     write (*, *) "S(3')-P-(5')S-Gb(50.66):", sumdih(9)
-!     write (*, *) "S(3')-P-(5')S-Cb(54.50):", sumdih(10)
-!  end if
 
   ! ----------------------------------------------------------------------
   ! bond angle coefficient 
@@ -512,85 +338,6 @@ contains
        call util_error(ERROR%STOP_ALL, error_message)
     endif
   end subroutine nat_dih
-
-  subroutine nat_dih_dna(idih, imp1, imp2, imp3, imp4, xyz_dih)
-
-    ! -------------------------------------------------------------------
-    integer, intent(in) :: imp1, imp2, imp3, imp4
-    integer, intent(inout) :: idih
-    real(PREC), intent(in) :: xyz_dih(3, MXMP)
-
-    ! -------------------------------------------------------------------
-    ! local variables
-    real(PREC) :: dih_angle, si_dih, co_dih
-
-    ! -------------------------------------------------------------------
-    idih = idih + 1
-    idih2mp(1, idih) = imp1
-    idih2mp(2, idih) = imp2
-    idih2mp(3, idih) = imp3
-    idih2mp(4, idih) = imp4
-    call util_dihangle(imp1, imp2, imp3, imp4, dih_angle, co_dih, si_dih, xyz_dih)
-    dih_nat(idih) = dih_angle
-    dih_sin_nat(idih) = si_dih
-    dih_cos_nat(idih) = co_dih
-    factor_dih(idih) = inmisc%factor_local_unit(iunit, iunit)
-    coef_dih(1, idih) = factor_dih(idih) * indna%cdih_1_dna
-
-    if (inmisc%i_triple_angle_term == 0) then
-       coef_dih(2, idih) = 0.0e0_PREC
-    else if (inmisc%i_triple_angle_term == 1 .or. inmisc%i_triple_angle_term == 2) then
-       coef_dih(2, idih) = factor_dih(idih) * indna%cdih_3_dna
-    else
-       error_message = 'Error: invalid value for i_triple_angle_term'
-       call util_error(ERROR%STOP_ALL, error_message)
-    endif
-  end subroutine nat_dih_dna
-
-  subroutine nat_dih_dna2(idih, imp1, imp2, imp3, imp4, i_type_dih, xyz_dih)
-
-     use var_setp,   only : indna2
-    ! -------------------------------------------------------------------
-    integer, intent(in) :: imp1, imp2, imp3, imp4
-    integer, intent(inout) :: idih
-    integer, intent(in) :: i_type_dih
-    real(PREC), intent(in) :: xyz_dih(SPACE_DIM, MXMP)
-
-    ! -------------------------------------------------------------------
-    ! local variables
-    !real(PREC) :: dih_angle, si_dih, co_dih
-
-    ! -------------------------------------------------------------------
-    
-    idih = idih + 1
-    idih2type(idih) = i_type_dih
-    idih2mp(1, idih) = imp1
-    idih2mp(2, idih) = imp2
-    idih2mp(3, idih) = imp3
-    idih2mp(4, idih) = imp4
-    !dih_nat(idih) = dih_angle
-    !dih_sin_nat(idih) = si_dih
-    !dih_cos_nat(idih) = co_dih
-    factor_dih(idih) = inmisc%factor_local_unit(iunit, iunit)
-
-    select case (i_type_dih)
-    case (DIHTYPE%DNA2_PSPS)
-       !coef_dih(1, idih) = factor_dih(idih) * indna2%cdih_PSPS
-       !coef_dih(2, idih) = indna2%sdih_PSPS
-       coef_dih_gauss(idih) = factor_dih(idih) * indna2%cdih_PSPS
-       wid_dih_gauss(idih)  = indna2%sdih_PSPS
-       
-       dih_nat(idih) = indna2%ndih_PSPS * F_PI / 180.0e0_PREC
-    case (DIHTYPE%DNA2_SPSP)
-       !coef_dih(1, idih) = factor_dih(idih) * indna2%cdih_SPSP
-       !coef_dih(2, idih) = indna2%sdih_SPSP
-       coef_dih_gauss(idih) = factor_dih(idih) * indna2%cdih_SPSP
-       wid_dih_gauss(idih)  = indna2%sdih_SPSP
-
-       dih_nat(idih) = indna2%ndih_SPSP * F_PI / 180.0e0_PREC
-    end select
-    
-  end subroutine nat_dih_dna2
 
   subroutine nat_dih_rna(idih, imp1, imp2, imp3, imp4, i_type_dih, xyz_dih)
 

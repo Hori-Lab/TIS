@@ -10,7 +10,7 @@ subroutine setp_dtrna15()
                          nhbsite, imp2hbsite, nvalence_hbsite,&
                          list_hb_at_hbsite, num_hb_at_hbsite, &
                          exv_radius_mp, exv_epsilon_mp
-  use var_replica, only : inrep, n_replica_mpi
+  use var_replica, only : n_replica_mpi
   use var_setp,    only : indtrna15
   implicit none
   

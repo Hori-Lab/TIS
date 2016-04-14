@@ -429,66 +429,6 @@ subroutine inp_datafile()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-  ! parameter for DNA
-  if(path_para /= '') then
-     filename_para(3) = path_para(1:l-1)//'/'//'dna.para'
-  else
-     filename_para(3) = './para/dna.para'
-  end if
-  write (*, '(a24,i3,a3,a)') "open DNA parameter file(",infile%para_dna,&
-                               "): ", trim(filename_para(3))
-  open(infile%para_dna, file = filename_para(3), status = 'old', action = 'read', &
-  iostat = iopen_status)
-  if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(3)
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  ! parameter for DNA
-  if(path_para /= '') then
-     filename_para(3) = path_para(1:l-1)//'/'//'dna2.para'
-  else
-     filename_para(3) = './para/dna2.para'
-  end if
-  write (*, '(a24,i3,a3,a)') "open DNA2 parameter file(",infile%para_dna2,&
-                               "): ", trim(filename_para(3))
-  open(infile%para_dna2, file = filename_para(3), status = 'old', action = 'read', &
-  iostat = iopen_status)
-  if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(3)
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  ! parameter for DNA 3SPN.2C
-  if(path_para /= '') then
-     filename_para(3) = path_para(1:l-1)//'/'//'dna2c.para'
-  else
-     filename_para(3) = './para/dna2c.para'
-  end if
-  write (*, '(a24,i3,a3,a)') "open DNA2C parameter file(",infile%para_dna2c,&
-                               "): ", trim(filename_para(3))
-  open(infile%para_dna2c, file = filename_para(3), status = 'old', action = 'read', &
-  iostat = iopen_status)
-  if(iopen_status > 0) then
-     error_message = 'Error: cannot open the file: ' // filename_para(3)
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  ! parameter for lipid
-  if(path_para /= '') then
-     filename_para(4) = path_para(1:l-1)//'/'//'lipid.para'
-  else
-     filename_para(4) = './para/lipid.para'
-  end if
-  write (*, '(a26,i3,a3,a)') "open lipid parameter file(",infile%para_lip,&
-                               "): ", trim(filename_para(4))
-  open(infile%para_lip, file = filename_para(4), status = 'old', action = 'read', &
-  iostat = iopen_status)
-  if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(4)
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
   ! parameter for RNA
   if(path_para /= '') then
      filename_para(5) = path_para(1:l-1)//'/'//'rna.para'

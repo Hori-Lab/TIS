@@ -33,7 +33,6 @@ subroutine setp_mapara(lunpara, lunout)
   ! -------------------------------------------------------------------
   inpara%velo_adjst     = -1.0
   inpara%csmass_per     = -1.0
-  inpara%csmass_mpc_per = -1.0
   inpara%rneighbor_dist = -1.0
   inpara%fric_const     = -1.0
   inpara%cmass(0:CHEMICALTYPE%MAX)  = -1.0
@@ -67,10 +66,6 @@ subroutine setp_mapara(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpara%csmass_per, cvalue)
         
-        cvalue = 'csmass_mpc_per'
-        call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inpara%csmass_mpc_per, cvalue)
-        
         cvalue = 'rneighbor_dist'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpara%rneighbor_dist, cvalue)
@@ -97,10 +92,6 @@ subroutine setp_mapara(lunpara, lunout)
 
   else if (inpara%csmass_per < 0.0) then
      error_message = 'Error: invalid value for csmass_per'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  else if (inpara%csmass_mpc_per < 0.0) then
-     error_message = 'Error: invalid value for csmass_mpc_per'
      call util_error(ERROR%STOP_ALL, error_message)
 
   else if(inpara%rneighbor_dist < 0.0) then
@@ -173,19 +164,6 @@ contains
          char2ichem = CHEMICALTYPE%U
       else if (c(1:2) == 'C ') then
          char2ichem = CHEMICALTYPE%C
-      ! ------ DNA2 ------
-      else if (c(1:2) == 'DP') then
-         char2ichem = CHEMICALTYPE%DP
-      else if (c(1:2) == 'DS') then
-         char2ichem = CHEMICALTYPE%DS
-      else if (c(1:2) == 'DA') then
-         char2ichem = CHEMICALTYPE%DA
-      else if (c(1:2) == 'DT') then
-         char2ichem = CHEMICALTYPE%DT
-      else if (c(1:2) == 'DC') then
-         char2ichem = CHEMICALTYPE%DC
-      else if (c(1:2) == 'DG') then
-         char2ichem = CHEMICALTYPE%DG
       ! ------ protein ------
       else if (c(1:3) =='ALA') then
          char2ichem = CHEMICALTYPE%ALA

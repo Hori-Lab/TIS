@@ -10,12 +10,11 @@ subroutine setpara( xyz_mp_init )
   use const_physical
   use var_inp,    only : infile, outfile, ifile_pdb, num_file,  &
                          i_run_mode, i_seq_read_style, &
-                         i_simulate_type, inperi, &
-                         i_aicg, i_go_native_read_style    ! aicg
+                         inperi, i_aicg, i_go_native_read_style
   use var_setp,   only : inpara, inmisc, ifix_mp, inmmc, inflp
   use var_struct, only : xyz_ref_mp, iontype_mp
   use var_mgo,    only : inmgo
-  use var_implig, only : inimplig  ! for implicit ligand
+  use var_implig, only : inimplig
 
 #ifdef MPI_PAR
   use mpiconst
@@ -87,22 +86,11 @@ subroutine setpara( xyz_mp_init )
 #endif
   call setp_mapara(infile%para_gen, outfile%data)
   call setp_mapara_pro(infile%para_pro, outfile%data)
-  if (inmisc%class_flag(CLASS%DNA)) then
-     call setp_mapara_dna()
-  endif
-  if (inmisc%force_flag(INTERACT%DNA2C)) then
-     call setp_mapara_dna2(infile%para_dna2c, outfile%data)
-  else if (inmisc%class_flag(CLASS%DNA2)) then
-     call setp_mapara_dna2(infile%para_dna2, outfile%data)
-  endif
   if (inmisc%class_flag(CLASS%ION)) then
      call setp_mapara_ion()
   endif
   if (inmisc%class_flag(CLASS%RNA)) then
      call setp_mapara_rna(infile%para_rna, outfile%data)
-  endif
-  if (inmisc%class_flag(CLASS%LIP)) then
-     call setp_mapara_lipid()
   endif
   if (inmisc%class_flag(CLASS%LIG)) then
      call setp_mapara_ligand()
@@ -171,11 +159,6 @@ subroutine setpara( xyz_mp_init )
   else if(i_seq_read_style == SEQREAD%INPUT_SEQ) then
      ! read sequence from sequence field in input file
      call read_seq()
-     call setp_make_dna(xyz_mp_init)
-
-  else if(i_seq_read_style == SEQREAD%INPUT_LIPID) then
-     call setp_para_lipid()
-     call setp_make_lipid(xyz_mp_init)
 
   else if(i_seq_read_style == SEQREAD%CG) then
      ! read xyz coordinate from PDB file with CafeMol-CG style
@@ -256,10 +239,6 @@ subroutine setpara( xyz_mp_init )
   ! -----------------------------------------------------------------------
   ! parameter setting for multiple-Go model (mgo)
   if(inmgo%i_multi_mgo == 1) call setp_para_mgo()
-
-  ! -----------------------------------------------------------------------
-  ! parameter setting for mpc
-  if(i_simulate_type == SIM%MPC) call setp_para_mpc()
 
   ! =======================================================================
   ! constructing potential

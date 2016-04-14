@@ -1,6 +1,5 @@
 !simu_energy_pnl
 !> @brief Calculates the energy related to excluded volume   &
-!>        excepting DNA particle.
 !>        The values are added into "pnlet(ENERGY%EXV)" and  &
 !>        "pnle_unit(ENERGY%EXV)".
 

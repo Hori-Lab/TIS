@@ -17,11 +17,10 @@ subroutine simu_energy_nlocal_rna_bp(irep, now_rna_bp, pnle_unit, pnlet)
    use const_physical
    use const_index
    use var_inp,     only : inperi
-   use var_setp,    only : inpro, inrna, inmisc
-   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
+   use var_setp,    only : inrna, inmisc
+   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                            nrna_bp, irna_bp2mp, rna_bp_nat, rna_bp_nat2, &
                            coef_rna_bp, coef_rna_bp_fD, coef_rna_bp_a
-   use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
    use mpiconst
 #endif

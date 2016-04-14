@@ -1,6 +1,5 @@
 !simu_force_pnl
-!> @brief Calculates the force related to excluded volume    &
-!>        excepting DNA particle.
+!> @brief Calculates the force related to excluded volume
 
 subroutine simu_force_pnl(irep, force_mp)
 

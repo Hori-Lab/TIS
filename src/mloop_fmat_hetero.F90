@@ -19,9 +19,7 @@ subroutine mloop_fmat_hetero()
    use const_maxsize
    use const_index
    use var_setp,   only : inmisc
-   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st, &
-                          nhb_bp, &
-                          ibd2mp, iba2mp, idih2mp,            &
+   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st, nhb_bp, &
                           ibd2type, iba2type, idih2type, icon2type, &
                           coef_bd, coef_ba, coef_dih, coef_go, &
                           coef_rna_bp, coef_rna_st
@@ -31,7 +29,7 @@ subroutine mloop_fmat_hetero()
                           dih_sum_B, dih_sum2_B, &
                           nl_sum, nl_sum2, i_num_sum, infmat, &
                           bp_sum, bp_sum2, st_sum, st_sum2,   &
-                          fix_pro, fix_rna, fix_dna, &
+                          fix_pro, fix_rna, &
                           aamsf_hetero_bl, aamsf_hetero_ba, aamsf_hetero_dih, &
                           aamsf_hetero_nl, aamsf_hetero_rnabp, aamsf_hetero_rnast
    use var_inp,  only   : outfile

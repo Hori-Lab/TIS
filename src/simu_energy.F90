@@ -25,11 +25,7 @@ subroutine simu_energy(irep,          &
   use var_inp,     only : outfile
   use var_setp,    only : inmisc, inflp, inele
   use var_struct,  only : nunit_all, ncon, nmorse, nrna_bp
-  use var_enm,     only : inenm
   use var_mgo,     only : inmgo
-  use var_replica, only : inrep, n_replica_mpi, irep2grep, &
-                          rep2lab
-  use var_implig,  only : inimplig ! implicit ligand model  
 
   use time
   use mpiconst
@@ -133,12 +129,8 @@ subroutine simu_energy(irep,          &
 
   if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
      call simu_energy_aicg14_gauss(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
-  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS) .or. &
-           inmisc%force_flag_local(LINTERACT%L_DNA2)) then
+  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
      call simu_energy_dih_gauss(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
-  end if
-  if (inmisc%force_flag_local(LINTERACT%L_DNA2C)) then
-     call simu_energy_dih_3spn2c(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
   end if
 
   !if (inmisc%i_add_int == 1) then
@@ -161,9 +153,6 @@ subroutine simu_energy(irep,          &
      call simu_energy_dtrna_hbond15(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
      call simu_energy_exv_dt15(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
   endif
-
-  ! For dna2 (3SPN.2 model)  
-  call simu_energy_dna2_stack(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
 
   if(inmgo%i_multi_mgo >= 1) then
      TIME_S( tm_energy_nlocal_mgo) 
@@ -213,12 +202,6 @@ subroutine simu_energy(irep,          &
   endif
   TIME_E( tm_energy_pnl) 
 
-  TIME_S( tm_energy_pnl2) 
-  call simu_energy_pnl2(irep, pnlet_l(:,tn), pnle_unit_l(:,:,:,tn))
-  call simu_energy_dna2_bp(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
-  call simu_energy_dna2_ex(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
-  TIME_E( tm_energy_pnl2)
-
   TIME_S( tm_energy_ele)
   if (inmisc%force_flag(INTERACT%ELE)) then
 
@@ -237,12 +220,6 @@ subroutine simu_energy(irep,          &
      endif
   endif
   TIME_E( tm_energy_ele)
-
-  if (inmisc%class_flag(CLASS%LIP)) then
-     TIME_S( tm_energy_pnl3) 
-     call simu_energy_pnl3(irep, pnle_unit_l(:,:,:,tn), pnlet_l(:,tn))
-     TIME_E( tm_energy_pnl3) 
-  endif
 
   if (inmisc%class_flag(CLASS%ION)) then
      TIME_S( tm_energy_pnl) 
@@ -342,7 +319,6 @@ subroutine simu_energy(irep,          &
   end if
 
   ! implicit ligand model
-  !if(inimplig%iexe_implig == 1) then
   if(inmisc%i_implig == 1) then
      call simu_energy_implig(irep, pnle_unit, pnlet, IMPLIGENERGY_TYPE%FOR_NON_MC)
      ! calculate implicit_ligand binding energy based on [state of implicit-ligand &  structure].

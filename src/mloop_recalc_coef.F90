@@ -5,9 +5,8 @@ subroutine mloop_recalc_coef()
 
    use const_maxsize
    use const_index
-   use var_setp,   only : inmisc, inrna, inpro, indna
-   use var_struct, only : nbd, nba, ndih, ncon, imp2unit,       &
-                          ibd2mp, iba2mp, idih2mp, icon2mp,     &
+   use var_setp,   only : inmisc, inrna, inpro
+   use var_struct, only : nbd, nba, ndih, ncon,        &
                           icon2type,                            &
                           coef_bd, ibd2type, coef_ba, iba2type, &
                           coef_dih, idih2type, coef_go,         &
@@ -17,7 +16,6 @@ subroutine mloop_recalc_coef()
                           factor_rna_bp, factor_rna_st,         &
                           nrna_bp, nhb_bp,  &
                           nrna_st
-   use var_fmat,   only : infmat
 
    implicit none
    integer :: idx

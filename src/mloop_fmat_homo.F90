@@ -30,7 +30,7 @@ subroutine mloop_fmat_homo(iloop)
                           dih_sum_B, dih_sum2_B, &
                           nl_sum, nl_sum2, i_num_sum, infmat, &
                           bp_sum, bp_sum2, st_sum, st_sum2,   &
-                          fix_pro, fix_rna, fix_dna
+                          fix_pro, fix_rna
    use var_setp, only   : inpro, inrna
    use var_inp,  only   : outfile
 #ifdef MPI_PAR

@@ -8,7 +8,7 @@ subroutine inp_replica_para()
   use const_physical
   use var_inp,     only : infile, i_run_mode
   use var_replica, only : inrep, flg_rep, flg_npar_rep, &
-                          n_replica_mpi, n_replica_all, n_dimension, &
+                          n_replica_all, n_dimension, &
                           CHAR_REPTYPE
   use var_setp, only : inmisc
 

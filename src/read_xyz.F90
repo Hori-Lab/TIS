@@ -12,10 +12,10 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
   use var_setp,   only : inion, pdbatom
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all,  &
                          lunit2mp, ires_mp, iclass_unit, iclass_mp, &
-                         iontype_mp, exv_radius_mp, &
-                         cmp2seq, cmp2atom, imp2type, imp2base, imp2unit, nres
+                         iontype_mp, cmp2seq, cmp2atom, imp2type, imp2unit, nres
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : exv_radius_mp
 #endif
 
   implicit none
@@ -109,24 +109,7 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
 
      ! ---------------------------------------------------------------------
      ! setting mass point information from pdb data
-     if (iclass == CLASS%LIP) then
-        call read_pdb_lipid(lunpdb, nunitpdb, lunit2mp, nmppdb, nrespdb, ires_mp, &
-                            xyz_mp_init, cmp2seq, cmp2atom)
-
-     else if (iclass == CLASS%DNA) then
-!        call read_pdb_dna(lunpdb, nunitpdb, lunit2mp, &
-!             nmppdb, nrespdb, ires_mp, xyz_mp_init, iontype_mp, &
-!             cmp2seq, cmp2atom, imp2type, iatomnum, xyz)
-        call read_pdbatom_dna(pdb_atom, lunit2atom, nunit_atom, &
-             lunit2mp, nmppdb, nrespdb, ires_mp, xyz_mp_init, iontype_mp, &
-             cmp2seq, cmp2atom, imp2type, iatomnum, xyz)
-        nunitpdb = nunit_atom(2)
-
-     else if (iclass == CLASS%DNA2) then
-        call read_pdb_dna2(lunpdb, nunitpdb, nmppdb, nrespdb, lunit2mp, ires_mp, &
-                           cmp2seq, cmp2atom, imp2type, imp2base, iatomnum, xyz)
-        
-     else if (iclass == CLASS%PRO) then
+     if (iclass == CLASS%PRO) then
 !        call read_pdb_pro(lunpdb, nunitpdb, nmppdb, nrespdb, lunit2mp, ires_mp, &
 !                          cmp2seq, imp2type, iatomnum, xyz, cname_ha)
         call read_pdbatom_pro(pdb_atom, lunit2atom, nunit_atom, &
@@ -185,8 +168,7 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
   ! ---------------------------------------------------------------------
   ! coarse grainig particle to xyz_mp
   call util_posmass_rna(nunit_all, iatomnum, xyz, xyz_mp_init, cname_ha)
-  call util_posmass_dna2(nunit_all, iatomnum, xyz, xyz_mp_init, cname_ha)
-  call util_posmass(nunit_all, iatomnum, xyz, xyz_mp_init, cname_ha, cmp2atom)
+  call util_posmass(nunit_all, xyz, xyz_mp_init, cname_ha, cmp2atom)
   
 #ifdef MPI_PAR
   endif
@@ -202,7 +184,6 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
   call MPI_Bcast(cmp2seq,   3*MXMP,           MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(cmp2atom,  4*MXMP,           MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imp2type,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(imp2base,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imp2unit,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iatomnum,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
     

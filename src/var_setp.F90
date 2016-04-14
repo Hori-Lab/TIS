@@ -13,7 +13,6 @@ module var_setp
   type input_parameter 
      real(PREC) :: velo_adjst !< the coupling parameter of Berendsen thermostat
      real(PREC) :: csmass_per !< mass of thermal particle for Nose-Hoover thermostat
-     real(PREC) :: csmass_mpc_per !< mass of thermal particle for Nose-Hoover thermostat(MPC)
      real(PREC) :: rneighbor_dist !< the cutoff distance to define a neighbor
      real(PREC) :: cmass(0:CHEMICALTYPE%MAX) !< particle mass (cmass(0) is the default value.)
      real(PREC) :: fric_const !< friction constant for Langevin dynamics simulation
@@ -43,123 +42,7 @@ module var_setp
   endtype input_protein_parameter
   type(input_protein_parameter), save :: inpro
 
-  !==========================================
-  !> structure for parameters reading from "para_cafemol_dna" field in "dna.para" file
-  type input_dna_parameter
-     real(PREC) :: energy_unit_dna
-     real(PREC) :: cbd_dna
-     real(PREC) :: cbd2_dna
-     real(PREC) :: cba_dna
-     real(PREC) :: cdih_1_dna
-     real(PREC) :: cdih_3_dna
-     real(PREC) :: dfcontact_dna
-     real(PREC) :: renorm_dist_stack
-     real(PREC) :: cstack
-     real(PREC) :: cutoff_stack
-     real(PREC) :: cbp_at
-     real(PREC) :: cdist_bp_at
-     real(PREC) :: cbp_gc
-     real(PREC) :: cdist_bp_gc
-     real(PREC) :: cutoff_bp
-     real(PREC) :: cmbp
-     real(PREC) :: cdist_mbp
-     real(PREC) :: cutoff_mbp
-     real(PREC) :: cexv_dna
-     real(PREC) :: cdist_exv_dna
-     real(PREC) :: cutoff_exv_dna
-     real(PREC) :: cdist_solv_dna
-     real(PREC) :: coef_solv_dna(MXREPLICA)
-     real(PREC) :: csolvmax_dna
-     real(PREC) :: cralpha_solv_dna
-     real(PREC) :: cutoff_solv_dna
-     real(PREC) :: e_n
-     integer    :: sz
-  end type input_dna_parameter
 
-  type(input_dna_parameter), save :: indna
-
-  !==========================================
-  !> structure for parameters reading from "para_cafemol_dna2" field in "dna2.para" file
-  type input_dna2_parameter
-     real(PREC) :: dfcontact ! cutoff distance for GO interaction between protein and DNA
-     real(PREC) :: cgo1210   ! coefficient     for GO interaction between protein and DNA
-     real(PREC) :: cbd_PS
-     real(PREC) :: cbd_SP
-     real(PREC) :: cbd_SA
-     real(PREC) :: cbd_ST
-     real(PREC) :: cbd_SC
-     real(PREC) :: cbd_SG
-     real(PREC) :: nbd_PS
-     real(PREC) :: nbd_SP
-     real(PREC) :: nbd_SA
-     real(PREC) :: nbd_ST
-     real(PREC) :: nbd_SC
-     real(PREC) :: nbd_SG
-     real(PREC) :: cba_SPS
-     real(PREC) :: cba_PSP
-     real(PREC) :: cba_PSA
-     real(PREC) :: cba_PST
-     real(PREC) :: cba_PSC
-     real(PREC) :: cba_PSG
-     real(PREC) :: cba_ASP
-     real(PREC) :: cba_TSP
-     real(PREC) :: cba_CSP
-     real(PREC) :: cba_GSP
-     real(PREC) :: nba_SPS
-     real(PREC) :: nba_PSP
-     real(PREC) :: nba_PSA
-     real(PREC) :: nba_PST
-     real(PREC) :: nba_PSC
-     real(PREC) :: nba_PSG
-     real(PREC) :: nba_ASP
-     real(PREC) :: nba_TSP
-     real(PREC) :: nba_CSP
-     real(PREC) :: nba_GSP
-     real(PREC) :: cdih_PSPS
-     real(PREC) :: cdih_SPSP
-     real(PREC) :: ndih_PSPS
-     real(PREC) :: ndih_SPSP
-     real(PREC) :: sdih_PSPS
-     real(PREC) :: sdih_SPSP
-     real(PREC) :: ebstk(BPTYPE%MAX) ! Epsilon    for base stacking  
-     real(PREC) :: sbstk(BPTYPE%MAX) ! Sigma      for base stacking    
-     real(PREC) :: tbstk(BPTYPE%MAX) ! Theta      for base stacking    
-     real(PREC) :: kbstk             ! Cone width for base stacking    
-     real(PREC) :: abstk             ! Alpha      for base stacking    
-     real(PREC) :: ebp_CG            ! Epsilon    for base paring 
-     real(PREC) :: ebp_AT            ! Epsilon    for base paring 
-     real(PREC) :: sbp_CG            ! Sigma      for base paring 
-     real(PREC) :: sbp_AT            ! Sigma      for base paring 
-     real(PREC) :: pbp_CG            ! Phi        for base paring 
-     real(PREC) :: pbp_AT            ! Phi        for base paring 
-     real(PREC) :: t1bp_CG           ! Theta1     for base paring 
-     real(PREC) :: t1bp_GC           ! Theta1     for base paring 
-     real(PREC) :: t1bp_AT           ! Theta1     for base paring 
-     real(PREC) :: t1bp_TA           ! Theta1     for base paring 
-     real(PREC) :: t2bp_CG           ! Theta2     for base paring 
-     real(PREC) :: t2bp_GC           ! Theta2     for base paring 
-     real(PREC) :: t2bp_AT           ! Theta2     for base paring 
-     real(PREC) :: t2bp_TA           ! Theta2     for base paring 
-     real(PREC) :: kbp               ! Cone width for base paring 
-     real(PREC) :: abp               ! Alpha      for base paring 
-     real(PREC) :: ecstk1(BPTYPE%MAX)! Epsilon    for cross stacking 1
-     real(PREC) :: ecstk2(BPTYPE%MAX)! Epsilon    for cross stacking 2
-     real(PREC) :: scstk1(BPTYPE%MAX)! Sigma      for cross stacking 1
-     real(PREC) :: scstk2(BPTYPE%MAX)! Sigma      for cross stacking 2
-     real(PREC) :: tcstk1(BPTYPE%MAX)! Theta      for cross stacking 1
-     real(PREC) :: tcstk2(BPTYPE%MAX)! Theta      for cross stacking 2
-     real(PREC) :: t3cstk_AT         ! Theta3     for cross stacking
-     real(PREC) :: t3cstk_CG         ! Theta3     for cross stacking
-     real(PREC) :: kcstk             ! Cone width for cross stacking
-     real(PREC) :: acstk             ! Alpha      for cross stacking
-     real(PREC) :: eex               ! Epsilon    for excluded volume
-     real(PREC) :: sex(BASETYPE%MAX) ! Sigma      for excluded volume
-     integer    :: sz
-  end type input_dna2_parameter
-
-  type(input_dna2_parameter), save :: indna2
-
-  
   !==========================================
   !> structure for parameters reading from "para_cafemol_ion" field in "ion.para" file
   type input_ion_parameter
@@ -212,35 +95,6 @@ module var_setp
   end type input_ion_parameter
 
   type(input_ion_parameter), save :: inion
-
-  !==========================================
-  !> structure for parameters reading from "para_cafemol_lip" field in "lipid.para" file
-  type input_lipid_parameter
-     real(PREC) :: energy_unit_lipid
-     integer :: num_lip_total
-     integer :: num_lip_core
-     integer :: num_lip_int
-     integer :: num_lip_tail
-     real(PREC) :: sigma_lipid
-     real(PREC) :: cbd_lipid
-     real(PREC) :: cba_lipid
-     real(PREC) :: ccore
-     real(PREC) :: cutoff_core
-     real(PREC) :: ctail
-     real(PREC) :: cutoff_tail
-     real(PREC) :: cint
-     real(PREC) :: cutoff_int
-
-     real(PREC) :: grid_size_lipid
-     real(PREC) :: z_coord_lipid(MXLAYER)
-
-     integer :: nmp_transverse_lipid
-     integer :: nmp_longitudinal_lipid
-     integer :: nlayer_lipid
-     integer :: sz
-  end type input_lipid_parameter
-
-  type(input_lipid_parameter), save :: inlip
 
   !==========================================
   !> structure for parameters reading from "para_cafemol_rna" field in "rna.para" file
@@ -551,13 +405,9 @@ module var_setp
   type input_miscellaneous
      ! flag
      integer    :: i_use_atom_protein
-     integer    :: i_use_atom_dna
-     integer    :: i_go_atom_dna
      integer    :: i_residue_exv_radii
-     integer    :: iflag_solv_nt_dna
      integer    :: i_output_energy_style
      integer    :: i_dtrna_model
-!     integer    :: itype_nlocal(MXUNIT, MXUNIT)
      logical    :: flag_local_unit(MXUNIT, MXUNIT, LINTERACT%MAX)
      logical    :: flag_nlocal_unit(MXUNIT, MXUNIT, INTERACT%MAX)
      logical    :: flag_prime(INTERACT%MAX)
@@ -785,7 +635,6 @@ module var_setp
      integer :: charge_change_imp(MXCHARGECHANGE)
      real(PREC) :: charge_change_value(MXCHARGECHANGE)
      integer    :: sz
-     real(PREC) :: dna2_phos_pro_charge
   endtype input_electrostatic
 
   type(input_electrostatic), save :: inele

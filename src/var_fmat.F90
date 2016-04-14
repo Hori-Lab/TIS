@@ -105,7 +105,6 @@ module var_fmat
       integer :: sz
    endtype flg_fix_na
    type(flg_fix_na), save :: fix_rna
-   type(flg_fix_na), save :: fix_dna
 
    !===========================================
    type fluctuation_pro
@@ -152,7 +151,6 @@ module var_fmat
       integer :: sz
    endtype fluctuation_na
    type(fluctuation_na), save :: aamsf_rna
-   type(fluctuation_na), save :: aamsf_dna
 
    real(PREC), allocatable, save :: aamsf_hetero_bl(:)
    real(PREC), allocatable, save :: aamsf_hetero_ba(:)

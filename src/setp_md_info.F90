@@ -11,11 +11,12 @@ subroutine setp_md_info()
   use var_setp, only: insimu, inmisc, irand, mts, &
                       inmmc   !mcanonical
   use var_replica, only : exchange_step, flg_rep,&
-                          n_replica_all, n_replica_mpi, irep2grep
+                          n_replica_mpi, irep2grep
   use mt_stream
   use mt_kind_defs
 #ifdef MPI_PAR
   use mpiconst
+  use var_replica, only: n_replica_all
 #endif
 
   implicit none

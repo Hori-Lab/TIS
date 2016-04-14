@@ -10,10 +10,8 @@ subroutine simu_force_nlocal_rna_bp(irep, force_mp)
   use var_inp,    only : inperi
   use var_setp,   only : inpara, inrna, inpro, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nrna_bp, irna_bp2mp, &
-                         coef_rna_bp, coef_rna_bp_a, coef_rna_bp_fD,   &
-                         rna_bp_nat, rna_bp_nat2,  &
-                         iclass_mp, nunit_all, nmp_all
-
+                         coef_rna_bp, coef_rna_bp_a, coef_rna_bp_fD,  &
+                         rna_bp_nat, rna_bp_nat2, nmp_all
 #ifdef MPI_PAR
   use mpiconst
 #endif

@@ -7,10 +7,11 @@ subroutine read_rst(itype_wanted)
    use var_inp,    only : infile
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep
    use var_simu,   only : velo_mp, accel_mp
-   use var_replica,only : irep2grep, rep2lab, grep2irep, grep2rank, &
-                          n_replica_all, n_replica_mpi, & 
-                          lab2rep
+   use var_replica,only : rep2lab, grep2irep, grep2rank, n_replica_all, lab2rep
    use mpiconst
+#ifdef MPI_PAR
+   use var_replica,only : n_replica_mpi
+#endif
 
    implicit none
 

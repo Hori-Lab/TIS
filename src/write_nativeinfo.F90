@@ -5,7 +5,6 @@ subroutine write_nativeinfo(lunout)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : outfile
   use var_setp,   only : inpro, inrna, inmisc
   use var_struct, only : nunit_all, imp2unit, lunit2mp, &
                          nbd, ibd2mp, bd_nat,   &
@@ -22,7 +21,7 @@ subroutine write_nativeinfo(lunout)
                          coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
                          coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
                          coef_dih_gauss, wid_dih_gauss, & ! AICG2
-                         ndtrna_st, idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
+                         ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, &
                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb
   use var_enm,    only : inenm
 #ifdef MPI_PAR
@@ -169,21 +168,12 @@ subroutine write_nativeinfo(lunout)
         imp2un = imp2 - lunit2mp(1, iunit1) + 1
         imp3un = imp3 - lunit2mp(1, iunit1) + 1
         imp4un = imp4 - lunit2mp(1, iunit1) + 1
-        if (iclass_unit(iunit1) == CLASS%DNA2) then 
-           write (lunout, "(a4, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-                'dihd', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
-                imp1un, imp2un, imp3un, imp4un, &
-                dih_nat(idih) * 180.0e0_PREC / F_PI, &
-                factor_dih(idih), correct_dih_mgo(idih), &
-                coef_dih_gauss(idih), wid_dih_gauss(idih)
-        else
-           write (lunout, "(a4, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-                'dihd', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
-                imp1un, imp2un, imp3un, imp4un, &
-                dih_nat(idih) * 180.0e0_PREC / F_PI, &
-                factor_dih(idih), correct_dih_mgo(idih), &
-                coef_dih(1, idih), coef_dih(2, idih)
-        end if
+        write (lunout, "(a4, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
+             'dihd', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
+             imp1un, imp2un, imp3un, imp4un, &
+             dih_nat(idih) * 180.0e0_PREC / F_PI, &
+             factor_dih(idih), correct_dih_mgo(idih), &
+             coef_dih(1, idih), coef_dih(2, idih)
         if (iclass_unit(iunit1) == CLASS%PRO) then
            write(lunout, '(a5)') ' pppp'
         else if (iclass_unit(iunit1) == CLASS%RNA) then

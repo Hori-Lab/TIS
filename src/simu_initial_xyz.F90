@@ -10,7 +10,7 @@ subroutine simu_initial_xyz()
   use var_inp,    only : ifile_ini, num_file, i_initial_state
   use var_setp,   only : pdbatom
   use var_struct, only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep,   &
-                         cmp2seq, imp2type, imp2base
+                         cmp2seq, imp2type
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -64,23 +64,7 @@ subroutine simu_initial_xyz()
 
      if(i_initial_state == INISTAT%CG) then
         call read_pdb_cg(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
-                         xyz_mp_rep(:,:,1), cini2seq, cini2atom, imp2type, imp2base)
-
-     else if (iclass == CLASS%LIP) then
-        call read_pdb_lipid(lunini, nunitini, lunit2mpini, nmpini, nresini, iresini_mp, &
-                            xyz_mp_rep(:,:,1), cini2seq, cini2atom)
-
-     else if (iclass == CLASS%DNA) then
-!        call read_pdb_dna(lunini, nunitini, lunit2mpini, nmpini, nresini, iresini_mp, &
-!                          xyz_mp_rep(:,:,1), iontype_mpini, cini2seq, cini2atom, imp2type, iatomnum, xyz)
-        call read_pdbatom_dna(pdb_atom, lunit2atom, nunit_atom, &
-             lunit2mpini, nmpini, nresini, iresini_mp, xyz_mp_rep(:,:,1), iontype_mpini, &
-             cini2seq, cini2atom, imp2type, iatomnum, xyz)
-        nunitini = nunit_atom(2)
-
-     else if (iclass == CLASS%DNA2) then
-        call read_pdb_dna2(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
-             cini2seq, cini2atom, imp2type, imp2base, iatomnum, xyz)
+                         xyz_mp_rep(:,:,1), cini2seq, cini2atom, imp2type)
 
      else if (iclass == CLASS%PRO) then
 !        call read_pdb_pro(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
@@ -107,7 +91,7 @@ subroutine simu_initial_xyz()
   end do
 
   if(i_initial_state /= INISTAT%CG) then
-     call util_posmass(nunit_real, iatomnum, xyz, xyz_mp_rep(:,:,1), cname_ha, cini2atom)
+     call util_posmass(nunit_real, xyz, xyz_mp_rep(:,:,1), cname_ha, cini2atom)
   end if
 
   deallocate(iatomnum, xyz)

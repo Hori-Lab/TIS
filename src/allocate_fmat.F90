@@ -6,9 +6,7 @@ subroutine allocate_fmat()
    use var_struct, only : nbd, nba, ndih, nrna_bp, nrna_st, ncon
    use var_fmat,   only : bl_sum, bl_sum2, ba_sum, ba_sum2, dih_sum_A, dih_sum2_A, &
                           dih_sum_B, dih_sum2_B, bp_sum, bp_sum2, st_sum, st_sum2, &
-                          nl_sum, nl_sum2, &
-                          aamsf_hetero_bl, aamsf_hetero_ba, aamsf_hetero_dih, &
-                          aamsf_hetero_nl, aamsf_hetero_rnabp, aamsf_hetero_rnast
+                          nl_sum, nl_sum2
 
    implicit none
 

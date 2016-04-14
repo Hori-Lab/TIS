@@ -13,9 +13,6 @@ module var_inp
      integer :: rst           = 12
      integer :: para_gen      = 13
      integer :: para_pro      = 14 
-     integer :: para_dna      = 15
-     integer :: para_dna2     = 16
-     integer :: para_lip      = 17
      integer :: para_rna      = 18
      integer :: para_lig      = 19
      integer :: para_hp       = 20
@@ -27,7 +24,6 @@ module var_inp
      integer :: para_aicg2    = 26 ! aicg2
      integer :: msf           = 27 ! fmat
      integer :: para_fsasa    = 28 ! sasa
-     integer :: para_dna2c    = 29 ! 3SPN.2C
      integer :: para_exv      = 30 ! excluded volume
      integer :: dcd(MXREPLICA)
      integer :: velo(MXREPLICA)
@@ -66,7 +62,6 @@ module var_inp
   type numfile
      integer :: pdb
      integer :: ini
-     integer :: pdb_dna
      integer :: para
      integer :: dssp  ! aicg
      integer :: sz

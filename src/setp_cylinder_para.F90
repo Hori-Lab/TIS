@@ -9,8 +9,6 @@ subroutine setp_cylinder_para()
   use const_physical
   use var_inp, only : infile, outfile
   use var_setp, only : inmisc
-  use var_struct, only: nmp_all, lunit2mp
-  use var_replica, only: flg_rep, n_replica_all, rep2val, inrep, lab2val
 
 #ifdef MPI_PAR
   use mpiconst
@@ -23,24 +21,14 @@ subroutine setp_cylinder_para()
 
   ! --------------------------------------------------------------------
   ! local variables
-  integer :: idx, imp, icol, iunit, grep
   integer :: luninp, lunout
   integer :: iline, nlines, iequat, nequat
-  integer :: ipull, iunravel
-  integer :: inunit(2), instate
-  real(PREC) :: factor, pullforce
-  real(PREC) :: local_pull_xyz(3)
 
-  character(7)  :: char7
-  character(11) :: char11
-  character(12) :: char12
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: csides(2, CARRAY_MXEQUA)
   character(CARRAY_MXCOLM)  :: cvalue
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: ctmp00
-  character(CARRAY_MXCOLM) :: cdummy
-  character(CARRAY_MXFILE) :: filename
   character(CARRAY_MSG_ERROR) :: error_message
 
   ! --------------------------------------------------------------------

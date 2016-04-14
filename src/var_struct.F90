@@ -3,9 +3,8 @@
 !>        mainly related to structure information
 !> "mp" is mass point(MP).
 !> "unit" is basic unit of beads.
-!> For protein and nucleotide, "unit" is corresponded to single chain.
-!> On the other hands, for lipid, 1 "unit" could contain many chains.
-!> "class" is the type of the unit; protein, DNA, RNA, or, lipid.
+!> For protein and nucleotide, "unit" corresponds to a single chain.
+!> "class" is the type of the unit; protein and RNA
 
 module var_struct
 
@@ -38,7 +37,6 @@ module var_struct
   integer, save :: imp2unit(MXMP)  !< unit of mp
   integer, save :: istype_mp(MXMP) !< secondary structure of mp
   integer, save :: imp2type(MXMP)
-  integer, save :: imp2base(MXMP)
 
   type group
      integer    :: ngrp   !< number of group
@@ -226,11 +224,6 @@ module var_struct
   integer,    save :: nrna_bp_unit(MXUNIT, MXUNIT)
   integer,    save :: nrna_st_unit(MXUNIT, MXUNIT)
 
-  !> parameters for base stacking DNA
-  integer,    save :: nstack, istack2mp(2, MXSTACK)
-  integer,    save :: lmp2stack(MXMP)
-  real(PREC), save :: stack_nat(MXSTACK)
-
   !> parameters for electrostatic
   integer,    save :: ncharge
   integer, allocatable, save :: icharge2mp(:)         ! (MXCHARGE = nmp_all)
@@ -246,19 +239,10 @@ module var_struct
   integer, allocatable, save :: lele_k(:,:)        ! (ncharge, REPLICA)
   integer, allocatable, save :: iele2charge_k(:,:,:) ! (ncharge, ncharge, REPLICA)
 
-  !> parameters for solvation (DNA) potential
-  integer, allocatable, save :: lsolv(:)        ! (REPLICA)
-  integer, allocatable, save :: isolv2mp(:,:,:) ! (2(+1), MXMPSOLV*nmp_all,REPLICA)
-
   ! ----------------------------------------------------------------
   !> parameters for neighboring (general) list
   integer, allocatable, save :: lpnl(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
   integer, allocatable, save :: ipnl2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
-
-  ! ----------------------------------------------------------------
-  !> parameters for neighboring (lipid, Noguchi) list
-  integer, allocatable, save :: itail2mp(:,:,:)   ! (1(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
-  integer, allocatable, save :: ltail2mp(:,:,:) ! (2, MXMP, REPLICA)
 
   ! ----------------------------------------------------------------
   !> parameters for hydrophobic interaction
@@ -274,40 +258,6 @@ module var_struct
   real(PREC), allocatable, save :: cutoff_dmin_hp(:, :) !(MXMPHP*nhp, REPLICA) 
   real(PREC), allocatable, save :: cutoff_dmax_hp(:, :) !(MXMPHP*nhp, REPLICA)
 
-  ! ----------------------------------------------------------------
-  !> parameters for DNA (3SPN.2 model)
-  
-  ! for base stacking
-  integer, save :: nstk_dna2 = 0
-  integer,    allocatable, save :: istk2mp_dna2(:,:)  !(3,MXSTACK) 
-  real(PREC), allocatable, save :: istk2ebstk_dna2(:) !(MXSTACK)   ! epsilon
-  real(PREC), allocatable, save :: istk2sbstk_dna2(:) !(MXSTACK)   ! sigma
-  real(PREC), allocatable, save :: istk2tbstk_dna2(:) !(MXSTACK)   ! theta
-  real(PREC), save :: kbstk_dna2                                   ! K_BS
-  real(PREC), save :: abstk_dna2                                   ! alpha
-
-  ! for base pairing
-  integer, save :: nbp_dna2 = 0
-  integer,    allocatable, save :: ibp2mp_dna2(:,:) !(6,MXBP)
-  real(PREC), allocatable, save :: ibp2ebp_dna2(:)  !(MXBP)        ! epsilon
-  real(PREC), allocatable, save :: ibp2sbp_dna2(:)  !(MXBP)        ! sigma
-  real(PREC), allocatable, save :: ibp2pbp_dna2(:)  !(MXBP)        ! phi
-  real(PREC), allocatable, save :: ibp2t1bp_dna2(:) !(MXBP)        ! theta1
-  real(PREC), allocatable, save :: ibp2t2bp_dna2(:) !(MXBP)        ! theta2
-  real(PREC), save :: kbp_dna2                                     ! K_BP
-  real(PREC), save :: abp_dna2                                     ! alpha
-
-  ! for cross stacking
-  real(PREC), allocatable, save :: ibp2ecstk1_dna2(:)  !(MXBP)        ! epsilon 1
-  real(PREC), allocatable, save :: ibp2ecstk2_dna2(:)  !(MXBP)        ! epsilon 2
-  real(PREC), allocatable, save :: ibp2scstk1_dna2(:)  !(MXBP)        ! sigma   1
-  real(PREC), allocatable, save :: ibp2scstk2_dna2(:)  !(MXBP)        ! sigma   2
-  real(PREC), allocatable, save :: ibp2tcstk1_dna2(:)  !(MXBP)        ! theta   1
-  real(PREC), allocatable, save :: ibp2tcstk2_dna2(:)  !(MXBP)        ! theta   2
-  real(PREC), allocatable, save :: ibp2t3cstk_dna2(:)  !(MXBP)        ! theta   3
-  real(PREC), save :: kcstk_dna2                                      ! K_CS
-  real(PREC), save :: acstk_dna2                                      ! alpha
-  
 contains
 
   integer function get_icon_type (imp, jmp)
@@ -317,23 +267,11 @@ contains
      integer, intent(in) :: imp, jmp
      character(CARRAY_MSG_ERROR) :: error_message
 
+     get_icon_type = -1
+
      ! protein : protein
      if (imp2type(imp) == MPTYPE%PRO .AND. imp2type(jmp) == MPTYPE%PRO) then
         get_icon_type = CONTYPE%PRO_PRO
-
-     ! DNA : DNA
-     else if (is_dna(imp2type(imp)) .AND. is_dna(imp2type(jmp))) then
-        get_icon_type = CONTYPE%DNA_DNA
-     
-     ! protein : DNA
-     else if ((is_dna(imp2type(imp)) .AND. imp2type(jmp) == MPTYPE%PRO) .OR. &
-              (is_dna(imp2type(jmp)) .AND. imp2type(imp) == MPTYPE%PRO) ) then
-        get_icon_type = CONTYPE%PRO_DNA
-
-     ! protein : DNA2
-     else if ((is_dna2(imp2type(imp)) .AND. imp2type(jmp) == MPTYPE%PRO) .OR. &
-              (is_dna2(imp2type(jmp)) .AND. imp2type(imp) == MPTYPE%PRO) ) then
-        get_icon_type = CONTYPE%PRO_DNA2
 
      ! PROTEIN : LIGAND
      else if ((iclass_mp(imp) == CLASS%LIG .AND. imp2type(jmp) == MPTYPE%PRO) .OR. &
@@ -408,31 +346,4 @@ contains
      endif
   endfunction rna_base_type
 
-  logical function is_dna(itype)
-     use const_index
-     implicit none
-     integer, intent(in) :: itype
-     if (itype == MPTYPE%DNA_PHOS .OR. &
-         itype == MPTYPE%DNA_BASE .OR. &
-         itype == MPTYPE%DNA_SUGAR ) then
-        is_dna = .true.
-     else
-        is_dna = .false.
-     endif
-  endfunction is_dna
-
-  logical function is_dna2(itype)
-     use const_index
-     implicit none
-     integer, intent(in) :: itype
-     if (itype == MPTYPE%DNA2_PHOS .OR. &
-         itype == MPTYPE%DNA2_BASE .OR. &
-         itype == MPTYPE%DNA2_SUGAR ) then
-        is_dna2 = .true.
-     else
-        is_dna2 = .false.
-     endif
-  endfunction is_dna2
-
-  
 end module var_struct

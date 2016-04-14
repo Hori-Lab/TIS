@@ -102,7 +102,6 @@ module const_maxsize
   integer, parameter :: MXREPDIM = 3       !< maximum # of dimensions in REM
 
   ! Optional interaction
-  integer, parameter :: MXLAYER = 10      !< maximum # of lipid layers
   integer, parameter :: MXDEL_LGO = 20 !< maximum # of del-interaction residue groups
   integer, parameter :: MXDEL_GO = 100     !< maximum # of del-interaction residue groups
   integer, parameter :: MXBRIDGE = 20     !< maximum # of bridge residue pairs
@@ -131,9 +130,6 @@ module const_maxsize
   integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues
   integer, parameter :: MXMPHP = 500   !< maximum # of hydrophobic neighbors per residue
 
-  ! DNA (3SPN.2 model)
-  integer, parameter :: MXBP = 1000000  !< maximum # of base pair interactions
-  
   ! character length
   integer, parameter :: CARRAY_MSG_ERROR = 512  !< maximum # of characters in error message
   integer, parameter :: CARRAY_MXFILE = 256  !< maximum # of characters in input filename

@@ -12,15 +12,15 @@ subroutine mloop_flexible_local()
   use var_struct, only: nres, nfba, nfdih, nmp_all, &
        fba_para_x, fba_para_y, fba_para_y2, fdih_para, &
        ifba2mp, ifdih2mp, &
-       factor_ba, factor_dih, coef_ba, coef_dih, &
-       factor_aicg13, coef_aicg13_gauss, &
-       factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
        fdih_ener_corr, fba_ener_corr, &
        fba_min_th, fba_max_th, fba_min_th_ener, fba_max_th_ener, &
        ifba2ba, ifdih2dih !flp_mgo
 
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : factor_ba, factor_dih, coef_ba, coef_dih, &
+                         factor_aicg13, coef_aicg13_gauss, &
+                         factor_aicg14, coef_aicg14_gauss, coef_dih_gauss
 #endif
 
   implicit none
@@ -465,7 +465,6 @@ end subroutine set_flp_ba_dih
 subroutine set_ifba2mp(iflp_mp, idel_mp)
 
   use const_maxsize
-  use var_setp, only : inflp
   use var_struct, only: nba, nfba, ifba2mp, iba2mp, factor_ba, coef_ba, &
                         factor_aicg13, coef_aicg13_gauss, ifba2ba !flp_mgo
   
@@ -506,7 +505,6 @@ end subroutine set_ifba2mp
 subroutine set_ifdih2mp(iflp_mp, idel_mp)
 
   use const_maxsize
-  use var_setp, only: inflp
   use var_struct, only: ndih, nfdih, idih2mp, ifdih2mp, factor_dih, coef_dih, &
                         factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, ifdih2dih !flp_mgo
   

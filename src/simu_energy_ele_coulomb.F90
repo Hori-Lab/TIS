@@ -7,9 +7,8 @@ subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
   use const_physical
   use const_index
   use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele, inion, insimu
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lele, iele2mp, coef_ele, iontype_mp, imp2type
+  use var_setp,    only : inmisc, inele
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele
 #ifdef MPI_PAR3
   use mpiconst
 #endif
@@ -27,7 +26,6 @@ subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
   integer :: imp1, imp2, iunit, junit, iele1, imirror
   real(PREC) :: dist1, dist2
   real(PREC) :: pnl, cutoff2
-  real(PREC) :: rk
   real(PREC) :: v21(SPACE_DIM)
 #ifdef MPI_PAR3
   integer :: klen

@@ -11,8 +11,7 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
   use const_maxsize
   use const_index
   use const_physical
-  use var_struct, only : lunit2mp, iclass_unit, iclass_mp, &
-                         cmp2seq, cmp2atom, imp2type
+  use var_struct, only : lunit2mp, iclass_unit, cmp2seq, cmp2atom, imp2type
   use var_setp,   only : inrna
 #ifdef MPI_PAR
   use mpiconst
@@ -53,7 +52,7 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
 
   call sub_setindex()
 
-  ! using center of mass of sugar and phosphate atom (DNA)
+  ! using center of mass of sugar and phosphate atom (RNA)
   do iunit = 1, nunit
 
      ! treat RNA only

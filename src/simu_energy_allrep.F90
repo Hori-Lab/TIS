@@ -27,13 +27,13 @@ subroutine simu_energy_allrep(pnle_unit,     &
   use var_setp,    only : inmisc, inele, inwind
   use var_struct,  only : nunit_all, nmp_real, iele2mp, lmp2charge, lele, &
                           coef_ele, ncharge, coef_charge
-  use var_simu,    only : qscore_unit, qscore
-  use var_enm,     only : inenm
-  use var_mgo,     only : inmgo
   use var_replica, only : n_replica_all, n_replica_mpi, irep2grep, &
                           lab2val, rep2lab, flg_rep, get_pair, inrep
   use time
   use mpiconst
+#ifdef _DEBUG
+  use var_simu,    only : qscore_unit, qscore
+#endif
 
   implicit none
 ! --------------------------------------------------------------------
@@ -196,9 +196,6 @@ subroutine simu_energy_allrep(pnle_unit,     &
               enddo
            endif
         endif
-        if (inmisc%force_flag(INTERACT%DNA)) then
-           call simu_solv_set(grep, ionic_strength)
-        endif
         if (inmisc%force_flag(INTERACT%DTRNA)) then
            call simu_set_dtrna(grep, tempk_rep)
         endif
@@ -247,9 +244,6 @@ subroutine simu_energy_allrep(pnle_unit,     &
            if (inele%i_diele /= 0 .and. inele%i_calc_method == 0) then
               coef_ele(:,irep) = coef_ele_save(:)
            endif
-        endif
-        if (inmisc%force_flag(INTERACT%DNA)) then
-           call simu_solv_set(grep, ionic_strength)
         endif
         if (inmisc%force_flag(INTERACT%DTRNA)) then
            call simu_set_dtrna(grep, tempk_rep)

@@ -34,7 +34,7 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_energy
   use var_inp,     only : i_run_mode, i_simulate_type, ifile_out_rep, &
                           ifile_out_rst, outfile, ifile_out_opt
-  use var_setp,    only : indna, insimu, inann, ifix_mp, inmmc, &
+  use var_setp,    only : insimu, inann, ifix_mp, inmmc, &
                           inmisc, inele, mts
   use var_struct,  only : nmp_real, xyz_mp_rep, cmass_mp, fric_mp
   use var_mgo,     only : inmgo

@@ -171,20 +171,7 @@ subroutine dump_var_struct(lunout)
      enddo
   enddo
 
-  ! base stacking DNA
-  write(lunout,*) '# base stacking DNA'
-  write(lunout,*) 'nstack,',nstack
-  do i = 1, MXSTACK
-     write(lunout,*) 'istack2mp(:,',i,'),',istack2mp(1,MXSTACK),istack2mp(2,MXSTACK)
-  enddo
-  do i = 1, MXMP
-     write(lunout,*) 'lmp2stack(',i,'),',lmp2stack(i)
-  enddo
-  do i = 1, MXSTACK
-     write(lunout,*) 'stack_nat(',i,'),',stack_nat(i)
-  enddo
-
-  ! electrostatic DNA
+  ! electrostatic
   write(lunout,*) '# electrostatic'
   write(lunout,*) 'ncharge,',ncharge
   do i = 1, MXCHARGE
@@ -227,27 +214,6 @@ subroutine dump_var_struct(lunout)
      write(lunout,*) 'coef_ele is not allocated.'
   endif
 
-  ! solvation DNA
-  write(lunout,*) '# solvation DNA'
-  if (allocated(lsolv)) then
-     ni = ubound(lsolv,1)
-     do i = 1, ni
-        write(lunout,*) 'lele(',i,'),',lsolv(i)
-     enddo
-  else
-     write(lunout,*) 'lsolv is not allocated.'
-  endif
-  if (allocated(isolv2mp)) then
-     nj = ubound(isolv2mp,2)
-     nk = ubound(isolv2mp,3)
-     do k = 1, nk
-        do j = 1, nj
-           write(lunout,*) 'isolv2mp(:,',j,',',k,'),',isolv2mp(:,j,k)
-        enddo
-     enddo
-  else
-     write(lunout,*) 'isolv2mp is not allocated.'
-  endif
 
   ! ----------------------------------------------------------------
   ! neighbor_list
@@ -275,31 +241,6 @@ subroutine dump_var_struct(lunout)
      write(lunout,*) 'ipnl2mp is not allocated.'
   endif
   
-  ! ----------------------------------------------------------------
-  ! int lipid (Noguchi)
-  write(lunout,*) '# lipid (Noguchi)'
-  if (allocated(itail2mp)) then
-     ni = ubound(itail2mp,1)
-     nj = ubound(itail2mp,2)
-     do j = 1, nj
-        do i = 1, ni
-           write(lunout,*) 'itail2mp(1,',i,',',j,'),',itail2mp(1,i,j)
-        enddo
-     enddo
-  else
-     write(lunout,*) 'itail2mp is not allocated.'
-  endif
-  if (allocated(ltail2mp)) then
-     nj = ubound(ltail2mp,2)
-     nk = ubound(ltail2mp,3)
-     do k = 1, nk
-        do j = 1, nj
-           write(lunout,*) 'ltail2mp(:,',j,',',k,'),',ltail2mp(:,j,k)
-        enddo
-     enddo
-  else 
-     write(lunout,*) 'ltail2mp is not allocated.'
-  endif
 
   ! hydrophobic and binding site 
   write(lunout,*) '# hydrophobic'

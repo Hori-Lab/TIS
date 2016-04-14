@@ -16,8 +16,6 @@ subroutine allocate_simu()
                           replica_energy, &
                           sasa, &
                           diffuse_tensor, random_tensor
-!                          r_boxmuller
-  use var_implig,  only : inimplig
 
   implicit none
   integer :: ier = 0

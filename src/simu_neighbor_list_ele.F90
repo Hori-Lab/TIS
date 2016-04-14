@@ -99,14 +99,6 @@ subroutine simu_neighbor_list_ele(jrep)
 
      if(jcharge > ncharge) cycle
 
-     if(iclass_unit(iunit) == CLASS%DNA .or. iclass_unit(iunit) == CLASS%DNA2) then
-        jmp = icharge2mp(jcharge)
-        junit = imp2unit(jmp)
-        if(iunit == junit) then
-           jcharge = jcharge + 1
-        end if
-     end if
-
      do while(jcharge <= ncharge)
         jmp = icharge2mp(jcharge)
         junit = imp2unit(jmp)

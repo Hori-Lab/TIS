@@ -64,23 +64,6 @@ subroutine simu_energy_ele3(irep, pnlet, pnle_unit)
      
 !     jcharge_las = icharge - 1
      jcharge_ini = icharge + 1
-     if(iclass_unit(iunit1) == CLASS%DNA) then
-!        if(icharge >= 2) then
-!           imp2 = icharge2mp(icharge - 1)
-!           iunit2 = imp2unit(imp2)
-!           if(iunit1 == iunit2) then
-!              jcharge_las = jcharge_las - 1
-!           end if
-!        end if
-        
-        if(icharge <= ncharge - 1) then
-           imp2 = icharge2mp(icharge + 1)
-           iunit2 = imp2unit(imp2)
-           if(iunit1 == iunit2) then
-              jcharge_ini = jcharge_ini + 1
-           end if
-        end if
-     end if
      
 !     do jcharge = 1, jcharge_las
 !        

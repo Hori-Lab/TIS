@@ -9,7 +9,7 @@ subroutine simu_force_implig(irep, force_mp)
   use const_physical
   use var_inp,    only : inperi
   use var_setp,   only : inpro
-  use var_struct, only : nmp_real, xyz_mp_rep, pxyz_mp_rep, nmp_all
+  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nmp_all
   use var_mgo,    only : inmgo, ishadow2real_mp_mgo
   use var_implig, only : inimplig, ncon_implig, icon2mp_implig, &
                          vdwrad_implig, istate_implig

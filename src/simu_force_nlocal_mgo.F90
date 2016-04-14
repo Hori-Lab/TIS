@@ -47,7 +47,7 @@ subroutine simu_force_nlocal_mgo(irep, force_mp, force_mp_mgo, ene_unit)
   integer :: jcon = 1
   integer :: iswitch, imirror
   real(PREC) :: dist2
-  real(PREC) :: cut_off, cut_off2
+  real(PREC) :: cut_off
   real(PREC) :: dgo_dr, pre5over6
   real(PREC) :: sigma1, sigma2, gorad2
   real(PREC) :: d2   = 0.0e0_PREC

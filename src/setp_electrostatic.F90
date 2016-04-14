@@ -62,7 +62,6 @@ subroutine setp_electrostatic()
   icalc(1:MXUNIT) = .false. 
   do iunit = 1, nunit_real
      do junit = iunit, nunit_real
-!        if(mod(inmisc%itype_nlocal(iunit, junit), INTERACT%ELE) == 0) then
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ELE)) then
            do imp = lunit2mp(1, iunit), lunit2mp(2, iunit)
               inele%flag_ele(imp) = .true.
@@ -119,10 +118,6 @@ subroutine setp_electrostatic()
         cvalue = 'i_function_form'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%i_function_form, cvalue)
-
-        cvalue = 'dna2_phos_pro_charge'
-        call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inele%dna2_phos_pro_charge, cvalue)
 
         cvalue = 'i_calc_method'
         call ukoto_ivalue2(lunout, csides(1, iequa), &

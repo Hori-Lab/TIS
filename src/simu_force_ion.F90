@@ -8,10 +8,7 @@ subroutine simu_force_ion(irep, force_mp)
   use const_index
   use var_inp,    only : inperi
   use var_setp,   only : inion, inmisc
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_all, &
-                         iontype_mp
-  use var_replica,only : irep2grep
-  use var_simu, only   : istep
+  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_all, iontype_mp
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -117,9 +114,6 @@ subroutine simu_force_ion(irep, force_mp)
      cutoff2 = (inion%cutoff_exv_ion*inion%cdist_exv_ion)**2
      cdist2 = inion%cdist_exv_ion**2
      coef = 24.0e0_PREC * inion%cexv_ion / cdist2
-#ifdef _DEBUG
-     write(*,*) 'exvol DNA'
-#endif
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
      klen=(lpnl(2,E_TYPE%EXV_ION,irep)-lpnl(1,E_TYPE%EXV_ION,irep)+npar_mpi)/npar_mpi

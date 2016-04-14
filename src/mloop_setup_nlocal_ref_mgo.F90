@@ -5,15 +5,13 @@
 subroutine mloop_setup_nlocal_ref_mgo(lact2con_mgo, iact2con_mgo)
 
   use const_maxsize
-  use var_struct, only : ncon, lunit2mp, icon2mp, icon2unit, go_nat, go_nat2
+  use var_struct, only : ncon, lunit2mp, go_nat, go_nat2
   use var_mgo, only : inmgo, iact2unit_mgo, ncontype_mgo, irefcon_mgo
   implicit none
 
   ! ----------------------------------------------------------------------
   integer, intent(in) :: lact2con_mgo(2, MXACT_MGO + 1)
   integer, intent(in) :: iact2con_mgo(MXCON)
-  ! intent(inout) :: icon2mp, icon2unit, ncontype_mgo
-  ! intent(out) :: irefcon_mgo
 
   ! ----------------------------------------------------------------------
   ! local variables

@@ -218,20 +218,6 @@ data/1WDN_2b_pre.velo
 >>>>
 
 
-**************************************************************
-** initial_lipid (required only when "i_initial_state = 5")
-**************************************************************
-**<<<< initial_lipid
-** initial parameter for lipid
-** the number of lipid molecules in x-direction
-nmp_transverse_lipid = 10
-** the number of lipid molecules in y-direction
-nmp_longitudinal_lipid = 10
-nlayer_lipid = 1
-grid_size_lipid = 1.075
-z_coord_lipid(1) = 1.0
->>>>
-
 
 **************************************************************
 ** initial_ion (required only when using explicit ion model)
@@ -284,11 +270,6 @@ LOCAL(2)     L_BOND
 **L_FLP         : flexible local potential
 **L_BOND        : bond potential only
 **L_ENM         : local elastic network model(=NOTHING)
-**L_BDNA        : local DNA interaction 
-**L_DNA2        : local DNA interaction for DNA2 model
-**L_DNA2C       : local DNA interaction for DNA2C model
-**L_LIP_BROWN   : local lipid-lipid(Brown, not yet released)
-**L_LIP_NOGU    : local lipid-lipid(Noguchi, not yet released)
 **L_RIGID_LIG   : ligand rigid interaction (not yet released)
 **L_DTRNA       : DT-RNA model
 
@@ -303,12 +284,6 @@ NLOCAL(1-2b/1-2b)     GO EXV
 **GO[2]         : 12-10 Go potential for native contact pairs
 **EXV[3]        : (c/r)**12 repulsive interaction
 **ELE[7]        : electrostatic interaction (Debye-Huckel form)
-**DNA[11]       : DNA-DNA interaction 
-**DNA2          : DNA-DNA interaction in DNA2 model
-**DNA2C         : DNA-DNA interaction in DNA2C model
-**LIP_BROWN[13] : lipid-lipid (Brown, not yet relesed)
-**LOP_NOGU[17]  : lipid-lipid (Noguchi, without solvation, not yet released)
-**LIP_SOLV[19]  : solvation (lipid-lipid, lipid-protein, not yet released)
 **ENM[23]       : elastic network model (protein)
 **HP[29]        : hydorophobic interaction
 **MORSE[31]     : Morse Go potential (not yet released)
@@ -342,20 +317,10 @@ MULTIGO_SYSTEM(1b)   1b/1b
 i_use_atom_protein = 0
 
 
-** for DNA
-**       = 0 : for using the center of mass of phosphate and sugar (default)
-i_use_atom_dna = 0
-
 ** for excluded volume interactions
 **       = 0 : using same sigmas for all amino-acids (now default, but will be obsolete next version)
 **       = 1 : using type dependent sigmas for different residues (recommended for protein and DNA2)
 i_residue_exv_radii = 0
-
-
-** which atom using for Go interaction in DNA
-**       = 0 : all three CG atoms
-**       = 1 : not use phosphate (default)
-i_go_atom_dna = 1
 
 
 ** for output style of energy
@@ -450,10 +415,6 @@ i_function_form = 0
 **            = 2 direct caluculation for K computer
 i_calc_method = 0
 
-** charge of DNA2/DNA2C phosphate for DNA-protein interaction.
-** NOTICE that for ele interactions inside DNA, it's still -0.6.
-dna2_phos_pro_charge = -1.0
-
 ** define the charges of each type
 **          type charge
 CHARGE_TYPE LYS  1.5
@@ -496,42 +457,6 @@ FLP_ADD(30-35)
 FLP_DEL(40-45)
 >>>>
 
-
-**************************************************************
-** MPC
-**************************************************************
-** explanation
-**pbbox_min_x: periodic boundary box xmin
-**pbbox_max_x: periodic boundary box xmax
-**ngrid_x: number of grid x-axis
-**n_step_collision: the number of ratio for collision process
-**n_step_correct: the number of steps to correct [velocity, temperature]
-**n_av_solvent: the average number of solvent particle in one grid for mpc
-**total solvent particle = ngrid_x*ngrid_y*ngrid_z*n_av_solvent
-**rmass_solvent: the mass for mpc solvent particle
-**rotate_angle:  the rotation angle for collision process [degree]
-<<<< mpc_dynamics
-** thermal bath for solvent particles
-**   = 1 velocity scaling (default)
-**   = 2 Nose-Hoover
-i_thermal_mpc=1
-i_flag_check_mpc=0
-i_flag_check2_mpc=0
-pbbox_min_x = -25.0
-pbbox_max_x =  25.0
-pbbox_min_y = -25.0
-pbbox_max_y = 25.0
-pbbox_min_z = -25.0
-pbbox_max_z = 25.0
-ngrid_x = 25
-ngrid_y = 25
-ngrid_z = 25
-n_step_collision = 100
-nratio_vcorrect_step= 100
-n_av_solvent = 5
-rmass_solvent = 1.0
-rotate_angle = 90.0
->>>>
 
 
 **************************************************************

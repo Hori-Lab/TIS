@@ -6,11 +6,10 @@ subroutine simu_initial()
   use const_index
   use var_inp, only : i_initial_state, i_initial_velo, &
                       i_seq_read_style, i_simulate_type, flg_rst
-  use var_setp, only : insimu, inmisc, irand, mts
-  use var_mgo, only : inmgo
+  use var_setp, only : insimu, inmisc
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp
-  use var_replica, only : n_replica_all, n_replica_mpi
-  use var_simu, only : istep_sim, velo_mp, tempk, inistat
+  use var_replica, only : n_replica_mpi
+  use var_simu, only : istep_sim, velo_mp, tempk
   use mt_stream
 #ifdef MPI_PAR
   use mpiconst
@@ -46,14 +45,6 @@ subroutine simu_initial()
         call simu_initial_xyz()
         call simu_copyxyz_replica()
         
-     ! B-type DNA configuration (not yet released)
-     else if(i_initial_state == INISTAT%BDNA) then
-        call simu_copyxyz_replica()
-        
-     ! Rectangle lipid-sheet configuration (not yet released)
-     else if(i_initial_state == INISTAT%LIPID) then
-        call simu_copyxyz_replica()
-
      else if(i_initial_state == INISTAT%RST) then
         call read_rst(RSTBLK%XYZ)
         
@@ -107,11 +98,6 @@ subroutine simu_initial()
 !     enddo
 !  enddo
 #endif
-
-  ! Input initial velocity of solvent particle for mpc
-  if(i_simulate_type == SIM%MPC) then
-     call simu_initialset_mpc(tempk)
-  end if
 
 #ifdef _DEBUG
   write(*,*) '#### end simu_initial'

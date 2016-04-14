@@ -8,11 +8,8 @@ subroutine read_dcd()
   use const_maxsize
   use const_index
   use var_inp, only : infile
-  use var_setp, only : insimu
-  use var_struct, only : nunit_real, nmp_real, lunit2mp, ires_mp, &
-                         pxyz_mp_rep,xyz_mp_rep, cmp2seq, cmp2atom
-  use var_replica, only : flg_rep, &
-                          rep2val, n_replica_mpi, irep2grep
+  use var_struct, only : nmp_real, pxyz_mp_rep,xyz_mp_rep
+  use var_replica, only : n_replica_mpi, irep2grep
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -36,7 +33,7 @@ subroutine read_dcd()
   ! ---------------------------------------------------------------------
   ! variables in the header section
   integer, save :: ihead=1
-  integer :: iunit, num, ntitle, nblock_size
+  integer :: num, ntitle, nblock_size
   !integer :: nset, istrt, nsavc, nstep, nver
   !real(4) :: delta
   real(4), allocatable :: xyz(:,:)

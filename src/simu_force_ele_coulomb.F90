@@ -9,8 +9,7 @@ subroutine simu_force_ele_coulomb(irep, force_mp)
   use var_inp,    only : outfile, inperi
   use var_setp,   only : inmisc, inele, inion
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         lele, iele2mp, coef_ele, nmp_all, iontype_mp, imp2type
-  use var_simu, only   : istep
+                         lele, iele2mp, coef_ele, nmp_all
 #ifdef MPI_PAR
   use mpiconst
 #endif

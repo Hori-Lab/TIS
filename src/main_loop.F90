@@ -11,9 +11,8 @@ subroutine main_loop()
                           ifile_out_psf, outfile
   use var_setp,    only : insimu, inmisc, inflp
   use var_mgo,     only : inmgo
-  use var_replica, only : inrep
   use var_fmat,    only : infmat, i_num_sum
-  use var_simu,    only : istep_sim, mstep_sim, velo_mp, accel_mp
+  use var_simu,    only : istep_sim, mstep_sim
     
 #ifdef MPI_PAR
   use mpiconst

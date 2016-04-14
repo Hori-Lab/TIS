@@ -102,15 +102,9 @@ subroutine simu_force(force_mp, &  ! [ o]
                                   force_mp_mgo(1,1,1,1,tn), &
                                   ene_unit_l(1,1,tn))
      
-  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS) .or. &
-           inmisc%force_flag_local(LINTERACT%L_DNA2)) then
+  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
      
      call simu_force_dih_gauss(irep, force_mp_l(1,1,tn), &
-                               force_mp_mgo(1,1,1,1,tn), &
-                               ene_unit_l(1,1,tn))
-  end if
-  if (inmisc%force_flag_local(LINTERACT%L_DNA2C)) then
-     call simu_force_dih_3spn2c(irep, force_mp_l(1,1,tn), &
                                force_mp_mgo(1,1,1,1,tn), &
                                ene_unit_l(1,1,tn))
   end if
@@ -133,9 +127,6 @@ subroutine simu_force(force_mp, &  ! [ o]
      endif
   endif
 
-  ! For dna2 (3SPN.2 model)
-  call simu_force_dna2_stack(irep, force_mp_l(1,1,tn))
-  
   ! Calculate flexible local interactions
 
   !if (inmisc%i_add_int == 1) then
@@ -181,17 +172,10 @@ subroutine simu_force(force_mp, &  ! [ o]
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then
      call simu_force_exv_wca (irep, force_mp_l(1,1,tn))
   endif
-  call simu_force_pnl2(irep, force_mp_l(1,1,tn))
-  if (inmisc%class_flag(CLASS%LIP)) then
-     call simu_force_pnl3(irep, force_mp_l(1,1,tn))
-  endif
 
   if (inmisc%class_flag(CLASS%ION)) then
      call simu_force_ion(irep, force_mp_l(1,1,tn))
   endif
-
-  call simu_force_dna2_bp(irep, force_mp_l(1,1,tn))
-  call simu_force_dna2_ex(irep, force_mp_l(1,1,tn))
 
 !$omp master
   TIME_E( tm_force_pnl )

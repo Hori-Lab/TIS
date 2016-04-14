@@ -12,9 +12,9 @@ subroutine setp_native_hp()
   use const_index
   use var_inp, only : outfile
   use var_setp, only : inmisc, inhp
-  use var_struct, only : nunit_real, nmp_real, lunit2hp, lunit2mp, &
+  use var_struct, only : nunit_real, lunit2hp, lunit2mp, &
               nhp, ihp2mp, ncoor_hp, ncoor_max_hp, coef_aa_hp, &
-              cmp2seq, iclass_mp, imp2unit
+              cmp2seq, iclass_mp
 
 #ifdef MPI_PAR
   use mpiconst
@@ -95,7 +95,6 @@ subroutine setp_native_hp()
            if(lunit2hp(2, iunit) < lunit2hp(1, iunit)) cycle
            do junit = iunit, nunit_real
               if(lunit2hp(2, junit) < lunit2hp(1, junit)) cycle
-!              if (mod(inmisc%itype_nlocal(iunit, junit), INTERACT%HP) == 0) then
               if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%HP)) then
                  write (lunout, "(2i7)") iunit, junit
               end if

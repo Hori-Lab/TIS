@@ -11,7 +11,7 @@ subroutine simu_checkforce()
   use const_physical
   use const_index
   use var_inp,     only : outfile
-  use var_setp,    only : indna, inele, insimu
+  use var_setp,    only : inele, insimu
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, nunit_all
   use var_mgo,     only : inmgo
   use var_replica, only : n_replica_all, n_replica_mpi
@@ -74,7 +74,7 @@ subroutine simu_checkforce()
   ! -----------------------------------------------------------------
   call simu_initial()
   
-  ! set inele%coef, inele%cdist, indna%coef_solv_dna
+  ! set inele%coef, inele%cdist
   call simu_para2(tempk, inele%ionic_strength)
 
   do imp = 1, nmp_real

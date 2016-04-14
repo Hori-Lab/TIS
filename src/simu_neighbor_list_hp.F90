@@ -16,12 +16,8 @@ subroutine simu_neighbor_list_hp(irep)
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inhp
-  use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
-                          imp2unit, iclass_unit, &
-                          nhpneigh, nhp, ihp2mp, lunit2hp, cmp2seq, &
-                          lhp2neigh, ineigh2hp, cutoff_dmin_hp, cutoff_dmax_hp, &
-                          iclass_mp, coef_aa_hp, nhp
-  use var_replica, only : n_replica_mpi 
+  use var_struct,  only : nunit_real, xyz_mp_rep, imp2unit, nhpneigh, nhp, ihp2mp, lunit2hp, cmp2seq, &
+                          lhp2neigh, ineigh2hp, cutoff_dmin_hp, cutoff_dmax_hp, iclass_mp
   use time
 #ifdef MPI_PAR2
   use mpiconst
@@ -67,7 +63,6 @@ subroutine simu_neighbor_list_hp(irep)
   icalc(1:nunit_real, 1:nunit_real) = 0
   do iunit = 1, nunit_real
      do junit = iunit, nunit_real
-!        if(mod(inmisc%itype_nlocal(iunit, junit), INTERACT%HP) == 0) then
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%HP)) then
            icalc(iunit, junit) = 1
            icalc(junit, iunit) = 1

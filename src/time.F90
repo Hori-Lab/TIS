@@ -55,16 +55,8 @@ integer,parameter :: tmc_random           =  46
 integer,parameter :: tm_neighbor          =  51
 integer,parameter :: tm_neighbor_pnl      =  52
 integer,parameter :: tm_neighbor_ele      =  53
-integer,parameter :: tm_neighbor_solv     =  54
-integer,parameter :: tm_neighbor_tail     =  55
 integer,parameter :: tm_neighbor_hp       =  56
 integer,parameter :: tm_neighbor_sasa     =  57  !sasa
-
-! for neighbor MPC
-integer,parameter :: tm_mpc               =  61
-integer,parameter :: tm_grid_mpc          =  62
-integer,parameter :: tm_rotate_mpc        =  63
-integer,parameter :: tm_velo_mpc          =  64
 
 ! for energy
 integer,parameter :: tm_energy_sasa       = 100  !sasa
@@ -142,27 +134,12 @@ subroutine time_write( lunout )
   write(lunout, fmt=fmt1) 'random         ', total_time(tm_random), trate*total_time(tm_random)
   write(lunout, fmt=fmt1) '_random(comm)  ', total_time(tmc_random), trate*total_time(tmc_random)
 
-  if(i_simulate_type == SIM%MPC) then
-     write(lunout, fmt=fmt1) 'mpc            ', total_time(tm_mpc), trate*total_time(tm_mpc)
-     write(lunout, fmt=fmt1) '_mpc(grid)     ', total_time(tm_grid_mpc), trate*total_time(tm_grid_mpc)
-     write(lunout, fmt=fmt1) '_mpc(rotate)   ', total_time(tm_rotate_mpc), trate*total_time(tm_rotate_mpc)
-     write(lunout, fmt=fmt1) '_mpc(velo)     ', total_time(tm_velo_mpc), trate*total_time(tm_velo_mpc)
-  end if
-
   write(lunout, fmt=fmt1) 'neighbor       ', total_time(tm_neighbor), trate*total_time(tm_neighbor)
   write(lunout, fmt=fmt1) '_neighbor(comm)', total_time(tmc_neighbor), trate*total_time(tmc_neighbor)
   write(lunout, fmt=fmt1) '_neighbor(pnl) ', total_time(tm_neighbor_pnl), trate*total_time(tm_neighbor_pnl)
 
   if (inmisc%force_flag(INTERACT%ELE)) then
      write(lunout, fmt=fmt1) '_neighbor(ele) ', total_time(tm_neighbor_ele), trate*total_time(tm_neighbor_ele)
-  end if
-
-  if (inmisc%force_flag(INTERACT%DNA)) then
-     write(lunout, fmt=fmt1) '_neighbor(solv)', total_time(tm_neighbor_solv), trate*total_time(tm_neighbor_solv)
-  end if
-
-  if (inmisc%force_flag(INTERACT%LIP_SOLV)) then
-     write(lunout, fmt=fmt1) '_neighbor(tail)', total_time(tm_neighbor_tail), trate*total_time(tm_neighbor_tail)
   end if
 
   if (inmisc%force_flag(INTERACT%HP)) then

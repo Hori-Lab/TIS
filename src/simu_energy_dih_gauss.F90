@@ -10,7 +10,6 @@ subroutine simu_energy_dih_gauss(irep, pnle_unit, pnlet)
   use const_physical
   use var_struct, only : ndih, idih2mp, imp2unit, nunit_all, xyz_mp_rep, &
                          coef_dih_gauss, wid_dih_gauss, dih_nat, iclass_mp
-  use var_setp, only : inmisc
 
 #ifdef MPI_PAR3
   use mpiconst
@@ -55,16 +54,10 @@ subroutine simu_energy_dih_gauss(irep, pnle_unit, pnlet)
 
      if(coef_dih_gauss(idih) < ZERO_JUDGE) cycle
 
-     !iunit = imp2unit(idih2mp(1, idih))
-     !if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS))then
-
      imp1 = idih2mp(1, idih)
      imp2 = idih2mp(2, idih)
      imp3 = idih2mp(3, idih)
      imp4 = idih2mp(4, idih)
-
-     if (iclass_mp( imp1 ) == CLASS%DNA2 .AND. &
-         inmisc%force_flag_local(LINTERACT%L_DNA2C) ) cycle
 
      if (iclass_mp( imp1 ) == CLASS%LIG .AND. &
          iclass_mp( imp4 ) == CLASS%LIG) cycle

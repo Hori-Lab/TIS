@@ -10,7 +10,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   use var_inp,    only : ifile_pdb, num_file
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all,  &
                          lunit2mp, ires_mp, iclass_unit, iclass_mp, &
-                         cmp2seq, cmp2atom, imp2type, imp2base, imp2unit, nres
+                         cmp2seq, cmp2atom, imp2type, imp2unit, nres
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -59,7 +59,7 @@ subroutine read_xyz_cg(xyz_mp_init)
 #endif
 
      call read_pdb_cg(lunpdb, nunitpdb, nmppdb, nrespdb, lunit2mp, ires_mp, &
-                        xyz_mp_init, cmp2seq, cmp2atom, imp2type, imp2base)
+                        xyz_mp_init, cmp2seq, cmp2atom, imp2type)
 
      if(nunitpdb_old /= ifile_pdb(3, i) .or. nunitpdb /= ifile_pdb(4, i)) then
         write (error_message, *) 'Error: invalid unit number in reading pdb file', ' ipdb = ', i
@@ -104,7 +104,6 @@ subroutine read_xyz_cg(xyz_mp_init)
   call MPI_Bcast(cmp2seq,   3*MXMP,           MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(cmp2atom,  4*MXMP,           MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imp2type,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(imp2base,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imp2unit,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(xyz_mp_init,3*MXMP,          PREC_MPI,0,MPI_COMM_WORLD,ierr)
 #endif

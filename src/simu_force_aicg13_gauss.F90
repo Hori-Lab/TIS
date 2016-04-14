@@ -7,8 +7,7 @@ subroutine simu_force_aicg13_gauss(irep, force_mp, force_mp_mgo, ene_unit)
   use const_index
   use const_physical
   use var_struct, only : nba, iba2mp, nmp_all, nunit_all, xyz_mp_rep, &
-                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, iclass_mp, &
-                         imp2unit
+                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, imp2unit
   use var_mgo,    only : inmgo, iba2sysmbr_mgo
   use var_setp,   only : inmisc
   

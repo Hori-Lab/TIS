@@ -1,4 +1,4 @@
-!setp_mapara_dna
+!setp_mapara_ion
 !> @brief Reads parameters related to ion simulation from "para/ion" file. &
 !>        All the information are store into "inion" struct.
 

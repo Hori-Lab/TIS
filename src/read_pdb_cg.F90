@@ -10,8 +10,7 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
                            xyz_mp,   & ![ o] coordinate of mp    (mp   -> xyz )
                            cmp2seq,  & ![ o] correspondence list (mp   -> seq )
                            cmp2atom, & ![ o] correspondence list (mp   -> atom)
-                           imp2type, & ![ o] correspondence list (mp   -> type)
-                           imp2base)   ![ o] correspondence list (mp   -> base)
+                           imp2type  ) ![ o] correspondence list (mp   -> type)
 
    use const_maxsize
    use const_index
@@ -26,7 +25,6 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
    character(3), intent(out)   :: cmp2seq(MXMP)
    character(4), intent(out)   :: cmp2atom(MXMP)
    integer,      intent(out)   :: imp2type(MXMP)
-   integer,      intent(out)   :: imp2base(MXMP)
 
    ! ---------------------------------------------------------------------
    ! local variables
@@ -34,7 +32,7 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
    integer :: imp, iatom, iunit, ires
    integer :: iresnum, iresnum_save
    integer :: iclass, iclass_save
-   integer :: itype, ibase
+   integer :: itype
    logical :: flg_reading
    real(PREC) :: x, y, z
    real(PREC) :: tempfactor, occupancy  ! These variables are just read, not used.
@@ -91,7 +89,7 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
             call util_error(ERROR%STOP_ALL, error_message)
          end if
 
-         call sub_identify_class_and_type(nameofatom, nameofmp, iclass, itype, ibase)
+         call sub_identify_class_and_type(nameofatom, nameofmp, iclass, itype)
 
          if(.not. flg_reading) then
             iunit = iunit + 1
@@ -123,7 +121,6 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
          imp = imp+1
          ires_mp(imp)   = ires
          imp2type(imp)  = itype
-         imp2base(imp)  = ibase
          cmp2seq(imp)   = nameofmp
          cmp2atom(imp)  = nameofatom
          xyz_mp(1, imp) = x
@@ -150,69 +147,21 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
 
 contains
 
-   subroutine sub_identify_class_and_type(c_atom, c_res, i_class, i_type, i_base)
+   subroutine sub_identify_class_and_type(c_atom, c_res, i_class, i_type)
       use const_index
       implicit none
       character(4), intent(in) :: c_atom
       character(3), intent(inout) :: c_res
       integer, intent(out) :: i_class
-      integer, intent(out) :: i_type, i_base
+      integer, intent(out) :: i_type
 
       i_class = CLASS%VOID
       i_type  = MPTYPE%VOID
-      i_base  = BASETYPE%VOID
 
       ! Protein
       if (c_atom == ' CA ') then
          i_class = CLASS%PRO
          i_type  = MPTYPE%PRO
-
-      ! Lipid (tail)
-      elseif (c_res == 'TAI' .AND. c_atom == ' N  ') then
-         i_class = CLASS%LIP
-         i_type  = MPTYPE%LIP_TAIL
-
-      ! Lipid (head)
-      elseif (c_res == 'COR' .AND. c_atom == ' C  ') then
-         i_class = CLASS%LIP
-         i_type  = MPTYPE%LIP_CORE
-
-      ! DNA
-      elseif (c_res == ' DA' .OR. c_res == ' DT' .OR.&
-              c_res == ' DG' .OR. c_res == ' DC' )then
-         i_class = CLASS%DNA
-
-         if     (c_atom == ' S  ') then
-            i_type = MPTYPE%DNA_SUGAR
-         elseif (c_atom == ' N  ') then
-            i_type = MPTYPE%DNA_BASE
-         elseif (c_atom == ' O  ') then
-            i_type = MPTYPE%DNA_PHOS
-         endif
-
-      ! DNA2
-      elseif (c_res == 'DA ' .OR. c_res == 'DT ' .OR.&
-              c_res == 'DG ' .OR. c_res == 'DC ' )then
-         i_class = CLASS%DNA2
-
-         if     (c_atom == 'DS  ') then
-            i_type = MPTYPE%DNA2_SUGAR
-            i_base = BASETYPE%S
-         elseif (c_atom == 'DB  ') then
-            i_type = MPTYPE%DNA2_BASE
-            if (c_res == 'DA ') then
-               i_base = BASETYPE%A
-            else if (c_res == 'DT ') then
-               i_base = BASETYPE%T
-            else if (c_res == 'DG ') then
-               i_base = BASETYPE%G
-            else if (c_res == 'DC ') then
-               i_base = BASETYPE%C
-            end if
-         elseif (c_atom == 'DP  ') then
-            i_type = MPTYPE%DNA2_PHOS
-            i_base = BASETYPE%P
-         endif
 
       ! RNA
       elseif (c_res == 'RA ' .OR. c_res == 'RU ' .OR. c_res == 'RG ' .OR.&

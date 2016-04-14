@@ -6,12 +6,10 @@ subroutine setp_con_implig(xyz_mp_init, &
 
   use const_maxsize
   use const_physical
-!!use var_implig, only : inimplig, naa_site_implig, react_rate_implig, p_implig,&
   use var_implig, only : inimplig, naa_site_implig, p_implig,&
-       ncon_implig, icon2mp_implig, vdwrad_implig, inimplig_bindsite
-  use var_struct, only : lunit2mp, xyz_ref_mp, icon2mp, ncon, imp2unit
-  use var_setp, only : inpara
-  use var_inp, only : infile, outfile
+                         ncon_implig, icon2mp_implig, vdwrad_implig, inimplig_bindsite
+  use var_struct, only : lunit2mp, icon2mp, ncon, imp2unit
+  use var_inp,    only : outfile
 
 
 #ifdef MPI_PAR
@@ -39,7 +37,6 @@ subroutine setp_con_implig(xyz_mp_init, &
   !!  integer, intent(in) :: iatomnum(MXMP)
   !!  real(PREC), intent(in) :: xyz(3, MXMP, 25)
   ! -----------------------------------------------------------
-  !luninp = infile%inp
   lunout = outfile%data
 
 #ifdef MPI_PAR

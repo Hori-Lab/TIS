@@ -7,8 +7,7 @@ subroutine simu_energy_bridge(irep, pnle_unit, pnlet)
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc
-  use var_struct,  only : xyz_mp_rep, imp2unit, grp, cmass_mp
-  use var_replica, only : n_replica_mpi
+  use var_struct,  only : xyz_mp_rep, imp2unit, grp
   use var_simu,    only : flg_ppr_release
 
   implicit none

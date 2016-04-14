@@ -147,17 +147,6 @@ subroutine write_tseries(ibefore_time, istep, &
         endif
         write (lunout, _FMT_TS_REPUL_T_, ADVANCE = "NO") 'repul'
    
-        if(inmisc%force_flag(INTERACT%DNA)) then
-           write (lunout, _FMT_TS_SOLVDNA_T_, ADVANCE = "NO") 'solv_dna'
-           write (lunout, _FMT_TS_STACK_T_,   ADVANCE = "NO") 'stack'
-           write (lunout, _FMT_TS_BASE_T_,    ADVANCE = "NO") 'base'
-        endif
-
-        if (inmisc%force_flag(INTERACT%DNA2) .or. inmisc%force_flag(INTERACT%DNA2C)) then
-           write (lunout, _FMT_TS_STACK_T_,   ADVANCE = "NO") 'stack'
-           write (lunout, _FMT_TS_BASE_T_,    ADVANCE = "NO") 'base'
-        end if
-
         if (inmisc%class_flag(CLASS%RNA)) then
            if (inmisc%i_dtrna_model == 2015) then
               write (lunout, _FMT_TS_STACK_T_,   ADVANCE = "NO") 'stack'
@@ -172,15 +161,6 @@ subroutine write_tseries(ibefore_time, istep, &
 
         if (inmisc%force_flag(INTERACT%ELE)) then
            write (lunout, _FMT_TS_ELECT_T_,   ADVANCE = "NO") 'elect'
-        end if
-   
-        if(inmisc%force_flag(INTERACT%LIP_BROWN)) then
-           write (lunout, _FMT_TS_TAIL_T_, ADVANCE = "NO") 'tail'
-           write (lunout, _FMT_TS_INT_T_,  ADVANCE = "NO") 'int'
-        end if
-
-        if(inmisc%force_flag(INTERACT%LIP_NOGU)) then
-           write (lunout, _FMT_TS_SOLVLIP_T_, ADVANCE = "NO") 'solv_lip'
         end if
    
         if(inmisc%force_flag(INTERACT%ION_HYD)) then
@@ -391,10 +371,9 @@ contains
     real(PREC) :: tpnlet(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
     real(PREC) :: elocal, ego, erepul
-    real(PREC) :: esolv_dna, estack, ebase, eelect, ehp, ehyd_ion
+    real(PREC) :: eelect, ehp, ehyd_ion
     real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
-    real(PREC) :: etail, eint, esolv_lip
     real(PREC) :: ebox, ecap, ebridge, epulling, eanchor, erest1d
     real(PREC) :: eimplig, ewindow, ecylinder
 
@@ -437,18 +416,11 @@ contains
               tpnlet(E_TYPE%DIHE_HARMONIC)
     ego     = tpnlet(E_TYPE%GO)
     emorse  = tpnlet(E_TYPE%MORSE)
-    erepul  = tpnlet(E_TYPE%EXV) + tpnlet(E_TYPE%MBP) + tpnlet(E_TYPE%EXV_DNA) &
-            + tpnlet(E_TYPE%CORE) + tpnlet(E_TYPE%CORE_NOGU) + tpnlet(E_TYPE%EXV_ION) &
+    erepul  = tpnlet(E_TYPE%EXV) + tpnlet(E_TYPE%EXV_ION) &
             + tpnlet(E_TYPE%EXV_WCA) + tpnlet(E_TYPE%EXV_DT15)
-    esolv_dna = tpnlet(E_TYPE%SOLV_DNA)
-    estack  = tpnlet(E_TYPE%STACK_DNA)
-    ebase   = tpnlet(E_TYPE%BP_AT) + tpnlet(E_TYPE%BP_GC) + tpnlet(E_TYPE%BP_DNA)
     estack_rna = tpnlet(E_TYPE%STACK_RNA) + tpnlet(E_TYPE%STACK_DTRNA)
     ehbond_rna = tpnlet(E_TYPE%PAIR_RNA)  + tpnlet(E_TYPE%HBOND_DTRNA)
     eelect  = tpnlet(E_TYPE%ELE)
-    etail = tpnlet(E_TYPE%TAIL)
-    eint  = tpnlet(E_TYPE%INT)
-    esolv_lip = tpnlet(E_TYPE%TAIL_NOGU)
     ehyd_ion  = tpnlet(E_TYPE%HYD_ION)
     ehp       = tpnlet(E_TYPE%HPENE)
     ebox      = tpnlet(E_TYPE%BOX)
@@ -518,17 +490,6 @@ contains
        end if
        write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") erepul
 
-       if(inmisc%force_flag(INTERACT%DNA)) then
-          write (lunout, _FMT_TS_SOLVDNA_, ADVANCE = "NO") esolv_dna
-          write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack
-          write (lunout, _FMT_TS_BASE_,    ADVANCE = "NO") ebase
-       endif
-
-       if (inmisc%force_flag(INTERACT%DNA2) .or. inmisc%force_flag(INTERACT%DNA2C)) then
-          write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack
-          write (lunout, _FMT_TS_BASE_,    ADVANCE = "NO") ebase
-       endif
-       
        if (inmisc%class_flag(CLASS%RNA)) then
           if (inmisc%i_dtrna_model == 2015) then
              write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack_rna
@@ -545,15 +506,6 @@ contains
           write (lunout, _FMT_TS_ELECT_,   ADVANCE = "NO") eelect
        end if
 
-       if(inmisc%force_flag(INTERACT%LIP_BROWN)) then
-          write (lunout, _FMT_TS_TAIL_, ADVANCE = "NO") etail
-          write (lunout, _FMT_TS_INT_,  ADVANCE = "NO") eint
-       end if
-
-       if(inmisc%force_flag(INTERACT%LIP_NOGU)) then
-          write (lunout, _FMT_TS_SOLVLIP_, ADVANCE = "NO") esolv_lip
-       end if
-       
        if(inmisc%force_flag(INTERACT%ION_HYD)) then
           write (lunout, _FMT_TS_HYDION_, ADVANCE = "NO") ehyd_ion
        end if

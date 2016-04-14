@@ -6,9 +6,9 @@ subroutine simu_energy_winz(irep, pnle_unit, pnlet)
 
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inwind
-  use var_struct,  only : xyz_mp_rep, imp2unit, nunit_all, grp
-  use var_replica, only : irep2grep, rep2val, inrep
+  use var_setp,    only : inwind
+  use var_struct,  only : xyz_mp_rep, nunit_all, grp
+  use var_replica, only : irep2grep, inrep
   
 
   implicit none

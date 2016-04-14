@@ -9,7 +9,6 @@ subroutine simu_energy_dih(irep, pnle_unit, pnlet)
   use const_index
   use var_struct,  only : xyz_mp_rep, imp2unit, iclass_mp, &
                           ndih, idih2mp, dih_sin_nat, dih_cos_nat, coef_dih
-  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
   use mpiconst
 #endif

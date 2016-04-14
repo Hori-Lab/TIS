@@ -161,10 +161,6 @@ subroutine inp_job()
      write(lunout, *) 'from native configuration.'
   else if(i_initial_state == INISTAT%INPUT) then
      write(lunout, *) 'from configuration given in the input.'
-  else if(i_initial_state == INISTAT%BDNA) then
-     write(lunout, *) 'from B-type DNA configuration (not yet released).'
-  else if(i_initial_state == INISTAT%LIPID) then
-     write(lunout, *) 'from Rectangle lipid-sheet configuration (not yet released).'
   else if(i_initial_state == INISTAT%CG) then
      write(lunout, *) 'from configuration given in the input with cafemol(CG) style.'
   else if(i_initial_state == INISTAT%RST) then

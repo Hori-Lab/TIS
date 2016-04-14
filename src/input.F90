@@ -8,7 +8,6 @@ subroutine input()
   use const_maxsize
   use const_index
   use var_inp,     only : outfile, infile, i_run_mode, flg_rst
-  use var_replica, only : inrep
 #ifdef MPI_PAR
   use mpiconst
 #endif

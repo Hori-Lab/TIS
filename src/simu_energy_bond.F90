@@ -8,7 +8,6 @@ subroutine simu_energy_bond(irep, pnle_unit, pnlet)
   use const_index
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           nbd, ibd2mp, bd_nat, coef_bd
-  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
   use mpiconst
 #endif

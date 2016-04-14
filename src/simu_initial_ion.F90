@@ -1,6 +1,5 @@
-! setp_make_lipid
-!> @brief  Constructs the initial structure for lipid, and &
-!>         stores it into the argument array.
+! simu_initial_ion
+!> @brief  Constructs the initial distribution of ions
 
 ! ****************************************************************
 subroutine simu_initial_ion(irep)

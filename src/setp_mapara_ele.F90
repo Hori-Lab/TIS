@@ -49,7 +49,6 @@ subroutine setp_mapara_ele()
   inele%diele_water    = INVALID_VALUE
   inele%coef_charge_type(:) = INVALID_VALUE
   inele%length_per_unit(:) = 0.0  ! default
-  inele%dna2_phos_pro_charge = -1.0   ! default
 
 
   ! -------------------------------------------------------------------
@@ -86,10 +85,6 @@ subroutine setp_mapara_ele()
         cvalue = 'i_diele'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%i_diele, cvalue)
-
-        cvalue = 'dna2_phos_pro_charge'
-        call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inele%dna2_phos_pro_charge, cvalue)
 
         cvalue = 'i_charge'
         call ukoto_ivalue2(lunout, csides(1, iequa), &

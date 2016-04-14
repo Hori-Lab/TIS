@@ -125,16 +125,7 @@ subroutine inp_unitstate()
         inmgo%nstate_max_mgo = max( inmgo%nstate_max_mgo, instate )
 
         if(instate <= 1) then
-           if(char7(1:5) == 'lipid') then
-              iclass = CLASS%LIP
-              inmisc%class_flag(CLASS%LIP) = .true.
-           else if(char7(1:4) == 'dna2') then
-              iclass = CLASS%DNA2
-              inmisc%class_flag(CLASS%DNA2) = .true.
-           else if(char7(1:3) == 'dna') then
-              iclass = CLASS%DNA
-              inmisc%class_flag(CLASS%DNA) = .true.
-           else if(char7(1:7) == 'protein') then
+           if(char7(1:7) == 'protein') then
               iclass = CLASS%PRO
               inmisc%class_flag(CLASS%PRO) = .true.
            else if(char7(1:3) == 'rna') then
@@ -202,14 +193,7 @@ subroutine inp_unitstate()
         if(instate >= 2) then
            imgo = 1
 
-           if(char7(1:5) == 'lipid') then
-              iclass = CLASS%LIP
-           else if(char7(1:4) == 'dna2') then
-              iclass = CLASS%DNA2
-              inmisc%class_flag(CLASS%DNA2) = .true.
-           else if(char7(1:3) == 'dna') then
-              iclass = CLASS%DNA
-           else if(char7(1:7) == 'protein') then
+           if(char7(1:7) == 'protein') then
               iclass = CLASS%PRO
            else if(char7(1:3) == 'rna') then
               iclass = CLASS%RNA
@@ -263,28 +247,15 @@ subroutine inp_unitstate()
      inmgo%i_multi_mgo = 1
   end if
 
-  ! ----------------------------------------------------------
-  if(num_class(CLASS%LIP) >= 2) then
-     error_message = 'Error: unit number of lipid should be 1'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
 
   if(i_seq_read_style == SEQREAD%PDB) then
      write (lunout, *) 'Reading sequence information from PDB files'
 
   else if(i_seq_read_style == SEQREAD%INPUT_SEQ) then
      write (lunout, *) 'Reading sequence information from "sequence" field in input file'
-     if(num_class(CLASS%LIP) >= 1 .or. num_class(CLASS%PRO) >= 1 .or. &
+     if(num_class(CLASS%PRO) >= 1 .or. &
         num_class(CLASS%RNA) >= 1 .or. num_class(CLASS%LIG) >= 1 ) then
         error_message = 'Error: solo use for dna if i_seq_read_style = 2'
-        call util_error(ERROR%STOP_ALL, error_message)
-     end if
-
-  else if(i_seq_read_style == SEQREAD%INPUT_LIPID) then
-     write (lunout, *) 'Reading sequence information from "initial_lipid" field in input file'
-     if(num_class(CLASS%DNA) >= 1 .or. num_class(CLASS%PRO) >= 1 .or. &
-        num_class(CLASS%RNA) >= 1 .or. num_class(CLASS%LIG) >= 1) then
-        error_message = 'Error: solo use for lipid if i_seq_read_style = 3'
         call util_error(ERROR%STOP_ALL, error_message)
      end if
 

@@ -13,7 +13,7 @@ subroutine setp_nativestruct( xyz_mp_init &  ! [i ]
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : i_initial_state, i_go_native_read_style
+  use var_inp,    only : i_go_native_read_style
   use var_struct, only : nmp_all
   use var_setp,   only : inmisc
 
@@ -33,26 +33,20 @@ subroutine setp_nativestruct( xyz_mp_init &  ! [i ]
   ! local variables
   integer :: lmp2neigh(MXMP)
   integer :: ineigh2mp(MXMPNEIGHBOR*nmp_all)
-  real(PREC) :: xyz_dna(SPACE_DIM, MXMP)
 
   ! --------------------------------------------------------------------
 #ifdef _DEBUG
   write(*,*) '##### start setp_nativestruct'
 #endif
   
-  if (inmisc%class_flag(CLASS%DNA)) then
-     call setp_make_dna(xyz_dna)
-     call setp_native_stack_dna(xyz_dna)
-  endif
-
   if (i_go_native_read_style /= NATIVEREAD%INFO) then
      ! secondary structure
      call setp_native_secstruct()
 
      ! local
-     call setp_native_bond(xyz_mp_init, xyz_dna)
-     call setp_native_bangle(xyz_mp_init, xyz_dna)
-     call setp_native_dih(xyz_mp_init, xyz_dna)
+     call setp_native_bond(xyz_mp_init)
+     call setp_native_bangle(xyz_mp_init)
+     call setp_native_dih(xyz_mp_init)
   
      ! make neighborlist
      call setp_native_neighbor_list(xyz_mp_init, ineigh2mp, lmp2neigh)
@@ -66,9 +60,6 @@ subroutine setp_nativestruct( xyz_mp_init &  ! [i ]
   !   call setp_native_dtrna(xyz_mp_init)
   !endif
 
-  ! DNA (3SPN.2 model)
-  call setp_native_dna2()
-  
   if (inmisc%force_flag(INTERACT%ELE)) then
      call setp_native_charge()
   endif

@@ -10,8 +10,7 @@ subroutine simu_energy_dih_harmonic(irep, pnle_unit, pnlet)
   use const_physical
   use const_index
   use var_struct,  only : xyz_mp_rep, imp2unit, ndih, &
-                  idih2mp, coef_dih, dih_nat, iclass_mp
-  use var_replica, only : n_replica_mpi
+                          idih2mp, coef_dih, dih_nat, iclass_mp
 #ifdef MPI_PAR3
   use mpiconst
 #endif

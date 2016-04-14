@@ -2,7 +2,7 @@
 !> @brief Control the temperature in simulated annealing.
 !>        Temperature are lowered depending on given step number.
 
-subroutine simu_anneal(istep, ntstep, tempk)
+subroutine simu_anneal(istep, tempk)
   
   use const_maxsize
   use const_physical
@@ -10,7 +10,7 @@ subroutine simu_anneal(istep, ntstep, tempk)
   implicit none
       
   ! --------------------------------------------------------------------
-  integer(L_INT), intent(in)    :: istep, ntstep
+  integer(L_INT), intent(in)    :: istep
   real(PREC),     intent(inout) :: tempk
 
 !  real(PREC), save :: reduction

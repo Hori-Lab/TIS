@@ -12,10 +12,7 @@ subroutine mloop_del_int()
                          ndih, idih2mp, factor_dih, coef_dih, &
                          factor_aicg13, coef_aicg13_gauss, &
                          factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
-                         ncon, icon2mp, coef_go, &
-                         nrna_bp, irna_bp2mp, coef_rna_bp, &
-                         coef_rna_bp_a, coef_rna_bp_fD, &
-                         nmorse, imorse2mp, coef_morse_a, coef_morse_fD
+                         ncon, icon2mp, coef_go
   use var_mgo, only : inmgo, ishadow2real_mp_mgo
 
 #ifdef MPI_PAR

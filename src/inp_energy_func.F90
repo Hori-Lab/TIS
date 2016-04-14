@@ -15,7 +15,6 @@ subroutine inp_energy_func()
        
   use var_setp,   only : inmisc, inflp
   use var_struct, only : nunit_all
-  use var_enm,    only : inenm
   use var_mgo,    only : inmgo
 #ifdef MPI_PAR
   use mpiconst
@@ -28,7 +27,7 @@ subroutine inp_energy_func()
 
   ! ---------------------------------------------------------------------
   ! local variables
-  integer :: i, k
+  integer :: k
   integer :: i1 = 1
   integer :: i2 = 1
   integer :: isw, isw2, itype, icol, jcol, i_ninfo
@@ -39,8 +38,6 @@ subroutine inp_energy_func()
   integer :: luninp, lunout
   integer :: iline, nlines
   integer :: iequa, nequat
-  integer :: itype_nlocal(MXUNIT, MXUNIT)
-  logical :: flag_num
   character(4) :: kfind
   character(CARRAY_MXCOLM) :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: cvalue
@@ -63,17 +60,12 @@ subroutine inp_energy_func()
   inflp%i_flp = 0 ! flexible_local_potential
 
   inmisc%i_use_atom_protein = 0
-  inmisc%i_use_atom_dna     = 0
-  inmisc%i_go_atom_dna     = 0
   inmisc%i_residue_exv_radii = 0
-  inmisc%iflag_solv_nt_dna = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
   inmisc%flg_coef_from_ninfo = .false.
   inmisc%i_temp_independent = 0   ! default
   inmisc%i_dtrna_model = 2013  ! default
-
-  itype_nlocal(1:MXUNIT, 1:MXUNIT) = 1
 
   ! ----------------------------------------------------------------------
   ! read energy function
@@ -132,32 +124,26 @@ subroutine inp_energy_func()
 
            else if (isw == 1) then
 
-              call util_char_type(char00(i1:i1), flag_num)
-
-              if(.not. flag_num) then
-
-                 call lchar2itype(char00, i1, i2, itype)
-                 if(itype /= 0) then
+              call lchar2itype(char00, i1, i2, itype)
+              if(itype /= 0) then
+                 
+                 do iu = inunit(1), inunit(2)
                     
-                    do iu = inunit(1), inunit(2)
-                       
-                       
+                    
+                    if (iu > MXUNIT) then
+                       error_message = 'Error: MXUNIT is too small.'
+                       call util_error(ERROR%STOP_ALL, error_message)
+                    endif
+                    do ju = jnunit(1), jnunit(2)
                        if (iu > MXUNIT) then
                           error_message = 'Error: MXUNIT is too small.'
                           call util_error(ERROR%STOP_ALL, error_message)
                        endif
-                       do ju = jnunit(1), jnunit(2)
-                          if (iu > MXUNIT) then
-                             error_message = 'Error: MXUNIT is too small.'
-                             call util_error(ERROR%STOP_ALL, error_message)
-                          endif
-                          iunit = ius2unit(iu, instate)
-                          junit = ius2unit(ju, instate2)
-                          inmisc%flag_local_unit(iunit, junit, itype) = .TRUE.
-                       end do
+                       iunit = ius2unit(iu, instate)
+                       junit = ius2unit(ju, instate2)
+                       inmisc%flag_local_unit(iunit, junit, itype) = .TRUE.
                     end do
-                 end if
-
+                 end do
               end if
 
               isw = 0
@@ -192,10 +178,9 @@ subroutine inp_energy_func()
 
            else if (isw == 1) then
 
-              call util_char_type(char00(i1:i1), flag_num)
-
-              if(flag_num) then
-                 read (char00(i1:i2), *) itype
+              call char2itype(char00, i1, i2, itype)
+              
+              if(itype /= 0) then
                  do iu = inunit(1), inunit(2)
                     if (iu > MXUNIT) then
                        error_message = 'Error: MXUNIT is too small.'
@@ -208,33 +193,10 @@ subroutine inp_energy_func()
                        endif
                        iunit = ius2unit(iu, instate)
                        junit = ius2unit(ju, instate2)
-                       itype_nlocal(iunit, junit) = itype_nlocal(iunit, junit)*itype
+                       inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
+                       inmisc%flag_nlocal_unit(iunit, junit, itype) = .TRUE.
                     end do
                  end do
-
-              else
-                 
-                 call char2itype(char00, i1, i2, itype)
-                 
-                 if(itype /= 0) then
-                    do iu = inunit(1), inunit(2)
-                       if (iu > MXUNIT) then
-                          error_message = 'Error: MXUNIT is too small.'
-                          call util_error(ERROR%STOP_ALL, error_message)
-                       endif
-                       do ju = jnunit(1), jnunit(2)
-                          if (iu > MXUNIT) then
-                             error_message = 'Error: MXUNIT is too small.'
-                             call util_error(ERROR%STOP_ALL, error_message)
-                          endif
-                          iunit = ius2unit(iu, instate)
-                          junit = ius2unit(ju, instate2)
-                          inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-                          inmisc%flag_nlocal_unit(iunit, junit, itype) = .TRUE.
-                       end do
-                    end do
-                 end if
-
               end if
 
               isw = 0
@@ -242,9 +204,6 @@ subroutine inp_energy_func()
         end do
      end if
   end do
-
-  ! set flag_nlocal_unit from itype_nlocal
-  call type2flag()
 
   ! check nonlocal energy function
   call check_nlocal()
@@ -254,7 +213,6 @@ subroutine inp_energy_func()
 
 #ifdef MPI_PAR
   end if
-!  call MPI_Bcast(inmisc%itype_nlocal,MXUNIT*MXUNIT,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%flag_local_unit,MXUNIT*MXUNIT*LINTERACT%MAX,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%flag_nlocal_unit,MXUNIT*MXUNIT*INTERACT%MAX,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
 #endif
@@ -417,21 +375,9 @@ subroutine inp_energy_func()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_use_atom_protein, cvalue)
 
-        cvalue = 'i_use_atom_dna'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_use_atom_dna, cvalue)
-
-        cvalue = 'i_go_atom_dna'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_go_atom_dna, cvalue)
-
         cvalue = 'i_residue_exv_radii'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_residue_exv_radii, cvalue)
-
-        cvalue = 'iflag_solv_nt_dna'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%iflag_solv_nt_dna, cvalue)
 
         cvalue = 'i_output_energy_style'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -491,10 +437,7 @@ subroutine inp_energy_func()
 
   call MPI_Bcast(inmisc%flg_coef_from_ninfo,   1,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%i_use_atom_dna,        1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%i_go_atom_dna,         1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_residue_exv_radii,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%iflag_solv_nt_dna,     1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_triple_angle_term,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_temp_independent,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
@@ -557,32 +500,28 @@ subroutine inp_energy_func()
 
   ! -----------------------------------------------------------------
   ! output energy function
-  write (lunout, '(72(1H*))')
-  write (lunout, '(a)') &
-       '**** interaction type and coefficient between units ****'
-  write (lunout, '(a)') '<type>'
-  write (lunout, '(a)') '--------------------------------------------'
-  write (lunout, '(a4, a2, 200i4)') 'unit','|', (i , i = 1, nunit_all)
-  write (lunout, '(a)') '--------------------------------------------'
-  do iunit = 1, nunit_all
-     write (lunout, '(i4, a2, 200i4)') &
-          iunit, '|', (itype_nlocal(junit, iunit), junit = 1, iunit)
-  end do
-
-
-  write (lunout, '(a)') '--------------------------------------------'
-  write (lunout, '(i2, a)') 1, ' : no interation'
-  write (lunout, '(i2, a)') INTERACT%GO, ' : 12-10 Go potential'
-  write (lunout, '(i2, a)') INTERACT%EXV, ' : (c/r)**12 repulsion'
-  write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
-  write (lunout, '(i2, a)') INTERACT%DNA, ' : DNA-DNA'
-  write (lunout, '(i2, a)') INTERACT%LIP_BROWN, ' : lipid-lipid (Brown)'
-  write (lunout, '(i2, a)') INTERACT%LIP_NOGU, ' : lipid-lipid (Noguchi, without solvation)'
-  write (lunout, '(i2, a)') INTERACT%LIP_SOLV, ' : solvation (lipid-lipid, lipid-protein)'
-  write (lunout, '(i2, a)') INTERACT%ENM, ' : elastic network model'
-  write (lunout, '(i2, a)') INTERACT%HP, ' : hydrophobic interaction'
-  write (lunout, '(i2, a)') INTERACT%SASA, ' : sasa interaction'  !sasa
-  write (lunout, '(a)') ''
+!  write (lunout, '(72(1H*))')
+!  write (lunout, '(a)') &
+!       '**** interaction type and coefficient between units ****'
+!  write (lunout, '(a)') '<type>'
+!  write (lunout, '(a)') '--------------------------------------------'
+!  write (lunout, '(a4, a2, 200i4)') 'unit','|', (i , i = 1, nunit_all)
+!  write (lunout, '(a)') '--------------------------------------------'
+!  do iunit = 1, nunit_all
+!     write (lunout, '(i4, a2, 200i4)') &
+!          iunit, '|', (itype_nlocal(junit, iunit), junit = 1, iunit)
+!  end do
+!
+!
+!  write (lunout, '(a)') '--------------------------------------------'
+!  write (lunout, '(i2, a)') 1, ' : no interation'
+!  write (lunout, '(i2, a)') INTERACT%GO, ' : 12-10 Go potential'
+!  write (lunout, '(i2, a)') INTERACT%EXV, ' : (c/r)**12 repulsion'
+!  write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
+!  write (lunout, '(i2, a)') INTERACT%ENM, ' : elastic network model'
+!  write (lunout, '(i2, a)') INTERACT%HP, ' : hydrophobic interaction'
+!  write (lunout, '(i2, a)') INTERACT%SASA, ' : sasa interaction'  !sasa
+!  write (lunout, '(a)') ''
 
 
   ! -----------------------------------------------------------------
@@ -609,39 +548,6 @@ subroutine inp_energy_func()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-
-  ! -----------------------------------------------------------------
-  ! using atoms of phosphate and sugar (DNA), inmisc%i_use_atom_dna
-  if(inmisc%i_use_atom_dna == USE_DNA%COM_PS) then
-     write (lunout, *) 'using the center of mass of phosphate and sugar'
-  else
-     error_message = 'Error: invalid value for inmisc%i_use_atom_dna'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-
-  ! -----------------------------------------------------------------
-  ! which CG atoms using for Go interaction in DNA, inmisc%i_go_atom_dna
-  if(inmisc%i_go_atom_dna == 0) then
-     write (lunout, *) 'using the all three CG atoms for Go interaction in DNA'
-  else if(inmisc%i_go_atom_dna == 1) then
-     write (lunout, *) 'not using phosphate for Go interaction in DNA'
-  else
-     error_message = 'Error: invalid value for inmisc%i_go_atom_dna'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-
-  ! -----------------------------------------------------------------
-  ! which CG atoms using for Go interaction in DNA, inmisc%iflag_solv_nt_dna
-  if(inmisc%iflag_solv_nt_dna == 0) then
-     write (lunout, *) 'using the original solvation term in 3SPN.1 model (N_nt term is using first DNA chain'
-  else if(inmisc%iflag_solv_nt_dna == 1) then
-     write (lunout, *) 'using modified solvation term in 3SPN.1 model to be independent of DNA chain length'
-  else
-     error_message = 'Error: invalid value for inmisc%i_flag_solv_nt_dna'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
 
   ! -----------------------------------------------------------------
   ! parameter set for excluded volume interaction: inmisc%i_residue_exv_radii
@@ -742,21 +648,6 @@ contains
     else if(char00(i1:i2) == 'L_ENM') then
        itype = LINTERACT%L_ENM
 
-    else if(char00(i1:i2) == 'L_BDNA') then
-       itype = LINTERACT%L_BDNA
-       
-    else if(char00(i1:i2) == 'L_DNA2') then
-       itype = LINTERACT%L_DNA2
-
-    else if(char00(i1:i2) == 'L_DNA2C') then
-       itype = LINTERACT%L_DNA2C
-
-    else if(char00(i1:i2) == 'L_LIP_BROWN') then
-       itype = LINTERACT%L_LIP_BROWN
-
-    else if(char00(i1:i2) == 'L_LIP_NOGU') then
-       itype = LINTERACT%L_LIP_NOGU
-
     else if(char00(i1:i2) == 'L_RIGID_LIG') then
        itype = LINTERACT%L_RIGID_LIG
 
@@ -790,24 +681,6 @@ contains
 
     else if(char00(i1:i2) == 'ELE') then
        itype = INTERACT%ELE
-
-    else if(char00(i1:i2) == 'DNA') then
-       itype = INTERACT%DNA
-
-    else if(char00(i1:i2) == 'DNA2') then
-       itype = INTERACT%DNA2
-
-    else if(char00(i1:i2) == 'DNA2C') then
-       itype = INTERACT%DNA2C
-
-    else if(char00(i1:i2) == 'LIP_BROWN') then
-       itype = INTERACT%LIP_BROWN
-
-    else if(char00(i1:i2) == 'LIP_NOGU') then
-       itype = INTERACT%LIP_NOGU
-
-    else if(char00(i1:i2) == 'LIP_SOLV') then
-       itype = INTERACT%LIP_SOLV
 
     else if(char00(i1:i2) == 'ENM') then
        itype = INTERACT%ENM
@@ -853,111 +726,6 @@ contains
   end subroutine char2itype
 
 
-  subroutine type2flag()
-
-    use const_index
-    implicit none
-
-    do iunit = 1, nunit_all
-       do junit = 1, nunit_all
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%GO) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%GO) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%EXV) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%ELE) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ELE) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%DNA) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%DNA) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%LIP_BROWN) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LIP_BROWN) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%LIP_NOGU) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LIP_NOGU) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%LIP_SOLV) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LIP_SOLV) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%ENM) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ENM) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%HP) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%HP) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%MORSE) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%MORSE) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%PAIR_RNA) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%PAIR_RNA) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%ION_HYD) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ION_HYD) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%ION_EXV) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ION_EXV) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%AICG1) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%AICG1) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%AICG2) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%AICG2) = .TRUE.
-          end if
-
-!sasa
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%SASA) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%SASA) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%DTRNA) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%DTRNA) = .TRUE.
-          end if
-
-          if(mod(itype_nlocal(iunit, junit), PRIME_INTERACT%EXV_WCA) == 0) then
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
-             inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_WCA) = .TRUE.
-          end if
-
-       end do
-    end do
-    
-  end subroutine type2flag
-
-
   subroutine check_nlocal()
 
     use const_index
@@ -992,24 +760,12 @@ contains
                    call util_error(ERROR%STOP_ALL, error_message)
                 end if
                 
-             else if(iforce == INTERACT%DNA) then
-                if(iclass_unit(iunit) /= CLASS%DNA) then
-                   error_message = 'Error: DNA interaction is only applicable for DNA'
-                   call util_error(ERROR%STOP_ALL, error_message)
-                end if
-                
              else if(iforce == INTERACT%PAIR_RNA) then
                 if(iclass_unit(iunit) /= CLASS%RNA) then
                    error_message = 'Warning: PAIR_RNA interaction is only applicable for RNA'
                    call util_error(ERROR%WARN_ALL, error_message)
                 end if
                 
-             else if(iforce == INTERACT%LIP_BROWN .or. iforce == INTERACT%LIP_NOGU) then
-                if(iclass_unit(iunit) /= CLASS%LIP) then
-                   error_message = 'Error: LIP_BROWN and LIP_NOGU interactions are only applicable for lipid'
-                   call util_error(ERROR%STOP_ALL, error_message)
-                end if
-
              else if(iforce == INTERACT%DTRNA) then
                 if(iclass_unit(iunit) /= CLASS%RNA) then
                    error_message = 'Error: DTRNA interactions are only applicable for RNA'
@@ -1052,14 +808,7 @@ contains
        ! default setting of local interaction from nonlocal_interaction
        if(n_local_input == 0) then
 
-          if(iclass_unit(iunit) == CLASS%DNA) then
-             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%DNA)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BDNA) = .TRUE.
-             else
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BOND) = .TRUE.
-             end if
-
-          else if(iclass_unit(iunit) == CLASS%PRO) then
+          if(iclass_unit(iunit) == CLASS%PRO) then
              if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%GO)) then
                 inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
              else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%AICG1)) then
@@ -1086,15 +835,6 @@ contains
 
           else if(iclass_unit(iunit) == CLASS%ION) then
              inmisc%flag_local_unit(iunit, iunit, LINTERACT%NOTHING) = .TRUE.
-
-          else if(iclass_unit(iunit) == CLASS%LIP) then
-             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%LIP_BROWN)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_LIP_BROWN) = .TRUE.
-             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%LIP_NOGU)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_LIP_NOGU) = .TRUE.
-             else
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BOND) = .TRUE.
-             end if
 
           end if
 

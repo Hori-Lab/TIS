@@ -62,7 +62,6 @@ subroutine simu_neighbor_list_ele2(jrep)
   icalc(1:nunit_real, 1:nunit_real) = 0
   do iunit = 1, nunit_real
      do junit = iunit, nunit_real
-!        if(mod(inmisc%itype_nlocal(iunit, junit), INTERACT%ELE) == 0) then
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ELE)) then
            icalc(iunit, junit) = 1
            icalc(junit, iunit) = 1
@@ -102,12 +101,6 @@ subroutine simu_neighbor_list_ele2(jrep)
         if(abs(icharge - jcharge) <= 1) then
            if(icharge == jcharge) then
               cycle
-           else
-              if(iclass_unit(iunit) == CLASS%DNA) then
-                 if(iunit == junit) then
-                    cycle
-                 end if
-              end if
            end if
         end if
 

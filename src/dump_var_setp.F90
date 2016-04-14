@@ -49,67 +49,6 @@ subroutine dump_var_setp(lunout)
   write(lunout,*) 'inpro % cdist_rep12,',inpro%cdist_rep12
   write(lunout,*) 'inpro % crep12,',inpro%crep12
 
-!  type input_dnaparameter
-!     real(PREC) :: energy_unit_dna
-!     real(PREC) :: cbd_dna
-!     real(PREC) :: cbd2_dna
-!     real(PREC) :: cba_dna
-!     real(PREC) :: cdih_1_dna
-!     real(PREC) :: cdih_3_dna
-!     real(PREC) :: dfcontact_dna
-!     real(PREC) :: renorm_dist_stack
-!     real(PREC) :: cstack
-!     real(PREC) :: cutoff_stack
-!     real(PREC) :: cbp_at
-!     real(PREC) :: cdist_bp_at
-!     real(PREC) :: cbp_gc
-!     real(PREC) :: cdist_bp_gc
-!     real(PREC) :: cutoff_bp
-!     real(PREC) :: cmbp
-!     real(PREC) :: cdist_mbp
-!     real(PREC) :: cutoff_mbp
-!     real(PREC) :: cexv_dna
-!     real(PREC) :: cdist_exv_dna
-!     real(PREC) :: cutoff_exv_dna
-!     real(PREC) :: cutoff_ele_dna
-!     real(PREC) :: cation_ele_dna
-!     real(PREC) :: cdist_ele_dna(MXREPLICA)
-!     real(PREC) :: coef_ele_dna(MXREPLICA)
-!     real(PREC) :: coef_solv_dna
-!     real(PREC) :: csolvmax_dna
-!     real(PREC) :: cdist_solv_dna
-!     real(PREC) :: cralpha_solv_dna
-!     real(PREC) :: cutoff_solv_dna
-!  end type input_dnaparameter
-!  type(input_dnaparameter), save :: indna
-
-  write(lunout,*) 'indna % energy_unit_dna,', indna%energy_unit_dna
-  write(lunout,*) 'indna % cbd_dna,', indna%cbd_dna
-  write(lunout,*) 'indna % cbd2_dna,', indna%cbd2_dna
-  write(lunout,*) 'indna % cba_dna,', indna%cba_dna
-  write(lunout,*) 'indna % cdih_1_dna,', indna%cdih_1_dna
-  write(lunout,*) 'indna % cdih_3_dna,', indna%cdih_3_dna
-  write(lunout,*) 'indna % dfcontact_dna,', indna%dfcontact_dna
-  write(lunout,*) 'indna % renorm_dist_stack,', indna%renorm_dist_stack
-  write(lunout,*) 'indna % cstack,', indna%cstack
-  write(lunout,*) 'indna % cutoff_stack,', indna%cutoff_stack
-  write(lunout,*) 'indna % cbp_at,', indna%cbp_at
-  write(lunout,*) 'indna % cdist_bp_at,', indna%cdist_bp_at
-  write(lunout,*) 'indna % cbp_gc,', indna%cbp_gc
-  write(lunout,*) 'indna % cdist_bp_gc,', indna%cdist_bp_gc
-  write(lunout,*) 'indna % cutoff_bp,', indna%cutoff_bp
-  write(lunout,*) 'indna % cmbp,', indna%cmbp
-  write(lunout,*) 'indna % cdist_mbp,', indna%cdist_mbp
-  write(lunout,*) 'indna % cutoff_mbp,', indna%cutoff_mbp
-  write(lunout,*) 'indna % cexv_dna,', indna%cexv_dna
-  write(lunout,*) 'indna % cdist_exv_dna,', indna%cdist_exv_dna
-  write(lunout,*) 'indna % cutoff_exv_dna,', indna%cutoff_exv_dna
-  write(lunout,*) 'indna % coef_solv_dna,', indna%coef_solv_dna
-  write(lunout,*) 'indna % csolvmax_dna,', indna%csolvmax_dna
-  write(lunout,*) 'indna % cdist_solv_dna,', indna%cdist_solv_dna
-  write(lunout,*) 'indna % cralpha_solv_dna,', indna%cralpha_solv_dna
-  write(lunout,*) 'indna % cutoff_solv_dna,', indna%cutoff_solv_dna
-
   write(lunout,*) 'inele % i_diele,', inele%i_diele
   write(lunout,*) 'inele % cutoff_ele,', inele%cutoff_ele
   write(lunout,*) 'inele % ionic_strength,', inele%ionic_strength
@@ -118,52 +57,6 @@ subroutine dump_var_setp(lunout)
   enddo
   do i = 1, MXREPLICA
      write(lunout,*) 'inele % coef(',i,'),', inele%coef(i)
-  enddo
-
-!  type input_lipidparameter
-!     real(PREC) :: energy_unit_lipid
-!     integer :: num_lip_total
-!     integer :: num_lip_core
-!     integer :: num_lip_int
-!     integer :: num_lip_tail
-!     real(PREC) :: sigma_lipid
-!     real(PREC) :: cbd_lipid
-!     real(PREC) :: cba_lipid
-!     real(PREC) :: ccore
-!     real(PREC) :: cutoff_core
-!     real(PREC) :: ctail
-!     real(PREC) :: cutoff_tail
-!     real(PREC) :: cint
-!     real(PREC) :: cutoff_int
-!
-!     integer :: nmp_transverse_lipid
-!     integer :: nmp_longitudinal_lipid
-!     integer :: nlayer_lipid
-!     real(PREC) :: grid_size_lipid
-!     real(PREC) :: z_coord_lipid(MXLAYER)
-!  end type input_lipidparameter
-!  type(input_lipidparameter), save :: inlip
-
-  write(lunout,*) 'inlip % energy_unit_lipid,', inlip%energy_unit_lipid
-  write(lunout,*) 'inlip % num_lip_total,', inlip%num_lip_total
-  write(lunout,*) 'inlip % num_lip_core,', inlip%num_lip_core
-  write(lunout,*) 'inlip % num_lip_int,', inlip%num_lip_int
-  write(lunout,*) 'inlip % num_lip_tail,', inlip%num_lip_tail
-  write(lunout,*) 'inlip % sigma_lipid,', inlip%sigma_lipid
-  write(lunout,*) 'inlip % cbd_lipid,', inlip%cbd_lipid
-  write(lunout,*) 'inlip % cba_lipid,', inlip%cba_lipid
-  write(lunout,*) 'inlip % ccore,', inlip%ccore
-  write(lunout,*) 'inlip % cutoff_core,', inlip%cutoff_core
-  write(lunout,*) 'inlip % ctail,', inlip%ctail
-  write(lunout,*) 'inlip % cutoff_tail,', inlip%cutoff_tail
-  write(lunout,*) 'inlip % cint,', inlip%cint
-  write(lunout,*) 'inlip % cutoff_int,', inlip%cutoff_int
-  write(lunout,*) 'inlip % nmp_transverse_lipid,', inlip%nmp_transverse_lipid
-  write(lunout,*) 'inlip % nmp_longitudinal_lipid,', inlip%nmp_longitudinal_lipid
-  write(lunout,*) 'inlip % nlayer_lipid,', inlip%nlayer_lipid
-  write(lunout,*) 'inlip % grid_size_lipid,', inlip%grid_size_lipid
-  do i = 1, MXLAYER
-     write(lunout,*) 'inlip % z_coord_lipid(',i,'),', inlip%z_coord_lipid(i)
   enddo
 
 !  type input_ligandparameter
@@ -276,7 +169,6 @@ subroutine dump_var_setp(lunout)
 
 !  type input_miscellaneous
 !     integer :: i_use_atom_protein
-!     integer :: i_use_atom_dna
 !     integer :: itype_nlocal(MXUNIT, MXUNIT)
 !     logical :: force_flag(INTERACT%MAX)
 !
@@ -339,7 +231,6 @@ subroutine dump_var_setp(lunout)
 !  type(input_miscellaneous), save :: inmisc
 
   write(lunout,*) 'inmisc % i_use_atom_protein,', inmisc%i_use_atom_protein
-  write(lunout,*) 'inmisc % i_use_atom_dna,', inmisc%i_use_atom_dna
 !  do j = 1, MXUNIT
 !     do i = 1, MXUNIT
 !        write(lunout,*) 'inmisc % itype_nlocal(',i,',',j,'),', inmisc%itype_nlocal(i,j)

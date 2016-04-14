@@ -8,7 +8,7 @@ subroutine write_crd(i_record_file, istep, velo_mp)
   use var_inp, only : outfile
   use var_struct, only : nmp_real, nunit_real, lunit2mp, iclass_unit, &
        ires_mp, cmp2seq, cmp2atom, xyz_mp_rep
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
+  use var_replica, only : n_replica_mpi, irep2grep
 
   implicit none
 
@@ -92,10 +92,6 @@ subroutine write_crd(i_record_file, istep, velo_mp)
         ! determine the type of residue
         if (iclass_unit(iunit) == CLASS%PRO) then
            ctype = 'P'
-        else if (iclass_unit(iunit) == CLASS%DNA) then
-           ctype = 'D'
-        else if (iclass_unit(iunit) == CLASS%LIP) then
-           ctype = 'L'
         else if (iclass_unit(iunit) == CLASS%RNA) then
            ctype = 'R'
         else if (iclass_unit(iunit) == CLASS%LIG) then

@@ -13,12 +13,13 @@ subroutine setp_aicg2(iatomnum, xyz, cname_ha)
                          coef_bd, coef_ba, coef_dih, &
                          coef_aicg13_gauss, coef_aicg14_gauss, coef_dih_gauss, coef_go, &
                          wid_aicg13_gauss, wid_aicg14_gauss,wid_dih_gauss, &
-                         nmp_all, ibd2mp, iba2mp, idih2mp, cmp2seq, &
-                         iclass_mp, icon2unit, imp2unit
+                         ibd2mp, iba2mp, idih2mp, &
+                         icon2unit, imp2unit
   use var_inp,  only : outfile
   use var_setp, only : inaicg2, inmisc
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : nmp_all
 #endif
   implicit none    
   real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)

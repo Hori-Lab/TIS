@@ -11,9 +11,10 @@ subroutine read_seq()
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all, &
                          lunit2mp, iclass_unit, iclass_mp, &
                          nres, ires_mp, cmp2seq, cmp2atom, imp2unit, &
-                         imp2type, iontype_mp
+                         iontype_mp
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : imp2type
 #endif
   implicit none
 
@@ -119,36 +120,11 @@ subroutine read_seq()
         do j = 1, 13
            if(imp_exist(j) == 0) cycle
 
-           if(seq(j) == ' DA' .or. seq(j) == ' DT' .or. seq(j) == ' DG' .or. seq(j) == ' DC') then
-              ires = ires + 1
-              if(istartchain == 1) then
-                 istartchain = 0
-                 ires = ires + 1
-              else
-                 imp = imp + 1
-                 ires_mp(imp) = ires
-                 iontype_mp(imp) = IONTYPE%P
-                 cmp2seq(imp) = seq(j)
-                 cmp2atom(imp) = ' O  '
-                 imp2type(imp) = MPTYPE%DNA_PHOS
-              end if
-              imp = imp + 1
-              ires_mp(imp) = ires
-              cmp2seq(imp) = seq(j)
-              cmp2atom(imp) = ' S  '
-              imp2type(imp) = MPTYPE%DNA_SUGAR
-              imp = imp + 1
-              ires_mp(imp) = ires
-              cmp2atom(imp) = ' N  '
-              imp2type(imp) = MPTYPE%DNA_BASE
-              cmp2seq(imp) = seq(j)
-           else
-              imp = imp + 1
-              ires = ires + 1
-              ires_mp(imp) = ires
-              cmp2seq(imp) = seq(j)
-              cmp2atom(imp) = ' CA '
-           end if
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp) = ires
+           cmp2seq(imp) = seq(j)
+           cmp2atom(imp) = ' CA '
         end do
         
      else if(ctmp00(1:4) == '>>>>') then

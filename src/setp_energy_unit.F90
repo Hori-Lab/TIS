@@ -5,15 +5,9 @@
 subroutine setp_energy_unit()
   
   use const_maxsize
-  use var_setp, only : inpro, indna, inlip, inrna, inligand
+  use var_setp, only : inpro, inrna, inligand
 
   implicit none
-
-  ! ----------------------------------------------------------------------
-  ! intent(inout) :: inpro, indna, inlip
-
-  ! ----------------------------------------------------------------------
-  ! local variables
 
   ! -------------------------------------------------------------------
   ! protein
@@ -24,20 +18,6 @@ subroutine setp_energy_unit()
   inpro%cdih_3 = inpro%energy_unit_protein * inpro%cdih_3
   inpro%cgo1210 = inpro%energy_unit_protein * inpro%cgo1210
   inpro%crep12 = inpro%energy_unit_protein * inpro%crep12
-
-  ! -------------------------------------------------------------------
-  ! dna
-  indna%cbd_dna = indna%cbd_dna * indna%energy_unit_dna
-  indna%cbd2_dna = indna%cbd2_dna * indna%energy_unit_dna
-  indna%cba_dna = indna%cba_dna * indna%energy_unit_dna
-  indna%cdih_1_dna = indna%cdih_1_dna * indna%energy_unit_dna
-  indna%cdih_3_dna = indna%cdih_3_dna * indna%energy_unit_dna
-  indna%cstack = indna%cstack * indna%energy_unit_dna
-  indna%cbp_at = indna%cbp_at * indna%energy_unit_dna
-  indna%cbp_gc = indna%cbp_gc * indna%energy_unit_dna
-  indna%cmbp = indna%cmbp * indna%energy_unit_dna
-  indna%cexv_dna = indna%cexv_dna * indna%energy_unit_dna
-  indna%csolvmax_dna = indna%csolvmax_dna * indna%energy_unit_dna
   
   ! -------------------------------------------------------------------
   ! rna
@@ -99,14 +79,6 @@ subroutine setp_energy_unit()
   inrna%cstmorse_D = inrna%energy_unit * inrna%cstmorse_D
   inrna%cstmorse_a = inrna%energy_unit * inrna%cstmorse_a
   inrna%crep12      = inrna%energy_unit * inrna%crep12
-
-  ! -------------------------------------------------------------------
-  ! lipid
-  inlip%cbd_lipid = inlip%cbd_lipid * inlip%energy_unit_lipid
-  inlip%cba_lipid = inlip%cba_lipid * inlip%energy_unit_lipid
-  inlip%ccore = inlip%ccore * inlip%energy_unit_lipid
-  inlip%ctail = inlip%ctail * inlip%energy_unit_lipid
-  inlip%cint = inlip%cint * inlip%energy_unit_lipid
  
   ! -------------------------------------------------------------------
   ! explicit ligand

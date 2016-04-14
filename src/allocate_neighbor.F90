@@ -8,12 +8,11 @@ subroutine allocate_neighbor()
   use var_inp,     only : inperi
   use var_setp,    only : inmisc, inele
   use var_struct,  only : lpnl, ipnl2mp, lele, iele2mp, &
-                          lele_k, iele2charge_k, &
-                          lsolv, isolv2mp, coef_ele, itail2mp, ltail2mp, &
+                          coef_ele, &
                           nhpneigh, lhp2neigh, ineigh2hp, cutoff_dmin_hp, &
                           cutoff_dmax_hp, ncharge, nmp_all, nhp, &
                           nhbneigh, ineigh2hb
-  use var_replica, only : inrep, n_replica_mpi
+  use var_replica, only : n_replica_mpi
 
 #ifdef MPI_PAR2
   use mpiconst
@@ -45,12 +44,6 @@ subroutine allocate_neighbor()
   if (allocated(lele))           flg_error = .true.
   if (allocated(iele2mp))        flg_error = .true.
   if (allocated(coef_ele))       flg_error = .true.
-  if (allocated(lele_k))         flg_error = .true.
-  if (allocated(iele2charge_k))  flg_error = .true.
-  if (allocated(lsolv))          flg_error = .true.
-  if (allocated(isolv2mp))       flg_error = .true.
-  if (allocated(itail2mp))       flg_error = .true.
-  if (allocated(ltail2mp))       flg_error = .true.
   if (allocated(nhpneigh))       flg_error = .true.
   if (allocated(lhp2neigh))   flg_error = .true.
   if (allocated(ineigh2hp))   flg_error = .true.
@@ -125,55 +118,9 @@ subroutine allocate_neighbor()
      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
      coef_ele(:,:) = 0.0e0_PREC
 
-     if(inele%i_calc_method == 0) then
-     else if(inele%i_calc_method == 1) then
-        allocate(lele_k(ncharge, n_replica_mpi))
-        if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-        lele_k(:,:) = 0.0e0_PREC
-        
-        allocate(iele2charge_k(ncharge, ncharge_mpi, n_replica_mpi))
-        if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-        iele2charge_k(:,:,:) = 0
-     end if
-  endif
-  
-  ! for DNA
-  if (inmisc%force_flag(INTERACT%DNA)) then
-     allocate( lsolv(n_replica_mpi),                          stat=ier)
-     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-     lsolv(:) = 0
-     
-#ifdef MPI_PAR2
-
-#ifdef SHARE_NEIGH_SOLV
-     allocate( isolv2mp(n_index, MXMPSOLV*nmp_all, n_replica_mpi),  stat=ier)
-#else
-     allocate( isolv2mp(n_index, MXMPSOLV*nmp_all/npar_mpi+1, n_replica_mpi),  stat=ier)
-#endif
-
-#else
-     allocate( isolv2mp(n_index, MXMPSOLV*nmp_all, n_replica_mpi),  stat=ier)
-#endif
-
-     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message) 
-     isolv2mp(:,:,:) = 0
-  endif
-  
-  ! for lipid
-  if (inmisc%class_flag(CLASS%LIP)) then
-
-#ifdef MPI_PAR2
-     allocate( itail2mp(n_index_tail, MXMPNEIGHBOR*nmp_all/npar_mpi+1, n_replica_mpi),           stat=ier)
-#else
-     allocate( itail2mp(n_index_tail, MXMPNEIGHBOR*nmp_all, n_replica_mpi),           stat=ier)
-#endif
-
-     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message) 
-     itail2mp(:,:,:) = 0
-     
-     allocate( ltail2mp(2, MXMP, n_replica_mpi),              stat=ier)
-     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message) 
-     ltail2mp(:,:,:) = 0
+     if(inele%i_calc_method /= 0) then
+        call util_error(ERROR%STOP_ALL, 'i_calc_method /= 0 in allocate_neighbor')
+     endif
   endif
   
   ! for hydrophobic interaction
@@ -247,9 +194,7 @@ end subroutine allocate_neighbor
 
 subroutine deallocate_neighbor
 
-   use var_struct,  only : lpnl, ipnl2mp, lele, iele2mp, &
-                           lele_k, iele2charge_k, &
-                           lsolv, isolv2mp, coef_ele, itail2mp, ltail2mp,&
+   use var_struct,  only : lpnl, ipnl2mp, lele, iele2mp, coef_ele, &
                            nhpneigh, ineigh2hp, lhp2neigh, cutoff_dmax_hp, cutoff_dmin_hp, &
                            nhbneigh, ineigh2hb
 
@@ -258,12 +203,6 @@ subroutine deallocate_neighbor
    if (allocated(lele))          deallocate(lele)
    if (allocated(iele2mp))       deallocate(iele2mp)
    if (allocated(coef_ele))      deallocate(coef_ele)
-   if (allocated(lele_k))        deallocate(lele_k)
-   if (allocated(iele2charge_k)) deallocate(iele2charge_k)
-   if (allocated(lsolv))         deallocate(lsolv)
-   if (allocated(isolv2mp))      deallocate(isolv2mp)
-   if (allocated(itail2mp))      deallocate(itail2mp)
-   if (allocated(ltail2mp))      deallocate(ltail2mp)
    if (allocated(nhpneigh))       deallocate(nhpneigh)
    if (allocated(ineigh2hp))  deallocate(ineigh2hp)
    if (allocated(lhp2neigh))  deallocate(lhp2neigh)

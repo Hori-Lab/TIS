@@ -23,7 +23,7 @@ subroutine simu_force_dtrna_stack_nlocal(irep, force_mp)
   ! --------------------------------------------------------------------
   ! local variables
   integer :: ist, ist_2nd
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   real(PREC) :: d, cos_theta, dih
   real(PREC) :: v12(3), v13(3), v53(3), v42(3), v46(3)
   real(PREC) :: a42, a13, a12
@@ -40,6 +40,9 @@ subroutine simu_force_dtrna_stack_nlocal(irep, force_mp)
   real(PREC) :: pre
   real(PREC) :: for(3,6), f_i(3), f_k(3), f_l(3), ediv
   logical    :: st_status_l(1:ndtrna_st)
+#ifdef MPI_PAR3
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
 

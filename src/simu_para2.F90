@@ -10,7 +10,7 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : indna, inmisc, inwind, inele
+  use var_setp,   only : inmisc, inwind, inele
   use var_struct, only : nunit_real, lunit2mp, iclass_unit, &
                          lele, coef_ele, iele2mp, coef_charge, lmp2charge
   use var_replica,only : n_replica_all, n_replica_mpi, rep2val, flg_rep, inrep, irep2grep
@@ -27,7 +27,7 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
   ! local variables
   integer    :: irep  ! local replica ID
   integer    :: grep  ! global replica ID
-  integer    :: idna, n_nt, ln_nt, iunit, i_nt
+  integer    :: n_nt, ln_nt, iunit, i_nt
   integer    :: ksta, kend, klen
   integer    :: iele, icharge, jcharge
   real(PREC) :: tempk
@@ -38,35 +38,6 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
   ! ----------------------------------------------------------------------
   tempk = tempk_in
   ionic_strength = ionic_strength_in
-
-  if (inmisc%class_flag(CLASS%DNA)) then
-     n_nt = 0
-     idna = 0
-     i_nt = 0
-     do iunit = 1, nunit_real
-        if(iclass_unit(iunit) == CLASS%DNA) then
-           ln_nt = (lunit2mp(2, iunit) - lunit2mp(1, iunit) + 3)/3
-           if(idna == 0) then
-              n_nt = ln_nt
-              idna = 1
-           else
-              if(ln_nt /= n_nt) then 
-                 i_nt = 1
-              end if
-           end if
-        end if
-     end do
-
-     if(inmisc%iflag_solv_nt_dna == 0) then
-        indna%e_n = indna%csolvmax_dna * (1.0 - 1.0/(1.40418 - 0.268231 * n_nt)) 
-        if(i_nt == 1) then
-           error_message = 'ERROR: should specify "iflag_solv_nt_dna = 1" when  using different lengths of DNA'
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-     else
-        indna%e_n = indna%csolvmax_dna
-     end if
-  end if
 
   ! ----------------------------------------------------------------------
   do grep = 1, n_replica_all
@@ -96,11 +67,6 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
      ! ----------------------------------------------------------------------
      if (inmisc%force_flag(INTERACT%ELE)) then
         call simu_ele_set(grep, tempk, ionic_strength)
-     end if
-  
-     ! ----------------------------------------------------------------------
-     if (inmisc%class_flag(CLASS%DNA)) then
-        call simu_solv_set(grep, ionic_strength)
      end if
   
      ! ----------------------------------------------------------------------

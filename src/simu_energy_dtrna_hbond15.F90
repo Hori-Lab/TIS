@@ -70,7 +70,7 @@ subroutine simu_energy_dtrna_hbond15(irep, pnle_unit, pnlet)
   ! local variables
   integer :: iunit1, iunit2
   integer :: ihb, ineigh
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   real(PREC) :: dih, cos_theta
   real(PREC) :: d, ex
   real(PREC) :: v12(SPACE_DIM), v13(SPACE_DIM), v53(SPACE_DIM)
@@ -92,6 +92,9 @@ subroutine simu_energy_dtrna_hbond15(irep, pnle_unit, pnlet)
   integer :: hb_seq(1:ndtrna_hb)
   logical :: hb_status_l(1:ndtrna_hb)
   real(PREC) :: hb_energy_l(1:ndtrna_hb)
+#ifdef MPI_PAR3
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
   if (.not. inmisc%class_flag(CLASS%RNA)) then

@@ -101,18 +101,6 @@ contains
        char2ichem = CHEMICALTYPE%U
     else if (c(1:2) == 'C ') then
        char2ichem = CHEMICALTYPE%C
-    else if (c(1:2) == 'DP') then
-       char2ichem = CHEMICALTYPE%DP
-    else if (c(1:2) == 'DS') then
-       char2ichem = CHEMICALTYPE%DS
-    else if (c(1:2) == 'DA') then
-       char2ichem = CHEMICALTYPE%DA
-    else if (c(1:2) == 'DG') then
-       char2ichem = CHEMICALTYPE%DG
-    else if (c(1:2) == 'DT') then
-       char2ichem = CHEMICALTYPE%DT
-    else if (c(1:2) == 'DC') then
-       char2ichem = CHEMICALTYPE%DC
     else if (c(1:3) =='ALA') then
        char2ichem = CHEMICALTYPE%ALA
     else if (c(1:3) =='ARG') then

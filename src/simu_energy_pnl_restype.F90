@@ -8,11 +8,10 @@ subroutine  simu_energy_pnl_restype(irep, pnle_unit, pnlet)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp, only : inexv
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-       lpnl, ipnl2mp, exv_radius_mp
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
+  use var_inp,   only : inperi
+  use var_setp,  only : inexv
+  use var_struct,only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
+                        lpnl, ipnl2mp, exv_radius_mp
 #ifdef MPI_PAR3
   use mpiconst
 #endif

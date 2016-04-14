@@ -84,15 +84,13 @@ module const_index
   type class_type
      integer :: VOID
      integer :: LIP    !<  1: Lipid
-     integer :: DNA    !<  2: DNA  (SPN.1)
-     integer :: DNA2   !<  3: DNA2 (SPN.2)
-     integer :: PRO    !<  4: Protein
-     integer :: RNA    !<  5: RNA
-     integer :: LIG    !<  6: Ligand (not implicit)
-     integer :: ION    !<  7: Ion
-     integer :: MAX    !<  8: Maximum value
+     integer :: PRO    !<  2: Protein
+     integer :: RNA    !<  3: RNA
+     integer :: LIG    !<  4: Ligand (not implicit)
+     integer :: ION    !<  5: Ion
+     integer :: MAX    !<  6: Maximum value
   endtype class_type
-  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5,6,7,8)
+  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5,6)
 
   type energy_type
      integer :: TOTAL         !<  1: Total energy
@@ -102,50 +100,36 @@ module const_index
      integer :: DIHE          !<  5: Dihedral
      integer :: GO            !<  6: Go
      integer :: EXV           !<  7: Excluded volume
-     integer :: STACK_DNA     !<  8: Base stacking for DNA
-     integer :: BP_DNA        !<  9: Base paring for DNA
-     integer :: BP_AT         !< 10: DNA AT base pair
-     integer :: BP_GC         !< 11: DNA GC base pair
-     integer :: MBP           !< 12: DNA mismatch base pair
-     integer :: EXV_DNA       !< 13: DNA excluded volume
-     integer :: EXV_DNA2      !< 14: DNA2 excluded volume 
-     integer :: ELE           !< 15: Electrostatic (Debye Huckel)
-     integer :: SOLV_DNA      !< 16: DNA solvation
-     integer :: CORE          !< 17: Lipid core (Brown)
-     integer :: INT           !< 18: Lipid int (Brown)
-     integer :: TAIL          !< 19: Lipid tail (Brown)
-     integer :: CORE_NOGU     !< 20: Lipid core (NOGUCHI)
-     integer :: TAIL_NOGU     !< 21: Lipid tail (NOGUCHI)
-     integer :: BOX           !< 22: Box baundary
-     integer :: BRIDGE        !< 23: Bridge constraining
-     integer :: PULLING       !< 24: Pulling
-     integer :: ANCHOR        !< 25: Anchor constraining
-     integer :: DIHE_HARMONIC !< 26: Harmonic dihedral angle
-     integer :: HPENE         !< 27: Hydrophobic interaction
-     integer :: IMPLIG        !< 28: Implicit ligand
-     integer :: MORSE         !< 29: Morse-type Go
-     integer :: STACK_RNA     !< 30: RNA base stacking (distance)
-     integer :: PAIR_RNA      !< 31: RNA base pairing
-     integer :: LJ_ION        !< 32: Ion LJ
-     integer :: HYD_ION       !< 33: Ion hydration
-     integer :: EXV_ION       !< 34: Ion excluded volume
-     integer :: REST1D        !< 35: 1D-restraint
-     integer :: CAP           !< 36: Cap boundary
-     integer :: WINDOW        !< 37: Window potential
-     integer :: SASA          !< 38: SASA potential !sasa
-     integer :: EXV_WCA       !< 39: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: STACK_DTRNA   !< 40: Denesyuk-Thirumalai RNA base stacking
-     integer :: HBOND_DTRNA   !< 41: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: CYLINDER      !< 42: Cylindrical boundary
-     integer :: EXV_DT15      !< 43: excluded volume of DTRNA2015 model
-     integer :: TSTACK_DTRNA  !< 44: Denesyuk-Thirumalai RNA base stacking
-     integer :: THBOND_DTRNA  !< 45: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: MAX           !< 45: Max value
+     integer :: ELE           !<  8: Electrostatic (Debye Huckel)
+     integer :: BOX           !<  9: Box baundary
+     integer :: BRIDGE        !< 10: Bridge constraining
+     integer :: PULLING       !< 11: Pulling
+     integer :: ANCHOR        !< 12: Anchor constraining
+     integer :: DIHE_HARMONIC !< 13: Harmonic dihedral angle
+     integer :: HPENE         !< 14: Hydrophobic interaction
+     integer :: IMPLIG        !< 15: Implicit ligand
+     integer :: MORSE         !< 16: Morse-type Go
+     integer :: STACK_RNA     !< 17: RNA base stacking (distance)
+     integer :: PAIR_RNA      !< 18: RNA base pairing
+     integer :: LJ_ION        !< 19: Ion LJ
+     integer :: HYD_ION       !< 20: Ion hydration
+     integer :: EXV_ION       !< 21: Ion excluded volume
+     integer :: REST1D        !< 22: 1D-restraint
+     integer :: CAP           !< 23: Cap boundary
+     integer :: WINDOW        !< 24: Window potential
+     integer :: SASA          !< 25: SASA potential !sasa
+     integer :: EXV_WCA       !< 26: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: STACK_DTRNA   !< 27: Denesyuk-Thirumalai RNA base stacking
+     integer :: HBOND_DTRNA   !< 28: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: CYLINDER      !< 29: Cylindrical boundary
+     integer :: EXV_DT15      !< 30: excluded volume of DTRNA2015 model
+     integer :: TSTACK_DTRNA  !< 31: Denesyuk-Thirumalai RNA base stacking
+     integer :: THBOND_DTRNA  !< 32: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: MAX           !< 32: Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
-                   21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40, &
-                   41,42,43,44,45,45)
+                   21,22,23,24,25,26,27,28,29,30,31,32,32)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -155,47 +139,13 @@ module const_index
      integer :: L_FLP       !<  5: flexible local potential
      integer :: L_BOND      !<  6: bond potential only
      integer :: L_ENM       !<  7: local elastic network model(=NOTHING)
-     integer :: L_BDNA      !<  8: local DNA interaction (not yet released)
-     integer :: L_DNA2      !<  9: local DNA interaction (not yet released)
-     integer :: L_LIP_BROWN !< 10: local lipid-lipid(Brown, not yet released)
-     integer :: L_LIP_NOGU  !< 11: local lipid-lipid(Noguchi, not yet released)
-     integer :: L_RIGID_LIG !< 12: ligand rigid interaction (not yet released)
-     integer :: L_AICG2_PLUS!< 13: local AICG2_PLUS
-     integer :: L_DTRNA     !< 14: Denesyuk-Thirumalai RNA model
-     integer :: L_DNA2C     !< 15: local DNA interaction (3SPN.2C model)
-     integer :: MAX         !< 15: Maximum value
+     integer :: L_RIGID_LIG !<  8: ligand rigid interaction (not yet released)
+     integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
+     integer :: L_DTRNA     !< 10: Denesyuk-Thirumalai RNA model
+     integer :: MAX         !< 10: Maximum value
   endtype local_interaction_type
   type(local_interaction_type), parameter :: LINTERACT  & 
-     = local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,15)
-
-
-  type prime_interaction_type
-     integer :: NOTHING   !<  1: no interaction (default)
-     integer :: GO        !<  2: 12-10 Go potential for native contact pairs
-     integer :: EXV       !<  3: (c/r)**12 repulsive interaction
-     integer :: ELE       !<  7: electrostatic interaction (Debye-Huckel form)
-     integer :: DNA       !< 11: DNA-DNA interaction (not yet released)
-     integer :: LIP_BROWN !< 13: lipid-lipid (Brown, not yet relesed)
-     integer :: LIP_NOGU  !< 17: lipid-lipid (Noguchi, without solvation, not yet released)
-     integer :: LIP_SOLV  !< 19: solvation (lipid-lipid, lipid-protein, not yet released)
-     integer :: ENM       !< 23: elastic network model (protein)
-     integer :: HP        !< 29: hydrophobic interaction
-     integer :: MORSE     !< 31: Morse Go potential (not yet released)
-     integer :: PAIR_RNA  !< 37: RNA-RNA base pair (not yet released)
-     integer :: ION_HYD   !< 41: hydration interaction (ion-ion, ion-phosphate) (not yet released)
-     integer :: ION_EXV   !< 43: repulsive interaction (ion-ion) (not yet released)
-     integer :: AICG1     !< 47: AICG1(protein)
-     integer :: AICG2     !< 53: AICG2(protein)
-     integer :: SASA      !< 59: SASA(protein) !sasa
-     integer :: DNA2      !< 61: DNA-DNA interaction (not yet released)
-     integer :: DNA2C     !< 62: DNA-DNA interaction (3SPN.2C model)
-     integer :: DTRNA     !< 67: Denesyuk-Thirumalai RNA model
-     integer :: EXV_WCA   !< 71: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: MAX       !< 71: Maximum value
-  endtype prime_interaction_type
-  type(prime_interaction_type), parameter :: PRIME_INTERACT  & 
-       = prime_interaction_type(1,2,3,7,11,13,17,19,23,29,31,37,41,43,47,53,59,&
-                                61,62,67,71,71) 
+     = local_interaction_type(1,2,3,4,5,6,7,8,9,10,10)
 
 
   type interaction_type
@@ -203,28 +153,22 @@ module const_index
      integer :: GO        !<  2: 12-10 Go potential for native contact pairs
      integer :: EXV       !<  3: (c/r)**12 repulsive interaction
      integer :: ELE       !<  4: electrostatic interaction (Debye-Huckel form)
-     integer :: DNA       !<  5: DNA-DNA interaction (not yet released)
-     integer :: DNA2      !<  6: DNA-DNA interaction for 3SPN.2 model (not yet released)
-     integer :: LIP_BROWN !<  7: lipid-lipid (Brown, not yet relesed)
-     integer :: LIP_NOGU  !<  8: lipid-lipid (Noguchi, without solvation, not yet released)
-     integer :: LIP_SOLV  !<  9: solvation (lipid-lipid, lipid-protein, not yet released)
-     integer :: ENM       !< 10: elastic network model (protein)
-     integer :: HP        !< 11: hydrophobic interaction
-     integer :: MORSE     !< 12: Morse Go potential (not yet released)
-     integer :: PAIR_RNA  !< 13: RNA-RNA base pair (not yet released)
-     integer :: ION_HYD   !< 14: hydration interaction (ion-ion, ion-phosphate) (not yet released)
-     integer :: ION_EXV   !< 15: repulsive interaction (ion-ion) (not yet released)
-     integer :: AICG1     !< 16: AICG1(protein)
-     integer :: AICG2     !< 17: AICG2(protein)
-     integer :: SASA      !< 18: SASA(protein) !sasa
-     integer :: DTRNA     !< 19: Denesyuk-Thirumalai RNA model
-     integer :: EXV_WCA   !< 20: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: EXV_DT15  !< 21: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: DNA2C     !< 22: DNA-DNA interaction for 3SPN.2C model
-     integer :: MAX       !< 22: Maximum value
+     integer :: ENM       !<  5: elastic network model (protein)
+     integer :: HP        !<  6: hydrophobic interaction
+     integer :: MORSE     !<  7: Morse Go potential (not yet released)
+     integer :: PAIR_RNA  !<  8: RNA-RNA base pair (not yet released)
+     integer :: ION_HYD   !<  9: hydration interaction (ion-ion, ion-phosphate) (not yet released)
+     integer :: ION_EXV   !< 10: repulsive interaction (ion-ion) (not yet released)
+     integer :: AICG1     !< 11: AICG1(protein)
+     integer :: AICG2     !< 12: AICG2(protein)
+     integer :: SASA      !< 13: SASA(protein) !sasa
+     integer :: DTRNA     !< 14: Denesyuk-Thirumalai RNA model
+     integer :: EXV_WCA   !< 15: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: EXV_DT15  !< 16: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: MAX       !< 16: Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,22)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
 
 
   type error_handling
@@ -252,11 +196,6 @@ module const_index
   endtype use_atom_protein
   type(use_atom_protein), parameter :: USE_PRO = use_atom_protein(0,1,2,2)
 
-  type use_atom_dna
-     integer :: COM_PS  !< 0
-  endtype use_atom_dna
-  type(use_atom_dna), parameter :: USE_DNA = use_atom_dna(0)
-
   type use_atom_rna_base
      integer :: COM        !< 0
      integer :: PuN1_PyN3  !< 1
@@ -273,23 +212,15 @@ module const_index
   type mp_type
      integer :: VOID       !<  0
      integer :: PRO        !<  1: Protein
-     integer :: DNA_PHOS   !<  2: Phosphate of DNA
-     integer :: DNA_BASE   !<  3: Base of DNA
-     integer :: DNA_SUGAR  !<  4: Sugar of DNA
-     integer :: DNA2_PHOS  !<  5: Phosphate of DNA
-     integer :: DNA2_BASE  !<  6: Base of DNA
-     integer :: DNA2_SUGAR !<  7: Sugar of DNA
-     integer :: RNA_PHOS   !<  8: Phosphate of RNA
-     integer :: RNA_BASE   !<  9: Base of RNA
-     integer :: RNA_SUGAR  !< 10: Sugar of RNA
-     integer :: LIP_CORE   !< 11 
-     integer :: LIP_TAIL   !< 12
-     integer :: ION_MG     !< 13
-     integer :: ION_NA     !< 14
-     integer :: ION_K      !< 15
-     integer :: ION_CL     !< 16
+     integer :: RNA_PHOS   !<  2: Phosphate of RNA
+     integer :: RNA_BASE   !<  3: Base of RNA
+     integer :: RNA_SUGAR  !<  4: Sugar of RNA
+     integer :: ION_MG     !<  5
+     integer :: ION_NA     !<  6
+     integer :: ION_K      !<  7
+     integer :: ION_CL     !<  8
   endtype mp_type
-  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
+  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8)
 
   type chemical_type
      integer :: UNKNOWN !<  0: Default value is stored here
@@ -319,20 +250,14 @@ module const_index
      integer :: G       !< 24: Guanine
      integer :: U       !< 25: Uracyl
      integer :: C       !< 26: Cytosine
-     integer :: DP      !< 27: Phosphate(DNA)
-     integer :: DS      !< 28: Deoxyribose sugar(DNA)
-     integer :: DA      !< 29: Adenine(DNA)
-     integer :: DG      !< 30: Guanine(DNA)
-     integer :: DT      !< 31: Thymine(DNA)
-     integer :: DC      !< 32: Cytosine(DNA)
-     integer :: MG      !< 33: ion
-     integer :: K       !< 34: ion
-     integer :: CL      !< 35: ion
-     integer :: MAX     !< 35
+     integer :: MG      !< 27: ion
+     integer :: K       !< 28: ion
+     integer :: CL      !< 29: ion
+     integer :: MAX     !< 29 
   endtype chemical_type
   type(chemical_type), parameter :: CHEMICALTYPE = &
        chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,&
-                     20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,35)
+                     20,21,22,23,24,25,26,27,28,29,29)
 
   type ion_type
      integer :: VOID      !< 0
@@ -355,55 +280,34 @@ module const_index
      integer :: RNA_SR   !< 4
      integer :: RNA_SY   !< 5
      integer :: RNA_SP   !< 6
-     integer :: DNA2_PS  !< 7
-     integer :: DNA2_SP  !< 8
-     integer :: DNA2_SA  !< 9
-     integer :: DNA2_ST  !< 10
-     integer :: DNA2_SG  !< 11
-     integer :: DNA2_SC  !< 12
   endtype bd_type
-  type(bd_type), parameter :: BDTYPE = bd_type(0,1,2,3,4,5,6,7,8,9,10,11,12)
+  type(bd_type), parameter :: BDTYPE = bd_type(0,1,2,3,4,5,6)
 
   type ba_type
      integer :: VOID     !< 0
      integer :: PRO      !< 1
-     integer :: DNA2_SPS !< 2
-     integer :: DNA2_PSP !< 3
-     integer :: DNA2_PSA !< 4
-     integer :: DNA2_PST !< 5
-     integer :: DNA2_PSC !< 6
-     integer :: DNA2_PSG !< 7
-     integer :: DNA2_ASP !< 8
-     integer :: DNA2_TSP !< 9
-     integer :: DNA2_CSP !< 10
-     integer :: DNA2_GSP !< 11
-     integer :: RNA_BSP  !< 12
-     integer :: RNA_RSP  !< 13
-     integer :: RNA_YSP  !< 14
-     integer :: RNA_PSP  !< 15
-     integer :: RNA_SPS  !< 16
-     integer :: RNA_PSB  !< 17
-     integer :: RNA_PSR  !< 18
-     integer :: RNA_PSY  !< 19
+     integer :: RNA_BSP  !< 2
+     integer :: RNA_RSP  !< 3
+     integer :: RNA_YSP  !< 4
+     integer :: RNA_PSP  !< 5
+     integer :: RNA_SPS  !< 6
+     integer :: RNA_PSB  !< 7
+     integer :: RNA_PSR  !< 8
+     integer :: RNA_PSY  !< 9
   endtype ba_type
-  type(ba_type), parameter :: BATYPE = ba_type(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19)
+  type(ba_type), parameter :: BATYPE = ba_type(0,1,2,3,4,5,6,7,8,9)
 
   type dih_type
      integer :: VOID      !< 0
      integer :: PRO       !< 1
-     integer :: DNA2_PSPS !< 2
-     integer :: DNA2_SPSP !< 3
-     integer :: RNA_RSPS  !< 4
-     integer :: RNA_YSPS  !< 5
-     integer :: RNA_PSPS  !< 6
-     integer :: RNA_SPSR  !< 7
-     integer :: RNA_SPSY  !< 8
-     integer :: RNA_SPSP  !< 9
-     integer :: DNA_PER1  !< 10
-     integer :: DNA_PER2  !< 11
-     integer :: DNA_PER3  !< 12
+     integer :: RNA_RSPS  !< 2
+     integer :: RNA_YSPS  !< 3
+     integer :: RNA_PSPS  !< 4
+     integer :: RNA_SPSR  !< 5
+     integer :: RNA_SPSY  !< 6
+     integer :: RNA_SPSP  !< 7
   endtype dih_type
-  type(dih_type), parameter :: DIHTYPE = dih_type(0,1,2,3,4,5,6,7,8,9,10,11,12)
+  type(dih_type), parameter :: DIHTYPE = dih_type(0,1,2,3,4,5,6,7)
 
   type con_type
      integer :: VOID
@@ -418,49 +322,9 @@ module const_index
      integer :: RS_RB        !< 9  RNA_S  :  RNA_B
      integer :: RB_RB        !<10  RNA_B  :  RNA_B
      integer :: RNA_BP       !<11  RNA_B  :  RNA_B pairing (dist<dfcontact2_rna_bp)
-     integer :: DNA_DNA      !<12  DNA    :  DNA
-     integer :: PRO_DNA      !<13 protein :  DNA
-     integer :: PRO_DNA2     !<14 protein :  DNA
-     integer :: PRO_LIG      !<15 protein :  LIGAND
+     integer :: PRO_LIG      !<12 protein :  LIGAND
   endtype con_type
-  type(con_type), parameter :: CONTYPE = con_type(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15)
-
-  !#######################################
-  ! DNA
-  !#######################################
-  type bp_type
-     integer :: VOID !< 0
-     integer :: AA   !< 1
-     integer :: AT   !< 2
-     integer :: AC   !< 3
-     integer :: AG   !< 4
-     integer :: TA   !< 5
-     integer :: TT   !< 6
-     integer :: TC   !< 7
-     integer :: TG   !< 8
-     integer :: CA   !< 9
-     integer :: CT   !< 10
-     integer :: CC   !< 11
-     integer :: CG   !< 12
-     integer :: GA   !< 13
-     integer :: GT   !< 14
-     integer :: GC   !< 15
-     integer :: GG   !< 16
-     integer :: MAX  !< 16
-  endtype bp_type
-  type(bp_type), parameter :: BPTYPE = bp_type(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
-
-    type base_type
-     integer :: VOID !< 0
-     integer :: A    !< 1
-     integer :: T    !< 2
-     integer :: C    !< 3
-     integer :: G    !< 4
-     integer :: S    !< 5
-     integer :: P    !< 6
-     integer :: MAX  !< 6
-  endtype base_type
-  type(base_type), parameter :: BASETYPE = base_type(0,1,2,3,4,5,6,6)
+  type(con_type), parameter :: CONTYPE = con_type(0,1,2,3,4,5,6,7,8,9,10,11,12)
 
   
   !#######################################

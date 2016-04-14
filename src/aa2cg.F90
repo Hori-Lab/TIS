@@ -186,7 +186,7 @@ program aa2cg
    nmp_real = lunit2mp(2, nunit_real)
 
    if (ctype .eq. "pro") then
-      call util_posmass(nunit_all, iatomnum, xyz, isidenum, xyz_side, xyz_mp)
+      call util_posmass(nunit_all, xyz, isidenum, xyz_side, xyz_mp)
    else
       do iunit = 1, nunit_all
          iclass_unit(iunit) = CLASS%RNA

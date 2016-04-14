@@ -7,33 +7,43 @@ subroutine mloop_nativeinfo(istep_sim)
   use const_maxsize
   use const_index
   use var_inp,    only : iopen_lunnum
-  use var_setp,   only : inpro, indna, indna2, inrna, inligand, inmisc
+  use var_setp,   only : inpro, inrna, inligand, inmisc
   use var_struct, only : nmp_all, nunit_all, lunit2mp, imp2unit, iclass_unit, &
-                         nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
-                         nba, iba2mp, ba_nat, factor_ba, coef_ba, &
-                         ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, &
-                         ncon, icon2mp, icon2unit, go_nat, go_nat2, factor_go, icon_dummy_mgo, coef_go, &
+                         nbd, ibd2mp, factor_bd, coef_bd, &
+                         nba, iba2mp, factor_ba, coef_ba, &
+                         ndih, idih2mp, factor_dih, coef_dih, &
+                         ncon, icon2mp, icon2unit, factor_go, coef_go, &
                          get_icon_type, ncon_unit, imp2type, iallcon2unit,&
-                         nmorse, imorse2mp, imorse2unit, imorse_dummy_mgo, &
-                         morse_nat, morse_nat2, factor_morse, &
-                         nrna_bp, irna_bp2mp, irna_bp2unit, rna_bp_nat, rna_bp_nat2, &
-                         factor_rna_bp, irna_bp_dummy_mgo, nhb_bp, coef_rna_bp, &
-                         nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
-                         factor_rna_st, irna_st_dummy_mgo, coef_rna_st, rna_base_type, &
-                         ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, idtrna_st2nn,&
-                         ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
-                         idtrna_hb2hbsite, flg_hb_tertiary,&
-                         ndtrna_tst, idtrna_tst2mp, idtrna_tst2side, dtrna_tst_nat, &
-                         coef_dtrna_tst, flg_tst_exclusive,&
-                         ibd2type, iba2type, idih2type, icon2type, imorse2type, &
-                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
-                         coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
-                         coef_dih_gauss, wid_dih_gauss ! AICG2
+                         nmorse, imorse2unit, &
+                         nrna_bp, irna_bp2unit, &
+                         factor_rna_bp, nhb_bp, coef_rna_bp, &
+                         nrna_st, &
+                         factor_rna_st, coef_rna_st, rna_base_type, &
+                         ndtrna_st, ndtrna_hb
 
   use var_enm,    only : inenm
-  use var_replica,only : n_replica_all
 #ifdef MPI_PAR
   use mpiconst
+  use var_replica,only : n_replica_all
+  use var_struct, only : imorse2mp, imorse_dummy_mgo, &
+                         dih_nat, dih_sin_nat, dih_cos_nat, &
+                         bd_nat, &
+                         ba_nat, &
+                         go_nat, go_nat2, icon_dummy_mgo, &
+                         irna_bp2mp, rna_bp_nat, rna_bp_nat2, &
+                         morse_nat, morse_nat2, factor_morse, &
+                         idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
+                         irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
+                         ndtrna_tst, idtrna_tst2mp, idtrna_tst2side, dtrna_tst_nat, &
+                         idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, idtrna_st2nn,&
+                         irna_bp_dummy_mgo, &
+                         coef_dtrna_tst, flg_tst_exclusive,&
+                         ibd2type, iba2type, idih2type, icon2type, imorse2type, &
+                         idtrna_hb2hbsite, flg_hb_tertiary, &
+                         irna_st_dummy_mgo, &
+                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
+                         coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, &
+                         coef_dih_gauss, wid_dih_gauss ! AICG2
 #endif
 
   implicit none
@@ -168,8 +178,6 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(coef_aicg14_gauss,MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
   ! aicgdih(L_AICG2_PLUS)
-  call MPI_Bcast(dih_nat,         MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(factor_aicg14,   MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(wid_dih_gauss,   MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_dih_gauss,  MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
@@ -303,13 +311,6 @@ subroutine mloop_nativeinfo(istep_sim)
            coef_go(icon) = factor_go(icon) * inrna%cgo1210_pro_S
         case (CONTYPE%PRO_PRO)
            coef_go(icon) = factor_go(icon) * inpro%cgo1210
-        case (CONTYPE%DNA_DNA)
-           write(error_message,*) 'Error: logical defect in mloop_nativeinfo; iConType=',iConType
-           call util_error(ERROR%STOP_ALL, error_message)
-        case (CONTYPE%PRO_DNA)
-           coef_go(icon) = factor_go(icon) * inpro%cgo1210
-        case (CONTYPE%PRO_DNA2)
-           coef_go(icon) = factor_go(icon) * indna2%cgo1210
         case (CONTYPE%PRO_LIG)
            coef_go(icon) = factor_go(icon) * inpro%cgo1210
         case default
@@ -365,10 +366,6 @@ subroutine mloop_nativeinfo(istep_sim)
            coef_bd(1, ibd) = factor_bd(ibd) * inpro%cbd
            coef_bd(2, ibd) = 0.0
    
-        else if(iclass_unit(iunit) == CLASS%DNA) then
-           coef_bd(1, ibd) = factor_bd(ibd) * indna%cbd_dna
-           coef_bd(2, ibd) = factor_bd(ibd) * indna%cbd2_dna
-   
         else if(iclass_unit(iunit) == CLASS%RNA) then
            imp1 = ibd2mp(1,ibd)
            imp2 = ibd2mp(2,ibd)
@@ -406,10 +403,6 @@ subroutine mloop_nativeinfo(istep_sim)
    !     factor_ba(iba) = inmisc%factor_local_unit(iunit, iunit) * factor_ba(iba)
         if(iclass_unit(iunit) == CLASS%PRO) then
            coef_ba(1, iba) = factor_ba(iba) * inpro%cba
-           coef_ba(2, iba) = 0.0
-   
-        else if(iclass_unit(iunit) == CLASS%DNA) then
-           coef_ba(1, iba) = factor_ba(iba) * indna%cba_dna
            coef_ba(2, iba) = 0.0
    
         else if(iclass_unit(iunit) == CLASS%RNA) then
@@ -474,10 +467,6 @@ subroutine mloop_nativeinfo(istep_sim)
            coef_dih(1, idih) = factor_dih(idih) * inpro%cdih_1
            coef_dih(2, idih) = factor_dih(idih) * inpro%cdih_3
    
-        else if(iclass_unit(iunit) == CLASS%DNA) then
-           coef_dih(1, idih) = factor_dih(idih) * indna%cdih_1_dna
-           coef_dih(2, idih) = factor_dih(idih) * indna%cdih_3_dna
-           
         else if (iclass_unit(iunit) == CLASS%RNA) then
            imp1 = idih2mp(1,idih)
            imp2 = idih2mp(2,idih)

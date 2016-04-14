@@ -1,6 +1,6 @@
 ! setp_native_go
 !> @brief Calculate and store nonlocal contact information based on &
-!>        the given native structure for protein, DNA, and RNA
+!>        the given native structure for protein and RNA
 
 !#define _DEBUG
 ! ***********************************************************************
@@ -13,7 +13,7 @@ subroutine setp_native_go(xyz_mp_init,         &
   use const_physical
   use const_index
   use var_setp,   only : inpro, inmisc, inrna
-  use var_struct, only : nunit_all, nmp_all, lunit2mp, imp2unit, cmp2atom, &
+  use var_struct, only : nunit_all, nmp_all, imp2unit, &
                          ncon, icon2mp, lmp2con, icon2unit, icon2type, &
                          go_nat, go_nat2, factor_go, coef_go, ncon_unit, &
                          iclass_unit, imp2type, get_icon_type, ires_mp, &
@@ -82,21 +82,6 @@ subroutine setp_native_go(xyz_mp_init,         &
   do imp = 1, nmp_all - 1
      iunit = imp2unit(imp)
 
-     !------------------------------
-     !  Skip (Phosphate of DNA)
-     !------------------------------
-     if(inmisc%i_go_atom_dna == 1 .and. (iclass_unit(iunit) == CLASS%DNA .or. iclass_unit(iunit) == CLASS%DNA2)) then
-        if(cmp2atom(imp) == ' O  ' .or. cmp2atom(imp) == ' P  ') then
-           lmp2con(imp) = icon
-           lmp2morse(imp) = imorse
-           if (inmisc%class_flag(CLASS%RNA)) then
-              lmp2rna_bp(imp) = irna_bp
-           endif
-           istart = lmp2neigh(imp) + 1
-           cycle
-        end if
-     end if
-
      ! -----------------------------------------------------------------
      jmp_loop : do jmp2 = istart, lmp2neigh(imp)
 
@@ -105,10 +90,6 @@ subroutine setp_native_go(xyz_mp_init,         &
         flg_stack = .false.
 
         ! ----------------------------------------------------------
-!        icalc_enm   = mod(inmisc%itype_nlocal(iunit, junit), INTERACT%ENM)
-!        icalc_1210  = mod(inmisc%itype_nlocal(iunit, junit), INTERACT%GO)
-!        icalc_morse = mod(inmisc%itype_nlocal(iunit, junit), INTERACT%MORSE)
-!        icalc_basepair = mod(inmisc%itype_nlocal(iunit, junit), INTERACT%PAIR_RNA)
         flag_enm   = inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ENM)
         flag_1210  = inmisc%flag_nlocal_unit(iunit, junit, INTERACT%GO)
         flag_morse = inmisc%flag_nlocal_unit(iunit, junit, INTERACT%MORSE)
@@ -164,7 +145,7 @@ subroutine setp_native_go(xyz_mp_init,         &
            else if(iclass_unit(iunit) == CLASS%LIG) then
               if(ires_mp(imp) == ires_mp(jmp)) cycle jmp_loop
 
-           ! Protein, DNA
+           ! Protein
            else
               if(jmp < imp + inpro%n_sep_contact) cycle jmp_loop
 
@@ -193,13 +174,6 @@ subroutine setp_native_go(xyz_mp_init,         &
 !           end do
 !        end if
 
-        !------------------------------
-        !  Skip (Phosphate of DNA)
-        !------------------------------
-        if(inmisc%i_go_atom_dna == 1 .and. (iclass_unit(junit) == CLASS%DNA .or. iclass_unit(junit) == CLASS%DNA2)) then
-           if(cmp2atom(jmp) == ' O  ' .or. cmp2atom(jmp) == ' P  ') cycle jmp_loop
-        end if
-        
 #ifdef _DEBUB
         write(*,*) 'Not skipped'
 #endif
@@ -461,7 +435,7 @@ contains
   subroutine get_parameters_by_contype(icon_type, dfcontact2_enm, dfcontact2, &
                                        cenm, cgo1210, cgomorse_D, cgomorse_a)
       use const_index
-      use var_setp,   only : inpro, indna2, inrna
+      use var_setp,   only : inpro, inrna
       use var_enm,    only : inenm
       implicit none
       integer, intent(in) :: icon_type
@@ -479,18 +453,6 @@ contains
       case (CONTYPE%PRO_PRO)
          dfcontact2 = inpro%dfcontact ** 2
          cgo1210 = inpro%cgo1210
-
-      case (CONTYPE%DNA_DNA) ! DNA-DNA parameters are same as protein-protein
-         dfcontact2 = inpro%dfcontact ** 2
-         cgo1210 = inpro%cgo1210
-         
-      case (CONTYPE%PRO_DNA) ! protein-DNA parameters are same as protein-protein
-         dfcontact2 = inpro%dfcontact ** 2
-         cgo1210 = inpro%cgo1210
-
-      case (CONTYPE%PRO_DNA2) ! protein-DNA parameters are same as protein-protein
-         dfcontact2 = indna2%dfcontact ** 2
-         cgo1210 = indna2%cgo1210
 
       case (CONTYPE%PRO_LIG) ! protein-ligand parameters are same as protein-protein
          dfcontact2 = inpro%dfcontact ** 2

@@ -10,7 +10,7 @@ subroutine setp_mass_fric()
   use const_physical
   use var_inp, only : infile, outfile, i_simulate_type
   use var_setp, only : inmisc, inpara
-  use var_struct, only : lunit2mp, cmass_mp, fric_mp, cmp2atom, nmp_all, radius
+  use var_struct, only : lunit2mp, cmass_mp, fric_mp, nmp_all, radius
 
 #ifdef MPI_PAR
   use mpiconst
@@ -245,21 +245,8 @@ contains
       integer, intent(in) :: imp
       character(CARRAY_MSG_ERROR) :: error_message
 
-      ! ------ DNA2 ------
-      if (cmp2atom(imp) == 'DP  ') then
-         imp2chemicaltype = CHEMICALTYPE%DP
-      else if (cmp2atom(imp) == 'DS  ') then
-         imp2chemicaltype = CHEMICALTYPE%DS
-      else if (cmp2seq(imp) == 'DA ') then
-         imp2chemicaltype = CHEMICALTYPE%DA
-      else if (cmp2seq(imp) == 'DG ') then
-         imp2chemicaltype = CHEMICALTYPE%DG
-      else if (cmp2seq(imp) == 'DC ') then
-         imp2chemicaltype = CHEMICALTYPE%DC
-      else if (cmp2seq(imp) == 'DT ') then
-         imp2chemicaltype = CHEMICALTYPE%DT
       ! ------ RNA ------
-      else if (cmp2atom(imp) == ' P  ') then
+      if (cmp2atom(imp) == ' P  ') then
          imp2chemicaltype = CHEMICALTYPE%P
       else if (cmp2atom(imp) == ' S  ') then
          imp2chemicaltype = CHEMICALTYPE%S

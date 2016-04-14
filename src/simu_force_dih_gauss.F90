@@ -29,7 +29,7 @@ subroutine simu_force_dih_gauss(irep, force_mp, force_mp_mgo, ene_unit)
   ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, imp3, imp4
-  integer :: idih, iunit, junit, kunit, isys, istat
+  integer :: idih, iunit, junit, isys, istat
   real(PREC) :: c11, c12, c13, c22, c23, c33
   real(PREC) :: c12overc22, c23overc22
   real(PREC) :: v21crossv32(3), v32crossv43(3)
@@ -78,9 +78,6 @@ subroutine simu_force_dih_gauss(irep, force_mp, force_mp_mgo, ene_unit)
      imp2 = idih2mp(2, idih)
      imp3 = idih2mp(3, idih)
      imp4 = idih2mp(4, idih)
-
-     if(iclass_mp(imp1) == CLASS%DNA2 .AND. &
-        inmisc%force_flag_local(LINTERACT%L_DNA2C) ) cycle
 
      if(iclass_mp(imp1) == CLASS%LIG .AND. &
         iclass_mp(imp4) == CLASS%LIG) cycle

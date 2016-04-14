@@ -28,9 +28,6 @@ subroutine allocate_nativestruct()
                            wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
                            coef_dih_gauss, wid_dih_gauss,&  ! aicg2
                            para_sasa, rad_sasa, surf, connect,& ! sasa
-                           istk2mp_dna2, istk2ebstk_dna2, istk2sbstk_dna2, istk2tbstk_dna2,&                                                     ! DNA (3SPN.2 model) Base stacking
-                           ibp2mp_dna2, ibp2ebp_dna2, ibp2sbp_dna2, ibp2pbp_dna2, ibp2t1bp_dna2, ibp2t2bp_dna2,&                                 ! DNA (3SPN.2 model) Base pairing
-                           ibp2ecstk1_dna2, ibp2ecstk2_dna2, ibp2scstk1_dna2, ibp2scstk2_dna2, ibp2tcstk1_dna2, ibp2tcstk2_dna2, ibp2t3cstk_dna2, & ! DNA (3SPN.2 model) Cross stacking
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite, &
                            flg_hb_tertiary, &
@@ -474,80 +471,6 @@ subroutine allocate_nativestruct()
       endif
    endif
 
-   ! DNA (3SPN.2 model) specific
-   if (inmisc%class_flag(CLASS%DNA2)) then
-
-      ! For base stacking
-      allocate(istk2mp_dna2(3, MXSTACK), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      istk2mp_dna2(:,:) = 0
-
-      allocate(istk2ebstk_dna2(MXSTACK), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      istk2ebstk_dna2(:) = 0.0e0_PREC
-
-      allocate(istk2sbstk_dna2(MXSTACK), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      istk2sbstk_dna2(:) = 0.0e0_PREC
-
-      allocate(istk2tbstk_dna2(MXSTACK), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      istk2tbstk_dna2(:) = 0.0e0_PREC
-
-      ! For base pairing
-      allocate(ibp2mp_dna2(6, MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2mp_dna2(:,:) = 0
-      
-      allocate(ibp2ebp_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2ebp_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2sbp_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2sbp_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2pbp_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2pbp_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2t1bp_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2t1bp_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2t2bp_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2t2bp_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2ecstk1_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2ecstk1_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2ecstk2_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2ecstk2_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2scstk1_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2scstk1_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2scstk2_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2scstk2_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2tcstk1_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2tcstk1_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2tcstk2_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2tcstk2_dna2(:) = 0.0e0_PREC
-
-      allocate(ibp2t3cstk_dna2(MXBP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      ibp2t3cstk_dna2(:) = 0.0e0_PREC
-   end if
-
 contains
    subroutine check()
       implicit none
@@ -680,30 +603,6 @@ contains
       if (allocated( idtrna_tst2st))    flg_error = .true.
       if (allocated( idtrna_tst2side))  flg_error = .true.
 
-      ! DNA (3SPN.2) 
-      ! For base stacking
-      if (allocated(istk2mp_dna2))      flg_error = .true.
-      if (allocated(istk2ebstk_dna2))   flg_error = .true.
-      if (allocated(istk2sbstk_dna2))   flg_error = .true.
-      if (allocated(istk2tbstk_dna2))   flg_error = .true.
-
-      ! For base pairing
-      if (allocated(ibp2mp_dna2))      flg_error = .true.
-      if (allocated(ibp2ebp_dna2))     flg_error = .true.
-      if (allocated(ibp2sbp_dna2))     flg_error = .true.
-      if (allocated(ibp2pbp_dna2))     flg_error = .true.
-      if (allocated(ibp2t1bp_dna2))    flg_error = .true.
-      if (allocated(ibp2t2bp_dna2))    flg_error = .true.
-
-      ! For cross stacking
-      if (allocated(ibp2ecstk1_dna2))  flg_error = .true.
-      if (allocated(ibp2ecstk2_dna2))  flg_error = .true.
-      if (allocated(ibp2scstk1_dna2))  flg_error = .true.
-      if (allocated(ibp2scstk2_dna2))  flg_error = .true.
-      if (allocated(ibp2tcstk1_dna2))  flg_error = .true.
-      if (allocated(ibp2tcstk2_dna2))  flg_error = .true.
-      if (allocated(ibp2t3cstk_dna2))  flg_error = .true.
-      
       if (flg_error) then
          error_message = 'defect at allocate_neighbor, PROGRAM STOP'
          call util_error(ERROR%STOP_ALL,error_message)
@@ -740,9 +639,6 @@ subroutine deallocate_nativestruct
                            wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
                            coef_dih_gauss, wid_dih_gauss,  & !aicg2
                            para_sasa, rad_sasa, surf, connect, & !sasa
-                           istk2mp_dna2, istk2ebstk_dna2, istk2sbstk_dna2, istk2tbstk_dna2,&                                                     ! DNA (3SPN.2 model) Base stacking
-                           ibp2mp_dna2, ibp2ebp_dna2, ibp2sbp_dna2, ibp2pbp_dna2, ibp2t1bp_dna2, ibp2t2bp_dna2,&                                 ! DNA (3SPN.2 model) Base pairing
-                           ibp2ecstk1_dna2, ibp2ecstk2_dna2, ibp2scstk1_dna2, ibp2scstk2_dna2, ibp2tcstk1_dna2, ibp2tcstk2_dna2, ibp2t3cstk_dna2,& ! DNA (3SPN.2 model) Cross stacking
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite,&
                            flg_hb_tertiary, &
@@ -879,28 +775,4 @@ subroutine deallocate_nativestruct
    if (allocated(idtrna_tst2st))      deallocate(idtrna_tst2st)
    if (allocated(idtrna_tst2side))    deallocate(idtrna_tst2side)
 
-   ! DNA (3SPN.2) 
-   ! For base stacking
-   if (allocated(istk2mp_dna2))       deallocate(istk2mp_dna2)
-   if (allocated(istk2ebstk_dna2))    deallocate(istk2ebstk_dna2)
-   if (allocated(istk2sbstk_dna2))    deallocate(istk2sbstk_dna2)
-   if (allocated(istk2tbstk_dna2))    deallocate(istk2tbstk_dna2)
-
-   ! For base pairing
-   if (allocated(ibp2mp_dna2))        deallocate(ibp2mp_dna2)
-   if (allocated(ibp2ebp_dna2))       deallocate(ibp2ebp_dna2)
-   if (allocated(ibp2sbp_dna2))       deallocate(ibp2sbp_dna2)
-   if (allocated(ibp2pbp_dna2))       deallocate(ibp2pbp_dna2)
-   if (allocated(ibp2t1bp_dna2))      deallocate(ibp2t1bp_dna2)
-   if (allocated(ibp2t2bp_dna2))      deallocate(ibp2t2bp_dna2)
-
-   ! For cross stacking
-   if (allocated(ibp2ecstk1_dna2))    deallocate(ibp2ecstk1_dna2)
-   if (allocated(ibp2ecstk2_dna2))    deallocate(ibp2ecstk2_dna2)
-   if (allocated(ibp2scstk1_dna2))    deallocate(ibp2scstk1_dna2)
-   if (allocated(ibp2scstk2_dna2))    deallocate(ibp2scstk2_dna2)
-   if (allocated(ibp2tcstk1_dna2))    deallocate(ibp2tcstk1_dna2)
-   if (allocated(ibp2tcstk2_dna2))    deallocate(ibp2tcstk2_dna2)
-   if (allocated(ibp2t3cstk_dna2))    deallocate(ibp2t3cstk_dna2)
-   
 endsubroutine deallocate_nativestruct

@@ -8,7 +8,6 @@ subroutine simu_energy_box(irep, pnle_unit, pnlet)
   use const_index
   use var_setp,    only : inmisc
   use var_struct,  only : nmp_real, xyz_mp_rep, imp2unit
-  use var_replica, only : n_replica_mpi
 
   implicit none
   ! ------------------------------------------------------------

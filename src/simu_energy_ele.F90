@@ -108,11 +108,6 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
      ! ------ reset charge for phosphate in 3SPN2 ------
      imptype1 = imp2type(imp1)
      imptype2 = imp2type(imp2)
-     if ( imptype1 == MPTYPE%DNA2_PHOS .AND. imptype2 == MPTYPE%PRO) then
-        pnl = pnl * ( - inele%dna2_phos_pro_charge / 0.6)
-     else if ( imptype2 == MPTYPE%DNA2_PHOS .AND. imptype1 == MPTYPE%PRO) then
-        pnl = pnl * ( - inele%dna2_phos_pro_charge / 0.6)
-     end if
      ! --------------------------------------------------------------------
      ! sum of the energy
      pnlet(E_TYPE%ELE) = pnlet(E_TYPE%ELE) + pnl

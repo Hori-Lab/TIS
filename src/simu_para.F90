@@ -53,7 +53,7 @@ subroutine simu_para()
      endif
 
      istep = 0
-     call simu_anneal(istep, ntstep, tempk)
+     call simu_anneal(istep, tempk)
 
   ! searchingtf
   else if(i_run_mode == RUN%SEARCH_TF) then

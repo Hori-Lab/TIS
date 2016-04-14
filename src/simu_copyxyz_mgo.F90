@@ -10,7 +10,7 @@ subroutine simu_copyxyz_mgo(irep_in)
   use var_struct,  only : nunit_real, nunit_all, lunit2mp, &
                           xyz_mp_rep, pxyz_mp_rep
   use var_mgo,     only : ishadow2real_unit_mgo
-  use var_replica, only : inrep, n_replica_mpi
+  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR
   use mpiconst
 #endif

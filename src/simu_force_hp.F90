@@ -8,8 +8,8 @@ subroutine  simu_force_hp(irep, force_mp)
   use const_index
   use var_setp,    only : inhp
   use var_struct,  only : imp2unit, xyz_mp_rep, nhpneigh, ineigh2hp, &
-                          lhp2neigh, nhp, ihp2mp, iclass_mp, ncoor_hp,&
-                          ncoor_max_hp, coef_aa_hp, cmp2seq, &
+                          lhp2neigh, nhp, ihp2mp, ncoor_hp,&
+                          ncoor_max_hp, coef_aa_hp, &
                           nmp_all, cutoff_dmin_hp, cutoff_dmax_hp
 #ifdef MPI_PAR
   use mpiconst

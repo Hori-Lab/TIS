@@ -79,7 +79,6 @@ subroutine simu_neighbor_pre(xyz_mp, ineigh_unit)
      do junit = iunit, nunit_all
         ineigh_unit(iunit, junit) = 0
 
-!        if(inmisc%itype_nlocal(iunit, junit) == 1) then
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING)) then
            cycle
         end if

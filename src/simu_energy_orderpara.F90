@@ -19,7 +19,6 @@ subroutine simu_energy_orderpara(irep, now_allcon)
                           nrna_st, iallcon2unit
   use var_simu,    only : qscore, qscore_unit
   use var_mgo,     only : inmgo, iact2unit_mgo, q_mgo
-  use var_replica, only : n_replica_mpi
   use time
 #ifdef MPI_PAR3
   use mpiconst

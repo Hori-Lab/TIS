@@ -122,11 +122,6 @@ subroutine simu_force_ele(irep, force_mp)
         
      imptype1 = imp2type(imp1)
      imptype2 = imp2type(imp2)
-     if ( imptype1 == MPTYPE%DNA2_PHOS .AND. imptype2 == MPTYPE%PRO) then
-        dvdw_dr = dvdw_dr * (-inele%dna2_phos_pro_charge / 0.6)
-     else if ( imptype2 == MPTYPE%DNA2_PHOS .AND. imptype1 == MPTYPE%PRO) then
-        dvdw_dr = dvdw_dr * (-inele%dna2_phos_pro_charge / 0.6)
-     end if
 
      for(1:3) = dvdw_dr * v21(1:3)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - for(1:3)

@@ -59,6 +59,8 @@ subroutine read_pdb_pro(lun,      & ![i ] target I/O unit
 
   ! ---------------------------------------------------------------------
   flg_reading   = .false.
+  i_resseq_save = 0
+  c_icode_save  = ' '
   imp = nmp
   iunit = nunit
   ires = nres

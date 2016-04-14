@@ -10,7 +10,6 @@ subroutine simu_force_fbangle(irep, force_mp, force_mp_mgo, ene_unit)
                          ifba2ba  !flp_mgo
   use var_mgo,    only : inmgo, iba2sysmbr_mgo
   use var_setp,   only : inflp
-  use var_simu,   only : istep
   
 #ifdef MPI_PAR
   use mpiconst

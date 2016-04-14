@@ -8,8 +8,8 @@ subroutine setp_fmat_para()
   use const_physical
   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st
   use var_inp, only : infile, outfile
-  use var_fmat, only : infmat, fix_pro, fix_rna, fix_dna, &
-                       aamsf_pro, aamsf_rna, aamsf_dna,   &
+  use var_fmat, only : infmat, fix_pro, fix_rna, &
+                       aamsf_pro, aamsf_rna, &
                        aamsf_hetero_bl, aamsf_hetero_ba, aamsf_hetero_dih, &
                        aamsf_hetero_nl, aamsf_hetero_rnabp, aamsf_hetero_rnast
 
@@ -123,26 +123,6 @@ subroutine setp_fmat_para()
   fix_rna%bp_HB2   = .false.
   fix_rna%bp_HB3   = .false.
   fix_rna%st       = .false.
-  fix_dna%bl_PS    = .false.
-  fix_dna%bl_SB    = .false.
-  fix_dna%bl_SP    = .false.
-  fix_dna%ba_PSB   = .false.
-  fix_dna%ba_PSP   = .false.
-  fix_dna%ba_BSP   = .false.
-  fix_dna%ba_SPS   = .false.
-  fix_dna%dih_PSPS = .false.
-  fix_dna%dih_SPSB = .false.
-  fix_dna%dih_SPSP = .false.
-  fix_dna%dih_BSPS = .false.
-  fix_dna%nl_pro_P = .false.
-  fix_dna%nl_pro_S = .false.
-  fix_dna%nl_pro_B = .false.
-  fix_dna%nl_P_P   = .false.
-  fix_dna%nl_P_S   = .false.
-  fix_dna%nl_P_B   = .false.
-  fix_dna%nl_S_S   = .false.
-  fix_dna%nl_S_B   = .false.
-  fix_dna%nl_B_B   = .false.
 
   ! --------------------------------------------------------------------
 
@@ -1229,11 +1209,9 @@ subroutine setp_fmat_para()
 
   call MPI_Bcast(infmat,    infmat%sz,    MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
   call MPI_Bcast(fix_pro,   fix_pro%sz,   MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(fix_dna,   fix_dna%sz,   MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
   call MPI_Bcast(fix_rna,   fix_rna%sz,   MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
   call MPI_Bcast(aamsf_pro, aamsf_pro%sz, MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
   call MPI_Bcast(aamsf_rna, aamsf_rna%sz, MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(aamsf_dna, aamsf_dna%sz, MPI_BYTE, 0, MPI_COMM_WORLD,ierr)
   if (infmat%i_type == FMATTYPE%HETERO) then
      if (myrank /= 0) then
         allocate( aamsf_hetero_bl(nbd), stat=ierr_alloc)

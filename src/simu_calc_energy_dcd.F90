@@ -5,7 +5,6 @@ subroutine simu_calc_energy_dcd(istep_write)
   use if_mloop
   use if_write
   use var_inp,     only : outfile, ifile_out_opt
-  use var_setp,    only : inmisc
   use var_replica, only : n_replica_mpi
   use var_simu,    only : istep, ibefore_time, tempk, velo_mp, &
                           pnlet, pnle_unit, &

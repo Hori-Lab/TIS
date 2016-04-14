@@ -19,7 +19,6 @@ subroutine simu_energy_enm(irep, now_con, pnlet, pnle_unit)
   use var_inp,    only : inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, &
                           ncon, icon2mp, icon2unit, coef_go, go_nat
-  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
   use mpiconst
 #endif

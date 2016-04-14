@@ -58,7 +58,6 @@ subroutine simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
         junit = imp2unit(jmp)
 
         if(ineigh_unit(iunit, junit) == 1) then
-!        if(inmisc%itype_nlocal(iunit, junit) /= 1) then
 
            if(inperi%i_periodic == 0) then
               v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)

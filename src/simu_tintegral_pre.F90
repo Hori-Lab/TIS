@@ -23,7 +23,7 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   use var_replica, only : rep2val, flg_rep, &
                           n_replica_all, n_replica_mpi, irep2grep
   use var_simu,    only : istep_sim, &
-                          ntstep, nstep_opt_temp, ibefore_time, &
+                          ntstep, ibefore_time, &
                           tstep, tsteph, tempk, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, &
                           cmass_cs, &

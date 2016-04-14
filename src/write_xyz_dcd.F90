@@ -9,8 +9,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   use const_index
   use var_inp, only : outfile
   use var_setp, only : insimu
-  use var_struct, only : nunit_real, nmp_real, lunit2mp, ires_mp, &
-                         xyz_mp_rep, pxyz_mp_rep, cmp2seq, cmp2atom
+  use var_struct, only : nunit_real, nmp_real, lunit2mp, pxyz_mp_rep
   use var_replica, only : flg_rep, &
                           rep2val, n_replica_mpi, irep2grep
 #ifdef MPI_PAR
@@ -122,7 +121,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
         write (ioutfile(grep)) num
 
         ! ... time-step
-        delta = insimu%tstep_size 
+        delta = real(insimu%tstep_size, kind=4)
         write (ioutfile(grep)) delta
 
         ! ... unit-cell information
