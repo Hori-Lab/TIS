@@ -7,18 +7,15 @@ subroutine simu_force_winz(irep, force_mp)
 
   use const_maxsize
   use const_index
-  use var_setp, only : inmisc, inwind
+  use var_setp, only : inwind
   use var_struct, only : xyz_mp_rep, nmp_all, grp
   use var_replica, only : irep2grep, rep2val, inrep
   
   implicit none
 
-  ! ----------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: grep, iwind
   integer :: igrp, ilist, imp
   real(PREC) :: z, dx, dy, dz 

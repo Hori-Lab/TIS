@@ -6,22 +6,16 @@ subroutine simu_force_ele2(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inmisc, inele
-  use var_struct, only : xyz_ele_rep, nmp_all, imp2unit, iclass_unit, &
-                         ncharge, icharge2mp, coef_charge, lele_k, iele2charge_k
+  use var_setp,   only : inele
+  use var_struct, only : xyz_ele_rep, nmp_all, ncharge, icharge2mp, coef_charge, lele_k, iele2charge_k
   use var_replica,only : irep2grep
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: imp1!, imp2
   integer :: grep, iele
   integer :: icharge, jcharge

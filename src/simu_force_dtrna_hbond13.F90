@@ -9,25 +9,15 @@ subroutine simu_force_dtrna_hbond13(irep, force_mp)
   use const_physical
   use const_index
   use var_inp,     only : inperi
-  use var_setp,    only : inrna, inmisc
-  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
-                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
-                          nmp_all
-  use var_replica, only : n_replica_mpi
-#ifdef MPI_PAR3
+  use var_struct,  only : xyz_mp_rep, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, nmp_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3,nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
-  integer :: ihb, imirror
-  integer :: klen, ksta, kend
+  integer :: ihb, ksta, kend
   real(PREC) :: d, cos_theta, dih
   real(PREC) :: v12(3), v13(3), v53(3), v42(3), v46(3)
   real(PREC) :: a42, a13, a12
@@ -43,7 +33,9 @@ subroutine simu_force_dtrna_hbond13(irep, force_mp)
   real(PREC) :: dnn, dmm
   real(PREC) :: pre
   real(PREC) :: for(3,6), f_i(3), f_k(3), f_l(3), ediv
-  character(CARRAY_MSG_ERROR) :: error_message
+#ifdef MPI_PAR3
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
 
@@ -60,7 +52,7 @@ subroutine simu_force_dtrna_hbond13(irep, force_mp)
 !$omp&           d,cos_theta,dih,&
 !$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
 !$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
-!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2,imirror)
+!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
    do ihb=ksta,kend
 
       ediv = 1.0e0_PREC

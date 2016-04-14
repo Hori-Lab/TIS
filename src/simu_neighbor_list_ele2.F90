@@ -15,10 +15,9 @@ subroutine simu_neighbor_list_ele2(jrep)
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele
-  use var_struct,  only : nunit_real, xyz_mp_rep, imp2unit, iclass_unit, &
-                          ncharge, icharge2mp, &
+  use var_struct,  only : nunit_real, xyz_mp_rep, imp2unit, ncharge, icharge2mp, &
                           lele_k, iele2charge_k, ncharge
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
+  use var_replica, only : irep2grep
   use time, only : time_s, time_e, tm_neighbor_ele, tmc_neighbor
 
 #ifdef MPI_PAR2

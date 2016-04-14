@@ -8,7 +8,7 @@ subroutine read_dssp(dssp)
   use const_physical
   use const_index
   use var_inp,    only : ifile_dssp, num_file, ifile_pdb !AICG
-  use var_struct, only : nmp_all,  lunit2mp !AICG
+  use var_struct, only : lunit2mp !AICG
 #ifdef MPI_PAR
   use mpiconst
 #endif

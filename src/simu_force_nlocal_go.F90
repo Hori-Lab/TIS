@@ -17,22 +17,16 @@ subroutine simu_force_nlocal_go(irep, force_mp)
   use const_physical
   use const_index
   use var_inp,    only : inperi
-  use var_setp,   only : inpara, inrna, inpro, inmisc
+  use var_setp,   only : inrna, inpro, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         ncon, icon2mp, coef_go, go_nat2, &
-                         iclass_mp, nunit_all, nmp_all
-#ifdef MPI_PAR
+                         ncon, icon2mp, coef_go, go_nat2, iclass_mp, nmp_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: force_mp(3, nmp_all)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: imp1, imp2!, iunit, junit
   integer :: icon, imirror
   integer :: ksta, kend

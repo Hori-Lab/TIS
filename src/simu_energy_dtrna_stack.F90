@@ -43,29 +43,28 @@
    use const_physical
    use const_index
    use var_setp,    only : inmisc
-   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
-                           ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st
+   use var_struct,  only : xyz_mp_rep, imp2unit, ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st
    use var_simu,    only : st_status
    use var_replica, only : irep2grep
    use mpiconst
  
    implicit none
  
-   ! --------------------------------------------------------------------
    integer,    intent(in)    :: irep
    real(PREC), intent(inout) :: pnlet(:)
    real(PREC), intent(inout) :: pnle_unit(:,:,:)
  
-   ! --------------------------------------------------------------------
-   ! local variables
    integer :: iunit, grep
-   integer :: ist, imirror
+   integer :: ist
    real(PREC) :: dih
    real(PREC) :: ddist, d, efull, ediv
    real(PREC) :: m(SPACE_DIM), n(SPACE_DIM)
    real(PREC) :: v21(SPACE_DIM), v34(SPACE_DIM), v54(SPACE_DIM)
    real(PREC) :: v56(SPACE_DIM), v76(SPACE_DIM)
-   integer :: klen, ksta, kend
+   integer :: ksta, kend
+#ifdef MPI_PAR3
+   integer :: klen
+#endif
  
    ! --------------------------------------------------------------------
    if (.not. inmisc%class_flag(CLASS%RNA)) then
@@ -83,9 +82,8 @@
    kend = ndtrna_st
 #endif
 
-!$omp do private(iunit,&
-!$omp&           v21,v34,v54,v56,v76,m,n,&
-!$omp&           dih,ddist,d,ediv,efull,imirror)
+!$omp do private(iunit,v21,v34,v54,v56,v76,m,n,&
+!$omp&           dih,ddist,d,ediv,efull)
    do ist=ksta,kend
 
       if (.not. st_status(ist,irep)) then

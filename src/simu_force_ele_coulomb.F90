@@ -6,22 +6,16 @@ subroutine simu_force_ele_coulomb(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : outfile, inperi
-  use var_setp,   only : inmisc, inele, inion
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         lele, iele2mp, coef_ele, nmp_all
-#ifdef MPI_PAR
+  use var_inp,    only : inperi
+  use var_setp,   only : inele
+  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables                                                             
   integer :: imp1, imp2
   integer :: ksta, kend
   integer :: iele1

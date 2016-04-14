@@ -18,29 +18,20 @@ subroutine simu_force_rna_stack(irep, force_mp)
   use const_physical
   use const_index
   use var_inp,    only : inperi
-  use var_setp,   only : inpara, inrna, inpro, inmisc
+  use var_setp,   only : inrna, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nrna_st, irna_st2mp, &
                          coef_rna_st, coef_rna_st_a, coef_rna_st_fD,   &
-                         rna_st_nat, rna_st_nat2, &
-                         iclass_mp, nunit_all, nmp_all
-
-#ifdef MPI_PAR
+                         rna_st_nat, rna_st_nat2, nmp_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
-  integer :: imp1, imp2
-  integer :: ist, imirror
-  real(PREC) :: dist, dist2
+  integer :: imp1, imp2, ist, imirror
+  real(PREC) :: dist, dist2, ex, dgo_dr
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist12, roverdist14
-  real(PREC) :: ex, dgo_dr
   real(PREC) :: v21(SPACE_DIM), for(SPACE_DIm)
   character(CARRAY_MSG_ERROR) :: error_message
   integer :: ksta, kend

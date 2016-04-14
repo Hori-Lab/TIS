@@ -9,10 +9,7 @@ subroutine simu_energy_bangle(irep, pnle_unit, pnlet)
   use const_index
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           nba, iba2mp, ba_nat, coef_ba
-  use var_replica, only : n_replica_mpi
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
@@ -21,8 +18,6 @@ subroutine simu_energy_bangle(irep, pnle_unit, pnlet)
   real(PREC), intent(inout) :: pnlet(:)  ! (E_TYPE%MAX, n_replica_mpi)
   real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer    :: imp1, imp2, imp3, iba, iunit, junit
   integer    :: ksta, kend
   real(PREC) :: dba, co_theta, efull

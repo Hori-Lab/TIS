@@ -9,24 +9,18 @@
    use const_maxsize
    use const_physical
    use const_index
-   use var_setp,    only : inmisc
-   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
-                           ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, &
-                           nmp_all
+   use var_struct,  only : xyz_mp_rep,  ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, nmp_all
    use var_simu,    only : st_status
    use var_replica, only : irep2grep
    use mpiconst
  
    implicit none
  
-   ! --------------------------------------------------------------------
    integer,    intent(in)    :: irep
    real(PREC), intent(inout) :: force_mp(3,nmp_all)
  
-   ! --------------------------------------------------------------------
-   ! local variables
-   integer :: ist, imirror, grep
-   integer :: klen, ksta, kend
+   integer :: ist, grep
+   integer :: ksta, kend
    real(PREC) :: dist, ddist, dih, d
    real(PREC) :: v21(3), v34(3), v54(3), v56(3), v76(3)
    real(PREC) :: abs54, d5454, abs56, d5656
@@ -36,6 +30,9 @@
    real(PREC) :: m(3), n(3)
    real(PREC) :: dnn, dmm
    real(PREC) :: for(3,7), f_i(3), f_l(3), ediv
+#ifdef MPI_PAR3
+   integer :: klen
+#endif
  
    ! --------------------------------------------------------------------
 
@@ -51,7 +48,7 @@
 #endif
 
 !$omp do private(f_i,f_l,for,m,n,dmm,dnn,&
-!$omp&           dih,dist, ddist,d,ediv,imirror)
+!$omp&           dih,dist, ddist,d,ediv)
    do ist=ksta,kend
 
       if (.not. st_status(ist, irep)) then

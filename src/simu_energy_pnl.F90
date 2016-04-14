@@ -12,10 +12,7 @@ subroutine  simu_energy_pnl(irep, pnle_unit, pnlet)
   use var_setp,    only : inpro, inrna, inligand
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
                           lpnl, ipnl2mp, iclass_mp
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
@@ -24,8 +21,6 @@ subroutine  simu_energy_pnl(irep, pnle_unit, pnlet)
   real(PREC), intent(out) :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out) :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
   integer :: ipnl, imirror

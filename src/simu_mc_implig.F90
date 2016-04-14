@@ -6,9 +6,8 @@ subroutine simu_mc_implig(irep, istep, tempk)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : mts
+  use var_setp,   only : mts
   use var_implig, only : inimplig, Etbind_implig, istate_implig, p_implig
-  use var_replica, only : irep2grep, n_replica_all
   use mt_stream
   implicit none
 

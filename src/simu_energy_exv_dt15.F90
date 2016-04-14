@@ -20,21 +20,17 @@ subroutine simu_energy_exv_dt15(irep, pnle_unit, pnlet)
   use const_index
   use var_setp,    only : indtrna15
   use var_inp,     only : inperi
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lpnl, ipnl2mp, iclass_mp, &
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp
   use mpiconst
 
   implicit none
 
-  ! ------------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out) :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
   integer :: ipnl, imirror
   real(PREC) :: dist, dij, a
@@ -42,6 +38,9 @@ subroutine simu_energy_exv_dt15(irep, pnle_unit, pnlet)
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
   real(PREC) :: v21(SPACE_DIM)
+#ifdef SHARE_NEIGH_PNL
+  integer :: klen
+#endif
 
   ! ------------------------------------------------------------------------
 

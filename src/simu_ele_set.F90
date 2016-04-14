@@ -16,13 +16,11 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   real(PREC), intent(in) :: tempk
   real(PREC), intent(in) :: ionic_strength
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: icharge, icharge_change, imp
-  real(PREC) :: ek, e_t, a_c, Tc, lb
+  real(PREC) :: ek, Tc, lb
   character(CARRAY_MSG_ERROR) :: error_message
-  real(PREC), parameter ::  MM_A=87.740e0_PREC, MM_B=-0.4008e0_PREC  ! i_diele=2
-  real(PREC), parameter ::  MM_C=9.398e-4_PREC, MM_D=-1.410e-6_PREC  ! i_diele=2
+  real(PREC), parameter ::  MM_A=87.740e0_PREC, MM_B=-0.4008e0_PREC  ! i_diele=1
+  real(PREC), parameter ::  MM_C=9.398e-4_PREC, MM_D=-1.410e-6_PREC  ! i_diele=1
 
   integer :: ifunc_seq2id
 
@@ -31,16 +29,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   if(inele%i_diele == 0) then
      ek = inele%diele_water
 
-  else if (inele%i_diele == 1) then
-     e_t = 2.494e2_PREC - 7.88e-1_PREC * tempk            &
-          + 7.2e-4_PREC * tempk**2
-     a_c = 1.0e0_PREC - 2.551e-1_PREC * ionic_strength    &
-          + 5.151e-2_PREC * ionic_strength**2 &
-          - 6.889e-3_PREC * ionic_strength**3
-     ek = e_t * a_c
-
   !Temperature dependent (Malmberg and Maryott, 1956)
-  else if (inele%i_diele == 2) then
+  else if (inele%i_diele == 1) then
 
      if (inmisc%i_temp_independent <= 1) then
         Tc = tempk - 273.15e0_PREC

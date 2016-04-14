@@ -7,18 +7,16 @@ subroutine simu_force_cylinder(irep, force_mp)
 
   use const_maxsize
   use var_setp,   only : inmisc
-  use var_struct, only : nmp_real, xyz_mp_rep, lunit2mp, nmp_all, nunit_real
+  use var_struct, only : xyz_mp_rep, lunit2mp, nmp_all, nunit_real
   implicit none
 
-  ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
 
-  ! ------------------------------------------------------------
-  ! local variables
   integer :: imp, i, iunit
   real(PREC) :: r, dr(2)
   real(PREC) :: force
+
   ! ------------------------------------------------------------
   do iunit = 1, nunit_real
   

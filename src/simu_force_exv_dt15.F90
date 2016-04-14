@@ -9,25 +9,22 @@ subroutine simu_force_exv_dt15(irep, force_mp)
   use var_setp,   only : indtrna15
   use var_inp,    only : inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp, iclass_mp,& 
-                         exv_radius_mp, exv_epsilon_mp
+                         lpnl, ipnl2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
   use mpiconst
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
-  integer :: klen, ksta, kend
-  integer :: imp1, imp2
-  integer :: ipnl, imirror
-  real(PREC) :: dist, dr, dr2, dij, a, a2
-  real(PREC) :: coef, dv_dr
+  integer :: ksta, kend
+  integer :: imp1, imp2, ipnl, imirror
+  real(PREC) :: dist, dr, dr2, dij, a, a2, coef, dv_dr
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
   real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
+#ifdef SHARE_NEIGH_PNL
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
 

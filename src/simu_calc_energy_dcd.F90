@@ -4,12 +4,10 @@ subroutine simu_calc_energy_dcd(istep_write)
   use const_index
   use if_mloop
   use if_write
-  use var_inp,     only : outfile, ifile_out_opt
+  use var_inp,     only : ifile_out_opt
   use var_replica, only : n_replica_mpi
-  use var_simu,    only : istep, ibefore_time, tempk, velo_mp, &
-                          pnlet, pnle_unit, &
-                          rg, rg_unit, rmsd, rmsd_unit, &
-                          replica_energy
+  use var_simu,    only : ibefore_time, tempk, velo_mp, pnlet, pnle_unit, &
+                          rg, rg_unit, rmsd, rmsd_unit, replica_energy
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -18,8 +16,6 @@ subroutine simu_calc_energy_dcd(istep_write)
 
   integer(L_INT), intent(in) :: istep_write
 
-  ! -----------------------------------------------------------------
-  ! local variables
   integer :: irep
   logical, save :: flg_header = .true.
 

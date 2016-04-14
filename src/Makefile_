@@ -319,9 +319,9 @@ FOBJ1 = \
 	read_pull.o read_pdb_rna.o\
 	read_dssp.o read_dssp_pro.o read_paraaicg.o read_paraaicg2.o\
 	write_version.o\
-	dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 	setp_fmat_para.o mloop_fmat_homo.o mloop_fmat_hetero.o\
 	write_fmat.o mloop_recalc_coef.o
+	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 
 
 OBJS = $(MTOBJ) $(FMOD1) $(FMOD2) $(FMOD3) $(FMOD4) $(FSUB1) $(FSUB2) $(FSUB3) $(FOBJ1)

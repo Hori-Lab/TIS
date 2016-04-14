@@ -11,12 +11,9 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
   use const_physical
   use const_index
   use var_setp,   only : inmisc, inwind, inele
-  use var_struct, only : nunit_real, lunit2mp, iclass_unit, &
-                         lele, coef_ele, iele2mp, coef_charge, lmp2charge
+  use var_struct, only : lele, coef_ele, iele2mp, coef_charge, lmp2charge
   use var_replica,only : n_replica_all, n_replica_mpi, rep2val, flg_rep, inrep, irep2grep
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -25,15 +22,15 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
 
   ! ----------------------------------------------------------------------
   ! local variables
-  integer    :: irep  ! local replica ID
-  integer    :: grep  ! global replica ID
-  integer    :: n_nt, ln_nt, iunit, i_nt
-  integer    :: ksta, kend, klen
+  integer    :: irep, grep
+  integer    :: ksta, kend
   integer    :: iele, icharge, jcharge
   real(PREC) :: tempk
   real(PREC) :: ionic_strength
   real(PREC) :: pullforce
-  character(CARRAY_MSG_ERROR) :: error_message
+#ifdef MPI_PAR
+  integer :: klen
+#endif
 
   ! ----------------------------------------------------------------------
   tempk = tempk_in

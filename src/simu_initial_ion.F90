@@ -7,7 +7,6 @@ subroutine simu_initial_ion(irep)
   use const_maxsize
   use const_index
   use var_inp,    only : inperi, flg_unit_generate_ion
-  use var_setp,   only : inion
   use var_struct, only : nunit_real, lunit2mp, iclass_unit, xyz_mp_rep
   implicit none
   

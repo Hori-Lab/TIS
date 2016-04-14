@@ -10,24 +10,19 @@ subroutine simu_force_dtrna_hbond15(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,    only : mts
-  use var_struct,  only : xyz_mp_rep, nmp_all, &
-                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
+  use var_struct,  only : xyz_mp_rep, nmp_all, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
-                          list_hb_at_hbsite, num_hb_at_hbsite,&
-                          nhbneigh, ineigh2hb
+                          list_hb_at_hbsite, num_hb_at_hbsite, nhbneigh, ineigh2hb
   use var_simu,    only : tempk, hb_energy, flg_hb_energy, hb_status
   use mpiconst
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3,nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: ihb, ineigh
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   real(PREC) :: d, cos_theta, dih
   real(PREC) :: v12(3), v13(3), v53(3), v42(3), v46(3)
   real(PREC) :: a42, a13, a12
@@ -58,7 +53,9 @@ subroutine simu_force_dtrna_hbond15(irep, force_mp)
   integer :: hb_seq(1:ndtrna_hb)
   logical :: hb_status_l(1:ndtrna_hb)
   real(PREC) :: hb_energy_l(1:ndtrna_hb)
-
+#ifdef MPI_PAR3
+  integer :: klen
+#endif 
 
   ! --------------------------------------------------------------------
 !$omp master

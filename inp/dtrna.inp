@@ -25,7 +25,6 @@ i_go_native_read_style = 2
 >>>>
 
 <<<< native_info_sim1
-** all-in-one-file style
 NINFO(all/all) bwyv.ninfo
 >>>>
 
@@ -60,9 +59,8 @@ diele_water = 99999.0
 
 ** dielectric constant
 **            = 0 constant value (default)
-**            = 1 function of temperature and concentration of cation
-**            = 2 function of temperature (Malmberg and Maryott, 1956)
-i_diele = 2
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
 
 ** charge value
 **            = 0 constant value (default)

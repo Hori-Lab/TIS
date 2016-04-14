@@ -23,15 +23,10 @@ subroutine min_conj_grad(flg_converge)
    use var_inp,    only : outfile
    use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep
    use var_setp,   only : insimu
-   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, & 
-                          pnlet, pnle_unit, qscore, qscore_unit
-   use var_emin,   only : inemin, lambda, norm_max, lunout, pvec, &
-                          func_check_lambda, func_check_norm
-
+   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, pnlet, pnle_unit
+   use var_emin,   only : inemin, lambda, norm_max, lunout, pvec, func_check_lambda, func_check_norm
    use time, only : time_s, time_e, tm_neighbor, tm_energy, tm_force
-#ifdef MPI_PAR
    use mpiconst
-#endif
 
    implicit none
    

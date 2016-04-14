@@ -24,7 +24,7 @@ subroutine simu_initial_xyz()
 !  integer :: lunout
 !  integer :: npdb
   integer :: nini, nmpini, nunitini, nunitini_old, nresini
-  integer :: lunit2mpini(2, MXUNIT), iresini_mp(MXMP), iontype_mpini(MXMP)
+  integer :: lunit2mpini(2, MXUNIT), iresini_mp(MXMP)
   integer :: lunit2atom(2, MXUNIT)
   integer,    allocatable :: iatomnum(:)
   real(PREC), allocatable :: xyz(:, :, :)

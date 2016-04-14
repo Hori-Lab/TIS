@@ -10,7 +10,6 @@ subroutine simu_force_dih_gauss(irep, force_mp, force_mp_mgo, ene_unit)
                          coef_dih_gauss, wid_dih_gauss, dih_nat, iclass_mp, &
                          imp2unit
   use var_mgo,    only : inmgo, idih2sysmbr_mgo
-  use var_setp,   only : inmisc
   
 #ifdef MPI_PAR
   use mpiconst
@@ -26,7 +25,6 @@ subroutine simu_force_dih_gauss(irep, force_mp, force_mp_mgo, ene_unit)
 !                                           inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
 
   ! ----------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, imp3, imp4
   integer :: idih, iunit, junit, isys, istat

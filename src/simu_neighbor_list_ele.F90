@@ -17,10 +17,9 @@ subroutine simu_neighbor_list_ele(jrep)
   use var_inp,     only : inperi
   use var_setp,    only : inmisc, inele
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
-                          imp2unit, iclass_unit, &
-                          ncharge, icharge2mp, coef_charge, &
+                          imp2unit, ncharge, icharge2mp, coef_charge, &
                           lele, iele2mp, coef_ele, ncharge
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
+  use var_replica, only : irep2grep
   use time
 #ifdef MPI_PAR2
   use mpiconst

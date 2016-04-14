@@ -26,24 +26,6 @@ fric_const = 0.25
 viscosity = 0.001
 >>>>
 
-
-
-
-*-------------------------------------------------------------------
-* supporting information for friction coefficient ("fric_const")
-*-------------------------------------------------------------------
-* From the standpoint of the calculation cost (efficiency), and so on,  
-* we recommend 0.25 (default value) as friction constant ("fric_const").
-*
-* However, if you want to reproduce the water viscosity {\mu = 8.0 \times 10^-4  [kg/(m s)] at room temperature (303K)} accurately in Langevin dynamics,
-* by taking account of Stokes' law you had better set the friction coefficient \gamma ("fric_const") for one C_{\alpha} bead as follows:
-*
-*    fric_const = 6 \pi \mu radi/rmass = 4.54   [in CafeMol unit].
-*
-* where radi corresponds to the typical radius of one aminoacid (e.g. 3.8 \AA) and rmass is default value of particle mass (10.0).
-*-------------------------------------------------------------------
-
-
 <<<< chemical_property
 MASS  ALA   71.09
 MASS  ARG   156.19

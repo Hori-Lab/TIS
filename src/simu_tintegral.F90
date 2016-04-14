@@ -21,8 +21,7 @@ subroutine simu_tintegral(flg_step_each_replica)
   use var_inp,     only : i_run_mode, i_simulate_type
   use var_setp,    only : insimu, ifix_mp, inmmc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
-  use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
-                          n_replica_all, n_replica_mpi, irep2grep, exchange_step
+  use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step
   use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
@@ -46,7 +45,7 @@ subroutine simu_tintegral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   ! local variables
-  integer    :: i,k,n,imp, irep, grep
+  integer    :: i,k,imp, irep, grep
   real(PREC) :: r_force(1:SPACE_DIM), dxyz(1:3)
   real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
@@ -385,9 +384,11 @@ contains
   subroutine get_random_number()
   !subroutine get_random_number(r_boxmuller)
 
-    use var_setp, only : mts
     use mt_stream
     use mt_kind_defs
+#ifdef MPI_PAR
+    use var_setp, only : mts
+#endif
     implicit none
 
     ! --------------------------------------------------------------------

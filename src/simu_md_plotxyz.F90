@@ -11,12 +11,11 @@ subroutine simu_md_plotxyz()
   use const_index
   use var_setp, only : mts
   use var_struct,  only : nmp_real, xyz_mp_rep, imp2type, iclass_mp
-  use var_replica, only : n_replica_mpi, irep2grep
+  use var_replica, only : n_replica_mpi
   use mt_stream
   implicit none
 
   ! -------------------------------------------------------------------
-  ! local variables
   integer    :: imp, irep, istream
   real(PREC) :: radxy, radyz
   real(PREC) :: pi2

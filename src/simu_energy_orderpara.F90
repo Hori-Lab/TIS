@@ -14,11 +14,9 @@ subroutine simu_energy_orderpara(irep, now_allcon)
 
   use const_maxsize
   use const_index
-  use var_struct,  only : nunit_all,  icon2unit, ncon_unit, icon2type, &
-                          ncon, nmorse, nrna_bp, &
-                          nrna_st, iallcon2unit
+  use var_struct,  only : nunit_all,  icon2unit, ncon, nmorse, nrna_bp, iallcon2unit
   use var_simu,    only : qscore, qscore_unit
-  use var_mgo,     only : inmgo, iact2unit_mgo, q_mgo
+  use var_mgo,     only : inmgo, q_mgo
   use time
 #ifdef MPI_PAR3
   use mpiconst

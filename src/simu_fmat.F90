@@ -6,25 +6,14 @@ subroutine simu_fmat()
 
    use const_physical
    use var_fmat,   only : bl_sum, bl_sum2, ba_sum, ba_sum2,   &
-                          dih_sum_A, dih_sum2_A, &
-                          dih_sum_B, dih_sum2_B, &
-                          nl_sum, nl_sum2, &
-                          bp_sum, bp_sum2, &
-                          st_sum, st_sum2, &
-                          i_num_sum, infmat
-   use var_struct, only : xyz_mp_rep,             &
-                          nbd, nba, ndih, ncon,   &
-                          nrna_bp, nrna_st,       &
-                          ibd2mp, iba2mp,         &
-                          idih2mp, icon2mp,       &
-                          irna_bp2mp, irna_st2mp, &
-                          imp2unit, iunit2ba, iunit2dih
+                          dih_sum_A, dih_sum2_A, dih_sum_B, dih_sum2_B, &
+                          nl_sum, nl_sum2, bp_sum, bp_sum2, st_sum, st_sum2, i_num_sum
+   use var_struct, only : xyz_mp_rep, nbd, nba, ndih, ncon, nrna_bp, nrna_st, &
+                          ibd2mp, iba2mp, idih2mp, icon2mp, irna_bp2mp, irna_st2mp
    implicit none
 
-   ! local variables
    integer :: idx
    integer :: imp1, imp2, imp3, imp4
-   !integer :: iunit1
    real(PREC) :: c11, c12, c13, c21, c22, c23, c33
    real(PREC) :: t1, t3, t4, t3t4
    real(PREC) :: co_dih, co_theta

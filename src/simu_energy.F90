@@ -22,7 +22,6 @@ subroutine simu_energy(irep,          &
   use if_energy
   use const_maxsize
   use const_index
-  use var_inp,     only : outfile
   use var_setp,    only : inmisc, inflp, inele
   use var_struct,  only : nunit_all, ncon, nmorse, nrna_bp
   use var_mgo,     only : inmgo

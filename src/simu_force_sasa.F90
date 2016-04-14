@@ -9,25 +9,20 @@ subroutine simu_force_sasa(irep, force_mp)
   use const_physical
   use const_index
   use var_inp,    only : inperi
-  use var_setp,   only : inpro, insasa, inmisc
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp, iclass_mp, nmp_real, &
+  use var_setp,   only : insasa
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_real, &
                          para_sasa, rad_sasa, surf, connect, imp2unit, cmp2atom
   use var_simu,    only :sasa
   use mpiconst
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, imp, iunit1, iunit2, isasa
   integer :: imirror
-!  real(PREC) :: dist2(isasa), dist(isasa)
   real(PREC) :: c4ij, c4ji, fij, fji
   real(PREC) :: c2,c3ij, c3ji, bij, bji
   real(PREC) :: forij, forji

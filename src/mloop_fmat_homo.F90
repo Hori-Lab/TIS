@@ -18,24 +18,15 @@ subroutine mloop_fmat_homo(iloop)
 
    use const_maxsize
    use const_index
-   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st, &
-                          nhb_bp, &
-                          ibd2mp, iba2mp, idih2mp,            &
-                          ibd2type, iba2type, idih2type,      &
-                          imp2type, icon2type, imp2unit,      &
-                          lunit2mp, cmp2atom, ibd2mp
-   use var_fmat, only   : aamsf_rna, aamsf_pro,               &
-                          bl_sum, bl_sum2, ba_sum, ba_sum2,   &
-                          dih_sum_A, dih_sum2_A, &
-                          dih_sum_B, dih_sum2_B, &
-                          nl_sum, nl_sum2, i_num_sum, infmat, &
-                          bp_sum, bp_sum2, st_sum, st_sum2,   &
+   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st, nhb_bp, iba2mp, idih2mp, &
+                          ibd2type, iba2type, idih2type, icon2type, imp2unit
+   use var_fmat, only   : aamsf_rna, aamsf_pro, bl_sum, bl_sum2, ba_sum, ba_sum2,   &
+                          dih_sum_A, dih_sum2_A, dih_sum_B, dih_sum2_B, &
+                          nl_sum, nl_sum2, i_num_sum, infmat, bp_sum, bp_sum2, st_sum, st_sum2, &
                           fix_pro, fix_rna
    use var_setp, only   : inpro, inrna
    use var_inp,  only   : outfile
-#ifdef MPI_PAR
    use mpiconst
-#endif
 
    implicit none
 
@@ -50,7 +41,6 @@ subroutine mloop_fmat_homo(iloop)
 !st   integer :: iba_unit_stack(MXUNIT)
 !st   integer :: ndih_unit_stack(MXUNIT)
 !st   integer :: idih_unit_stack(MXUNIT)
-   integer    :: idih_mp1, idih_mp4
    real(PREC) :: msf, msf_A, msf_B
    real(PREC) :: msf_bl_P, msf_bl_R_PS, msf_bl_R_SR, msf_bl_R_SY, msf_bl_R_SP
    real(PREC) :: msf_ba_P, msf_ba_R_PSR, msf_ba_R_PSY, msf_ba_R_PSP

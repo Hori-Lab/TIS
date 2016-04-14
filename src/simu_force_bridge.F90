@@ -6,16 +6,13 @@ subroutine simu_force_bridge(irep, force_mp)
 
   use const_maxsize
   use var_setp, only : inmisc
-  use var_struct, only : xyz_mp_rep, nmp_all, grp, cmass_mp
+  use var_struct, only : xyz_mp_rep, nmp_all, grp
   use var_simu, only : flg_ppr_release
   implicit none
 
-  ! ----------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: i, ibrid, imp, jmp, igrp, jgrp
   real(PREC) :: d(3), dist, cbd2, for
   real(PREC) :: force(3)
@@ -88,4 +85,3 @@ subroutine simu_force_bridge(irep, force_mp)
   end do
 
 end subroutine simu_force_bridge
-

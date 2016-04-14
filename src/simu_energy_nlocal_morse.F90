@@ -21,10 +21,7 @@ subroutine simu_energy_nlocal_morse(irep, now_morse, pnle_unit, pnlet)
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
                           nmorse, imorse2mp, morse_nat, &
                           coef_morse_fD, coef_morse_a
-  use var_replica, only : n_replica_mpi
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
@@ -34,8 +31,6 @@ subroutine simu_energy_nlocal_morse(irep, now_morse, pnle_unit, pnlet)
   real(PREC), intent(inout) :: pnlet(:)
   real(PREC), intent(inout) :: pnle_unit(:,:,:)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
   integer :: imorse, imirror

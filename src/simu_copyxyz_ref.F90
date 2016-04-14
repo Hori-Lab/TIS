@@ -7,7 +7,7 @@ subroutine simu_copyxyz_ref()
 
   use const_maxsize
   use const_physical
-  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp, nmp_all
+  use var_struct,  only : xyz_mp_rep, xyz_ref_mp, nmp_all
   use var_replica, only : n_replica_mpi
   implicit none
 

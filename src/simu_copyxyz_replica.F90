@@ -5,14 +5,10 @@ subroutine simu_copyxyz_replica()
 
   use const_maxsize
   use var_struct,  only : xyz_mp_rep
-  use var_replica, only : inrep, n_replica_mpi
+  use var_replica, only : n_replica_mpi
   implicit none
 
-  ! ----------------------------------------------------------------------
-  ! local varables
   integer :: irep
-
-  ! ----------------------------------------------------------------------
 
   !do irep = 2, inrep%n_replica
   do irep = 2, n_replica_mpi

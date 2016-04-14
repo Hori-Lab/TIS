@@ -7,32 +7,17 @@ subroutine simu_energy_fdih(irep, pnle_unit, pnlet)
   
   use const_maxsize
   use const_index
-  use var_struct, only : nfdih,          &
-                         ifdih2mp,       &
-                         xyz_mp_rep,     &
-                         idih2type,      &
-                         fdih_para,      &
-                         iclass_mp,      &
-                         imp2unit,       &
-                         nunit_all,      &
-                         fdih_ener_corr
+  use var_struct, only : nfdih, ifdih2mp, fdih_para, iclass_mp, imp2unit, nunit_all, fdih_ener_corr
   use var_setp,   only : inflp
   use var_flp
-
-
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------------
   integer, intent(in) :: irep
   real(PREC), intent(inout) :: pnlet(E_TYPE%MAX) 
   real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX)
   
-  ! ---------------------------------------------------------------------------
-  ! local variables
   type(phi_related_variables) :: phi_related
   integer :: imp(4)
   integer :: ksta, kend

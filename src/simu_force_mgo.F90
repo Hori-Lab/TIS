@@ -9,24 +9,16 @@ subroutine simu_force_mgo(force_mp, force_mp_mgo, ene_unit)
   use const_maxsize
   use const_index
   use var_struct, only : nunit_all, nmp_all
-  use var_mgo,    only : inmgo, enegap_mgo, offset_mgo,   &
-                         iunit2sysmbr_mgo, offset_unit, &
+  use var_mgo,    only : inmgo, enegap_mgo, offset_mgo, iunit2sysmbr_mgo, &
                          ishadow2real_mp_mgo,  coef_mgo, estate_mgo
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   real(PREC), intent(in) :: force_mp_mgo(3, inmgo%i_multi_mgo*nmp_all, &
                                          inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
   real(PREC), intent(in) :: ene_unit(nunit_all, nunit_all)
   
-  ! ---------------------------------------------------------------------
-  ! function
-  real(PREC) :: rfunc_cubiceq
-
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: imp, jmp
   integer :: isys, istat
   integer :: iact, iemin1, iemin2
@@ -35,6 +27,9 @@ subroutine simu_force_mgo(force_mp, force_mp_mgo, ene_unit)
   real(PREC) :: esys, ca, cb, cc, cd, delta12, delta13, delta23
   real(PREC) :: delta12_2, delta13_2, delta23_2
   character(CARRAY_MSG_ERROR) :: error_message
+
+  ! function
+  real(PREC) :: rfunc_cubiceq
 
   ! ----------------------------------------------------------------------
   ! calc estate_mgo

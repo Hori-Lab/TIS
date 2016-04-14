@@ -9,22 +9,16 @@ subroutine simu_energy_aicg13_gauss(irep, pnle_unit, pnlet)
   use const_index
   use const_physical
   use var_struct, only : nba, iba2mp, imp2unit, nunit_all, xyz_mp_rep, &
-                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, iclass_mp
+                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat
   use var_setp, only : inmisc
-
-#ifdef MPI_PAR3
   use mpiconst
-#endif
   
   implicit none
 
-  ! ---------------------------------------------------------------------------
   integer, intent(in) :: irep
   real(PREC), intent(inout) :: pnlet(E_TYPE%MAX) 
   real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX) 
   
-  ! ---------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp(3)
   integer :: imp1, imp2

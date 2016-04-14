@@ -10,23 +10,16 @@ subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
   use const_physical
   use const_index
   use var_setp,    only : inhp
-  use var_struct,  only : imp2unit, xyz_mp_rep, nhpneigh, ineigh2hp, &
-                          lhp2neigh, nhp, ihp2mp, iclass_mp, ncoor_hp,&
-                          ncoor_max_hp, coef_aa_hp, cmp2seq, &
-                          cutoff_dmin_hp, cutoff_dmax_hp
-#ifdef MPI_PAR3
+  use var_struct,  only : imp2unit, xyz_mp_rep, ineigh2hp, lhp2neigh, &
+                          nhp, ihp2mp, ncoor_hp, ncoor_max_hp, coef_aa_hp, cutoff_dmin_hp, cutoff_dmax_hp
   use mpiconst
-#endif
 
   implicit none
 
-! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp, jmp, iunit 
   integer :: ineigh, ihp, jhp

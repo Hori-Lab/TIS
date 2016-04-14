@@ -20,20 +20,14 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   use var_inp,     only : i_run_mode, i_simulate_type, flg_rst
   use var_setp,    only : inpara, insimu, inmmc, inmisc
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, grp, xyz_mp_rep
-  use var_replica, only : rep2val, flg_rep, &
-                          n_replica_all, n_replica_mpi, irep2grep
-  use var_simu,    only : istep_sim, &
-                          ntstep, ibefore_time, &
-                          tstep, tsteph, tempk, &
+  use var_replica, only : rep2val, flg_rep, n_replica_mpi, irep2grep
+  use var_simu,    only : istep_sim, ibefore_time,tstep, tsteph, tempk, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, &
-                          cmass_cs, &
-                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          pnlet_muca, pnle_unit_muca, &
-                          rlan_const, &
+                          cmass_cs, e_md, fac_mmc, em_mid, em_depth, em_sigma, &
+                          pnlet_muca, pnle_unit_muca, rlan_const, &
                           ics, ncs, velo_yojou, xyz_cs, velo_cs, &
-                          pnlet, pnle_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, &
-                          replica_energy
+                          pnlet, pnle_unit, replica_energy
   use time, only : tm_random, tm_muca, time_s, time_e
 
 #ifdef MPI_PAR

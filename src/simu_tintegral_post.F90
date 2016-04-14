@@ -34,31 +34,20 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_energy
   use var_inp,     only : i_run_mode, i_simulate_type, ifile_out_rep, &
                           ifile_out_rst, outfile, ifile_out_opt
-  use var_setp,    only : insimu, inann, ifix_mp, inmmc, &
-                          inmisc, inele, mts
-  use var_struct,  only : nmp_real, xyz_mp_rep, cmass_mp, fric_mp
-  use var_mgo,     only : inmgo
+  use var_setp,    only : insimu, inann, inmisc, inele
+  use var_struct,  only : nmp_real, cmass_mp, fric_mp
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
-                          n_replica_all, n_replica_mpi, irep2grep, &
-                          exchange_step, step_ratio
+                          n_replica_all, n_replica_mpi, irep2grep, exchange_step
   use var_implig,  only : inimplig  ! implicit ligand
-  use var_simu,    only : istep_sim, imstep, mstep, &
-                          istep, ntstep, nstep_opt_temp, ibefore_time, &
+  use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
                           n_exchange, max_exchange, iopt_stage, &
-                          tstep, tstep2, tsteph, tempk, accelaf, &
-                          accel_mp, velo_mp, force_mp, rcmass_mp, &
-                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          pnlet_muca, pnle_unit_muca, &
-                          r_force, rlan_const, &
-                          ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
-                          pnlet, pnle_unit, qscore, qscore_unit, &
-                          rg, rg_unit, rmsd, rmsd_unit, &
+                          tstep, tempk, velo_mp, rlan_const, &
+                          pnlet, pnle_unit, qscore, rg, rg_unit, rmsd, rmsd_unit, &
                           replica_energy
 
-  
   use time, only : total_time, tm_lap, tm_energy, tm_radiusg_rmsd, &
                    tm_output, tm_implig, tm_replica, tm_step_adj, &
-                   time_s, time_e, time_write, time_initialize, tm_others
+                   time_s, time_e, tm_others
   use mt_stream
   use var_fmat,    only : infmat, fmat_clear
 
@@ -340,7 +329,9 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
 #ifdef _DUMP_REPLICA
   call dump_var_replica(lundump)
 #endif
+#ifdef _DUMP
 #include   "dump_mloop_simulator.F90"
+#endif
 #ifdef _DUMP_COMMON
   endif
 #endif

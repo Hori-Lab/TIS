@@ -150,8 +150,6 @@ subroutine setp_mapara_ele()
         call util_error(ERROR%STOP_ALL, error_message)
      endif
   else if (inele%i_diele == 1) then
-!     write (lunout, *) 'using dielectric constant as function of temperature and concentration of cation'
-  else if (inele%i_diele == 2) then
      continue
   else
      error_message = 'Error: invalid value for inele%i_diele'

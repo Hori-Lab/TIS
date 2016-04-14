@@ -23,8 +23,7 @@ subroutine mloop_fmat_hetero()
                           ibd2type, iba2type, idih2type, icon2type, &
                           coef_bd, coef_ba, coef_dih, coef_go, &
                           coef_rna_bp, coef_rna_st
-   use var_fmat, only   : aamsf_rna, aamsf_pro,               &
-                          bl_sum, bl_sum2, ba_sum, ba_sum2,   &
+   use var_fmat, only   : bl_sum, bl_sum2, ba_sum, ba_sum2,   &
                           dih_sum_A, dih_sum2_A, &
                           dih_sum_B, dih_sum2_B, &
                           nl_sum, nl_sum2, i_num_sum, infmat, &

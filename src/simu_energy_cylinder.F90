@@ -18,7 +18,7 @@ subroutine simu_energy_cylinder(irep, pnle_unit, pnlet)
   ! ------------------------------------------------------------
   ! local variables
   integer :: imp, i, iunit
-  real(PREC) :: m, r, dr, efull
+  real(PREC) :: r, dr, efull
   ! ------------------------------------------------------------
   do iunit = 1, nunit_real
 

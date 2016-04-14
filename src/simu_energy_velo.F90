@@ -8,7 +8,6 @@ subroutine simu_energy_velo(velo_mp, pnle_unit, pnlet)
   use var_inp,     only : i_simulate_type
   use var_setp,    only : ifix_mp
   use var_struct,  only : nmp_real, cmass_mp, imp2unit
-  use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR3
   use mpiconst
 #endif

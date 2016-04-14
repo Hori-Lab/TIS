@@ -9,27 +9,23 @@ subroutine simu_force_exv_wca(irep, force_mp)
   use var_inp,    only : inperi
   use var_setp,   only : indtrna13
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp, iclass_mp
+                         lpnl, ipnl2mp !,iclass_mp
   use mpiconst
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
-  integer :: klen, ksta, kend
-  integer :: imp1, imp2
-  integer :: ipnl, imirror
-  real(PREC) :: dist2
-  real(PREC) :: coef, coef_pro, coef_rna, coef_rna_pro, coef_llig, coef_lpro
-  real(PREC) :: cdist2, cdist2_pro, cdist2_rna, cdist2_rna_pro, &
-                cdist2_llig, cdist2_lpro
+  integer :: ksta, kend
+  integer :: imp1, imp2,ipnl, imirror
+  real(PREC) :: dist2, coef, cdist2
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
   real(PREC) :: dvdw_dr
   real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
+#ifdef SHARE_NEIGH_PNL
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
   !! Currently this potential is available noly for RNA.

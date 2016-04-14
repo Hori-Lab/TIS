@@ -6,32 +6,25 @@ subroutine simu_force_ele3(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inmisc, inele
-  use var_struct, only : xyz_ele_rep, nmp_all, imp2unit, iclass_unit, &
-                         ncharge, icharge2mp, coef_charge
+  use var_setp,   only : inele
+  use var_struct, only : xyz_ele_rep, nmp_all, imp2unit, ncharge, icharge2mp, coef_charge
   use var_replica,only : irep2grep
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-#ifdef MPI_PAR
-  integer :: icharge_l
-#endif
-
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
-  integer :: imp1, imp2, iunit1, iunit2
+  integer :: imp1, iunit1
   integer :: grep
   integer :: icharge, jcharge, jcharge_ini, jcharge_las
   real(PREC) :: dist1, dist2, rdist1
   real(PREC) :: dvdw_dr, rcdist, cutoff2, prefac
   real(PREC) :: v21(3), for(3)
+#ifdef MPI_PAR
+  integer :: icharge_l
+#endif
 
   ! ------------------------------------------------------------------------
 #ifdef _DEBUG
@@ -44,16 +37,16 @@ subroutine simu_force_ele3(irep, force_mp)
   rcdist = 1.0e0_PREC / inele%cdist(grep)
 
 #ifdef MPI_PAR
-!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,prefac, &
+!$omp do private(imp1,v21,dist2,dist1,rdist1,prefac, &
 !$omp&           dvdw_dr,for,icharge,jcharge, &
-!$omp&           iunit1,iunit2,jcharge_ini,jcharge_las)
+!$omp&           iunit1,jcharge_ini,jcharge_las)
      
   do icharge_l = 1, ncharge_l
      icharge = icharge_l2g(icharge_l)
 #else
-!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,prefac, &
+!$omp do private(imp1,v21,dist2,dist1,rdist1,prefac, &
 !$omp&           dvdw_dr,for,icharge,jcharge, &
-!$omp&           iunit1,iunit2,jcharge_ini,jcharge_las)
+!$omp&           iunit1,jcharge_ini,jcharge_las)
 !     do iele1 = 1, lele(irep)
   do icharge = 1, ncharge - 1
 #endif

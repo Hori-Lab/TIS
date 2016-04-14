@@ -48,7 +48,6 @@ subroutine simu_energy_dtrna_stack_nlocal(irep, pnle_unit, pnlet)
   use const_maxsize
   use const_physical
   use const_index
-  !use var_inp,     only : outfile
   use var_setp,    only : inmisc
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
@@ -58,13 +57,10 @@ subroutine simu_energy_dtrna_stack_nlocal(irep, pnle_unit, pnlet)
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: pnlet(:)
   real(PREC), intent(inout) :: pnle_unit(:,:,:)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: iunit1, iunit2
   integer :: ist, ist_2nd
   real(PREC) :: dih, cos_theta
@@ -74,8 +70,11 @@ subroutine simu_energy_dtrna_stack_nlocal(irep, pnle_unit, pnlet)
   real(PREC) :: d1212
   real(PREC) :: m(SPACE_DIM), n(SPACE_DIM)
   real(PREC) :: c4212(SPACE_DIM), c1213(SPACE_DIM)
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   logical :: st_status_l(1:ndtrna_st)
+#ifdef MPI_PAR3
+  integer :: klen
+#endif
 
   ! --------------------------------------------------------------------
   if (.not. inmisc%class_flag(CLASS%RNA)) then
@@ -207,9 +206,7 @@ subroutine simu_energy_dtrna_stack_nlocal(irep, pnle_unit, pnlet)
      pnle_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) = &
                pnle_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) + efull
 
-!     write(outfile%opt, '(i5,1x,e11.4,1x)', advance='no') ist, efull
   end do
-!  write(outfile%opt, *)
 !!$omp end do nowait
 
 #ifdef MPI_PAR3

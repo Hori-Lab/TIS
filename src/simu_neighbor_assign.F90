@@ -18,10 +18,8 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_physical
   use var_inp,    only : inperi
   use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15
-  use var_struct, only : nunit_real, nmp_real, lunit2mp, iontype_mp, &
-                         pxyz_mp_rep, &
-                         cmp2seq, imp2unit, lmp2con, icon2mp, coef_go, &
-                         ipnl2mp, lpnl, imp2type, &
+  use var_struct, only : nunit_real, iontype_mp, pxyz_mp_rep, &
+                         imp2unit, lmp2con, icon2mp, coef_go, ipnl2mp, imp2type, &
                          iclass_unit, ires_mp, nmp_all, &
                          lmp2morse, lmp2rna_bp, lmp2rna_st, &
                          imorse2mp, irna_bp2mp, irna_st2mp, &
@@ -43,14 +41,12 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
   ! local variables
   integer :: n
   integer :: klen, ksta, kend
-  integer :: inum, imp, jmp, kmp, impmod, jmpmod, jimp
+  integer :: inum, imp, jmp, kmp
   integer :: imp1, imp2, imirror
   integer :: iunit, junit
   integer :: isep_nlocal
   integer :: isep_nlocal_rna
-  integer :: icon, istack
-  integer :: ipnl, npnl
-  integer :: lcore, lint
+  integer :: icon, ipnl, npnl
   integer :: istart, isearch, isearch_morse
   integer :: isearch_rna_bp, isearch_rna_st
   integer :: i_exvol, i_ion_hyd, i_ion_exv

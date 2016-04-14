@@ -83,9 +83,8 @@ diele_water = 99999.0
 
 ** dielectric constant
 **            = 0 constant value (default)
-**            = 1 function of temperature and concentration of cation
-**            = 2 function of temperature (Malmberg and Maryott, 1956)
-i_diele = 2
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
 
 ** charge value
 **            = 0 constant value (default)

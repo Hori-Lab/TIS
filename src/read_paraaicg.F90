@@ -6,7 +6,7 @@ subroutine read_paraaicg()
 
   use const_maxsize
   use const_index
-  use var_struct, only : nmp_all, nbd, nba, ndih, ncon,  &
+  use var_struct, only : nbd, nba, ndih, ncon,  &
                          factor_bd, factor_ba, factor_dih, factor_go, &
                          coef_bd, coef_ba, coef_dih, coef_go, &
                          ibd2mp, iba2mp, idih2mp, icon2unit, imp2unit 
@@ -14,6 +14,7 @@ subroutine read_paraaicg()
   use var_setp, only : inmisc
 
 #ifdef MPI_PAR
+  use var_struct, only : nmp_all
   use mpiconst
 #endif
 

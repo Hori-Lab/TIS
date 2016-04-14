@@ -4,7 +4,7 @@ subroutine write_rep_adjust( istep , n_exchange, n_adjust, i_loadbalance, lele_a
 
    use const_maxsize
    use var_inp,     only : outfile
-   use var_replica, only : rep2lab, n_replica_all, lab2step
+   use var_replica, only : n_replica_all, lab2step
 #ifdef MPI_PAR
    use mpiconst
 #endif

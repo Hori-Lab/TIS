@@ -10,15 +10,12 @@ subroutine simu_energy_winz(irep, pnle_unit, pnlet)
   use var_struct,  only : xyz_mp_rep, nunit_all, grp
   use var_replica, only : irep2grep, inrep
   
-
   implicit none
-  ! ------------------------------------------------------------
+
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX)
   real(PREC), intent(inout) :: pnlet(E_TYPE%MAX)
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: grep 
   integer :: iwind
   integer :: igrp 

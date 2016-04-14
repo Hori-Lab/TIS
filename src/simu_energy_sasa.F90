@@ -9,34 +9,26 @@ subroutine  simu_energy_sasa(irep, pnlet)
   use const_physical
   use const_index
   use var_inp,     only : inperi, outfile
-  use var_setp,    only : inpro, insasa 
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lpnl, ipnl2mp, iclass_mp, nmp_real, &
-                          para_sasa, rad_sasa, surf, connect,&
-                          cmp2atom, cmp2seq
-  use var_replica, only : inrep, n_replica_mpi, irep2grep
+  use var_setp,    only : insasa 
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_real, &
+                          para_sasa, rad_sasa, surf, connect,cmp2atom
   use var_simu,    only : istep, sasa
   use mpiconst
   
   implicit none
 
-  ! ------------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: pnlet(:)         ! (E_TYPE%MAX)
-!  real(PREC), intent(out) :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: lunout
   integer :: ksta, kend
   integer :: imp1, imp2, iunit1, iunit2
-  integer :: ipnl, imirror
-  integer :: imp, isasa
+  integer :: imirror, imp, isasa
   real(PREC) :: dist2(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
   real(PREC) :: dist(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
   real(PREC) :: radsum
   real(PREC) :: v21(SPACE_DIM)
-  real(PREC) :: esasa, sasa_t, c2, c3ij, c3ji, bij, bji, fij, fji
+  real(PREC) :: sasa_t, c2, c3ij, c3ji, bij, bji, fij, fji
 
 !$omp master
   lunout = outfile%data

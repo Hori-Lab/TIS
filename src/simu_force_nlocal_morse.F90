@@ -17,10 +17,10 @@ subroutine simu_force_nlocal_morse(irep, force_mp)
   use const_physical
   use const_index
   use var_inp,    only : inperi
-  use var_setp,   only : inpara, inrna, inpro, inmisc
+  use var_setp,   only : inrna, inpro, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nmorse, imorse2mp, &
                          coef_morse_a, coef_morse_fD, morse_nat, &
-                         iclass_mp, nunit_all, nmp_all
+                         iclass_mp, nmp_all
 
 #ifdef MPI_PAR
   use mpiconst

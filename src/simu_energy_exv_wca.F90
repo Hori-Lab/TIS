@@ -26,22 +26,16 @@ subroutine simu_energy_exv_wca(irep, pnle_unit, pnlet)
   use const_index
   use var_inp,     only : inperi
   use var_setp,    only : indtrna13
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lpnl, ipnl2mp
-#ifdef MPI_PAR3
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp
   use mpiconst
-#endif
 
   implicit none
 
-  ! ------------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out) :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
-  integer :: klen, ksta, kend
+  integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
   integer :: ipnl, imirror
   real(PREC) :: dist2
@@ -49,11 +43,15 @@ subroutine simu_energy_exv_wca(irep, pnle_unit, pnlet)
   real(PREC) :: roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
   real(PREC) :: v21(SPACE_DIM)
+#ifdef SHARE_NEIGH_PNL
+  integer :: klen
+#endif
 
   ! ------------------------------------------------------------------------
   !! Currently this potential is available noly for RNA.
   cdist2 = indtrna13%exv_dist**2
   coef = indtrna13%exv_coef
+
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH_PNL

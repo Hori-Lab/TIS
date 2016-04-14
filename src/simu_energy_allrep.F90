@@ -23,9 +23,8 @@ subroutine simu_energy_allrep(pnle_unit,     &
   use const_physical
   use const_maxsize
   use const_index
-  use var_inp,     only : outfile
   use var_setp,    only : inmisc, inele, inwind
-  use var_struct,  only : nunit_all, nmp_real, iele2mp, lmp2charge, lele, &
+  use var_struct,  only : nunit_all, iele2mp, lmp2charge, lele, &
                           coef_ele, ncharge, coef_charge
   use var_replica, only : n_replica_all, n_replica_mpi, irep2grep, &
                           lab2val, rep2lab, flg_rep, get_pair, inrep
@@ -33,6 +32,9 @@ subroutine simu_energy_allrep(pnle_unit,     &
   use mpiconst
 #ifdef _DEBUG
   use var_simu,    only : qscore_unit, qscore
+#endif
+#ifdef _DUMP_COMMON
+  use var_inp,     only : outfile
 #endif
 
   implicit none
@@ -61,7 +63,9 @@ subroutine simu_energy_allrep(pnle_unit,     &
 #else
   real(PREC) :: coef_ele_save(MXMPELE*ncharge)
 #endif
+#ifdef _DEBUG
   character(CARRAY_MSG_ERROR) :: error_message
+#endif
   character(CARRAY_MSG_ERROR),parameter :: msg_er_allocate = &
      'failed in memory allocation at mloop_simulator, PROGRAM STOP'
   character(CARRAY_MSG_ERROR),parameter :: msg_er_deallocate = &

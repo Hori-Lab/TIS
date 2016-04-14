@@ -7,22 +7,18 @@ subroutine  simu_force_hp(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,    only : inhp
-  use var_struct,  only : imp2unit, xyz_mp_rep, nhpneigh, ineigh2hp, &
-                          lhp2neigh, nhp, ihp2mp, ncoor_hp,&
-                          ncoor_max_hp, coef_aa_hp, &
-                          nmp_all, cutoff_dmin_hp, cutoff_dmax_hp
-#ifdef MPI_PAR
+  use var_struct,  only : xyz_mp_rep, ineigh2hp, lhp2neigh, nhp, ihp2mp, ncoor_hp,&
+                          ncoor_max_hp, coef_aa_hp, nmp_all, cutoff_dmin_hp, cutoff_dmax_hp
   use mpiconst
+#ifdef _DEBUG
+  use var_struct, only : nhpneigh
 #endif
 
   implicit none
 
-! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: imp, jmp
   integer :: ineigh, ihp, jhp
   integer :: ksta, kend

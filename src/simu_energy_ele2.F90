@@ -6,23 +6,17 @@ subroutine simu_energy_ele2(irep, pnlet, pnle_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inmisc, inele
-  use var_struct, only : xyz_ele_rep, nmp_all, imp2unit, iclass_unit, &
-                         ncharge, icharge2mp, coef_charge, lele_k, iele2charge_k
+  use var_setp,   only : inele
+  use var_struct, only : xyz_ele_rep, imp2unit, ncharge, icharge2mp, coef_charge, lele_k, iele2charge_k
   use var_replica,only : irep2grep
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
-  ! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: imp1, imp2
   integer :: grep, iele
   integer :: icharge, jcharge

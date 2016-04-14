@@ -7,30 +7,22 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
   use const_physical
   use const_index
   use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele, inion, insimu
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lele, iele2mp, coef_ele, iontype_mp, imp2type
+  use var_setp,    only : inmisc, inele, inion
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, iontype_mp, imp2type
   use var_replica, only : irep2grep
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
-  ! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, grep, iele1, imirror
-  integer :: itype1, itype2
-  integer :: imptype1, imptype2
-  real(PREC) :: dist1, dist2
+  integer :: itype1, itype2, imptype1, imptype2
+  real(PREC) :: dist1, dist2, ew, ek, rk
   real(PREC) :: pnl, rcdist, cutoff2, xtanh, rsig, rek_corr
-  real(PREC) :: ew, ek, rk
   real(PREC) :: v21(SPACE_DIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -119,4 +111,3 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
 !$omp end do nowait
 
 end subroutine simu_energy_ele
-
