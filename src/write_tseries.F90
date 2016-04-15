@@ -5,7 +5,7 @@
 !subroutine write_tseries(ibefore_time, ntstep, istep, &
 subroutine write_tseries(ibefore_time, istep, &
                          rg_unit, rg, rmsd_unit, rmsd, &
-                         pnle_unit, pnlet, temp_in, &
+                         e_exv_unit, e_exv, temp_in, &
                          flg_header )
 
 #include "format.F90"
@@ -35,8 +35,8 @@ subroutine write_tseries(ibefore_time, istep, &
   real(PREC), intent(in) :: rg(:)               ! (replica)
   real(PREC), intent(in) :: rmsd_unit(:,:)      ! (unit, replica)
   real(PREC), intent(in) :: rmsd(:)             ! (replica)
-  real(PREC), intent(in) :: pnle_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
-  real(PREC), intent(in) :: pnlet(:,:)          ! (E_TYPE%MAX,replica)
+  real(PREC), intent(in) :: e_exv_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
+  real(PREC), intent(in) :: e_exv(:,:)          ! (E_TYPE%MAX,replica)
   real(PREC), intent(in) :: temp_in
   logical, intent(in), optional :: flg_header
   
@@ -82,7 +82,7 @@ subroutine write_tseries(ibefore_time, istep, &
      if(flg_header_write) then
         write (lunout, '(a)') '# initial_energy'
         write (lunout, '(a)', ADVANCE='no') '# total_energy = '
-        write (lunout,  _FMT_TS_INI_TOTAL_) pnlet(E_TYPE%TOTAL, irep)
+        write (lunout,  _FMT_TS_INI_TOTAL_) e_exv(E_TYPE%TOTAL, irep)
         write (lunout, '(a)') '# t_series'
         write (lunout, '(a)') ''
         write (lunout, '(a)') '#########################################################'
@@ -368,7 +368,7 @@ contains
     ! ---------------------------------------------------------------------
     integer :: iunit_real, junit_real
     real(PREC) :: terg, termsd, teqscore
-    real(PREC) :: tpnlet(E_TYPE%MAX)
+    real(PREC) :: te_exv(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
     real(PREC) :: elocal, ego, erepul
     real(PREC) :: eelect, ehp, ehyd_ion
@@ -382,7 +382,7 @@ contains
        terg = rg(irep)
        termsd = rmsd(irep)
        teqscore = qscore(irep)
-       tpnlet(1:E_TYPE%MAX) = pnlet(1:E_TYPE%MAX, irep)
+       te_exv(1:E_TYPE%MAX) = e_exv(1:E_TYPE%MAX, irep)
     else
        iunit_real = ishadow2real_unit_mgo(iunit)
        junit_real = ishadow2real_unit_mgo(junit)
@@ -391,47 +391,47 @@ contains
        if(iflag_format == IW_UNIT) then
           terg = rg_unit(iunit, irep)
           termsd = rmsd_unit(iunit, irep)
-          tpnlet(1:E_TYPE%MAX) = pnle_unit(iunit, junit, 1:E_TYPE%MAX, irep)
+          te_exv(1:E_TYPE%MAX) = e_exv_unit(iunit, junit, 1:E_TYPE%MAX, irep)
        else
           terg = rg_unit(iunit_real, irep)
           termsd = rmsd_unit(iunit, irep)
-          tpnlet(1:E_TYPE%MAX) = pnle_unit(iunit_real, junit_real, 1:E_TYPE%MAX, irep)
-          tpnlet(E_TYPE%TOTAL) = pnle_unit(iunit, junit, E_TYPE%TOTAL, irep)
-          tpnlet(E_TYPE%BOND) = pnle_unit(iunit, junit, E_TYPE%BOND, irep)
-          tpnlet(E_TYPE%BANGLE) = pnle_unit(iunit, junit, E_TYPE%BANGLE, irep)
-          tpnlet(E_TYPE%DIHE) = pnle_unit(iunit, junit, E_TYPE%DIHE, irep)
-          tpnlet(E_TYPE%GO) = pnle_unit(iunit, junit, E_TYPE%GO, irep)
-          tpnlet(E_TYPE%MORSE) = pnle_unit(iunit, junit, E_TYPE%MORSE, irep)
-          tpnlet(E_TYPE%DIHE_HARMONIC) = pnle_unit(iunit, junit, E_TYPE%DIHE_HARMONIC, irep)
-          tpnlet(E_TYPE%IMPLIG) = pnle_unit(iunit, junit, E_TYPE%IMPLIG, irep)
+          te_exv(1:E_TYPE%MAX) = e_exv_unit(iunit_real, junit_real, 1:E_TYPE%MAX, irep)
+          te_exv(E_TYPE%TOTAL) = e_exv_unit(iunit, junit, E_TYPE%TOTAL, irep)
+          te_exv(E_TYPE%BOND) = e_exv_unit(iunit, junit, E_TYPE%BOND, irep)
+          te_exv(E_TYPE%BANGLE) = e_exv_unit(iunit, junit, E_TYPE%BANGLE, irep)
+          te_exv(E_TYPE%DIHE) = e_exv_unit(iunit, junit, E_TYPE%DIHE, irep)
+          te_exv(E_TYPE%GO) = e_exv_unit(iunit, junit, E_TYPE%GO, irep)
+          te_exv(E_TYPE%MORSE) = e_exv_unit(iunit, junit, E_TYPE%MORSE, irep)
+          te_exv(E_TYPE%DIHE_HARMONIC) = e_exv_unit(iunit, junit, E_TYPE%DIHE_HARMONIC, irep)
+          te_exv(E_TYPE%IMPLIG) = e_exv_unit(iunit, junit, E_TYPE%IMPLIG, irep)
        end if
     end if
 
     erg     = terg
     ermsd   = termsd
     eqscore = teqscore
-    etotal  = tpnlet(E_TYPE%TOTAL)
-    evelo   = tpnlet(E_TYPE%VELO)
-    elocal  = tpnlet(E_TYPE%BOND) + tpnlet(E_TYPE%BANGLE) + tpnlet(E_TYPE%DIHE) + &
-              tpnlet(E_TYPE%DIHE_HARMONIC)
-    ego     = tpnlet(E_TYPE%GO)
-    emorse  = tpnlet(E_TYPE%MORSE)
-    erepul  = tpnlet(E_TYPE%EXV) + tpnlet(E_TYPE%EXV_ION) &
-            + tpnlet(E_TYPE%EXV_WCA) + tpnlet(E_TYPE%EXV_DT15)
-    estack_rna = tpnlet(E_TYPE%STACK_RNA) + tpnlet(E_TYPE%STACK_DTRNA)
-    ehbond_rna = tpnlet(E_TYPE%PAIR_RNA)  + tpnlet(E_TYPE%HBOND_DTRNA)
-    eelect  = tpnlet(E_TYPE%ELE)
-    ehyd_ion  = tpnlet(E_TYPE%HYD_ION)
-    ehp       = tpnlet(E_TYPE%HPENE)
-    ebox      = tpnlet(E_TYPE%BOX)
-    ecap      = tpnlet(E_TYPE%CAP)
-    ebridge   = tpnlet(E_TYPE%BRIDGE)
-    epulling  = tpnlet(E_TYPE%PULLING)
-    eanchor   = tpnlet(E_TYPE%ANCHOR)
-    erest1d   = tpnlet(E_TYPE%REST1D)
-    eimplig   = tpnlet(E_TYPE%IMPLIG)
-    ewindow   = tpnlet(E_TYPE%WINDOW)
-    ecylinder = tpnlet(E_TYPE%CYLINDER)
+    etotal  = te_exv(E_TYPE%TOTAL)
+    evelo   = te_exv(E_TYPE%VELO)
+    elocal  = te_exv(E_TYPE%BOND) + te_exv(E_TYPE%BANGLE) + te_exv(E_TYPE%DIHE) + &
+              te_exv(E_TYPE%DIHE_HARMONIC)
+    ego     = te_exv(E_TYPE%GO)
+    emorse  = te_exv(E_TYPE%MORSE)
+    erepul  = te_exv(E_TYPE%EXV) + te_exv(E_TYPE%EXV_ION) &
+            + te_exv(E_TYPE%EXV_WCA) + te_exv(E_TYPE%EXV_DT15)
+    estack_rna = te_exv(E_TYPE%STACK_RNA) + te_exv(E_TYPE%STACK_DTRNA)
+    ehbond_rna = te_exv(E_TYPE%PAIR_RNA)  + te_exv(E_TYPE%HBOND_DTRNA)
+    eelect  = te_exv(E_TYPE%ELE)
+    ehyd_ion  = te_exv(E_TYPE%HYD_ION)
+    ehp       = te_exv(E_TYPE%HPENE)
+    ebox      = te_exv(E_TYPE%BOX)
+    ecap      = te_exv(E_TYPE%CAP)
+    ebridge   = te_exv(E_TYPE%BRIDGE)
+    epulling  = te_exv(E_TYPE%PULLING)
+    eanchor   = te_exv(E_TYPE%ANCHOR)
+    erest1d   = te_exv(E_TYPE%REST1D)
+    eimplig   = te_exv(E_TYPE%IMPLIG)
+    ewindow   = te_exv(E_TYPE%WINDOW)
+    ecylinder = te_exv(E_TYPE%CYLINDER)
 
     if(inmisc%i_output_energy_style == 0) then
        write (lunout, "(a5)",         ADVANCE = "NO") chead3
@@ -493,9 +493,9 @@ contains
        if (inmisc%class_flag(CLASS%RNA)) then
           if (inmisc%i_dtrna_model == 2015) then
              write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack_rna
-             write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") tpnlet(E_TYPE%TSTACK_DTRNA)
+             write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") te_exv(E_TYPE%TSTACK_DTRNA)
              write (lunout, _FMT_TS_HBOND_,    ADVANCE = "NO") ehbond_rna
-             write (lunout, _FMT_TS_HBOND_,    ADVANCE = "NO") tpnlet(E_TYPE%THBOND_DTRNA)
+             write (lunout, _FMT_TS_HBOND_,    ADVANCE = "NO") te_exv(E_TYPE%THBOND_DTRNA)
           else
              write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack_rna
              write (lunout, _FMT_TS_HBOND_,    ADVANCE = "NO") ehbond_rna

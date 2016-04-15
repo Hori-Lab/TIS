@@ -1,8 +1,6 @@
-! cafemol
-!> @brief The main program of CafeMol package. It calls several subroutines &
-!>      to perform molecular dynamics simulation or other kinds of computation
-
 !*************************************************************************
+!  This program has been largely modified by Naoto Hori
+!  originally from source codes develped as CafeMol version 2.1.
 !
 !           Program for molecular dynamics simulation using CA
 !           start from  2000/06/XX

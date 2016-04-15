@@ -24,10 +24,10 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   use var_simu,    only : istep_sim, ibefore_time,tstep, tsteph, tempk, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, &
                           cmass_cs, e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          pnlet_muca, pnle_unit_muca, rlan_const, &
+                          e_exv_muca, e_exv_unit_muca, rlan_const, &
                           ics, ncs, velo_yojou, xyz_cs, velo_cs, &
                           rg, rg_unit, rmsd, rmsd_unit, &
-                          pnlet, pnle_unit, replica_energy
+                          e_exv, e_exv_unit, replica_energy
   use time, only : tm_random, tm_muca, time_s, time_e
 
 #ifdef MPI_PAR
@@ -123,8 +123,8 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
      ! based on Gosavi et al. JMB,2006,357,986
      TIME_S( tm_muca )
      if(inmmc%i_modified_muca == 1)then
-        call simu_energy(irep, velo_mp(:,:,irep), pnlet_muca, pnle_unit_muca)
-        e_md = pnlet_muca(E_TYPE%TOTAL)
+        call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+        e_md = e_exv_muca(E_TYPE%TOTAL)
         fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
              exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
         do imp = 1, nmp_real
@@ -219,7 +219,7 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   
   ! calc energy
   ! ## Here, replica_energy is dummy.
-  call simu_energy_allrep(pnle_unit, pnlet, &
+  call simu_energy_allrep(e_exv_unit, e_exv, &
        velo_mp, replica_energy, .false., tempk)
   call simu_radiusg(rg_unit, rg)
   call simu_rmsd(rmsd_unit, rmsd)
@@ -236,7 +236,7 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   endif
   call write_tseries(ibefore_time, istep_dummy, &
                      rg_unit, rg, rmsd_unit, rmsd, &
-                     pnle_unit, pnlet, tempk, .true.)
+                     e_exv_unit, e_exv, tempk, .true.)
   
   if(i_run_mode == RUN%ENERGY_CALC) then
      write(error_message, *) 'PROGRAM STOP'

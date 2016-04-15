@@ -1,7 +1,7 @@
 ! simu_energy_ele
 !> @brief Calculate the energy of electrostatic interaction 
 
-subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
+subroutine simu_energy_ele_coulomb(irep, e_exv, e_exv_unit)
 
   use const_maxsize
   use const_physical
@@ -17,15 +17,15 @@ subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
 
   ! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
   ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, iele1, imirror
   real(PREC) :: dist1, dist2
-  real(PREC) :: pnl, cutoff2
+  real(PREC) :: exv, cutoff2
   real(PREC) :: v21(SPACE_DIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -47,7 +47,7 @@ subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
   kend = lele(irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,dist1,&
-!$omp&           pnl,iunit,junit,imirror)
+!$omp&           exv,iunit,junit,imirror)
   do iele1=ksta, kend
 
      imp1 = iele2mp(1, iele1, irep)
@@ -67,27 +67,27 @@ subroutine simu_energy_ele_coulomb(irep, pnlet, pnle_unit)
      dist1 = sqrt(dist2)
      
      if (inmisc%i_temp_independent == 0) then
-        pnl = coef_ele(iele1,irep)/dist1
+        exv = coef_ele(iele1,irep)/dist1
 
      else if (inmisc%i_temp_independent == 1) then
-     !   pnl = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
+     !   exv = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
      !        * exp(-dist1*rcdist)
         write(*,*) 'error in simu_energy_ele_coulomb'
         stop
 
      else if (inmisc%i_temp_independent == 2) then
      !   rk = dist1 * rcdist
-     !   pnl = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
+     !   exv = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
      !        * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
         write(*,*) 'error in simu_energy_ele_coulomb'
         stop
      endif
 
-     pnlet(E_TYPE%ELE) = pnlet(E_TYPE%ELE) + pnl
+     e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     pnle_unit(iunit, junit, E_TYPE%ELE) = pnle_unit(iunit, junit, E_TYPE%ELE) + pnl
+     e_exv_unit(iunit, junit, E_TYPE%ELE) = e_exv_unit(iunit, junit, E_TYPE%ELE) + exv
   end do
 !$omp end do nowait
 

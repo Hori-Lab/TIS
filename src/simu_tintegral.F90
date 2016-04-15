@@ -25,7 +25,7 @@ subroutine simu_tintegral(flg_step_each_replica)
   use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          pnlet_muca, pnle_unit_muca, rlan_const, &
+                          e_exv_muca, e_exv_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor
 
@@ -126,8 +126,8 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), pnlet_muca, pnle_unit_muca)
-              e_md = pnlet_muca(E_TYPE%TOTAL)
+              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
               do imp = 1, nmp_real
@@ -192,8 +192,8 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), pnlet_muca, pnle_unit_muca)
-              e_md = pnlet_muca(E_TYPE%TOTAL)
+              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
               do imp = 1, nmp_real
@@ -271,8 +271,8 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), pnlet_muca, pnle_unit_muca)
-              e_md = pnlet_muca(E_TYPE%TOTAL)
+              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
               do imp = 1, nmp_real

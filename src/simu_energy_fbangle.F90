@@ -1,9 +1,9 @@
 !simu_energy_fbangle
 !> @brief Calculates the energy related to flexible bond-angle term. &
-!>        Values are added into "pnlet(E_TYPE%BANGLE)" and           &
-!>        "pnle_unit(,,E_TYPE%BANGLE)"
+!>        Values are added into "e_exv(E_TYPE%BANGLE)" and           &
+!>        "e_exv_unit(,,E_TYPE%BANGLE)"
 
-subroutine simu_energy_fbangle(irep, pnle_unit, pnlet)
+subroutine simu_energy_fbangle(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -20,8 +20,8 @@ subroutine simu_energy_fbangle(irep, pnle_unit, pnlet)
 
   ! ---------------------------------------------------------------------------
   integer, intent(in) :: irep
-  real(PREC), intent(inout) :: pnlet(E_TYPE%MAX) 
-  real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX) 
+  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) 
+  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX) 
   
   ! ---------------------------------------------------------------------------
   ! local variables
@@ -72,12 +72,12 @@ subroutine simu_energy_fbangle(irep, pnle_unit, pnlet)
 
      ! -------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%BANGLE) = pnlet(E_TYPE%BANGLE) + efull
+     e_exv(E_TYPE%BANGLE) = e_exv(E_TYPE%BANGLE) + efull
 
      iunit = imp2unit( imp(1) )
      junit = imp2unit( imp(2) )
      
-     pnle_unit(iunit, junit, E_TYPE%BANGLE) = pnle_unit(iunit, junit, E_TYPE%BANGLE) + efull
+     e_exv_unit(iunit, junit, E_TYPE%BANGLE) = e_exv_unit(iunit, junit, E_TYPE%BANGLE) + efull
      
   end do
 !$omp end do nowait

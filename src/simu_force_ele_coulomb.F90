@@ -48,7 +48,7 @@ subroutine simu_force_ele_coulomb(irep, force_mp)
   kend = lele(irep)
 #endif
 #ifdef MPI_DEBUG
-  print *,"pnl2_6       = ", kend-ksta+1
+  print *,"exv2_6       = ", kend-ksta+1
 #endif
 
 #else

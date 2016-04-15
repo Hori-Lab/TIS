@@ -7,7 +7,7 @@ subroutine allocate_neighbor()
   use const_index
   use var_inp,     only : inperi
   use var_setp,    only : inmisc, inele
-  use var_struct,  only : lpnl, ipnl2mp, lele, iele2mp, &
+  use var_struct,  only : lexv, iexv2mp, lele, iele2mp, &
                           coef_ele, &
                           nhpneigh, lhp2neigh, ineigh2hp, cutoff_dmin_hp, &
                           cutoff_dmax_hp, ncharge, nmp_all, nhp, &
@@ -39,8 +39,8 @@ subroutine allocate_neighbor()
   
   ! check
   flg_error = .false.
-  if (allocated(lpnl))           flg_error = .true.
-  if (allocated(ipnl2mp))        flg_error = .true.
+  if (allocated(lexv))           flg_error = .true.
+  if (allocated(iexv2mp))        flg_error = .true.
   if (allocated(lele))           flg_error = .true.
   if (allocated(iele2mp))        flg_error = .true.
   if (allocated(coef_ele))       flg_error = .true.
@@ -62,24 +62,24 @@ subroutine allocate_neighbor()
   !-----------
   error_message = 'failed in memory allocation at allocate_neighbor, PROGRAM STOP'
   
-  allocate( lpnl(2, E_TYPE%MAX, n_replica_mpi),             stat=ier)
+  allocate( lexv(2, E_TYPE%MAX, n_replica_mpi),             stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-  lpnl(:,:,:) = 0
+  lexv(:,:,:) = 0
 
 #ifdef MPI_PAR2
 
 #ifdef SHARE_NEIGH_PNL
-  allocate( ipnl2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
+  allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
 #else
-  allocate( ipnl2mp(n_index, MXMPNEIGHBOR*nmp_all/npar_mpi+1, n_replica_mpi), stat=ier)
+  allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all/npar_mpi+1, n_replica_mpi), stat=ier)
 #endif
 
 #else
-  allocate( ipnl2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
+  allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
 #endif
 
   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-  ipnl2mp(:,:,:) = 0
+  iexv2mp(:,:,:) = 0
   
   ! for electrostatic interaction
   if (inmisc%force_flag(INTERACT%ELE)) then
@@ -194,12 +194,12 @@ end subroutine allocate_neighbor
 
 subroutine deallocate_neighbor
 
-   use var_struct,  only : lpnl, ipnl2mp, lele, iele2mp, coef_ele, &
+   use var_struct,  only : lexv, iexv2mp, lele, iele2mp, coef_ele, &
                            nhpneigh, ineigh2hp, lhp2neigh, cutoff_dmax_hp, cutoff_dmin_hp, &
                            nhbneigh, ineigh2hb
 
-   if (allocated(lpnl))          deallocate(lpnl)
-   if (allocated(ipnl2mp))       deallocate(ipnl2mp)
+   if (allocated(lexv))          deallocate(lexv)
+   if (allocated(iexv2mp))       deallocate(iexv2mp)
    if (allocated(lele))          deallocate(lele)
    if (allocated(iele2mp))       deallocate(iele2mp)
    if (allocated(coef_ele))      deallocate(coef_ele)

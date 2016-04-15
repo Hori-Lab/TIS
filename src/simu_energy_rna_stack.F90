@@ -1,8 +1,8 @@
 !simu_energy_rna_stack
 !> @brief Calculates the energy related to stacking interaction of  &
 !>        RNA particles.
-!>        The values are added into "pnlet(E_TYPE%STACK_RNA)" and   &
-!>        "pnle_unit(E_TYPE%STACK_RNA)".
+!>        The values are added into "e_exv(E_TYPE%STACK_RNA)" and   &
+!>        "e_exv_unit(E_TYPE%STACK_RNA)".
 
 ! ************************************************************************
 ! formula of go1210
@@ -14,7 +14,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine simu_energy_rna_stack(irep, pnle_unit, pnlet)
+subroutine simu_energy_rna_stack(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_physical
@@ -32,8 +32,8 @@ subroutine simu_energy_rna_stack(irep, pnle_unit, pnlet)
 
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnlet(:)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:)
+  real(PREC), intent(inout) :: e_exv(:)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -93,11 +93,11 @@ subroutine simu_energy_rna_stack(irep, pnle_unit, pnlet)
 
          ! --------------------------------------------------------------------
          ! sum of the energy
-         pnlet(E_TYPE%STACK_RNA) = pnlet(E_TYPE%STACK_RNA) + efull
+         e_exv(E_TYPE%STACK_RNA) = e_exv(E_TYPE%STACK_RNA) + efull
 
          iunit = imp2unit(imp1)
          junit = imp2unit(imp2)
-         pnle_unit(iunit, junit, E_TYPE%STACK_RNA) = pnle_unit(iunit, junit, E_TYPE%STACK_RNA) + efull
+         e_exv_unit(iunit, junit, E_TYPE%STACK_RNA) = e_exv_unit(iunit, junit, E_TYPE%STACK_RNA) + efull
       end do
 !$omp end do nowait
 
@@ -127,11 +127,11 @@ subroutine simu_energy_rna_stack(irep, pnle_unit, pnlet)
 
          ! --------------------------------------------------------------------
          ! sum of the energy
-         pnlet(E_TYPE%STACK_RNA) = pnlet(E_TYPE%STACK_RNA) + efull
+         e_exv(E_TYPE%STACK_RNA) = e_exv(E_TYPE%STACK_RNA) + efull
 
          iunit = imp2unit(imp1)
          junit = imp2unit(imp2)
-         pnle_unit(iunit, junit, E_TYPE%STACK_RNA) = pnle_unit(iunit, junit, E_TYPE%STACK_RNA) + efull
+         e_exv_unit(iunit, junit, E_TYPE%STACK_RNA) = e_exv_unit(iunit, junit, E_TYPE%STACK_RNA) + efull
       end do
 !$omp end do nowait
 

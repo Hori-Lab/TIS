@@ -1,9 +1,9 @@
 !simu_energy_aicg13
 !> @brief Calculates the energy related to 1-3 residues. &
-!>        Values are added into "pnlet(E_TYPE%BANGLE)" and           &
-!>        "pnle_unit(,,E_TYPE%BANGLE)"
+!>        Values are added into "e_exv(E_TYPE%BANGLE)" and           &
+!>        "e_exv_unit(,,E_TYPE%BANGLE)"
 
-subroutine simu_energy_aicg13_gauss(irep, pnle_unit, pnlet)
+subroutine simu_energy_aicg13_gauss(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -16,8 +16,8 @@ subroutine simu_energy_aicg13_gauss(irep, pnle_unit, pnlet)
   implicit none
 
   integer, intent(in) :: irep
-  real(PREC), intent(inout) :: pnlet(E_TYPE%MAX) 
-  real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX) 
+  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) 
+  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX) 
   
   integer :: ksta, kend
   integer :: imp(3)
@@ -69,12 +69,12 @@ subroutine simu_energy_aicg13_gauss(irep, pnle_unit, pnlet)
 
      ! -------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%BANGLE) = pnlet(E_TYPE%BANGLE) + efull
+     e_exv(E_TYPE%BANGLE) = e_exv(E_TYPE%BANGLE) + efull
 
      iunit = imp2unit( imp(1) )
      junit = imp2unit( imp(2) )
      
-     pnle_unit(iunit, junit, E_TYPE%BANGLE) = pnle_unit(iunit, junit, E_TYPE%BANGLE) + efull
+     e_exv_unit(iunit, junit, E_TYPE%BANGLE) = e_exv_unit(iunit, junit, E_TYPE%BANGLE) + efull
      
      end if
   end do

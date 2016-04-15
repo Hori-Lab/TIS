@@ -2,7 +2,7 @@
 !> @brief Calculate energy of 1D-restraint option
 
 ! ************************************************************************
-subroutine simu_energy_rest1d(irep, pnle_unit, pnlet)
+subroutine simu_energy_rest1d(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine simu_energy_rest1d(irep, pnle_unit, pnlet)
 
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnlet(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -43,11 +43,11 @@ subroutine simu_energy_rest1d(irep, pnle_unit, pnlet)
      efull = inmisc%coef_rest1d(irest) &
            * (inmisc%rest1d_s(irest) - inmisc%rest1d_s0(irest)) ** 2
 
-     pnlet(E_TYPE%REST1D) = pnlet(E_TYPE%REST1D) + efull
+     e_exv(E_TYPE%REST1D) = e_exv(E_TYPE%REST1D) + efull
      iunit = imp2unit(imp)
      junit = iunit
-     pnle_unit(iunit, junit, E_TYPE%REST1D) =  &
-          pnle_unit(iunit, junit, E_TYPE%REST1D) + efull
+     e_exv_unit(iunit, junit, E_TYPE%REST1D) =  &
+          e_exv_unit(iunit, junit, E_TYPE%REST1D) + efull
 
   end do
 
@@ -82,11 +82,11 @@ subroutine simu_energy_rest1d(irep, pnle_unit, pnlet)
      efull = inmisc%coef_rest1d_center(irest_center) &
              * ( dot - inmisc%rest1d_center_s0(irest_center) ) ** 2
 
-     pnlet(E_TYPE%REST1D) = pnlet(E_TYPE%REST1D) + efull
+     e_exv(E_TYPE%REST1D) = e_exv(E_TYPE%REST1D) + efull
      !iunit = imp2unit(imp)
      !junit = iunit
-     !pnle_unit(iunit, junit, E_TYPE%REST1D) =  &
-     !pnle_unit(iunit, junit, E_TYPE%REST1D) + efull
+     !e_exv_unit(iunit, junit, E_TYPE%REST1D) =  &
+     !e_exv_unit(iunit, junit, E_TYPE%REST1D) + efull
      
   end do
 

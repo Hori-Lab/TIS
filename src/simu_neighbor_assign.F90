@@ -19,7 +19,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use var_inp,    only : inperi
   use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15
   use var_struct, only : nunit_real, iontype_mp, pxyz_mp_rep, &
-                         imp2unit, lmp2con, icon2mp, coef_go, ipnl2mp, imp2type, &
+                         imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
                          iclass_unit, ires_mp, nmp_all, &
                          lmp2morse, lmp2rna_bp, lmp2rna_st, &
                          imorse2mp, irna_bp2mp, irna_st2mp, &
@@ -46,14 +46,14 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: iunit, junit
   integer :: isep_nlocal
   integer :: isep_nlocal_rna
-  integer :: icon, ipnl, npnl
+  integer :: icon, iexv, nexv
   integer :: istart, isearch, isearch_morse
   integer :: isearch_rna_bp, isearch_rna_st
   integer :: i_exvol, i_ion_hyd, i_ion_exv
   integer :: i_sasa, i_exv_wca, i_exv_dt15 !sasa
-  integer :: ipnl2mp_l  (3, MXMPNEIGHBOR*nmp_all)
-  integer :: ipnl2mp_pre(3, MXMPNEIGHBOR*nmp_all)
-  integer :: npnl_lall(0:npar_mpi-1)
+  integer :: iexv2mp_l  (3, MXMPNEIGHBOR*nmp_all)
+  integer :: iexv2mp_pre(3, MXMPNEIGHBOR*nmp_all)
+  integer :: nexv_lall(0:npar_mpi-1)
   !integer :: ii, iz
   real(PREC) :: vx(3)
 
@@ -79,16 +79,16 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   integer :: imp_l
 #ifdef SHARE_NEIGH_PNL
-  integer :: ipnl2mp_l_sort(3, MXMPNEIGHBOR*nmp_all)
+  integer :: iexv2mp_l_sort(3, MXMPNEIGHBOR*nmp_all)
   integer :: disp(0:npar_mpi-1)
   integer :: count(0:npar_mpi-1)
-  integer :: npnl_l
+  integer :: nexv_l
 #endif
 
   ! -------------------------------------------------------------------
   isep_nlocal  = inpro%n_sep_nlocal
 
-  ipnl     = 0
+  iexv     = 0
   isearch  = 1
   isearch_morse  = 1
   isearch_rna_bp = 1
@@ -287,10 +287,10 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if ! (iunit==junit)
 
            if(i_exvol == 1) then
-              ipnl = ipnl + 1
-              ipnl2mp_l(1, ipnl) = imp 
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%EXV
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV
 !             cycle loop_lneigh
            end if
         end if
@@ -328,10 +328,10 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if ! (iunit==junit)
 
            if(i_exv_wca == 1) then
-              ipnl = ipnl + 1
-              ipnl2mp_l(1, ipnl) = imp 
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%EXV_WCA
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV_WCA
            end if
         end if
 
@@ -381,10 +381,10 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if ! (iunit==junit)
 
            if(i_exv_dt15 == 1) then
-              ipnl = ipnl + 1
-              ipnl2mp_l(1, ipnl) = imp 
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%EXV_DT15
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV_DT15
            end if
         end if
         
@@ -409,15 +409,15 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if
 
            if(i_ion_hyd == 1) then
-              ipnl = ipnl + 1 
-              ipnl2mp_l(1, ipnl) = imp 
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%HYD_ION
+              iexv = iexv + 1 
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%HYD_ION
            else if(i_ion_exv == 1) then
-              ipnl = ipnl + 1 
-              ipnl2mp_l(1, ipnl) = imp 
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%EXV_ION
+              iexv = iexv + 1 
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV_ION
            end if
            
         end if
@@ -430,10 +430,10 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
            if (iclass_unit(junit) /= CLASS%PRO .and. &
                cmp2atom(jmp) /= ' P  ' .and. cmp2atom(jmp) /= ' O  ') i_sasa = 0
            if(i_sasa == 1) then
-              ipnl = ipnl + 1
-              ipnl2mp_l(1, ipnl) = imp
-              ipnl2mp_l(2, ipnl) = jmp
-              ipnl2mp_l(3, ipnl) = E_TYPE%SASA
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%SASA
            end if
         end if
         ! ------------------------------------------------------------------         
@@ -454,57 +454,57 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 #ifdef MPI_PAR2
 
 #ifdef SHARE_NEIGH_PNL
-  npnl_l = ipnl
+  nexv_l = iexv
 
-  call simu_neighbor_sort(irep, npnl_l, ipnl2mp_l, ipnl2mp_l_sort)
+  call simu_neighbor_sort(irep, nexv_l, iexv2mp_l, iexv2mp_l_sort)
 
   TIME_S( tmc_neighbor )
 
-  call mpi_allgather(npnl_l   ,1,MPI_INTEGER, &
-                     npnl_lall,1,MPI_INTEGER, &
+  call mpi_allgather(nexv_l   ,1,MPI_INTEGER, &
+                     nexv_lall,1,MPI_INTEGER, &
                      mpi_comm_local,ierr)
 
-  npnl = sum( npnl_lall(0:npar_mpi-1) )
+  nexv = sum( nexv_lall(0:npar_mpi-1) )
 
   disp (0) = 0
-  count(0) = 3*npnl_lall(0)
+  count(0) = 3*nexv_lall(0)
   do n = 1, npar_mpi-1
-    disp (n) = disp(n-1) + 3*npnl_lall(n-1)
-    count(n) = 3*npnl_lall(n)
+    disp (n) = disp(n-1) + 3*nexv_lall(n-1)
+    count(n) = 3*nexv_lall(n)
   end do
 
-  call mpi_allgatherv( ipnl2mp_l_sort,3*npnl_l  ,MPI_INTEGER, &
-                       ipnl2mp_pre  ,count, disp,MPI_INTEGER, &
+  call mpi_allgatherv( iexv2mp_l_sort,3*nexv_l  ,MPI_INTEGER, &
+                       iexv2mp_pre  ,count, disp,MPI_INTEGER, &
                        mpi_comm_local,ierr )
 
   TIME_E( tmc_neighbor )
 
-  call simu_neighbor_sort(irep, npnl, ipnl2mp_pre, npnl_lall=npnl_lall)
+  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 #else
-  npnl = ipnl
-  npnl_lall(:) = 0  ! NIS aza
-  npnl_lall(0) = npnl
+  nexv = iexv
+  nexv_lall(:) = 0  ! NIS aza
+  nexv_lall(0) = nexv
 
-  call simu_neighbor_sort(irep, npnl, ipnl2mp_l, ipnl2mp_pre)
-  call simu_neighbor_sort(irep, npnl, ipnl2mp_pre, npnl_lall=npnl_lall)
+  call simu_neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
+  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 #endif
 
 #else
-  npnl = ipnl
-  npnl_lall(:) = 0  ! NIS aza
-  npnl_lall(0) = npnl
+  nexv = iexv
+  nexv_lall(:) = 0  ! NIS aza
+  nexv_lall(0) = nexv
 
-  call simu_neighbor_sort(irep, npnl, ipnl2mp_l, ipnl2mp_pre)
-  call simu_neighbor_sort(irep, npnl, ipnl2mp_pre, npnl_lall=npnl_lall)
+  call simu_neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
+  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 
 #endif
 
 
   if(inperi%i_periodic == 1) then
-!     call util_pbindex(ipnl2mp, npnl, irep)
-     do ipnl = 1, npnl
-        imp1 = ipnl2mp(1, ipnl, irep)
-        imp2 = ipnl2mp(2, ipnl, irep)
+!     call util_pbindex(iexv2mp, nexv, irep)
+     do iexv = 1, nexv
+        imp1 = iexv2mp(1, iexv, irep)
+        imp2 = iexv2mp(2, iexv, irep)
  
         vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
         
@@ -523,7 +523,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
         call util_pbneighbor(vx, imirror)
 
-        ipnl2mp(3, ipnl, irep) = imirror
+        iexv2mp(3, iexv, irep) = imirror
      end do
 
   end if

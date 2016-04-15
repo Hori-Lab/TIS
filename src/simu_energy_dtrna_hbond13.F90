@@ -1,8 +1,8 @@
 !simu_energy_dtrna_hbond13
 !> @brief Calculates the energy of hydrogen-bond interaction between &
 !>        RNA particles.
-!>        The values are added into "pnlet(E_TYPE%HBOND_DTRNA)" and   &
-!>        "pnle_unit(E_TYPE%HBOND_DTRNA)".
+!>        The values are added into "e_exv(E_TYPE%HBOND_DTRNA)" and   &
+!>        "e_exv_unit(E_TYPE%HBOND_DTRNA)".
 !
 ! Reference:
 !    Equation (7) in 
@@ -44,7 +44,7 @@
 ! psi1   : 1=2-4-6      v12, v24, v46
 
 
-subroutine simu_energy_dtrna_hbond13(irep, pnle_unit, pnlet)
+subroutine simu_energy_dtrna_hbond13(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_physical
@@ -60,8 +60,8 @@ subroutine simu_energy_dtrna_hbond13(irep, pnle_unit, pnlet)
 
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnlet(:)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:)
+  real(PREC), intent(inout) :: e_exv(:)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -188,10 +188,10 @@ subroutine simu_energy_dtrna_hbond13(irep, pnle_unit, pnlet)
       !===== Total =====
       efull = coef_dtrna_hb(0,ihb) / ediv
 
-      pnlet(E_TYPE%HBOND_DTRNA) = pnlet(E_TYPE%HBOND_DTRNA) + efull
+      e_exv(E_TYPE%HBOND_DTRNA) = e_exv(E_TYPE%HBOND_DTRNA) + efull
 
-      pnle_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
-                pnle_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + efull
+      e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
+                e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + efull
    end do
 !$omp end do nowait
 

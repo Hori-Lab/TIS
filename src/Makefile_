@@ -25,7 +25,7 @@ UTIL8 = ../utility/a2rst
 # -DTIME          : enable timing measurement
 # -DUNFORMATTED
 # -DSHARE_NEIGH      : share neighboring list for electrostatic interaction
-# -DSHARE_NEIGH_PNL  : share neighboring list for pnl interactions
+# -DSHARE_NEIGH_PNL  : share neighboring list for exv interactions
 # -DSHARE_NEIGH_HP   : share neighboring list for hydrophobic interaction
 # -DSUB_COPY      : copy subroutine of random number generator
 # --------------------------------------------------------------------
@@ -276,7 +276,7 @@ FOBJ1 = \
 	simu_energy_nlocal_go.o simu_energy_nlocal_morse.o \
 	simu_energy_nlocal_rna_bp.o \
 	simu_energy_orderpara.o\
-	simu_energy_pnl.o simu_energy_pnl_restype.o\
+	simu_energy_exv_rep12.o simu_energy_exv_restype.o\
 	simu_energy_exv_wca.o simu_energy_exv_dt15.o\
 	simu_energy_hp.o simu_energy_sasa.o\
 	simu_energy_ion.o\
@@ -299,7 +299,7 @@ FOBJ1 = \
 	simu_force_nlocal_go.o simu_force_nlocal_morse.o \
 	simu_force_nlocal_rna_bp.o \
 	simu_force_nlocal_mgo.o simu_force_mgo.o simu_force_enm.o\
-	simu_force_pnl.o simu_force_pnl_restype.o\
+	simu_force_exv.o simu_force_exv_restype.o\
 	simu_force_exv_wca.o simu_force_exv_dt15.o\
 	simu_force_hp.o simu_force_ion.o simu_force_sasa.o\
 	simu_force_bridge.o simu_force_pulling.o\

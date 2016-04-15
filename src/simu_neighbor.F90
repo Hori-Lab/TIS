@@ -16,7 +16,7 @@ subroutine simu_neighbor(irep)
   use const_index
   use var_inp,     only : inperi
   use var_setp,    only : inmisc, inele
-  use var_struct,  only : lpnl, nmp_all
+  use var_struct,  only : lexv, nmp_all
 
   use time
   use mpiconst
@@ -35,18 +35,18 @@ subroutine simu_neighbor(irep)
   end if
 
   if (inmisc%force_flag(INTERACT%ENM)) then
-     lpnl(1, 1:E_TYPE%MAX,:) = 1
-     lpnl(2, 1:E_TYPE%MAX,:) = 0
+     lexv(1, 1:E_TYPE%MAX,:) = 1
+     lexv(2, 1:E_TYPE%MAX,:) = 0
      return
   end if
 
-  TIME_S( tm_neighbor_pnl )
+  TIME_S( tm_neighbor_exv )
   ! make neighborlist
   call simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
 
-  ! assign iconcal2con and ipnl2mp
+  ! assign iconcal2con and iexv2mp
   call simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
-  TIME_E( tm_neighbor_pnl )
+  TIME_E( tm_neighbor_exv )
   
   TIME_S( tm_neighbor_ele )
   if (inmisc%force_flag(INTERACT%ELE)) then

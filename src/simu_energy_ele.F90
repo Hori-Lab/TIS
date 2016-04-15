@@ -1,7 +1,7 @@
 ! simu_energy_ele
 !> @brief Calculate the energy of electrostatic interaction 
 
-subroutine simu_energy_ele(irep, pnlet, pnle_unit)
+subroutine simu_energy_ele(irep, e_exv, e_exv_unit)
 
   use const_maxsize
   use const_physical
@@ -15,14 +15,14 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, grep, iele1, imirror
   integer :: itype1, itype2, imptype1, imptype2
   real(PREC) :: dist1, dist2, ew, ek, rk
-  real(PREC) :: pnl, rcdist, cutoff2, xtanh, rsig, rek_corr
+  real(PREC) :: exv, rcdist, cutoff2, xtanh, rsig, rek_corr
   real(PREC) :: v21(SPACE_DIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -49,7 +49,7 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
   kend = lele(irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,dist1,itype1,itype2,imptype1,imptype2, &
-!$omp&           rsig,xtanh,rek_corr,pnl,iunit,junit,imirror)
+!$omp&           rsig,xtanh,rek_corr,exv,iunit,junit,imirror)
   do iele1=ksta, kend
 
      imp1 = iele2mp(1, iele1, irep)
@@ -76,15 +76,15 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
      if((.not. inmisc%class_flag(CLASS%ION)) .or. itype1 <= 0 .or. itype1 > IONTYPE%MAX_ALL .or. itype2 <= 0 .or. itype2 > IONTYPE%MAX_ALL) then
 
         if (inmisc%i_temp_independent == 0) then
-           pnl = coef_ele(iele1,irep)/dist1*exp(-dist1*rcdist)
+           exv = coef_ele(iele1,irep)/dist1*exp(-dist1*rcdist)
 
         else if (inmisc%i_temp_independent == 1) then
-           pnl = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
+           exv = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
                 * exp(-dist1*rcdist)
 
         else if (inmisc%i_temp_independent == 2) then
            rk = dist1 * rcdist
-           pnl = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
+           exv = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
                 * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
 
         endif
@@ -94,7 +94,7 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
         xtanh = tanh((dist1-inion%cdistme(itype1, itype2))*rsig)
         rek_corr = 1.0/(0.5*(ew + 5.2) + 0.5*(ew - 5.2)*xtanh)
         
-        pnl = ek*rek_corr*coef_ele(iele1, irep)/dist1*exp(-dist1*rcdist) 
+        exv = ek*rek_corr*coef_ele(iele1, irep)/dist1*exp(-dist1*rcdist) 
      end if
      
      ! ------ reset charge for phosphate in 3SPN2 ------
@@ -102,11 +102,11 @@ subroutine simu_energy_ele(irep, pnlet, pnle_unit)
      imptype2 = imp2type(imp2)
      ! --------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%ELE) = pnlet(E_TYPE%ELE) + pnl
+     e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     pnle_unit(iunit, junit, E_TYPE%ELE) = pnle_unit(iunit, junit, E_TYPE%ELE) + pnl
+     e_exv_unit(iunit, junit, E_TYPE%ELE) = e_exv_unit(iunit, junit, E_TYPE%ELE) + exv
   end do
 !$omp end do nowait
 

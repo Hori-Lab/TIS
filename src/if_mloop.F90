@@ -11,25 +11,25 @@ interface
       integer,    intent(in)    :: nsize
    endsubroutine
  
-   subroutine simu_energy_allrep(pnle_unit, pnlet, &
+   subroutine simu_energy_allrep(e_exv_unit, e_exv, &
                                  velo_mp, replica_energy, flg_replica, tempk)
       use const_maxsize
       implicit none
-      real(PREC), intent(out) :: pnle_unit(:,:,:,:)  ! (MXUNIT, MXUNIT, E_TYPE%MAX, replica)
-      real(PREC), intent(out) :: pnlet(:,:)          ! (E_TYPE%MAX,replica)
+      real(PREC), intent(out) :: e_exv_unit(:,:,:,:)  ! (MXUNIT, MXUNIT, E_TYPE%MAX, replica)
+      real(PREC), intent(out) :: e_exv(:,:)          ! (E_TYPE%MAX,replica)
       real(PREC), intent(in)  :: velo_mp(:,:,:)      ! (3, MXMP, replica)
       real(PREC), intent(out) :: replica_energy(:,:) ! (2, replica)
       real(PREC), intent(in)  :: tempk
       logical, intent(in)  :: flg_replica
    endsubroutine simu_energy_allrep
 
-   subroutine simu_energy(irep, velo_mp, pnlet, pnle_unit)
+   subroutine simu_energy(irep, velo_mp, e_exv, e_exv_unit)
       use const_maxsize
       implicit none
       integer,    intent(in)  :: irep
       real(PREC), intent(in)  :: velo_mp(:,:)      ! (3, nmp_real)
-      real(PREC), intent(out) :: pnlet(:)          ! (E_TYPE%MAX)
-      real(PREC), intent(out) :: pnle_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
+      real(PREC), intent(out) :: e_exv(:)          ! (E_TYPE%MAX)
+      real(PREC), intent(out) :: e_exv_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
    endsubroutine simu_energy
 
    subroutine write_traject_file(ibefore_time, istep, tempk, velo_mp)

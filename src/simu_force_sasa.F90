@@ -1,7 +1,7 @@
 !simu_force_sasa
 !> @brief Calculates the force related to solvent accessible surface area (sasa)
-!>        The values are added into "pnlet(ENERGY%SASA)" and  &
-!>        "pnle_unit(ENERGY%SASA)".
+!>        The values are added into "e_exv(ENERGY%SASA)" and  &
+!>        "e_exv_unit(ENERGY%SASA)".
 
 subroutine simu_force_sasa(irep, force_mp)
 
@@ -10,7 +10,7 @@ subroutine simu_force_sasa(irep, force_mp)
   use const_index
   use var_inp,    only : inperi
   use var_setp,   only : insasa
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_real, &
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, nmp_real, &
                          para_sasa, rad_sasa, surf, connect, imp2unit, cmp2atom
   use var_simu,    only :sasa
   use mpiconst
@@ -26,14 +26,14 @@ subroutine simu_force_sasa(irep, force_mp)
   real(PREC) :: c4ij, c4ji, fij, fji
   real(PREC) :: c2,c3ij, c3ji, bij, bji
   real(PREC) :: forij, forji
-  real(PREC) :: dist(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
-  real(PREC) :: dist2(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
-  real(PREC) :: v21(SPACE_DIM,lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
-  real(PREC) :: radsum(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
-  real(PREC) :: radsum2(lpnl(1, E_TYPE%SASA, irep):lpnl(2, E_TYPE%SASA, irep))
+  real(PREC) :: dist(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
+  real(PREC) :: dist2(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
+  real(PREC) :: v21(SPACE_DIM,lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
+  real(PREC) :: radsum(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
+  real(PREC) :: radsum2(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
 
-  ksta = lpnl(1, E_TYPE%SASA, irep)
-  kend = lpnl(2, E_TYPE%SASA, irep)
+  ksta = lexv(1, E_TYPE%SASA, irep)
+  kend = lexv(2, E_TYPE%SASA, irep)
 
 !initialization
 !!$omp do
@@ -47,8 +47,8 @@ subroutine simu_force_sasa(irep, force_mp)
 !!$omp&                                         c2,c3ij,c3ji,bij,bji,fij,fji)
   do isasa=ksta, kend
 
-     imp1 = ipnl2mp(1, isasa, irep)
-     imp2 = ipnl2mp(2, isasa, irep)
+     imp1 = iexv2mp(1, isasa, irep)
+     imp2 = iexv2mp(2, isasa, irep)
 
      iunit1 = imp2unit(imp1)
      iunit2 = imp2unit(imp2)
@@ -56,7 +56,7 @@ subroutine simu_force_sasa(irep, force_mp)
      if(inperi%i_periodic == 0) then
         v21(1:3,isasa) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
-        imirror = ipnl2mp(3, isasa, irep)
+        imirror = iexv2mp(3, isasa, irep)
         v21(1:3,isasa) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
 
@@ -89,8 +89,8 @@ subroutine simu_force_sasa(irep, force_mp)
 
   do isasa=ksta, kend
 
-     imp1 = ipnl2mp(1, isasa, irep)
-     imp2 = ipnl2mp(2, isasa, irep)
+     imp1 = iexv2mp(1, isasa, irep)
+     imp2 = iexv2mp(2, isasa, irep)
 
      iunit1 = imp2unit(imp1)
      iunit2 = imp2unit(imp2)

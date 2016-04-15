@@ -1,7 +1,7 @@
 ! simu_energy_ele2
 !> @brief Calculate the energy of electrostatic interaction 
 
-subroutine simu_energy_ele2(irep, pnlet, pnle_unit)
+subroutine simu_energy_ele2(irep, e_exv, e_exv_unit)
 
   use const_maxsize
   use const_physical
@@ -14,15 +14,15 @@ subroutine simu_energy_ele2(irep, pnlet, pnle_unit)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: imp1, imp2
   integer :: grep, iele
   integer :: icharge, jcharge
   integer :: icharge_l, iunit1, iunit2
   real(PREC) :: dist1, dist2, rdist1, prefac
-  real(PREC) :: pnl, rcdist, cutoff2
+  real(PREC) :: exv, rcdist, cutoff2
   real(PREC) :: v21(3), for(3)
 
   ! ------------------------------------------------------------------------
@@ -33,13 +33,13 @@ subroutine simu_energy_ele2(irep, pnlet, pnle_unit)
 
 #ifdef MPI_PAR3
 !$omp do private(imp1,iele,v21,dist2,dist1,rdist1,prefac, &
-!$omp&           pnl,iunit1,iunit2,icharge,jcharge)
+!$omp&           exv,iunit1,iunit2,icharge,jcharge)
   
   do icharge_l = 1, ncharge_l
      icharge = icharge_l2g(icharge_l)
 #else
 !$omp do private(imp1,iele,v21,dist2,dist1,rdist1,prefac, &
-!$omp&           pnl,iunit1,iunit2,icharge_l,jcharge)
+!$omp&           exv,iunit1,iunit2,icharge_l,jcharge)
 !     do iele1 = 1, lele(irep)
   do icharge = 1, ncharge
      icharge_l = icharge
@@ -62,15 +62,15 @@ subroutine simu_energy_ele2(irep, pnlet, pnle_unit)
         dist1 = sqrt(dist2)
         rdist1 = 1.0e0_PREC / dist1
 
-        pnl = prefac * coef_charge(jcharge,grep) * rdist1 * exp(-dist1*rcdist)
+        exv = prefac * coef_charge(jcharge,grep) * rdist1 * exp(-dist1*rcdist)
 
         ! --------------------------------------------------------------------
         ! sum of the energy
-        pnlet(E_TYPE%ELE) = pnlet(E_TYPE%ELE) + pnl
+        e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv
      
         imp2 = icharge2mp(jcharge)
         iunit2 = imp2unit(imp2)
-        pnle_unit(iunit1, iunit2, E_TYPE%ELE) = pnle_unit(iunit1, iunit2, E_TYPE%ELE) + pnl
+        e_exv_unit(iunit1, iunit2, E_TYPE%ELE) = e_exv_unit(iunit1, iunit2, E_TYPE%ELE) + exv
      end do
 
   end do

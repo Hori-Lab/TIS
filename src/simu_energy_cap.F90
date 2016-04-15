@@ -2,7 +2,7 @@
 !> @brief Calculates the capping energy, when ``i_in_cap=1" in ``<<<< md_information" block.
 
 ! ****************************************************************
-subroutine simu_energy_cap(irep, pnle_unit, pnlet)
+subroutine simu_energy_cap(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -12,8 +12,8 @@ subroutine simu_energy_cap(irep, pnle_unit, pnlet)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnlet(E_TYPE%MAX) ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnle_unit(nunit_all,nunit_all,E_TYPE%MAX) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(nunit_all,nunit_all,E_TYPE%MAX) ! (unit, unit, E_TYPE%MAX)
 
   ! ------------------------------------------------------------
   ! local variables
@@ -53,9 +53,9 @@ subroutine simu_energy_cap(irep, pnle_unit, pnlet)
      end if
 
      ! Inclement energy
-     !write(*, *) pnlet(1)
-     pnlet(E_TYPE%CAP) = pnlet(E_TYPE%CAP) + efull
-     pnle_unit(iunit, iunit, E_TYPE%CAP) = pnle_unit(iunit, iunit, E_TYPE%CAP) + efull
+     !write(*, *) e_exv(1)
+     e_exv(E_TYPE%CAP) = e_exv(E_TYPE%CAP) + efull
+     e_exv_unit(iunit, iunit, E_TYPE%CAP) = e_exv_unit(iunit, iunit, E_TYPE%CAP) + efull
      
   end do
   

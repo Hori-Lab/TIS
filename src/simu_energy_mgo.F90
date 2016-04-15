@@ -4,7 +4,7 @@
 ! ************************************************************************
 ! This subroutine calc energy of multiple Go
 ! ************************************************************************
-subroutine simu_energy_mgo(pnle_unit, pnlet)
+subroutine simu_energy_mgo(e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -16,8 +16,8 @@ subroutine simu_energy_mgo(pnle_unit, pnlet)
   implicit none
 
   ! ----------------------------------------------------------------------
-  real(PREC), intent(inout) :: pnlet(:)         !(E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(:)         !(E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
   ! intent(out) :: coef_mgo, esystem_mgo, estate_mgo
 
   ! ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine simu_energy_mgo(pnle_unit, pnlet)
         if(iact == 0) cycle
         isys = iunit2sysmbr_mgo(1, iunit, junit)
         istat = iunit2sysmbr_mgo(2, iunit, junit)
-        pnle_unit(iunit, junit, E_TYPE%GO) = pnle_unit(iunit, junit, E_TYPE%GO) &
+        e_exv_unit(iunit, junit, E_TYPE%GO) = e_exv_unit(iunit, junit, E_TYPE%GO) &
              + offset_unit(iunit, junit)
      end do
   end do
@@ -61,15 +61,15 @@ subroutine simu_energy_mgo(pnle_unit, pnlet)
      do junit = iunit, nunit_all
         iact = inmgo%iactmat_mgo(iunit, junit)
 !        if(iact == 0) cycle
-        eunit =  pnle_unit(iunit, junit, E_TYPE%BOND)    &
-               + pnle_unit(iunit, junit, E_TYPE%BANGLE)  &
-               + pnle_unit(iunit, junit, E_TYPE%DIHE)    &
-               + pnle_unit(iunit, junit, E_TYPE%GO)      &
-               + pnle_unit(iunit, junit, E_TYPE%DIHE_HARMONIC)
+        eunit =  e_exv_unit(iunit, junit, E_TYPE%BOND)    &
+               + e_exv_unit(iunit, junit, E_TYPE%BANGLE)  &
+               + e_exv_unit(iunit, junit, E_TYPE%DIHE)    &
+               + e_exv_unit(iunit, junit, E_TYPE%GO)      &
+               + e_exv_unit(iunit, junit, E_TYPE%DIHE_HARMONIC)
 
         isys = iunit2sysmbr_mgo(1, iunit, junit)
         if(isys == 0) then
-           pnlet(E_TYPE%TOTAL) = pnlet(E_TYPE%TOTAL) + eunit
+           e_exv(E_TYPE%TOTAL) = e_exv(E_TYPE%TOTAL) + eunit
         else
            istat = iunit2sysmbr_mgo(2, iunit, junit)
            estate_mgo(isys, istat) = estate_mgo(isys, istat) + eunit
@@ -176,7 +176,7 @@ subroutine simu_energy_mgo(pnle_unit, pnlet)
         call util_error(ERROR%STOP_ALL, error_message)
      end if
 
-     pnlet(E_TYPE%TOTAL) = pnlet(E_TYPE%TOTAL) + esystem_mgo(isys)
+     e_exv(E_TYPE%TOTAL) = e_exv(E_TYPE%TOTAL) + esystem_mgo(isys)
   end do
 
 end subroutine simu_energy_mgo

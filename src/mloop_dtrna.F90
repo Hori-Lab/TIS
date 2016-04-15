@@ -6,8 +6,7 @@ subroutine mloop_dtrna()
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp
   use var_replica, only : n_replica_mpi
-  use var_simu,    only : hb_energy, hb_status, flg_hb_energy,&
-                          st_status
+  use var_simu,    only : hb_energy, hb_status, flg_hb_energy, st_status
 
   implicit none
   integer :: ier = 0

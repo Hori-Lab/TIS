@@ -29,8 +29,8 @@ module var_simu
 
   ! mcanonical
   real(PREC), save :: e_md, fac_mmc, em_mid, em_depth, em_sigma
-  real(PREC), save :: pnlet_muca(E_TYPE%MAX)
-  real(PREC), allocatable, save :: pnle_unit_muca(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), save :: e_exv_muca(E_TYPE%MAX)
+  real(PREC), allocatable, save :: e_exv_unit_muca(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
   
   ! Langevin
   integer, parameter          :: nLAN_CONST = 4
@@ -49,8 +49,8 @@ module var_simu
   real(PREC), save :: xyz_cs(MXCS), velo_cs(MXCS), cmass_cs(MXCS)
 
   ! energy
-  real(PREC), allocatable, save :: pnlet(:,:)          ! (E_TYPE%MAX, replica)
-  real(PREC), allocatable, save :: pnle_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
+  real(PREC), allocatable, save :: e_exv(:,:)          ! (E_TYPE%MAX, replica)
+  real(PREC), allocatable, save :: e_exv_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
   real(PREC), allocatable, save :: qscore(:)           ! (replica)
   real(PREC), allocatable, save :: qscore_unit(:,:,:)  ! (unit, unit, replica)
   real(PREC), allocatable, save :: rg(:)               ! (replica)

@@ -8,7 +8,7 @@ subroutine simu_force_ion(irep, force_mp)
   use const_index
   use var_inp,    only : inperi
   use var_setp,   only : inion, inmisc
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lpnl, ipnl2mp, nmp_all, iontype_mp
+  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, nmp_all, iontype_mp
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -23,7 +23,7 @@ subroutine simu_force_ion(irep, force_mp)
   ! local variables                                                             
   integer :: ksta, kend
   integer :: imp1, imp2, itype1, itype2
-  integer :: ipnl, imirror
+  integer :: iexv, imirror
   real(PREC) :: dist1, dist2, cdist2, ddist1, ddist2
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
   real(PREC) :: dvdw_dr, coef, cutoff2
@@ -34,7 +34,7 @@ subroutine simu_force_ion(irep, force_mp)
 
 #ifdef _DEBUG
   write(*,*) '#### start simu_force_ion'
-  write(*,*) 'lpnl, ',lpnl
+  write(*,*) 'lexv, ',lexv
 #endif
 
   if (inmisc%class_flag(CLASS%ION)) then
@@ -46,34 +46,34 @@ subroutine simu_force_ion(irep, force_mp)
 #endif
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
-     klen=(lpnl(2,E_TYPE%HYD_ION,irep)-lpnl(1,E_TYPE%HYD_ION,irep)+npar_mpi)/npar_mpi
-     ksta=lpnl(1,E_TYPE%HYD_ION,irep)+klen*local_rank_mpi
-     kend=min(ksta+klen-1,lpnl(2,E_TYPE%HYD_ION,irep))
+     klen=(lexv(2,E_TYPE%HYD_ION,irep)-lexv(1,E_TYPE%HYD_ION,irep)+npar_mpi)/npar_mpi
+     ksta=lexv(1,E_TYPE%HYD_ION,irep)+klen*local_rank_mpi
+     kend=min(ksta+klen-1,lexv(2,E_TYPE%HYD_ION,irep))
 #else
-     ksta = lpnl(1, E_TYPE%HYD_ION, irep)
-     kend = lpnl(2, E_TYPE%HYD_ION, irep)
+     ksta = lexv(1, E_TYPE%HYD_ION, irep)
+     kend = lexv(2, E_TYPE%HYD_ION, irep)
 #endif
 #ifdef MPI_DEBUG
      print *,"LJ and hydration of ion = ", kend-ksta+1
 #endif
 #else
-     ksta = lpnl(1, E_TYPE%HYD_ION, irep)
-     kend = lpnl(2, E_TYPE%HYD_ION, irep)
+     ksta = lexv(1, E_TYPE%HYD_ION, irep)
+     kend = lexv(2, E_TYPE%HYD_ION, irep)
 #endif
 !$omp do private(imp1,imp2,itype1,itype2,v21,dist2,dist1, &
 !$omp            ddist1,ddist2,roverdist2,roverdist4, &
 !$omp&           roverdist8,roverdist14,dvdw_dr,for,imirror)
-     do ipnl=ksta, kend
+     do iexv=ksta, kend
    
-        imp1 = ipnl2mp(1, ipnl, irep)
-        imp2 = ipnl2mp(2, ipnl, irep)
+        imp1 = iexv2mp(1, iexv, irep)
+        imp2 = iexv2mp(2, iexv, irep)
         itype1 = iontype_mp(imp1)
         itype2 = iontype_mp(imp2)
 
         if(inperi%i_periodic == 0) then
            v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
         else
-           imirror = ipnl2mp(3, ipnl, irep)
+           imirror = iexv2mp(3, iexv, irep)
            v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
         end if
 
@@ -116,31 +116,31 @@ subroutine simu_force_ion(irep, force_mp)
      coef = 24.0e0_PREC * inion%cexv_ion / cdist2
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
-     klen=(lpnl(2,E_TYPE%EXV_ION,irep)-lpnl(1,E_TYPE%EXV_ION,irep)+npar_mpi)/npar_mpi
-     ksta=lpnl(1,E_TYPE%EXV_ION,irep)+klen*local_rank_mpi
-     kend=min(ksta+klen-1,lpnl(2,E_TYPE%EXV_ION,irep))
+     klen=(lexv(2,E_TYPE%EXV_ION,irep)-lexv(1,E_TYPE%EXV_ION,irep)+npar_mpi)/npar_mpi
+     ksta=lexv(1,E_TYPE%EXV_ION,irep)+klen*local_rank_mpi
+     kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV_ION,irep))
 #else
-     ksta = lpnl(1, E_TYPE%EXV_ION, irep)
-     kend = lpnl(2, E_TYPE%EXV_ION, irep)
+     ksta = lexv(1, E_TYPE%EXV_ION, irep)
+     kend = lexv(2, E_TYPE%EXV_ION, irep)
 #endif
 #ifdef MPI_DEBUG
-     print *,"pnl2_5       = ", kend-ksta+1
+     print *,"exv2_5       = ", kend-ksta+1
 #endif
 #else
-     ksta = lpnl(1, E_TYPE%EXV_ION, irep)
-     kend = lpnl(2, E_TYPE%EXV_ION, irep)
+     ksta = lexv(1, E_TYPE%EXV_ION, irep)
+     kend = lexv(2, E_TYPE%EXV_ION, irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,roverdist2,roverdist4, &
 !$omp&           roverdist8,roverdist14,dvdw_dr,for,imirror)
-     do ipnl=ksta, kend
+     do iexv=ksta, kend
 
-        imp1 = ipnl2mp(1, ipnl, irep)
-        imp2 = ipnl2mp(2, ipnl, irep)
+        imp1 = iexv2mp(1, iexv, irep)
+        imp2 = iexv2mp(2, iexv, irep)
 
         if(inperi%i_periodic == 0) then
            v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
         else
-           imirror = ipnl2mp(3, ipnl, irep)
+           imirror = iexv2mp(3, iexv, irep)
            v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
         end if
         

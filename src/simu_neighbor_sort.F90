@@ -1,12 +1,12 @@
 ! simu_neighbor_sort
 !> @brief Sort neighbor list for each energy type
 
-subroutine simu_neighbor_sort(irep, npnl, ipnl2mp_in, ipnl2mp_out, npnl_lall)
+subroutine simu_neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
   
   use const_maxsize
   use const_index
   use var_setp, only : inmisc
-  use var_struct, only : ipnl2mp, lpnl, nmp_all
+  use var_struct, only : iexv2mp, lexv, nmp_all
 
   use mpiconst
 
@@ -14,37 +14,37 @@ subroutine simu_neighbor_sort(irep, npnl, ipnl2mp_in, ipnl2mp_out, npnl_lall)
 
   ! -------------------------------------------------------------------
   integer, intent(in)  :: irep
-  integer, intent(in)  :: npnl
-  !integer, intent(in)  :: ipnl2mp_in (3,MXNEIGHBOR)
-  integer, intent(in)  :: ipnl2mp_in (3,MXMPNEIGHBOR*nmp_all)
-  integer, intent(in) ,optional :: npnl_lall(0:npar_mpi-1)
-  !integer, intent(out),optional :: ipnl2mp_out(3,MXNEIGHBOR)
-  integer, intent(out),optional :: ipnl2mp_out(3,MXMPNEIGHBOR*nmp_all)
+  integer, intent(in)  :: nexv
+  !integer, intent(in)  :: iexv2mp_in (3,MXNEIGHBOR)
+  integer, intent(in)  :: iexv2mp_in (3,MXMPNEIGHBOR*nmp_all)
+  integer, intent(in) ,optional :: nexv_lall(0:npar_mpi-1)
+  !integer, intent(out),optional :: iexv2mp_out(3,MXNEIGHBOR)
+  integer, intent(out),optional :: iexv2mp_out(3,MXMPNEIGHBOR*nmp_all)
 
   ! -------------------------------------------------------------------
   ! local variables
-  integer :: ipnl2
-  integer :: ipnls(0:npar_mpi-1), disp(0:npar_mpi), n
+  integer :: iexv2
+  integer :: iexvs(0:npar_mpi-1), disp(0:npar_mpi), n
   logical :: sort2nd
   character(CARRAY_MSG_ERROR) :: error_message
 
   ! -------------------------------------------------------------------
-  ipnl2 = 0
+  iexv2 = 0
 
-  if( present(npnl_lall) ) then
+  if( present(nexv_lall) ) then
     sort2nd = .true.
   else
     sort2nd = .false.
   end if
 
   if( sort2nd ) then
-    ipnls(0:npar_mpi-1)    = 1
-    lpnl (1,1:E_TYPE%MAX, irep) = 1
-    lpnl (2,1:E_TYPE%MAX, irep) = 0
+    iexvs(0:npar_mpi-1)    = 1
+    lexv (1,1:E_TYPE%MAX, irep) = 1
+    lexv (2,1:E_TYPE%MAX, irep) = 0
 
     disp(0) = 0
     do n = 1, npar_mpi
-      disp(n) = disp(n-1) + npnl_lall(n-1)
+      disp(n) = disp(n-1) + nexv_lall(n-1)
     end do
   end if
   
@@ -84,48 +84,48 @@ subroutine simu_neighbor_sort(irep, npnl, ipnl2mp_in, ipnl2mp_out, npnl_lall)
   end if
 
   ! ------------------------------------------------------------
-  if(ipnl2 /= npnl) then
-     error_message = 'Error: invalid value for npnl in simu_neighbor_sort'
+  if(iexv2 /= nexv) then
+     error_message = 'Error: invalid value for nexv in simu_neighbor_sort'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
   ! -------------------------------------------------------------------
 contains
   
-  subroutine sort( ipnl_name )
+  subroutine sort( iexv_name )
     
     implicit none
 
-    integer,intent(in) :: ipnl_name
-    integer :: imp, jmp, ipnl, n
+    integer,intent(in) :: iexv_name
+    integer :: imp, jmp, iexv, n
 
 
     if( sort2nd ) then
-      lpnl(1,ipnl_name, irep) = ipnl2 + 1
+      lexv(1,iexv_name, irep) = iexv2 + 1
       do n = 0, npar_mpi-1
-        loop_ipnl : do ipnl = disp(n)+ipnls(n), disp(n+1)
-          if(ipnl2mp_in(3,ipnl) /= ipnl_name) exit loop_ipnl
+        loop_iexv : do iexv = disp(n)+iexvs(n), disp(n+1)
+          if(iexv2mp_in(3,iexv) /= iexv_name) exit loop_iexv
 
-          ipnl2 = ipnl2 + 1
-          ipnls(n) = ipnls(n) + 1
-          imp = ipnl2mp_in(1,ipnl)
-          jmp = ipnl2mp_in(2,ipnl)
-          ipnl2mp(1,ipnl2, irep) = imp
-          ipnl2mp(2,ipnl2, irep) = jmp
+          iexv2 = iexv2 + 1
+          iexvs(n) = iexvs(n) + 1
+          imp = iexv2mp_in(1,iexv)
+          jmp = iexv2mp_in(2,iexv)
+          iexv2mp(1,iexv2, irep) = imp
+          iexv2mp(2,iexv2, irep) = jmp
 
-        end do loop_ipnl
+        end do loop_iexv
       end do
-      lpnl(2,ipnl_name, irep) = ipnl2
+      lexv(2,iexv_name, irep) = iexv2
     else
 
-      do ipnl = 1, npnl
-        if(ipnl2mp_in(3,ipnl) == ipnl_name) then
-          ipnl2 = ipnl2 + 1
-          imp = ipnl2mp_in(1,ipnl)
-          jmp = ipnl2mp_in(2,ipnl)
-          ipnl2mp_out(1,ipnl2) = imp
-          ipnl2mp_out(2,ipnl2) = jmp
-          ipnl2mp_out(3,ipnl2) = ipnl_name
+      do iexv = 1, nexv
+        if(iexv2mp_in(3,iexv) == iexv_name) then
+          iexv2 = iexv2 + 1
+          imp = iexv2mp_in(1,iexv)
+          jmp = iexv2mp_in(2,iexv)
+          iexv2mp_out(1,iexv2) = imp
+          iexv2mp_out(2,iexv2) = jmp
+          iexv2mp_out(3,iexv2) = iexv_name
         end if
       end do
     end if

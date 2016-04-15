@@ -241,8 +241,8 @@ module var_struct
 
   ! ----------------------------------------------------------------
   !> parameters for neighboring (general) list
-  integer, allocatable, save :: lpnl(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
-  integer, allocatable, save :: ipnl2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
+  integer, allocatable, save :: lexv(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
+  integer, allocatable, save :: iexv2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
 
   ! ----------------------------------------------------------------
   !> parameters for hydrophobic interaction

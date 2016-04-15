@@ -61,14 +61,13 @@ subroutine simu_force_ele(irep, force_mp)
   kend = lele(irep)
 #endif
 #ifdef MPI_DEBUG
-  print *,"pnl2_6       = ", kend-ksta+1
+  print *,"exv2_6       = ", kend-ksta+1
 #endif
 
 #else
   ksta = 1
   kend = lele(irep)
 #endif
-  write(*,*) 'ksta,kend=',ksta,kend
 
 !$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,itype1,itype2, imptype1, imptype2,&
 !$omp&           rsig,xtanh,rek_corr,dvdw_dr,for,imirror)

@@ -2,7 +2,7 @@
 !> @brief Calculate energy of pulling option
 
 ! ************************************************************************
-subroutine simu_energy_pulling(irep, pnle_unit, pnlet)
+subroutine simu_energy_pulling(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine simu_energy_pulling(irep, pnle_unit, pnlet)
   implicit none
   ! ----------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -37,10 +37,10 @@ subroutine simu_energy_pulling(irep, pnle_unit, pnlet)
         cbd2 = inmisc%coef_pull(ipull)
         efull = cbd2 * dist**2;
    
-        pnlet(E_TYPE%PULLING) = pnlet(E_TYPE%PULLING) + efull
+        e_exv(E_TYPE%PULLING) = e_exv(E_TYPE%PULLING) + efull
         iunit = imp2unit(imp)
         junit = iunit
-        pnle_unit(iunit, junit, E_TYPE%PULLING) = pnle_unit(iunit, junit, E_TYPE%PULLING) + efull
+        e_exv_unit(iunit, junit, E_TYPE%PULLING) = e_exv_unit(iunit, junit, E_TYPE%PULLING) + efull
      end if
 
   enddo
@@ -54,10 +54,10 @@ subroutine simu_energy_pulling(irep, pnle_unit, pnlet)
      force_xyz(:) = inmisc%pull_unravel_xyz(:,ipull,grep)
      efull = - dot_product(vij, force_xyz)
 
-     pnlet(E_TYPE%PULLING) = pnlet(E_TYPE%PULLING) + efull
+     e_exv(E_TYPE%PULLING) = e_exv(E_TYPE%PULLING) + efull
      iunit = imp2unit(imp)
      junit = imp2unit(jmp)
-     pnle_unit(iunit, junit, E_TYPE%PULLING) = pnle_unit(iunit, junit, E_TYPE%PULLING) + 0.5 * efull
+     e_exv_unit(iunit, junit, E_TYPE%PULLING) = e_exv_unit(iunit, junit, E_TYPE%PULLING) + 0.5 * efull
   enddo
 
 end subroutine simu_energy_pulling

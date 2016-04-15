@@ -11,7 +11,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine simu_energy_nlocal_morse(irep, now_morse, pnle_unit, pnlet)
+subroutine simu_energy_nlocal_morse(irep, now_morse, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_physical
@@ -28,8 +28,8 @@ subroutine simu_energy_nlocal_morse(irep, now_morse, pnle_unit, pnlet)
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   integer,    intent(out)   :: now_morse(:,:)
-  real(PREC), intent(inout) :: pnlet(:)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:)
+  real(PREC), intent(inout) :: e_exv(:)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
 
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
@@ -117,11 +117,11 @@ subroutine simu_energy_nlocal_morse(irep, now_morse, pnle_unit, pnlet)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%MORSE) = pnlet(E_TYPE%MORSE) + efull
+     e_exv(E_TYPE%MORSE) = e_exv(E_TYPE%MORSE) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     pnle_unit(iunit, junit, E_TYPE%MORSE) = pnle_unit(iunit, junit, E_TYPE%MORSE) + efull
+     e_exv_unit(iunit, junit, E_TYPE%MORSE) = e_exv_unit(iunit, junit, E_TYPE%MORSE) + efull
   end do
 !$omp end do nowait
 !!$omp end master

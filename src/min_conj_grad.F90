@@ -23,7 +23,7 @@ subroutine min_conj_grad(flg_converge)
    use var_inp,    only : outfile
    use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep
    use var_setp,   only : insimu
-   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, pnlet, pnle_unit
+   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, e_exv, e_exv_unit
    use var_emin,   only : inemin, lambda, norm_max, lunout, pvec, func_check_lambda, func_check_norm
    use time, only : time_s, time_e, tm_neighbor, tm_energy, tm_force
    use mpiconst
@@ -68,9 +68,9 @@ subroutine min_conj_grad(flg_converge)
       velo_mp(:,:,:) = 0.0e0_PREC
 
       TIME_S( tm_energy )
-      call simu_energy(IREP, velo_mp(:,:,IREP), pnlet(:,IREP), pnle_unit(:,:,:,IREP))
+      call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
       TIME_E( tm_energy )
-      e_total = pnlet(E_TYPE%TOTAL, IREP)
+      e_total = e_exv(E_TYPE%TOTAL, IREP)
 
       TIME_S( tm_force )
       call simu_force(force_mp, IREP)
@@ -91,9 +91,9 @@ subroutine min_conj_grad(flg_converge)
 
    ! Calc energy
    TIME_S( tm_energy )
-   call simu_energy(IREP, velo_mp(:,:,IREP), pnlet(:,IREP), pnle_unit(:,:,:,IREP))
+   call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
    TIME_E( tm_energy )
-   e_total_new = pnlet(E_TYPE%TOTAL, IREP)
+   e_total_new = e_exv(E_TYPE%TOTAL, IREP)
 
    ! Calc force
    TIME_S( tm_force )
@@ -122,9 +122,9 @@ subroutine min_conj_grad(flg_converge)
    
       ! Calc energy
       TIME_S( tm_energy )
-      call simu_energy(IREP, velo_mp(:,:,IREP), pnlet(:,IREP), pnle_unit(:,:,:,IREP))
+      call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
       TIME_E( tm_energy )
-      e_total_new = pnlet(E_TYPE%TOTAL, IREP)
+      e_total_new = e_exv(E_TYPE%TOTAL, IREP)
    
       ! Calc force
       TIME_S( tm_force )

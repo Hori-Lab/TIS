@@ -4,7 +4,7 @@
 ! **************************************************************************
 ! Calculation of hydrophobic energy
 
-subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
+subroutine  simu_energy_hp(irep, e_exv, e_exv_unit)
 
   use const_maxsize
   use const_physical
@@ -17,8 +17,8 @@ subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: pnle_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp, jmp, iunit 
@@ -27,7 +27,7 @@ subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
   real(PREC) :: coef_rho_hp, coef_hp, rho_min_hp
   real(PREC) :: v21(SPACE_DIM)
   real(PREC) :: uhp, rho, shp
-  real(PREC) :: pnl
+  real(PREC) :: exv
 #ifdef MPI_PAR3
   integer :: klen
 #endif
@@ -47,7 +47,7 @@ subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
   ksta = 1
   kend = nhp
 #endif
-!$omp do private(rho,imp,jmp,jhp,v21,dist,uhp,shp,pnl)
+!$omp do private(rho,imp,jmp,jhp,v21,dist,uhp,shp,exv)
   do ihp = ksta, kend
      rho = 0.0e0_PREC
      imp = ihp2mp(ihp)
@@ -79,13 +79,13 @@ subroutine  simu_energy_hp(irep, pnlet, pnle_unit)
             (1.0e0_PREC - coef_rho_hp) * (1.0e0_PREC + &
             cos(F_PI * (1.0e0_PREC - rho) / (1.0e0_PREC - rho_min_hp)))
      end if
-     pnl = -coef_hp * coef_aa_hp(ihp) * shp
+     exv = -coef_hp * coef_aa_hp(ihp) * shp
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%HPENE) = pnlet(E_TYPE%HPENE) + pnl
+     e_exv(E_TYPE%HPENE) = e_exv(E_TYPE%HPENE) + exv
      iunit = imp2unit(imp)
-     pnle_unit(iunit, iunit, E_TYPE%HPENE) = pnle_unit(iunit, iunit, E_TYPE%HPENE) + pnl
+     e_exv_unit(iunit, iunit, E_TYPE%HPENE) = e_exv_unit(iunit, iunit, E_TYPE%HPENE) + exv
   end do !end ihp
 !$omp end do nowait
 

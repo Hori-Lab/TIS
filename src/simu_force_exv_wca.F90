@@ -9,7 +9,7 @@ subroutine simu_force_exv_wca(irep, force_mp)
   use var_inp,    only : inperi
   use var_setp,   only : indtrna13
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp !,iclass_mp
+                         lexv, iexv2mp !,iclass_mp
   use mpiconst
 
   implicit none
@@ -18,7 +18,7 @@ subroutine simu_force_exv_wca(irep, force_mp)
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
   integer :: ksta, kend
-  integer :: imp1, imp2,ipnl, imirror
+  integer :: imp1, imp2,iexv, imirror
   real(PREC) :: dist2, coef, cdist2
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
   real(PREC) :: dvdw_dr
@@ -48,33 +48,33 @@ subroutine simu_force_exv_wca(irep, force_mp)
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
-  klen=(lpnl(2,E_TYPE%EXV_WCA,irep)-lpnl(1,E_TYPE%EXV_WCA,irep)+npar_mpi)/npar_mpi
-  ksta=lpnl(1,E_TYPE%EXV_WCA,irep)+klen*local_rank_mpi
-  kend=min(ksta+klen-1,lpnl(2,E_TYPE%EXV_WCA,irep))
+  klen=(lexv(2,E_TYPE%EXV_WCA,irep)-lexv(1,E_TYPE%EXV_WCA,irep)+npar_mpi)/npar_mpi
+  ksta=lexv(1,E_TYPE%EXV_WCA,irep)+klen*local_rank_mpi
+  kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV_WCA,irep))
 #else
-  ksta = lpnl(1, E_TYPE%EXV_WCA, irep)
-  kend = lpnl(2, E_TYPE%EXV_WCA, irep)
+  ksta = lexv(1, E_TYPE%EXV_WCA, irep)
+  kend = lexv(2, E_TYPE%EXV_WCA, irep)
 #endif
 #ifdef MPI_DEBUG
   print *,"exv_wca      = ", kend-ksta+1
 #endif
 #else
-  ksta = lpnl(1, E_TYPE%EXV_WCA, irep)
-  kend = lpnl(2, E_TYPE%EXV_WCA, irep)
+  ksta = lexv(1, E_TYPE%EXV_WCA, irep)
+  kend = lexv(2, E_TYPE%EXV_WCA, irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,&
 !$omp&           roverdist2,roverdist4, &
 !$omp&           roverdist8,roverdist14,dvdw_dr,for,imirror)
-  do ipnl=ksta, kend
+  do iexv=ksta, kend
 
-     imp1 = ipnl2mp(1, ipnl, irep)
-     imp2 = ipnl2mp(2, ipnl, irep)
+     imp1 = iexv2mp(1, iexv, irep)
+     imp2 = iexv2mp(2, iexv, irep)
 
 !     v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
-        imirror = ipnl2mp(3, ipnl, irep)
+        imirror = iexv2mp(3, iexv, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
 

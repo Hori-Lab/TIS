@@ -1,8 +1,8 @@
 !simu_energy_rna_stack
 !> @brief Calculates the energy of stacking interaction between  &
 !>        RNA particles.
-!>        The values are added into "pnlet(E_TYPE%STACK_DTRNA)" and   &
-!>        "pnle_unit(E_TYPE%STACK_DTRNA)".
+!>        The values are added into "e_exv(E_TYPE%STACK_DTRNA)" and   &
+!>        "e_exv_unit(E_TYPE%STACK_DTRNA)".
 !
 ! Reference:
 !   Equation (3) in
@@ -37,7 +37,7 @@
 !     phi20  = dtrna_st_nat(3,ist)
 !
 
- subroutine simu_energy_dtrna_stack(irep, pnle_unit, pnlet)
+ subroutine simu_energy_dtrna_stack(irep, e_exv_unit, e_exv)
  
    use const_maxsize
    use const_physical
@@ -51,8 +51,8 @@
    implicit none
  
    integer,    intent(in)    :: irep
-   real(PREC), intent(inout) :: pnlet(:)
-   real(PREC), intent(inout) :: pnle_unit(:,:,:)
+   real(PREC), intent(inout) :: e_exv(:)
+   real(PREC), intent(inout) :: e_exv_unit(:,:,:)
  
    integer :: iunit, grep
    integer :: ist
@@ -145,11 +145,11 @@
       !===== Total =====
       efull = coef_dtrna_st(0,ist,grep) / ediv
 
-      pnlet(E_TYPE%STACK_DTRNA) = pnlet(E_TYPE%STACK_DTRNA) + efull
+      e_exv(E_TYPE%STACK_DTRNA) = e_exv(E_TYPE%STACK_DTRNA) + efull
 
       iunit = imp2unit(idtrna_st2mp(1,ist))
-      pnle_unit(iunit, iunit, E_TYPE%STACK_DTRNA) = &
-                pnle_unit(iunit, iunit, E_TYPE%STACK_DTRNA) + efull
+      e_exv_unit(iunit, iunit, E_TYPE%STACK_DTRNA) = &
+                e_exv_unit(iunit, iunit, E_TYPE%STACK_DTRNA) + efull
    end do
 !$omp end do nowait
 

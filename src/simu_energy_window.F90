@@ -2,7 +2,7 @@
 !> @brief Calculate energy of window option
 
 ! ************************************************************************
-subroutine simu_energy_window(irep, pnle_unit, pnlet)
+subroutine simu_energy_window(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -14,8 +14,8 @@ subroutine simu_energy_window(irep, pnle_unit, pnlet)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnlet(E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -47,12 +47,12 @@ subroutine simu_energy_window(irep, pnle_unit, pnlet)
   efull = coef * (dist - length)**2
 
   ! Increment energy
-  pnlet(E_TYPE%WINDOW) = pnlet(E_TYPE%WINDOW) + efull
+  e_exv(E_TYPE%WINDOW) = e_exv(E_TYPE%WINDOW) + efull
 
   iunit = imp2unit(imp)
   junit = imp2unit(jmp)
 
-  pnle_unit(iunit, junit, E_TYPE%WINDOW) =   &
-       pnle_unit(iunit, junit, E_TYPE%WINDOW) + efull
+  e_exv_unit(iunit, junit, E_TYPE%WINDOW) =   &
+       e_exv_unit(iunit, junit, E_TYPE%WINDOW) + efull
   
 end subroutine simu_energy_window

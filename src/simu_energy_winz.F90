@@ -2,7 +2,7 @@
 !> @brief Calculate energy of winz option
 
 ! ************************************************************************
-subroutine simu_energy_winz(irep, pnle_unit, pnlet)
+subroutine simu_energy_winz(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine simu_energy_winz(irep, pnle_unit, pnlet)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnle_unit(nunit_all, nunit_all, E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnlet(E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX)
 
   integer :: grep 
   integer :: iwind
@@ -50,6 +50,6 @@ subroutine simu_energy_winz(irep, pnle_unit, pnlet)
   efull = kz * dz * dz
 
   ! Increment energy
-  pnlet(E_TYPE%WINDOW) = pnlet(E_TYPE%WINDOW) + efull
+  e_exv(E_TYPE%WINDOW) = e_exv(E_TYPE%WINDOW) + efull
   
 end subroutine simu_energy_winz

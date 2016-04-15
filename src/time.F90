@@ -37,7 +37,7 @@ integer,parameter :: tm_tinte_post       =  22
 ! force items
 integer,parameter :: tm_force_local       =  31
 integer,parameter :: tm_force_go          =  32
-integer,parameter :: tm_force_pnl         =  33
+integer,parameter :: tm_force_exv         =  33
 integer,parameter :: tm_force_ele         =  34
 integer,parameter :: tm_force_hp          =  35
 integer,parameter :: tm_force_sasa        =  36 !sasa
@@ -53,7 +53,7 @@ integer,parameter :: tmc_random           =  46
 
 ! for neighbor list
 integer,parameter :: tm_neighbor          =  51
-integer,parameter :: tm_neighbor_pnl      =  52
+integer,parameter :: tm_neighbor_exv      =  52
 integer,parameter :: tm_neighbor_ele      =  53
 integer,parameter :: tm_neighbor_hp       =  56
 integer,parameter :: tm_neighbor_sasa     =  57  !sasa
@@ -68,9 +68,7 @@ integer,parameter :: tm_energy_nlocal_mgo = 105
 integer,parameter :: tm_energy_nlocal_go  = 106
 integer,parameter :: tm_energy_enm        = 107
 integer,parameter :: tm_energy_orderpara  = 108
-integer,parameter :: tm_energy_pnl        = 109
-integer,parameter :: tm_energy_pnl2       = 110
-integer,parameter :: tm_energy_pnl3       = 111
+integer,parameter :: tm_energy_exv        = 109
 integer,parameter :: tm_energy_mgo        = 112
 integer,parameter :: tm_energy_unit       = 113
 integer,parameter :: tm_energy_total      = 114
@@ -117,7 +115,7 @@ subroutine time_write( lunout )
   write(lunout, fmt=fmt1) '_force(comm)   ', total_time(tmc_force), trate*total_time(tmc_force)
   write(lunout, fmt=fmt1) '_force(local)  ', total_time(tm_force_local), trate*total_time(tm_force_local)
   write(lunout, fmt=fmt1) '_force(go)     ', total_time(tm_force_go), trate*total_time(tm_force_go)
-  write(lunout, fmt=fmt1) '_force(pnl)    ', total_time(tm_force_pnl), trate*total_time(tm_force_pnl)
+  write(lunout, fmt=fmt1) '_force(exv)    ', total_time(tm_force_exv), trate*total_time(tm_force_exv)
 
   if (inmisc%force_flag(INTERACT%ELE)) then
      write(lunout, fmt=fmt1) '_force(ele)    ', total_time(tm_force_ele), trate*total_time(tm_force_ele)
@@ -136,7 +134,7 @@ subroutine time_write( lunout )
 
   write(lunout, fmt=fmt1) 'neighbor       ', total_time(tm_neighbor), trate*total_time(tm_neighbor)
   write(lunout, fmt=fmt1) '_neighbor(comm)', total_time(tmc_neighbor), trate*total_time(tmc_neighbor)
-  write(lunout, fmt=fmt1) '_neighbor(pnl) ', total_time(tm_neighbor_pnl), trate*total_time(tm_neighbor_pnl)
+  write(lunout, fmt=fmt1) '_neighbor(exv) ', total_time(tm_neighbor_exv), trate*total_time(tm_neighbor_exv)
 
   if (inmisc%force_flag(INTERACT%ELE)) then
      write(lunout, fmt=fmt1) '_neighbor(ele) ', total_time(tm_neighbor_ele), trate*total_time(tm_neighbor_ele)

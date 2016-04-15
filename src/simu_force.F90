@@ -161,13 +161,13 @@ subroutine simu_force(force_mp, &  ! [ o]
 !$omp master
   TIME_E( tm_force_go )
 
-  TIME_S( tm_force_pnl ) 
+  TIME_S( tm_force_exv ) 
 !$omp end master
 
   if (inmisc%i_residue_exv_radii == 0) then
-     call simu_force_pnl (irep, force_mp_l(1,1,tn))
+     call simu_force_exv (irep, force_mp_l(1,1,tn))
   else if (inmisc%i_residue_exv_radii == 1) then
-     call simu_force_pnl_restype (irep, force_mp_l(1,1,tn))
+     call simu_force_exv_restype (irep, force_mp_l(1,1,tn))
   endif
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then
      call simu_force_exv_wca (irep, force_mp_l(1,1,tn))
@@ -178,7 +178,7 @@ subroutine simu_force(force_mp, &  ! [ o]
   endif
 
 !$omp master
-  TIME_E( tm_force_pnl )
+  TIME_E( tm_force_exv )
 
   TIME_S( tm_force_ele ) 
 !$omp end master

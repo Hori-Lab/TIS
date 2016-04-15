@@ -2,7 +2,7 @@
 !> @brief Calculates the boxing energy, when ``i_in_box=1" in ``<<<<md_information" block.
 
 ! ****************************************************************
-subroutine simu_energy_box(irep, pnle_unit, pnlet)
+subroutine simu_energy_box(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -12,8 +12,8 @@ subroutine simu_energy_box(irep, pnle_unit, pnlet)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnlet(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
 
   ! ------------------------------------------------------------
   ! local variables
@@ -68,10 +68,10 @@ subroutine simu_energy_box(irep, pnle_unit, pnlet)
               efull = coef*rdbox12 - emin
            end if
 
-           pnlet(E_TYPE%BOX) = pnlet(E_TYPE%BOX) + efull
+           e_exv(E_TYPE%BOX) = e_exv(E_TYPE%BOX) + efull
            iunit = imp2unit(imp)
            junit = iunit
-           pnle_unit(iunit, junit, E_TYPE%BOX) = pnle_unit(iunit, junit, E_TYPE%BOX) + efull
+           e_exv_unit(iunit, junit, E_TYPE%BOX) = e_exv_unit(iunit, junit, E_TYPE%BOX) + efull
         end if
 
      end do

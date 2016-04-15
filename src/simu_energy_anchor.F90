@@ -2,7 +2,7 @@
 !> @brief Calculate energy of anchor option
 
 ! ************************************************************************
-subroutine simu_energy_anchor(irep, pnle_unit, pnlet)
+subroutine simu_energy_anchor(irep, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_index
@@ -12,8 +12,8 @@ subroutine simu_energy_anchor(irep, pnle_unit, pnlet)
 
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: pnle_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
-  real(PREC), intent(inout) :: pnlet(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -33,11 +33,11 @@ subroutine simu_energy_anchor(irep, pnle_unit, pnlet)
         cbd2 = inmisc%coef_anc(ianc)
         efull = cbd2 * (dist - inmisc%anc_dist(ianc))**2
    
-        pnlet(E_TYPE%ANCHOR) = pnlet(E_TYPE%ANCHOR) + efull
+        e_exv(E_TYPE%ANCHOR) = e_exv(E_TYPE%ANCHOR) + efull
         iunit = imp2unit(imp)
         junit = iunit
-        pnle_unit(iunit, junit, E_TYPE%ANCHOR) =  &
-                   pnle_unit(iunit, junit, E_TYPE%ANCHOR) + efull
+        e_exv_unit(iunit, junit, E_TYPE%ANCHOR) =  &
+                   e_exv_unit(iunit, junit, E_TYPE%ANCHOR) + efull
      end if
 
   enddo
@@ -63,7 +63,7 @@ subroutine simu_energy_anchor(irep, pnle_unit, pnlet)
      if(dist > inmisc%anc_com_ini_dist(ianc)) then
         cbd2 = inmisc%coef_anc_com_ini(ianc)
         efull = cbd2 * (dist - inmisc%anc_com_ini_dist(ianc))**2
-        pnlet(E_TYPE%ANCHOR) = pnlet(E_TYPE%ANCHOR) + efull
+        e_exv(E_TYPE%ANCHOR) = e_exv(E_TYPE%ANCHOR) + efull
      end if
 
   end do

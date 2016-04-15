@@ -9,7 +9,7 @@ subroutine simu_force_exv_dt15(irep, force_mp)
   use var_setp,   only : indtrna15
   use var_inp,    only : inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
+                         lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
   use mpiconst
 
   implicit none
@@ -18,7 +18,7 @@ subroutine simu_force_exv_dt15(irep, force_mp)
   real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
 
   integer :: ksta, kend
-  integer :: imp1, imp2, ipnl, imirror
+  integer :: imp1, imp2, iexv, imirror
   real(PREC) :: dist, dr, dr2, dij, a, a2, coef, dv_dr
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
   real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
@@ -33,27 +33,27 @@ subroutine simu_force_exv_dt15(irep, force_mp)
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
-  klen=(lpnl(2,E_TYPE%EXV_DT15,irep)-lpnl(1,E_TYPE%EXV_DT15,irep)+npar_mpi)/npar_mpi
-  ksta=lpnl(1,E_TYPE%EXV_DT15,irep)+klen*local_rank_mpi
-  kend=min(ksta+klen-1,lpnl(2,E_TYPE%EXV_DT15,irep))
+  klen=(lexv(2,E_TYPE%EXV_DT15,irep)-lexv(1,E_TYPE%EXV_DT15,irep)+npar_mpi)/npar_mpi
+  ksta=lexv(1,E_TYPE%EXV_DT15,irep)+klen*local_rank_mpi
+  kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV_DT15,irep))
 #else
-  ksta = lpnl(1, E_TYPE%EXV_DT15, irep)
-  kend = lpnl(2, E_TYPE%EXV_DT15, irep)
+  ksta = lexv(1, E_TYPE%EXV_DT15, irep)
+  kend = lexv(2, E_TYPE%EXV_DT15, irep)
 #endif
 #ifdef MPI_DEBUG
   print *,"exv_dt15      = ", kend-ksta+1
 #endif
 #else
-  ksta = lpnl(1, E_TYPE%EXV_DT15, irep)
-  kend = lpnl(2, E_TYPE%EXV_DT15, irep)
+  ksta = lexv(1, E_TYPE%EXV_DT15, irep)
+  kend = lexv(2, E_TYPE%EXV_DT15, irep)
 #endif
 !$omp do private(imp1,imp2,v21,dij,dist,coef,dr,dr2,&
 !$omp&           roverdist2,roverdist4, &
 !$omp&           roverdist8,roverdist14,dv_dr,for,imirror)
-  do ipnl=ksta, kend
+  do iexv=ksta, kend
 
-     imp1 = ipnl2mp(1, ipnl, irep)
-     imp2 = ipnl2mp(2, ipnl, irep)
+     imp1 = iexv2mp(1, iexv, irep)
+     imp2 = iexv2mp(2, iexv, irep)
 
      if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
         dij  = indtrna15%exv_dist
@@ -64,7 +64,7 @@ subroutine simu_force_exv_dt15(irep, force_mp)
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
-        imirror = ipnl2mp(3, ipnl, irep)
+        imirror = iexv2mp(3, iexv, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
 

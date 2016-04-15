@@ -1,7 +1,7 @@
 !simu_energy_nlocal_mgo
 !> @brief Calculates the energy related to Go-type interctions in  &
 !>        the multiple Go model. The Values are added into         &
-!>        "pnlet(E_TYPE%GO)" and "pnle_unit(,,E_TYPE%GO)".
+!>        "e_exv(E_TYPE%GO)" and "e_exv_unit(,,E_TYPE%GO)".
 
 ! ************************************************************************
 ! formula of go1210
@@ -13,7 +13,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine simu_energy_nlocal_mgo(irep, now_con, pnle_unit, pnlet)
+subroutine simu_energy_nlocal_mgo(irep, now_con, e_exv_unit, e_exv)
 
   use const_maxsize
   use const_physical
@@ -32,8 +32,8 @@ subroutine simu_energy_nlocal_mgo(irep, now_con, pnle_unit, pnlet)
   ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   integer,    intent(out) :: now_con(:,:)
-  real(PREC), intent(inout) :: pnlet(:)
-  real(PREC), intent(inout) :: pnle_unit(:,:,:)
+  real(PREC), intent(inout) :: e_exv(:)
+  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
 
   ! ---------------------------------------------------------------------
   ! local variables
@@ -171,11 +171,11 @@ subroutine simu_energy_nlocal_mgo(irep, now_con, pnle_unit, pnlet)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     pnlet(E_TYPE%GO) = pnlet(E_TYPE%GO) + efull
+     e_exv(E_TYPE%GO) = e_exv(E_TYPE%GO) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     pnle_unit(iunit, junit, E_TYPE%GO) = pnle_unit(iunit, junit, E_TYPE%GO) + efull
+     e_exv_unit(iunit, junit, E_TYPE%GO) = e_exv_unit(iunit, junit, E_TYPE%GO) + efull
   end do
 !$omp end do nowait
 !!$omp end master

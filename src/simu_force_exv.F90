@@ -1,7 +1,7 @@
-!simu_force_pnl
+!simu_force_exv
 !> @brief Calculates the force related to excluded volume
 
-subroutine simu_force_pnl(irep, force_mp)
+subroutine simu_force_exv(irep, force_mp)
 
   use const_maxsize
   use const_physical
@@ -9,7 +9,7 @@ subroutine simu_force_pnl(irep, force_mp)
   use var_inp,    only : inperi
   use var_setp,   only : inpro, inrna, inligand, inmisc
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lpnl, ipnl2mp, iclass_mp
+                         lexv, iexv2mp, iclass_mp
   use mpiconst
 
   implicit none
@@ -22,7 +22,7 @@ subroutine simu_force_pnl(irep, force_mp)
   ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2
-  integer :: ipnl, imirror
+  integer :: iexv, imirror
   real(PREC) :: dist2
   real(PREC) :: coef, coef_pro, coef_rna, coef_rna_pro, coef_llig, coef_lpro
   real(PREC) :: cdist2, cdist2_pro, cdist2_rna, cdist2_rna_pro, &
@@ -62,32 +62,32 @@ subroutine simu_force_pnl(irep, force_mp)
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
-  klen=(lpnl(2,E_TYPE%EXV,irep)-lpnl(1,E_TYPE%EXV,irep)+npar_mpi)/npar_mpi
-  ksta=lpnl(1,E_TYPE%EXV,irep)+klen*local_rank_mpi
-  kend=min(ksta+klen-1,lpnl(2,E_TYPE%EXV,irep))
+  klen=(lexv(2,E_TYPE%EXV,irep)-lexv(1,E_TYPE%EXV,irep)+npar_mpi)/npar_mpi
+  ksta=lexv(1,E_TYPE%EXV,irep)+klen*local_rank_mpi
+  kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV,irep))
 #else
-  ksta = lpnl(1, E_TYPE%EXV, irep)
-  kend = lpnl(2, E_TYPE%EXV, irep)
+  ksta = lexv(1, E_TYPE%EXV, irep)
+  kend = lexv(2, E_TYPE%EXV, irep)
 #endif
 #ifdef MPI_DEBUG
-  print *,"pnl          = ", kend-ksta+1
+  print *,"exv          = ", kend-ksta+1
 #endif
 #else
-  ksta = lpnl(1, E_TYPE%EXV, irep)
-  kend = lpnl(2, E_TYPE%EXV, irep)
+  ksta = lexv(1, E_TYPE%EXV, irep)
+  kend = lexv(2, E_TYPE%EXV, irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,cutoff2,cdist2,coef,&
 !$omp&           roverdist2,roverdist4, &
 !$omp&           roverdist8,roverdist14,dvdw_dr,for,imirror)
-  do ipnl=ksta, kend
+  do iexv=ksta, kend
 
-     imp1 = ipnl2mp(1, ipnl, irep)
-     imp2 = ipnl2mp(2, ipnl, irep)
+     imp1 = iexv2mp(1, iexv, irep)
+     imp2 = iexv2mp(2, iexv, irep)
 
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
-        imirror = ipnl2mp(3, ipnl, irep)
+        imirror = iexv2mp(3, iexv, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
      
@@ -139,4 +139,4 @@ subroutine simu_force_pnl(irep, force_mp)
   end do
 !$omp end do nowait
 
-end subroutine simu_force_pnl
+end subroutine simu_force_exv
