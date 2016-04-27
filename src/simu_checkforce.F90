@@ -92,7 +92,7 @@ subroutine simu_checkforce()
      call simu_neighbor(irep)
   enddo
   
-  call simu_energy_allrep(e_exv_unit, e_exv, &
+  call energy_allrep(e_exv_unit, e_exv, &
                    velo_mp, replica_energy, .false., tempk)
 
   call simu_force(force_mp, IDX_REPLICA)
@@ -105,7 +105,7 @@ subroutine simu_checkforce()
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) + small
         call simu_copyxyz(IDX_REPLICA)
    
-        call simu_energy_allrep(e_exv_unit, e_exv, &
+        call energy_allrep(e_exv_unit, e_exv, &
                          velo_mp, replica_energy, .false., tempk)
             
         af_ene = e_exv(E_TYPE%TOTAL, IDX_REPLICA)
@@ -113,7 +113,7 @@ subroutine simu_checkforce()
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) - 2.0_PREC * small
         call simu_copyxyz(IDX_REPLICA)
    
-        call simu_energy_allrep(e_exv_unit, e_exv, &
+        call energy_allrep(e_exv_unit, e_exv, &
                          velo_mp, replica_energy, .false., tempk)
    
         ff(idimn) = -(af_ene - e_exv(E_TYPE%TOTAL, IDX_REPLICA)) * 0.5_PREC / small

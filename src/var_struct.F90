@@ -216,7 +216,7 @@ module var_struct
   logical,    allocatable, save :: flg_tst_exclusive(:,:) !(2,MXDTRNATST)  
   integer,    allocatable, save :: idtrna_tst2st(:,:)     !(2,MXDTRNATST)
 
-  !> for simu_energy_orderpara
+  !> for energy_orderpara
   integer, allocatable, save :: iallcon2unit(:,:)
 
   !> parameter for qscore

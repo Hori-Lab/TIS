@@ -335,7 +335,7 @@ module const_index
      integer :: FUNC_GAUSSIAN    !< 1: Gaussian type
   endtype implig_ene_function_type
   type(implig_ene_function_type), parameter :: IMPLIGENE_FUNCTYPE = implig_ene_function_type(0,1)
-  ! this constant is used for simu_energy_implig, simu_force_implig.
+  ! this constant is used for energy_implig, force_implig.
 
 
   type implig_energy_type
@@ -343,7 +343,7 @@ module const_index
      integer :: FOR_NON_MC   !< 1:
   endtype implig_energy_type
   type(implig_energy_type), parameter :: IMPLIGENERGY_TYPE = implig_energy_type(0,1)
-  ! this constant is used especially for simu_energy_implig.
+  ! this constant is used especially for energy_implig.
   ! energy FOR_NON_MC is calculated based on not only structure but also state of ligand.
   ! energy FOR_NON_MC is for output (ts_file).
   ! energy FOR_MC is calculated based on structre.
@@ -355,7 +355,7 @@ module const_index
      integer :: BOUND     !< 1:  
   endtype implig_bound_state
   type(implig_bound_state), parameter :: IMPLIGBOUND_STATE = implig_bound_state(0,1)
-  ! this constant is used for simu_energy_implig, simu_force_implig.
+  ! this constant is used for energy_implig, force_implig.
   
 
   !#######################################

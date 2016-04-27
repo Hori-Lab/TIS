@@ -34,7 +34,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   
   ! calc energy
   ! ## Here, replica_energy is dummy.
-  call simu_energy_allrep(e_exv_unit, e_exv, &
+  call energy_allrep(e_exv_unit, e_exv, &
        velo_mp, replica_energy, .false., tempk)
   call simu_radiusg(rg_unit, rg)
   call simu_rmsd(rmsd_unit, rmsd)

@@ -334,7 +334,7 @@ subroutine setp_native_go(xyz_mp_init,         &
   nmorse = imorse
   nrna_bp = irna_bp
 
-  ! make array iallcon2unit for simu_energy_orderpara
+  ! make array iallcon2unit for energy_orderpara
   allocate( iallcon2unit(2, ncon+nmorse+nrna_bp), stat=ier)
   if (ier/=0) then
      write(error_message,*) 'failed in memory allocation at setp_native_go'

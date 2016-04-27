@@ -11,7 +11,7 @@ interface
       integer,    intent(in)    :: nsize
    endsubroutine
  
-   subroutine simu_energy_allrep(e_exv_unit, e_exv, &
+   subroutine energy_allrep(e_exv_unit, e_exv, &
                                  velo_mp, replica_energy, flg_replica, tempk)
       use const_maxsize
       implicit none
@@ -21,7 +21,7 @@ interface
       real(PREC), intent(out) :: replica_energy(:,:) ! (2, replica)
       real(PREC), intent(in)  :: tempk
       logical, intent(in)  :: flg_replica
-   endsubroutine simu_energy_allrep
+   endsubroutine energy_allrep
 
    subroutine simu_energy(irep, velo_mp, e_exv, e_exv_unit)
       use const_maxsize
