@@ -21,10 +21,10 @@ module var_simu
   ! physical variables
   real(PREC), save :: tempk
   real(PREC), save :: tstep, tsteph, tstep2
-  real(PREC), save :: accelaf(SPACE_DIM)
-  real(PREC), allocatable,save  :: velo_mp(:,:,:)  ! (SPACE_DIM, nmp_real, n_replica_mpi)
-  real(PREC), allocatable,save  :: accel_mp(:,:,:) ! (SPACE_DIM, nmp_real, n_replica_mpi)
-  real(PREC), allocatable, save :: force_mp(:,:)   ! (SPACE_DIM, nmp_all)
+  real(PREC), save :: accelaf(SDIM)
+  real(PREC), allocatable,save  :: velo_mp(:,:,:)  ! (SDIM, nmp_real, n_replica_mpi)
+  real(PREC), allocatable,save  :: accel_mp(:,:,:) ! (SDIM, nmp_real, n_replica_mpi)
+  real(PREC), allocatable, save :: force_mp(:,:)   ! (SDIM, nmp_all)
   real(PREC), allocatable, save :: rcmass_mp(:)    ! (nmp_all)
 
   ! mcanonical
@@ -34,7 +34,7 @@ module var_simu
   
   ! Langevin
   integer, parameter          :: nLAN_CONST = 4
-  real(PREC), save              :: r_force(SPACE_DIM)
+  real(PREC), save              :: r_force(SDIM)
   real(PREC), save              :: tstep_fric_h, ulconst1, ulconst2
   real(PREC), allocatable, save :: rlan_const(:,:,:) ! (nLAN_CONST, mp, replica)
 

@@ -27,7 +27,7 @@ subroutine  energy_sasa(irep, energy)
   real(PREC) :: dist2(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
   real(PREC) :: dist(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
   real(PREC) :: radsum
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   real(PREC) :: sasa_t, c2, c3ij, c3ji, bij, bji, fij, fji
 
 !$omp master

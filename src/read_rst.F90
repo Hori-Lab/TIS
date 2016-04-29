@@ -84,7 +84,7 @@ subroutine read_rst(itype_wanted)
                call util_error(ERROR%STOP_ALL, error_message)
             endif
    
-            allocate(temp_array(SPACE_DIM, nmp_all))
+            allocate(temp_array(SDIM, nmp_all))
             do imp = 1, nmp_all
                read (luninp) (temp_array(i,imp), i=1,3)
             enddo
@@ -92,15 +92,15 @@ subroutine read_rst(itype_wanted)
             rank = grep2rank(grep)  ! Not-replica case, rank = 0
             irep = grep2irep(grep)  ! Not-replica case, irep = 1
             if (rank == 0) then
-               xyz_mp_rep(1:SPACE_DIM,1:nmp_all,irep) = temp_array(1:SPACE_DIM,1:nmp_all)
+               xyz_mp_rep(1:SDIM,1:nmp_all,irep) = temp_array(1:SDIM,1:nmp_all)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(xyz_mp_rep, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+               call MPI_bcast(xyz_mp_rep, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
-               call MPI_send(temp_array, SPACE_DIM*nmp_all, PREC_MPI, &
+               call MPI_send(temp_array, SDIM*nmp_all, PREC_MPI, &
                              rank, TAG, mpi_comm_rep, ierr)
             endif
 #endif
@@ -123,7 +123,7 @@ subroutine read_rst(itype_wanted)
                call util_error(ERROR%STOP_ALL, error_message)
             endif
    
-            allocate(temp_array(SPACE_DIM, nmp_real))
+            allocate(temp_array(SDIM, nmp_real))
             do imp = 1, nmp_real
                read (luninp) (temp_array(i,imp), i=1,3)
             enddo
@@ -131,15 +131,15 @@ subroutine read_rst(itype_wanted)
             rank = grep2rank(grep)  ! Not-replica case, rank = 0
             irep = grep2irep(grep)  ! Not-replica case, irep = 1
             if (rank == 0) then
-               velo_mp(1:SPACE_DIM,1:nmp_real,irep) = temp_array(1:SPACE_DIM,1:nmp_real)
+               velo_mp(1:SDIM,1:nmp_real,irep) = temp_array(1:SDIM,1:nmp_real)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(velo_mp, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+               call MPI_bcast(velo_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
-               call MPI_send(temp_array, SPACE_DIM*nmp_real, PREC_MPI, &
+               call MPI_send(temp_array, SDIM*nmp_real, PREC_MPI, &
                              rank, TAG, mpi_comm_rep, ierr)
             endif
 #endif
@@ -162,7 +162,7 @@ subroutine read_rst(itype_wanted)
                call util_error(ERROR%STOP_ALL, error_message)
             endif
    
-            allocate(temp_array(SPACE_DIM, nmp_real))
+            allocate(temp_array(SDIM, nmp_real))
             do imp = 1, nmp_real
                read (luninp) (temp_array(i,imp), i=1,3)
             enddo
@@ -170,15 +170,15 @@ subroutine read_rst(itype_wanted)
             rank = grep2rank(grep)  ! Not-replica case, rank = 0
             irep = grep2irep(grep)  ! Not-replica case, irep = 1
             if (rank == 0) then
-               accel_mp(1:SPACE_DIM, 1:nmp_real, irep) = temp_array(1:SPACE_DIM, 1:nmp_real)
+               accel_mp(1:SDIM, 1:nmp_real, irep) = temp_array(1:SDIM, 1:nmp_real)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(accel_mp, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+               call MPI_bcast(accel_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
-               call MPI_send(temp_array, SPACE_DIM*nmp_real, PREC_MPI, &
+               call MPI_send(temp_array, SDIM*nmp_real, PREC_MPI, &
                              rank, TAG, mpi_comm_rep, ierr)
             endif
 #endif
@@ -251,11 +251,11 @@ subroutine read_rst(itype_wanted)
          if (local_rank_mpi == 0) then
             do i = 1, n_replica_mpi
                call MPI_recv(irep, 1, MPI_INTEGER, 0, TAG, mpi_comm_rep, istatus, ierr)
-               call MPI_recv(xyz_mp_rep(:,:,irep), SPACE_DIM*nmp_all, PREC_MPI, &
+               call MPI_recv(xyz_mp_rep(:,:,irep), SDIM*nmp_all, PREC_MPI, &
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(xyz_mp_rep, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+         call MPI_bcast(xyz_mp_rep, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
 
       !----------------------------
@@ -265,11 +265,11 @@ subroutine read_rst(itype_wanted)
          if (local_rank_mpi == 0) then
             do i = 1, n_replica_mpi
                call MPI_recv(irep, 1, MPI_INTEGER, 0, TAG, mpi_comm_rep, istatus, ierr)
-               call MPI_recv(velo_mp(:,:,irep), SPACE_DIM*nmp_real, PREC_MPI, &
+               call MPI_recv(velo_mp(:,:,irep), SDIM*nmp_real, PREC_MPI, &
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(velo_mp, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+         call MPI_bcast(velo_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
 
 
@@ -280,11 +280,11 @@ subroutine read_rst(itype_wanted)
          if (local_rank_mpi == 0) then
             do i = 1, n_replica_mpi
                call MPI_recv(irep, 1, MPI_INTEGER, 0, TAG, mpi_comm_rep, istatus, ierr)
-               call MPI_recv(accel_mp(:,:,irep), SPACE_DIM*nmp_real, PREC_MPI, &
+               call MPI_recv(accel_mp(:,:,irep), SDIM*nmp_real, PREC_MPI, &
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(accel_mp, SPACE_DIM*nmp_all*n_replica_mpi, PREC_MPI, &
+         call MPI_bcast(accel_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
 
       !----------------------------

@@ -4,8 +4,11 @@
 module const_physical
   use const_maxsize
 
+  integer,    parameter :: SDIM = 3 !< # of space dimension
+
   real(PREC), parameter :: F_PI    = 3.14159265358979323846264338e0_PREC !< Circular constant (Pi)
   real(PREC), parameter :: F_2PI   = F_PI + F_PI
+
   real(PREC), parameter :: EPSI_0  = 8.854187817e-12_PREC   !< Vacuum permittivity [F/m]
   real(PREC), parameter :: K_BOLTZ = 1.380650424e-23_PREC   !< Boltzmann constant [J/K]
   real(PREC), parameter :: BOLTZC  = 1.986231313e-3_PREC    !< Boltzmann constant [kcal/mol/K]
@@ -15,7 +18,6 @@ module const_physical
   real(PREC), parameter :: JOUL2KCAL_MOL = 1.43862e20_PREC  !< Coefficient of transformation 
                                                             !< (J -> kcal/mol)
   real(PREC), parameter :: JOUL2KCAL = 4186.8   !< (J -> kcal)
-  integer,    parameter :: SPACE_DIM = 3 !< # of space dimension
 
   real(PREC), parameter :: DE_MAX  = 20.0e0_PREC !< limit value of force
 

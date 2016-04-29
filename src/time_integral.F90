@@ -40,8 +40,8 @@ subroutine time_integral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   integer    :: i,k,imp, irep, grep
-  real(PREC) :: r_force(1:SPACE_DIM), dxyz(1:3)
-  real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
+  real(PREC) :: r_force(1:SDIM), dxyz(1:3)
+  real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
 
@@ -386,7 +386,7 @@ contains
     implicit none
 
     ! --------------------------------------------------------------------
-    !real(PREC), intent(out) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
+    !real(PREC), intent(out) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
     
     ! --------------------------------------------------------------------
     ! function
@@ -397,7 +397,7 @@ contains
 #ifdef MPI_PAR
     real(PREC) :: vx, vy, r2, rf
     integer :: klen, ksta, kend, tn
-    real(PREC) :: r_boxmuller_l(SPACE_DIM, nmp_real, n_replica_mpi)
+    real(PREC) :: r_boxmuller_l(SDIM, nmp_real, n_replica_mpi)
 
     integer(INT32) :: umask,lmask,n,m,is
     integer(INT32) :: k,nm,n1
@@ -411,7 +411,7 @@ contains
        do irep = 1, n_replica_mpi
           istream = irep
           do imp= 1, nmp_real
-             do idimn = 1, SPACE_DIM
+             do idimn = 1, SDIM
                 r_boxmuller(idimn, imp, irep) = rfunc_boxmuller(istream, 0)
              end do
           end do
@@ -547,7 +547,7 @@ contains
        TIME_S( tmc_random)
        if(insimu%i_rand_type == 1) then
           call mpi_allreduce(r_boxmuller_l, r_boxmuller, &
-               SPACE_DIM*nmp_real*n_replica_mpi, PREC_MPI, &
+               SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
                MPI_SUM, mpi_comm_local, ierr)
        else
           r_boxmuller(:,:,:) = r_boxmuller_l(:,:,:)
@@ -558,7 +558,7 @@ contains
        do irep = 1, n_replica_mpi
           istream = irep
           do imp = 1, nmp_real
-             do idimn = 1, SPACE_DIM
+             do idimn = 1, SDIM
                 r_boxmuller(idimn, imp, irep) = rfunc_boxmuller(istream, 0)
              end do
           end do

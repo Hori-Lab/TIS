@@ -14,7 +14,7 @@ subroutine setp_native_neighbor_list(xyz_mp_init, ineigh2mp, lmp2neigh)
   implicit none
 
   ! -------------------------------------------------------------------
-  real(PREC),intent(in)  :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC),intent(in)  :: xyz_mp_init(SDIM, MXMP)
   !integer,   intent(out) :: lmp2neigh(MXMP), ineigh2mp(MXNEIGHBOR)
   integer,   intent(out) :: lmp2neigh(MXMP), ineigh2mp(MXMPNEIGHBOR*nmp_all)
 

@@ -24,7 +24,7 @@ subroutine setp_native_bangle(xyz_mp_init)
   implicit none    
 
   ! -----------------------------------------------------------------
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
 
   ! -----------------------------------------------------------------
   ! function
@@ -343,7 +343,7 @@ contains
     integer, intent(in) :: iunit, imp1, imp2, imp3
     integer, intent(inout) :: iba
     integer, intent(in) :: i_type_ba
-    real(PREC), intent(in) :: xyz_ba(SPACE_DIM, MXMP)
+    real(PREC), intent(in) :: xyz_ba(SDIM, MXMP)
     character(4), intent(in) :: cmp
 
     ! ---------------------------------------------------------------

@@ -40,7 +40,7 @@ subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
    implicit none
 
    !---------------------------------------------------------------------------
-   real(PREC), intent(inout) :: velo_mp(:,:,:)      ! (SPACE_DIM, mp, replica)
+   real(PREC), intent(inout) :: velo_mp(:,:,:)      ! (SDIM, mp, replica)
    real(PREC), intent(in)    :: replica_energy(:,:) ! (2, replica)
    real(PREC), intent(in)    :: tempk
 

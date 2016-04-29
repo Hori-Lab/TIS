@@ -16,10 +16,10 @@ subroutine force_rest1d(irep, force_mp)
   ! ----------------------------------------------------------------------
   ! local variables
   integer :: irest, irest_center, imp
-  real(PREC) :: xyz_sa(SPACE_DIM), xyz_sb(SPACE_DIM)
-  real(PREC) :: xyz_com(SPACE_DIM)
+  real(PREC) :: xyz_sa(SDIM), xyz_sb(SDIM)
+  real(PREC) :: xyz_com(SDIM)
   real(PREC) :: norm, dot, for
-  real(PREC) :: v_ab(SPACE_DIM), v_ai(SPACE_DIM)
+  real(PREC) :: v_ab(SDIM), v_ai(SDIM)
   
   ! ----------------------------------------------------------------------
   

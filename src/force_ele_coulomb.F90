@@ -14,7 +14,7 @@ subroutine force_ele_coulomb(irep, force_mp)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   integer :: imp1, imp2
   integer :: ksta, kend
@@ -22,7 +22,7 @@ subroutine force_ele_coulomb(irep, force_mp)
   integer :: imirror
   real(PREC) :: dist1, dist2
   real(PREC) :: dv_dr, cutoff2
-  real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
+  real(PREC) :: v21(SDIM), for(SDIM)
 #ifdef MPI_PAR
   integer :: klen
 #endif
@@ -63,10 +63,10 @@ subroutine force_ele_coulomb(irep, force_mp)
      imp2 = iele2mp(2, iele, irep)
 
      if(inperi%i_periodic == 0) then
-        v21(1:SPACE_DIM) = xyz_mp_rep(1:SPACE_DIM, imp2, irep) - xyz_mp_rep(1:SPACE_DIM, imp1, irep)
+        v21(1:SDIM) = xyz_mp_rep(1:SDIM, imp2, irep) - xyz_mp_rep(1:SDIM, imp1, irep)
      else
         imirror = iele2mp(3, iele, irep)
-        v21(1:SPACE_DIM) = pxyz_mp_rep(1:SPACE_DIM, imp2, irep) - pxyz_mp_rep(1:SPACE_DIM, imp1, irep) + inperi%d_mirror(1:SPACE_DIM, imirror)
+        v21(1:SDIM) = pxyz_mp_rep(1:SDIM, imp2, irep) - pxyz_mp_rep(1:SDIM, imp1, irep) + inperi%d_mirror(1:SDIM, imirror)
      end if
 
      dist2 = dot_product(v21,v21)
@@ -76,9 +76,9 @@ subroutine force_ele_coulomb(irep, force_mp)
      dist1 = sqrt(dist2)
      dv_dr = coef_ele(iele, irep) / (dist1 * dist2)
      
-     for(1:SPACE_DIM) = dv_dr * v21(1:SPACE_DIM)
-     force_mp(1:SPACE_DIM, imp1) = force_mp(1:SPACE_DIM, imp1) - for(1:SPACE_DIM)
-     force_mp(1:SPACE_DIM, imp2) = force_mp(1:SPACE_DIM, imp2) + for(1:SPACE_DIM)
+     for(1:SDIM) = dv_dr * v21(1:SDIM)
+     force_mp(1:SDIM, imp1) = force_mp(1:SDIM, imp1) - for(1:SDIM)
+     force_mp(1:SDIM, imp2) = force_mp(1:SDIM, imp2) + for(1:SDIM)
   end do
 !$omp end do nowait
 

@@ -22,7 +22,7 @@ subroutine simu_copyxyz_ele(irep_in)
 
   ! ----------------------------------------------------------------------
 !  if(ialloc == 0) then
-!     allocate(xyz_ele_rep(SPACE_DIM, ncharge, n_replica_mpi))
+!     allocate(xyz_ele_rep(SDIM, ncharge, n_replica_mpi))
 !     ialloc = 1
 !  end if
 
@@ -39,8 +39,8 @@ subroutine simu_copyxyz_ele(irep_in)
   do irep = jsta , jend
      do icharge = 1, ncharge
         imp = icharge2mp(icharge)
-        xyz_ele_rep(1:SPACE_DIM,icharge,irep) = xyz_mp_rep(1:SPACE_DIM,imp,irep)
-        pxyz_ele_rep(1:SPACE_DIM,icharge,irep) = pxyz_mp_rep(1:SPACE_DIM,imp,irep)
+        xyz_ele_rep(1:SDIM,icharge,irep) = xyz_mp_rep(1:SDIM,imp,irep)
+        pxyz_ele_rep(1:SDIM,icharge,irep) = pxyz_mp_rep(1:SDIM,imp,irep)
      end do
   end do
 

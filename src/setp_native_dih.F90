@@ -21,7 +21,7 @@ subroutine setp_native_dih(xyz_mp_init)
   
   implicit none
 
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
 
   ! ----------------------------------------------------------------------
   ! function
@@ -346,7 +346,7 @@ contains
     integer, intent(in) :: imp1, imp2, imp3, imp4
     integer, intent(inout) :: idih
     integer, intent(in) :: i_type_dih
-    real(PREC), intent(in) :: xyz_dih(SPACE_DIM, MXMP)
+    real(PREC), intent(in) :: xyz_dih(SDIM, MXMP)
 
     ! -------------------------------------------------------------------
     ! local variables
@@ -399,7 +399,7 @@ contains
   subroutine nat_stack_rna(imp1, imp2, imp3, imp4, xyz_dih)
      use var_setp,   only : inrna
      integer, intent(in) :: imp1, imp2, imp3, imp4
-     real(PREC), intent(in) :: xyz_dih(SPACE_DIM, MXMP)
+     real(PREC), intent(in) :: xyz_dih(SDIM, MXMP)
  
      real(PREC) :: dih_angle, si_dih, co_dih
      real(PREC) :: dist2

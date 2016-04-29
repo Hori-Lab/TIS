@@ -41,7 +41,7 @@ subroutine energy_nlocal_go(irep, now_con, energy_unit, energy)
   real(PREC) :: rjudge_contact, rjudge
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist10, roverdist12
   real(PREC) :: dist2, efull
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

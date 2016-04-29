@@ -21,7 +21,7 @@ subroutine allocate_replica(xyz_mp_init)
 
    implicit none
 
-   real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+   real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
 
    integer :: irep, imp, ier
    logical :: flg_error
@@ -49,24 +49,24 @@ subroutine allocate_replica(xyz_mp_init)
    ! allocate xya_mp_rep
    !---------------------
    error_message = 'failed in memory allocation at allocate_replica, PROGRAM STOP'
-   allocate( xyz_mp_rep(SPACE_DIM, nmp_all, n_replica_mpi),    stat=ier) 
+   allocate( xyz_mp_rep(SDIM, nmp_all, n_replica_mpi),    stat=ier) 
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
 
-   allocate( pxyz_mp_rep(SPACE_DIM, nmp_all, n_replica_mpi),    stat=ier) 
+   allocate( pxyz_mp_rep(SDIM, nmp_all, n_replica_mpi),    stat=ier) 
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
 
    ! copy initial structure
    do irep = 1, n_replica_mpi
       do imp = 1, nmp_all
-         xyz_mp_rep(1:SPACE_DIM,imp,irep) = xyz_mp_init(1:SPACE_DIM,imp)
+         xyz_mp_rep(1:SDIM,imp,irep) = xyz_mp_init(1:SDIM,imp)
       enddo
    enddo
 
    if(inele%i_calc_method == 1 .or. inele%i_calc_method == 2) then
-      allocate( xyz_ele_rep(SPACE_DIM, ncharge, n_replica_mpi),    stat=ier) 
+      allocate( xyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
       if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
       
-      allocate( pxyz_ele_rep(SPACE_DIM, ncharge, n_replica_mpi),    stat=ier) 
+      allocate( pxyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
       if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    end if
 

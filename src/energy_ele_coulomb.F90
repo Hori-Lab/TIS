@@ -23,7 +23,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   integer :: imp1, imp2, iunit, junit, iele, imirror
   real(PREC) :: dist1, dist2
   real(PREC) :: ene, cutoff2
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif
@@ -51,10 +51,10 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
      imp2 = iele2mp(2, iele, irep)
         
      if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+        v21(1:SDIM) = xyz_mp_rep(1:SDIM, imp2, irep) - xyz_mp_rep(1:SDIM, imp1, irep)
      else
         imirror = iele2mp(3, iele, irep)
-        v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
+        v21(1:SDIM) = pxyz_mp_rep(1:SDIM, imp2, irep) - pxyz_mp_rep(1:SDIM, imp1, irep) + inperi%d_mirror(1:SDIM, imirror)
      end if
      
      dist2 = dot_product(v21,v21)

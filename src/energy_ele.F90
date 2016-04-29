@@ -23,7 +23,7 @@ subroutine energy_ele(irep, energy, energy_unit)
   integer :: itype1, itype2
   real(PREC) :: dist1, dist2, ew, ek, rk
   real(PREC) :: exv, rcdist, cutoff2, xtanh, rsig, rek_corr
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

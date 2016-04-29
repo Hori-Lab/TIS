@@ -30,7 +30,7 @@ subroutine  energy_ion(irep, energy_unit, energy)
   real(PREC) :: dist1, dist2, cdist2, ddist1, ddist2
   real(PREC) :: roverdist2, roverdist6, roverdist12
   real(PREC) :: exv, coef, cutoff2
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

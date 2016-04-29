@@ -16,7 +16,7 @@ subroutine force_exv(irep, force_mp)
 
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -32,7 +32,7 @@ subroutine force_exv(irep, force_mp)
   real(PREC) :: roverdist2, roverdist4, roverdist8
   real(PREC) :: roverdist14
   real(PREC) :: dvdw_dr
-  real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
+  real(PREC) :: v21(SDIM), for(SDIM)
 #ifdef MPI_PAR
   integer :: klen
 #endif

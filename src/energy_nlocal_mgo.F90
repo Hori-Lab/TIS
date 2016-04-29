@@ -46,7 +46,7 @@ subroutine energy_nlocal_mgo(irep, now_con, energy_unit, energy)
   real(PREC) :: gorad2, gorad2j = 0.0
   real(PREC) :: sigma1, sigma2
   real(PREC) :: rovdist2, rovdist10, rovdist12, rjudge, rjudge_contact
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   character(CARRAY_MSG_ERROR) :: error_message
 #ifdef MPI_PAR3
   integer :: klen

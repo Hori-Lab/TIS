@@ -140,13 +140,13 @@ program aa2cg
    close (infile%para_rna)
 
    !#################################################
-   allocate( xyz_mp(SPACE_DIM, MXMP) )
+   allocate( xyz_mp(SDIM, MXMP) )
    xyz_mp(:,:) = 0.0e0_PREC
    allocate( iatomnum(MXMP)                       )
-   allocate( xyz(SPACE_DIM, MXMP, MXATOM_MP)      )
+   allocate( xyz(SDIM, MXMP, MXATOM_MP)      )
    allocate( cname_ha(MXMP, MXATOM_MP)            )    ! aicg
    allocate( isidenum(MXMP)                       )
-   allocate( xyz_side(SPACE_DIM, MXMP, MXATOM_MP) )
+   allocate( xyz_side(SDIM, MXMP, MXATOM_MP) )
 
    nunitpdb = 1
    nmppdb   = 0

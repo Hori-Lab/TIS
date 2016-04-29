@@ -58,9 +58,9 @@
    integer :: ist
    real(PREC) :: dih
    real(PREC) :: ddist, d, efull, ediv
-   real(PREC) :: m(SPACE_DIM), n(SPACE_DIM)
-   real(PREC) :: v21(SPACE_DIM), v34(SPACE_DIM), v54(SPACE_DIM)
-   real(PREC) :: v56(SPACE_DIM), v76(SPACE_DIM)
+   real(PREC) :: m(SDIM), n(SDIM)
+   real(PREC) :: v21(SDIM), v34(SDIM), v54(SDIM)
+   real(PREC) :: v56(SDIM), v76(SDIM)
    integer :: ksta, kend
 #ifdef MPI_PAR3
    integer :: klen

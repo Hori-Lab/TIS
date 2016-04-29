@@ -30,7 +30,7 @@ subroutine read_crd(i_record_file, velo_mp)
   integer :: iline
   integer :: n_a, n_b, n_c, n_d
   real(PREC) :: r_a
-  real(PREC) :: xyz(SPACE_DIM)
+  real(PREC) :: xyz(SDIM)
   character(1) :: ctype
   character(8) :: cha8a, cha8b, cha8c
   character(140) :: cline

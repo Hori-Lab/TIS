@@ -42,7 +42,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
   real(PREC) :: coef, cdist2
   real(PREC) :: roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
 #endif

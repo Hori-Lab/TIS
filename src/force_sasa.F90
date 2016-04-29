@@ -18,7 +18,7 @@ subroutine force_sasa(irep, force_mp)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   integer :: ksta, kend
   integer :: imp1, imp2, imp, iunit1, iunit2, isasa
@@ -28,7 +28,7 @@ subroutine force_sasa(irep, force_mp)
   real(PREC) :: forij, forji
   real(PREC) :: dist(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
   real(PREC) :: dist2(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
-  real(PREC) :: v21(SPACE_DIM,lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
+  real(PREC) :: v21(SDIM,lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
   real(PREC) :: radsum(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
   real(PREC) :: radsum2(lexv(1, E_TYPE%SASA, irep):lexv(2, E_TYPE%SASA, irep))
 

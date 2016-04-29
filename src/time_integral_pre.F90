@@ -48,9 +48,9 @@ subroutine time_integral_pre(flg_step_each_replica)
   integer :: imp, irep, grep, idimn, istream
   integer(L_INT) :: istep_dummy
   real(PREC) :: tstep_fric_h, ulconst1, ulconst2
-  real(PREC) :: r_force(1:SPACE_DIM)
+  real(PREC) :: r_force(1:SDIM)
 
-  real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
+  real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   character(CARRAY_MSG_ERROR) error_message
 
   integer :: ianc, igrp
@@ -73,7 +73,7 @@ subroutine time_integral_pre(flg_step_each_replica)
      do irep = 1, n_replica_mpi
         istream = irep
         do imp= 1, nmp_real
-           do idimn = 1, SPACE_DIM
+           do idimn = 1, SDIM
               r_boxmuller(idimn, imp, irep) = rfunc_boxmuller(istream, 0)
            enddo
         enddo

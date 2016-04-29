@@ -20,9 +20,9 @@ subroutine energy_rest1d(irep, energy_unit, energy)
   ! local variables
   integer :: irest, irest_center, imp, iunit, junit
   real(PREC) :: norm, dot, efull
-  real(PREC) :: xyz_sa(SPACE_DIM), xyz_sb(SPACE_DIM)
-  real(PREC) :: v_ab(SPACE_DIM), v_ai(SPACE_DIM)
-  real(PREC) :: xyz_com(SPACE_DIM)
+  real(PREC) :: xyz_sa(SDIM), xyz_sb(SDIM)
+  real(PREC) :: v_ab(SDIM), v_ai(SDIM)
+  real(PREC) :: xyz_com(SDIM)
   
   ! ----------------------------------------------------------------------
   do irest = 1, inmisc%nrest1d

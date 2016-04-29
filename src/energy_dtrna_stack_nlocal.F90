@@ -65,11 +65,11 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   integer :: ist, ist_2nd
   real(PREC) :: dih, cos_theta
   real(PREC) :: d, efull, ediv
-  real(PREC) :: v12(SPACE_DIM), v13(SPACE_DIM), v53(SPACE_DIM)
-  real(PREC) :: v42(SPACE_DIM), v46(SPACE_DIM)
+  real(PREC) :: v12(SDIM), v13(SDIM), v53(SDIM)
+  real(PREC) :: v42(SDIM), v46(SDIM)
   real(PREC) :: d1212
-  real(PREC) :: m(SPACE_DIM), n(SPACE_DIM)
-  real(PREC) :: c4212(SPACE_DIM), c1213(SPACE_DIM)
+  real(PREC) :: m(SDIM), n(SDIM)
+  real(PREC) :: c4212(SDIM), c1213(SDIM)
   integer :: ksta, kend
   logical :: st_status_l(1:ndtrna_st)
 #ifdef MPI_PAR3

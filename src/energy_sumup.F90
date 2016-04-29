@@ -33,7 +33,7 @@ subroutine energy_sumup(irep,          &
 
 ! --------------------------------------------------------------------
   integer,    intent(in)  :: irep
-  real(PREC), intent(in)  :: velo_mp(:,:)      ! (SPACE_DIM, nmp_real)
+  real(PREC), intent(in)  :: velo_mp(:,:)      ! (SDIM, nmp_real)
   real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
   real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
 

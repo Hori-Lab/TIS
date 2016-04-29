@@ -22,7 +22,7 @@ subroutine setp_aicg2(iatomnum, xyz, cname_ha)
   use var_struct, only : nmp_all
 #endif
   implicit none    
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
   character(4), intent(in) :: cname_ha(MXATOM_MP, MXMP)
 
@@ -264,7 +264,7 @@ subroutine contact_make_aicg2(iatomnum, xyz, cname_ha, ncon_atm_13, ncon_atm_14,
 
   implicit none
 
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
   character(4), intent(in) :: cname_ha(MXATOM_MP, MXMP)
   integer,    intent(out) :: ncon_atm(MXCON,16), ncon_atm_13(MXMP,16), ncon_atm_14(MXMP,16)

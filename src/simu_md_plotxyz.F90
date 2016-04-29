@@ -19,7 +19,7 @@ subroutine simu_md_plotxyz()
   integer    :: imp, irep, istream
   real(PREC) :: radxy, radyz
   real(PREC) :: pi2
-  real(PREC) :: center_P(SPACE_DIM)
+  real(PREC) :: center_P(SDIM)
   real(PREC) :: grnd_array(2, nmp_real, n_replica_mpi)
   character(CARRAY_MSG_ERROR) :: error_message
 
@@ -40,7 +40,7 @@ subroutine simu_md_plotxyz()
   if (iclass_mp(1) == CLASS%RNA) then
      select case (imp2type(1))
      case (MPTYPE%RNA_PHOS)
-        xyz_mp_rep(1:SPACE_DIM, 1, 1:n_replica_mpi) = 0.0e0_PREC
+        xyz_mp_rep(1:SDIM, 1, 1:n_replica_mpi) = 0.0e0_PREC
 
         do irep = 1, n_replica_mpi
            do imp = 2, nmp_real, 3
@@ -78,7 +78,7 @@ subroutine simu_md_plotxyz()
 
      case (MPTYPE%RNA_SUGAR)
         ! B (imp=2)
-        xyz_mp_rep(1:SPACE_DIM, 2, 1:n_replica_mpi) = 0.0e0_PREC
+        xyz_mp_rep(1:SDIM, 2, 1:n_replica_mpi) = 0.0e0_PREC
 
         do irep = 1, n_replica_mpi
            ! S (imp=1)
@@ -126,8 +126,8 @@ subroutine simu_md_plotxyz()
      endselect
 
   else
-     !xyz_mp_rep(1:SPACE_DIM, 1, 1:n_replica_all) = 0.0e0_PREC
-     xyz_mp_rep(1:SPACE_DIM, 1, 1:n_replica_mpi) = 0.0e0_PREC
+     !xyz_mp_rep(1:SDIM, 1, 1:n_replica_all) = 0.0e0_PREC
+     xyz_mp_rep(1:SDIM, 1, 1:n_replica_mpi) = 0.0e0_PREC
 
      ! -------------------------------------------------------------------
      ! plot the random structure

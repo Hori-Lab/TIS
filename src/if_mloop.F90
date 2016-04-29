@@ -65,7 +65,7 @@ interface
    subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
       use const_maxsize
       implicit none
-      real(PREC), intent(inout)  :: velo_mp(:,:,:)      ! (SPACE_DIM, MXMP, replica)
+      real(PREC), intent(inout)  :: velo_mp(:,:,:)      ! (SDIM, MXMP, replica)
       real(PREC), intent(in)     :: replica_energy(:,:) ! (2, replica)
       real(PREC), intent(in)     :: tempk
    endsubroutine simu_replica_exchange

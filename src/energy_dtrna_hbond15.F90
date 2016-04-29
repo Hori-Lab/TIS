@@ -73,11 +73,11 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   integer :: ksta, kend
   real(PREC) :: dih, cos_theta
   real(PREC) :: d, ex
-  real(PREC) :: v12(SPACE_DIM), v13(SPACE_DIM), v53(SPACE_DIM)
-  real(PREC) :: v42(SPACE_DIM), v46(SPACE_DIM)
+  real(PREC) :: v12(SDIM), v13(SDIM), v53(SDIM)
+  real(PREC) :: v42(SDIM), v46(SDIM)
   real(PREC) :: d1212, d1313, d4242, a12, a13, a42, d1213, d1242
-  real(PREC) :: m(SPACE_DIM), n(SPACE_DIM)
-  real(PREC) :: c4212(SPACE_DIM), c1213(SPACE_DIM)
+  real(PREC) :: m(SDIM), n(SDIM)
+  real(PREC) :: c4212(SDIM), c1213(SDIM)
 
   real(PREC) :: rnd
   real(PREC) :: ratio, beta

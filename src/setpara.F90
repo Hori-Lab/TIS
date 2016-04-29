@@ -22,7 +22,7 @@ subroutine setpara( xyz_mp_init )
 
   implicit none
 
-  real(PREC),intent(out) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC),intent(out) :: xyz_mp_init(SDIM, MXMP)
 
   ! -----------------------------------------------------------------------
   ! local variables
@@ -146,7 +146,7 @@ subroutine setpara( xyz_mp_init )
   ! -----------------------------------------------------------------------
   ! reading sequence
   allocate( iatomnum(MXMP)                       )
-  allocate( xyz(SPACE_DIM, MXATOM_MP, MXMP)      )
+  allocate( xyz(SDIM, MXATOM_MP, MXMP)      )
   allocate( cname_ha(MXATOM_MP, MXMP)            )    ! aicg
   allocate( dssp(MXMP)                           )    ! aicg
 
@@ -154,7 +154,7 @@ subroutine setpara( xyz_mp_init )
   if(i_seq_read_style == SEQREAD%PDB) then
      ! read xyz coordinate from PDB file
      call read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)   ! aicg
-     xyz_ref_mp(1:SPACE_DIM, 1:MXMP) = xyz_mp_init(1:SPACE_DIM, 1:MXMP)
+     xyz_ref_mp(1:SDIM, 1:MXMP) = xyz_mp_init(1:SDIM, 1:MXMP)
 
   else if(i_seq_read_style == SEQREAD%INPUT_SEQ) then
      ! read sequence from sequence field in input file
@@ -163,7 +163,7 @@ subroutine setpara( xyz_mp_init )
   else if(i_seq_read_style == SEQREAD%CG) then
      ! read xyz coordinate from PDB file with CafeMol-CG style
      call read_xyz_cg(xyz_mp_init)
-     xyz_ref_mp(1:SPACE_DIM, 1:MXMP) = xyz_mp_init(1:SPACE_DIM, 1:MXMP)
+     xyz_ref_mp(1:SDIM, 1:MXMP) = xyz_mp_init(1:SDIM, 1:MXMP)
 
   end if
 

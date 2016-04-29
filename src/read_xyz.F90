@@ -22,9 +22,9 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
 
   ! ---------------------------------------------------------------------
   integer, intent(out) :: iatomnum(MXMP)
-  real(PREC), intent(out) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(out) :: xyz(SDIM, MXATOM_MP, MXMP)
   character(4), intent(out) :: cname_ha(MXATOM_MP, MXMP)   ! aicg
-  real(PREC), intent(out) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(out) :: xyz_mp_init(SDIM, MXMP)
   ! intent(out) :: nmp_real, nmp_all, lunit2mp, xyz_mp_rep, cmp2seq
 
   ! ---------------------------------------------------------------------

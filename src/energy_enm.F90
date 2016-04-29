@@ -37,7 +37,7 @@ subroutine energy_enm(irep, now_con, energy, energy_unit)
   integer :: imp1, imp2, iunit, junit
   integer :: icon, imirror
   real(PREC) :: coef, dist, rjudge_contact, rjudge, efull
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

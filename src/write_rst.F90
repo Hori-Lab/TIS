@@ -2,7 +2,7 @@ subroutine write_rst()
 
    use const_maxsize
    use const_index
-   use const_physical, only : SPACE_DIM
+   use const_physical, only : SDIM
    use var_inp,    only : outfile, fullpath
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep
    use var_simu,   only : istep_sim, istep, velo_mp, accel_mp
@@ -64,32 +64,32 @@ subroutine write_rst()
 
       ! Coordinate
       write(lunout) RSTBLK%XYZ
-      nblock_size = calc_size(2, 0, 0, nmp_all*SPACE_DIM)
+      nblock_size = calc_size(2, 0, 0, nmp_all*SDIM)
       write(lunout) nblock_size
       write(lunout) grep         ! M_INT
       write(lunout) nmp_all      ! M_INT
       do imp = 1, nmp_all
-         write(lunout) (xyz_mp_rep(i,imp,irep),i=1,SPACE_DIM)   ! PREC
+         write(lunout) (xyz_mp_rep(i,imp,irep),i=1,SDIM)   ! PREC
       enddo
    
       ! Velocity
       write(lunout) RSTBLK%VELO
-      nblock_size = calc_size(2, 0, 0, nmp_real*SPACE_DIM)
+      nblock_size = calc_size(2, 0, 0, nmp_real*SDIM)
       write(lunout) nblock_size
       write(lunout) grep         ! M_INT
       write(lunout) nmp_real     ! M_INT
       do imp = 1, nmp_real
-         write(lunout) (velo_mp(i,imp,irep),i=1,SPACE_DIM)  ! PREC
+         write(lunout) (velo_mp(i,imp,irep),i=1,SDIM)  ! PREC
       enddo
          
       ! Acceleration
       write(lunout) RSTBLK%ACCEL
-      nblock_size = calc_size(2, 0, 0, nmp_real*SPACE_DIM)
+      nblock_size = calc_size(2, 0, 0, nmp_real*SDIM)
       write(lunout) nblock_size
       write(lunout) grep          ! M_INT
       write(lunout) nmp_real      ! M_INT
       do imp = 1, nmp_real
-         write(lunout) (accel_mp(i,imp,irep),i=1,SPACE_DIM) ! PREC
+         write(lunout) (accel_mp(i,imp,irep),i=1,SDIM) ! PREC
       enddo
          
       close(lunout)

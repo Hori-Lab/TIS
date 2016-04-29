@@ -25,7 +25,7 @@ module var_struct
   integer, save :: iclass_mp(MXMP) !< class of mp
   real(PREC), allocatable, save :: xyz_mp_rep(:,:,:) !< coordinate of mp
   real(PREC), allocatable, save :: pxyz_mp_rep(:,:,:) !< coordinate of mp
-  real(PREC), save :: xyz_ref_mp(SPACE_DIM, MXMP) !< coordinate of reference structure
+  real(PREC), save :: xyz_ref_mp(SDIM, MXMP) !< coordinate of reference structure
   real(PREC), save :: cmass_mp(MXMP) !< mass of mp
   real(PREC), save :: exv_radius_mp(MXMP) !< excluded-volume radius (half of sigma) of mp
   real(PREC), save :: exv_epsilon_mp(MXMP)
@@ -232,8 +232,8 @@ module var_struct
   integer, allocatable, save :: lele(:)          ! (REPLICA)
   integer, allocatable, save :: iele2mp(:,:,:)   ! (2(+1), MXMPELE*nmp_all, REPLICA)
   real(PREC), allocatable, save :: coef_ele(:,:) ! (MXMPELE*nmp_all, REPLICA)
-  real(PREC), allocatable, save :: xyz_ele_rep(:,:,:) ! (SPACE_DIM, ncharge, REPLICA)
-  real(PREC), allocatable, save :: pxyz_ele_rep(:,:,:) ! (SPACE_DIM, ncharge, REPLICA)
+  real(PREC), allocatable, save :: xyz_ele_rep(:,:,:) ! (SDIM, ncharge, REPLICA)
+  real(PREC), allocatable, save :: pxyz_ele_rep(:,:,:) ! (SDIM, ncharge, REPLICA)
 
   !> parameters for elctrostatic(K computer)
   integer, allocatable, save :: lele_k(:,:)        ! (ncharge, REPLICA)

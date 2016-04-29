@@ -18,7 +18,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   implicit none
 
   ! ---------------------------------------------------------------------
-  real(PREC),   intent(out) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC),   intent(out) :: xyz_mp_init(SDIM, MXMP)
   ! intent(out) :: nmp_real, nmp_all, lunit2mp, xyz_mp_rep, cmp2seq
 
   ! ---------------------------------------------------------------------

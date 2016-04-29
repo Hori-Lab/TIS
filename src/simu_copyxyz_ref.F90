@@ -18,7 +18,7 @@ subroutine simu_copyxyz_ref()
   ! ----------------------------------------------------------------------
 
   do irep = 1, n_replica_mpi
-     xyz_mp_rep(1:SPACE_DIM,1:nmp_all,irep) = xyz_ref_mp(1:SPACE_DIM,1:nmp_all)
+     xyz_mp_rep(1:SDIM,1:nmp_all,irep) = xyz_ref_mp(1:SDIM,1:nmp_all)
   enddo
 
 end subroutine simu_copyxyz_ref

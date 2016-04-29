@@ -25,7 +25,7 @@ subroutine  energy_hp(irep, energy, energy_unit)
   integer :: ineigh, ihp, jhp
   real(PREC) :: dist
   real(PREC) :: coef_rho_hp, coef_hp, rho_min_hp
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   real(PREC) :: uhp, rho, shp
   real(PREC) :: exv
 #ifdef MPI_PAR3

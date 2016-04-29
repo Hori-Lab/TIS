@@ -18,7 +18,7 @@ subroutine util_posmass(nunit, xyz, xyz_mp, cname_ha, cmp2atom)
   ! -------------------------------------------------------------------
   integer,     intent(in)    :: nunit
   real(PREC),  intent(inout) :: xyz(3, MXATOM_MP, MXMP)
-  real(PREC),  intent(out)   :: xyz_mp(SPACE_DIM, MXMP)
+  real(PREC),  intent(out)   :: xyz_mp(SDIM, MXMP)
   character(4),intent(in)    :: cname_ha(MXATOM_MP, MXMP)
   character(4),intent(out)   :: cmp2atom(MXMP)
 

@@ -14,7 +14,7 @@ subroutine force_ele2(irep, force_mp)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   integer :: imp1!, imp2
   integer :: grep, iele

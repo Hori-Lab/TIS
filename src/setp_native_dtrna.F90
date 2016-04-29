@@ -11,7 +11,7 @@ subroutine setp_native_dtrna(xyz_mp_init)
 
   implicit none
 
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
 
   integer :: iunit
   integer :: imp, ist
@@ -67,9 +67,9 @@ contains
      integer, intent(in) :: ist, imp(7)
      integer :: inn
      real(PREC) :: dih_angle, h, s, Tm
-     real(PREC) :: m(SPACE_DIM),n(SPACE_DIM),m_abs2,n_abs2
-     real(PREC) :: vB2B1(SPACE_DIM), vP1S1(SPACE_DIM), vP2S1(SPACE_DIM)
-     real(PREC) :: vP2S2(SPACE_DIM), vP3S2(SPACE_DIM)
+     real(PREC) :: m(SDIM),n(SDIM),m_abs2,n_abs2
+     real(PREC) :: vB2B1(SDIM), vP1S1(SDIM), vP2S1(SDIM)
+     real(PREC) :: vP2S2(SDIM), vP3S2(SDIM)
      character(4) :: cmp1, cmp2
 
      idtrna_st2mp(ist) = imp(B1)

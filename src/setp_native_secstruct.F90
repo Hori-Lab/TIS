@@ -38,11 +38,11 @@ subroutine setp_native_secstruct()
 
   real(PREC) :: e, f, rch, rcn, roh, ron, q1, q2
   real(PREC) :: x, y, z, tempfactor, occupancy
-  real(PREC) :: xyz_h(SPACE_DIM, MXMP)
-  real(PREC) :: xyz_n(SPACE_DIM, MXMP)
-  real(PREC) :: xyz_ca(SPACE_DIM, MXMP)
-  real(PREC) :: xyz_c(SPACE_DIM, MXMP)
-  real(PREC) :: xyz_o(SPACE_DIM, MXMP)
+  real(PREC) :: xyz_h(SDIM, MXMP)
+  real(PREC) :: xyz_n(SDIM, MXMP)
+  real(PREC) :: xyz_ca(SDIM, MXMP)
+  real(PREC) :: xyz_c(SDIM, MXMP)
+  real(PREC) :: xyz_o(SDIM, MXMP)
   character(72) :: char72
   character(1) :: multistruct
   character(4) :: nameatom

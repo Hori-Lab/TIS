@@ -28,9 +28,9 @@ subroutine setp_native_go(xyz_mp_init,         &
   implicit none
 
   ! -----------------------------------------------------------------
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
   integer,    intent(in) :: ineigh2mp(MXMPNEIGHBOR*nmp_all)
   integer,    intent(in) :: lmp2neigh(MXMP)
   character(4),intent(in):: cname_ha(MXATOM_MP, MXMP)
@@ -393,7 +393,7 @@ contains
      use var_setp, only : inrna
      implicit none
      integer,    intent(in)  :: iatomnum(MXMP)
-     real(PREC), intent(in)  :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+     real(PREC), intent(in)  :: xyz(SDIM, MXATOM_MP, MXMP)
      integer,    intent(in)  :: imp
      integer,    intent(in)  :: jmp
      integer,    intent(out) :: n_hbond

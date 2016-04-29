@@ -32,7 +32,7 @@ subroutine  energy_exv_restype(irep, energy_unit, energy)
   real(PREC) :: roverdist2, roverdist4
   real(PREC) :: roverdist8, roverdist12
   real(PREC) :: ene 
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

@@ -24,7 +24,7 @@ subroutine simu_initial()
   write(*,*) '#### start simu_initial'
 #endif
   
-  pxyz_mp_rep(1:SPACE_DIM,1:nmp_all,1:n_replica_mpi) = 0.0
+  pxyz_mp_rep(1:SDIM,1:nmp_all,1:n_replica_mpi) = 0.0
 
   ! -----------------------------------------------------------------
   ! initial structure
@@ -57,7 +57,7 @@ subroutine simu_initial()
      call simu_copyxyz(0)
 
      if(i_seq_read_style /= SEQREAD%PDB) then
-        xyz_ref_mp(1:SPACE_DIM, 1:nmp_all) = xyz_mp_rep(1:SPACE_DIM, 1:nmp_all, 1)
+        xyz_ref_mp(1:SDIM, 1:nmp_all) = xyz_mp_rep(1:SDIM, 1:nmp_all, 1)
      end if
   end if
   
@@ -71,7 +71,7 @@ subroutine simu_initial()
      call simu_copyxyz_ref()
   endif
   
-  pxyz_mp_rep(1:SPACE_DIM,1:nmp_all,1:n_replica_mpi) = xyz_mp_rep(1:SPACE_DIM,1:nmp_all,1:n_replica_mpi)
+  pxyz_mp_rep(1:SDIM,1:nmp_all,1:n_replica_mpi) = xyz_mp_rep(1:SDIM,1:nmp_all,1:n_replica_mpi)
 
   ! -----------------------------------------------------------------
   ! initial velocity

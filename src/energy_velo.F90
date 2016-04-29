@@ -15,7 +15,7 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
   implicit none
 
   ! ---------------------------------------------------------------------
-  real(PREC), intent(in)    :: velo_mp(:,:)     ! (SPACE_DIM, nmp_real)
+  real(PREC), intent(in)    :: velo_mp(:,:)     ! (SDIM, nmp_real)
   real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
   real(PREC), intent(inout) :: energy_unit(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
 

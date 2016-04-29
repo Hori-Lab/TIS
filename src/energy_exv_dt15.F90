@@ -37,7 +37,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   real(PREC) :: coef
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
 #endif

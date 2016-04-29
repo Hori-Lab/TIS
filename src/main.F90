@@ -33,7 +33,7 @@ program cafemol
   ! open input files and data files, and set up for REM (setp_replica)
   call input()
 
-  allocate( xyz_mp_init(SPACE_DIM, MXMP), stat=ier )
+  allocate( xyz_mp_init(SDIM, MXMP), stat=ier )
   if (ier/=0) then
      write(error_message, *) 'failed in memory allocation at main, PROGRAM STOP'
      call util_error(ERROR%STOP_ALL, error_message)

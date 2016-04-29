@@ -34,9 +34,9 @@ subroutine min_conj_grad(flg_converge)
 
    real(PREC) :: beta
    real(PREC) :: dotp1, dotp2
-   real(PREC) :: xyz(SPACE_DIM, nmp_all)
-   real(PREC) :: pxyz(SPACE_DIM,nmp_all)
-   real(PREC) :: force_new(SPACE_DIM,nmp_all)
+   real(PREC) :: xyz(SDIM, nmp_all)
+   real(PREC) :: pxyz(SDIM,nmp_all)
+   real(PREC) :: force_new(SDIM,nmp_all)
    real(PREC) :: e_total_new
    real(PREC), save :: e_total
    integer, parameter :: IREP = 1   ! Energy minimization is not available for REMD
@@ -76,7 +76,7 @@ subroutine min_conj_grad(flg_converge)
       call force_sumup(force_mp, IREP)
       TIME_E( tm_force )
 
-      allocate(pvec(SPACE_DIM, nmp_all))
+      allocate(pvec(SDIM, nmp_all))
       pvec(:,:) = force_mp(:,:)
       norm_max = max(maxval(pvec), abs(minval(pvec)))
    endif

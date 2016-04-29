@@ -17,16 +17,16 @@ subroutine  force_hp(irep, force_mp)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   integer :: imp, jmp
   integer :: ineigh, ihp, jhp
   integer :: ksta, kend
   real(PREC) :: dist, dshp_drho
   real(PREC) :: coef_rho_hp, coef_hp, rho_min_hp
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   real(PREC) :: cduhp_dr, coef
-  real(PREC) :: drho_dr(1:SPACE_DIM, 1:nhp), for(1:SPACE_DIM)
+  real(PREC) :: drho_dr(1:SDIM, 1:nhp), for(1:SDIM)
   real(PREC) :: uhp, rho
 #ifdef MPI_PAR
   integer :: klen

@@ -22,8 +22,8 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
   ! -------------------------------------------------------------------
   integer,     intent(in)   :: nunit
   integer,     intent(inout):: iatomnum(MXMP)
-  real(PREC),  intent(inout):: xyz(SPACE_DIM, MXATOM_MP, MXMP)
-  real(PREC),  intent(out)  :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC),  intent(inout):: xyz(SDIM, MXATOM_MP, MXMP)
+  real(PREC),  intent(out)  :: xyz_mp_init(SDIM, MXMP)
   character(4),intent(out)  :: cname_ha(MXATOM_MP, MXMP)
 
   ! -------------------------------------------------------------------
@@ -32,8 +32,8 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
   integer :: iunit, imp, iatom, idx
   integer :: imp_begin, imp_end
   integer :: inum, idimn
-  real(PREC) :: xyz_tmp(SPACE_DIM, MXATOM_MP, MXMP)
-  real(PREC) :: sumxyz(SPACE_DIM)
+  real(PREC) :: xyz_tmp(SDIM, MXATOM_MP, MXMP)
+  real(PREC) :: sumxyz(SDIM)
   real(PREC) :: summass
   real(PREC) :: dist
   character(CARRAY_MSG_ERROR) :: error_message
@@ -758,7 +758,7 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
            summass = 0.0e0_PREC
            do while (array_index(inum+1) /= NOATOM)
               inum = inum + 1
-              do idimn = 1, SPACE_DIM
+              do idimn = 1, SDIM
                  if (xyz(idimn, array_index(inum), imp) > INVALID_JUDGE) then
                     write(error_message,*) &
                     'Error: deficiency of base atom; imp = ',imp, &

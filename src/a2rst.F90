@@ -78,7 +78,7 @@ program a2rst
          read (luninp,*) cdummy, nmp_all
 
          write(lunout) RSTBLK%XYZ
-         nblock_size = calc_size(2, 0, 0, nmp_all*SPACE_DIM)
+         nblock_size = calc_size(2, 0, 0, nmp_all*SDIM)
          write(lunout) nblock_size
          write(lunout) grep         ! M_INT
          write(lunout) nmp_all      ! M_INT
@@ -92,7 +92,7 @@ program a2rst
          read (luninp,*) cdummy, grep
          read (luninp,*) cdummy, nmp_real
          write(lunout) RSTBLK%VELO
-         nblock_size = calc_size(2, 0, 0, nmp_real*SPACE_DIM)
+         nblock_size = calc_size(2, 0, 0, nmp_real*SDIM)
          write(lunout) nblock_size
          write(lunout) grep         ! M_INT
          write(lunout) nmp_real     ! M_INT
@@ -106,7 +106,7 @@ program a2rst
          read (luninp,*) cdummy, grep
          read (luninp,*) cdummy, nmp_real
          write(lunout) RSTBLK%ACCEL
-         nblock_size = calc_size(2, 0, 0, nmp_real*SPACE_DIM)
+         nblock_size = calc_size(2, 0, 0, nmp_real*SDIM)
          write(lunout) nblock_size
          write(lunout) grep         ! M_INT
          write(lunout) nmp_real     ! M_INT

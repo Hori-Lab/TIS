@@ -27,12 +27,12 @@ subroutine force_rna_stack(irep, force_mp)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(out) :: force_mp(SDIM, nmp_all)
 
   integer :: imp1, imp2, ist, imirror
   real(PREC) :: dist, dist2, ex, dgo_dr
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist12, roverdist14
-  real(PREC) :: v21(SPACE_DIM), for(SPACE_DIm)
+  real(PREC) :: v21(SDIM), for(SDIM)
   character(CARRAY_MSG_ERROR) :: error_message
   integer :: ksta, kend
 #ifdef MPI_PAR

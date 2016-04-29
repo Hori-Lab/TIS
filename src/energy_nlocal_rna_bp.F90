@@ -40,7 +40,7 @@ subroutine energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit, energy)
    real(PREC) :: rcut_off, rcut_off2
    real(PREC) :: rjudge
    real(PREC) :: dist, dist2, efull, ex
-   real(PREC) :: v21(SPACE_DIM)
+   real(PREC) :: v21(SDIM)
    real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist10, roverdist12
    real(PREC), parameter :: rjudge_contact = 1.2e0_PREC
    real(PREC), parameter :: rjudge_contact2= rjudge_contact ** 2

@@ -27,7 +27,7 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
   character(4), intent(out) :: cmp2atom(MXMP)
   integer, intent(out)      :: imp2type(MXMP)
   integer, intent(out)      :: iatomnum(MXMP)
-  real(PREC), intent(out)   :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(out)   :: xyz(SDIM, MXATOM_MP, MXMP)
 
   ! ---------------------------------------------------------------------
   ! local variables
@@ -49,9 +49,9 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
   integer    :: type_res
 
   ! 1:Phospahte, 2:Sugar, 3:Base
-  real(PREC) :: tmp_xyz(SPACE_DIM, MXATOM_MP, 3)
-  real(PREC) :: tmp_xyz_O3(SPACE_DIM)
-  real(PREC) :: next_xyz_O3(SPACE_DIM)
+  real(PREC) :: tmp_xyz(SDIM, MXATOM_MP, 3)
+  real(PREC) :: tmp_xyz_O3(SDIM)
+  real(PREC) :: next_xyz_O3(SDIM)
   integer    :: tmp_iatomnum(3)
 
   ! PDB ATOM Record Format (See http://www.wwpdb.org/docs.html )
@@ -86,9 +86,9 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
   flg_next_O3   = .false.
   flg_tmp_O3    = .false.
   tmp_iatomnum(:) = 0
-  tmp_xyz(1:SPACE_DIM,1:MXATOM_MP,1:3) = INVALID_VALUE
-  tmp_xyz_O3(1:SPACE_DIM) = INVALID_VALUE
-  next_xyz_O3(1:SPACE_DIM) = INVALID_VALUE
+  tmp_xyz(1:SDIM,1:MXATOM_MP,1:3) = INVALID_VALUE
+  tmp_xyz_O3(1:SDIM) = INVALID_VALUE
+  next_xyz_O3(1:SDIM) = INVALID_VALUE
 
   rewind(lun)
 
@@ -114,9 +114,9 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
         c_chainid_save = '-'
         i_resseq_save = 0
         tmp_iatomnum(:) = 0
-        tmp_xyz(1:SPACE_DIM,1:MXATOM_MP,1:3) = INVALID_VALUE
-        tmp_xyz_O3(1:SPACE_DIM) = INVALID_VALUE
-        next_xyz_O3(1:SPACE_DIM) = INVALID_VALUE
+        tmp_xyz(1:SDIM,1:MXATOM_MP,1:3) = INVALID_VALUE
+        tmp_xyz_O3(1:SDIM) = INVALID_VALUE
+        next_xyz_O3(1:SDIM) = INVALID_VALUE
         cycle
      end if
 
@@ -184,9 +184,9 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
               ires_mp(imp)    = ires
 
               iatomnum(imp)   = tmp_iatomnum(RES%PHOSPHATE)
-              xyz(1:SPACE_DIM,1:MXATOM_MP,imp)   = tmp_xyz(1:SPACE_DIM,1:MXATOM_MP,RES%PHOSPHATE)
+              xyz(1:SDIM,1:MXATOM_MP,imp)   = tmp_xyz(1:SDIM,1:MXATOM_MP,RES%PHOSPHATE)
               if (flg_next_O3) then
-                 xyz(1:SPACE_DIM,1,imp)   = next_xyz_O3(1:SPACE_DIM)
+                 xyz(1:SDIM,1,imp)   = next_xyz_O3(1:SDIM)
                  iatomnum(imp) = iatomnum(imp) + 1
               endif
               xyz(:,:,imp+1) = tmp_xyz(:,:,RES%SUGAR)
@@ -226,7 +226,7 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
 
            flg_next_O3 = .false.
            if (flg_tmp_O3) then
-              next_xyz_O3(1:SPACE_DIM) = tmp_xyz_O3(1:SPACE_DIM)
+              next_xyz_O3(1:SDIM) = tmp_xyz_O3(1:SDIM)
               flg_next_O3 = .true.
            endif
 
@@ -234,8 +234,8 @@ subroutine read_pdb_rna(lun,      & ![i ] target I/O unit
            ires = ires + 1 
 
            tmp_iatomnum(:) = 0
-           tmp_xyz(1:SPACE_DIM,1:MXATOM_MP,1:3) = INVALID_VALUE
-           tmp_xyz_O3(1:SPACE_DIM) = INVALID_VALUE
+           tmp_xyz(1:SDIM,1:MXATOM_MP,1:3) = INVALID_VALUE
+           tmp_xyz_O3(1:SDIM) = INVALID_VALUE
            flg_phosphate = .false.
            flg_sugar     = .false.
            flg_base      = .false.

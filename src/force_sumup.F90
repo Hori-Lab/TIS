@@ -28,24 +28,24 @@ subroutine force_sumup(force_mp, &  ! [ o]
   implicit none
 
   ! ---------------------------------------------------------------------
-  real(PREC), intent(out) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(out) :: force_mp(SDIM, nmp_all)
   integer,    intent(in)  :: irep
 
   ! ---------------------------------------------------------------------
   ! local variables
   integer    :: isys, istat
   real(PREC) :: ene_unit(nunit_all, nunit_all)
-  real(PREC) :: force_mp_l(SPACE_DIM, nmp_all, 0:nthreads-1)
+  real(PREC) :: force_mp_l(SDIM, nmp_all, 0:nthreads-1)
   real(PREC) :: ene_unit_l(nunit_all, nunit_all, 0:nthreads-1)
   integer :: tn, n
   real(PREC),allocatable :: force_mp_mgo(:,:,:,:,:)
 
 
   if(inmgo%i_multi_mgo >= 1) then
-    allocate(force_mp_mgo(SPACE_DIM, nmp_all, &
+    allocate(force_mp_mgo(SDIM, nmp_all, &
                           inmgo%nstate_max_mgo, inmgo%nsystem_mgo, 0:nthreads-1))
   else
-    allocate(force_mp_mgo(SPACE_DIM,nmp_all,1,1,0:nthreads-1))
+    allocate(force_mp_mgo(SDIM,nmp_all,1,1,0:nthreads-1))
   endif
 
 #ifdef _DEBUG
@@ -66,14 +66,14 @@ subroutine force_sumup(force_mp, &  ! [ o]
   tn = 0
 !$  tn = omp_get_thread_num()
 
-  force_mp_l(1:SPACE_DIM,1:nmp_all  ,tn) = 0.0_PREC
+  force_mp_l(1:SDIM,1:nmp_all  ,tn) = 0.0_PREC
 
   if(inmgo%i_multi_mgo >= 1) then
      ene_unit_l(1:nunit_all,1:nunit_all,tn) = 0.0_PREC
 
      do isys = 1, inmgo%nsystem_mgo
         do istat = 1, inmgo%nstate_mgo(isys)
-           force_mp_mgo(1:SPACE_DIM,1:nmp_all,istat,isys,tn) = 0.0_PREC
+           force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,tn) = 0.0_PREC
         end do
      end do
   end if
@@ -230,9 +230,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
   TIME_S( tmc_force )
   do n = 1, nthreads-1
-    force_mp_l(1:SPACE_DIM,1:nmp_all,0) = &
-    force_mp_l(1:SPACE_DIM,1:nmp_all,0) + &
-    force_mp_l(1:SPACE_DIM,1:nmp_all,n)
+    force_mp_l(1:SDIM,1:nmp_all,0) = &
+    force_mp_l(1:SDIM,1:nmp_all,0) + &
+    force_mp_l(1:SDIM,1:nmp_all,n)
   end do
   TIME_E( tmc_force )
 
@@ -245,9 +245,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
         do isys = 1, inmgo%nsystem_mgo
            do istat = 1, inmgo%nstate_mgo(isys)
-              force_mp_mgo(1:SPACE_DIM,1:nmp_all,istat,isys,0) = &
-              force_mp_mgo(1:SPACE_DIM,1:nmp_all,istat,isys,0) + & 
-              force_mp_mgo(1:SPACE_DIM,1:nmp_all,istat,isys,n)
+              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) = &
+              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) + & 
+              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,n)
            end do
         end do
      end do
@@ -269,13 +269,13 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
   TIME_S( tmc_force )
 #ifdef MPI_PAR
-!!  call mpi_allreduce(force_mp_l, force_mp, SPACE_DIM*nmp_real, PREC_MPI, &
+!!  call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
 !!                     MPI_SUM, mpi_comm_local, ierr)
      write(*,*) 'try: call allreduce'
      call flush(6)
   call allreduce(force_mp_l, force_mp)
 #else
-  force_mp(1:SPACE_DIM,1:nmp_all) = force_mp_l(1:SPACE_DIM,1:nmp_all,0) 
+  force_mp(1:SDIM,1:nmp_all) = force_mp_l(1:SDIM,1:nmp_all,0) 
 #endif
   TIME_E( tmc_force )
 
@@ -336,8 +336,8 @@ subroutine allreduce( force_mp_l, force_mp )
 
   implicit none
 
-  real(PREC),intent(in)  :: force_mp_l(SPACE_DIM,nmp_all)
-  real(PREC),intent(out) :: force_mp  (SPACE_DIM,nmp_all)
+  real(PREC),intent(in)  :: force_mp_l(SDIM,nmp_all)
+  real(PREC),intent(out) :: force_mp  (SDIM,nmp_all)
 
   ! communication type
   integer,parameter :: comm_pack_sendrecv    = 1
@@ -379,13 +379,13 @@ subroutine allreduce( force_mp_l, force_mp )
     nmp_p = 0
     if( myrank == 0 ) then
       do imp = 1, nmp_real
-        force_mp(1:SPACE_DIM,imp) = force_mp_l(1:SPACE_DIM,imp) 
+        force_mp(1:SDIM,imp) = force_mp_l(1:SDIM,imp) 
       end do
     else
       do imp = 1, nmp_real
-        if( any( force_mp_l(1:SPACE_DIM,imp) /= 0.0_PREC ) ) then
+        if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
           nmp_p = nmp_p + 1
-          force_mp_p(1:SPACE_DIM,nmp_p) = force_mp_l(1:SPACE_DIM,imp) 
+          force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
           force_mp_p(4  ,nmp_p) = real(imp,PREC)
         end if
       end do  
@@ -408,7 +408,7 @@ subroutine allreduce( force_mp_l, force_mp )
         call mpi_recv(force_mp_p,4*nmp_pall(n),PREC_MPI,n,recv_tag,mpi_comm_local,status,ierr)
         do imp_p = 1, nmp_pall(n)
           imp = int( force_mp_p(4,imp_p) )
-          force_mp(1:SPACE_DIM,imp) = force_mp(1:SPACE_DIM,imp) + force_mp_p(1:SPACE_DIM,imp_p)
+          force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_p(1:SDIM,imp_p)
         end do
       end do
     else
@@ -418,7 +418,7 @@ subroutine allreduce( force_mp_l, force_mp )
     print *,"[time3] ", mpi_wtime()-st
     st = mpi_wtime()
 
-    call mpi_bcast(force_mp,SPACE_DIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
+    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
 
     print *,"[time4] ", mpi_wtime()-st
 
@@ -429,10 +429,10 @@ subroutine allreduce( force_mp_l, force_mp )
 
     nmp_p = 0
     do imp = 1, nmp_real
-      force_mp(1:SPACE_DIM,imp) = 0.0_PREC
-      if( any( force_mp_l(1:SPACE_DIM,imp) /= 0.0_PREC ) ) then
+      force_mp(1:SDIM,imp) = 0.0_PREC
+      if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
         nmp_p = nmp_p + 1
-        force_mp_p(1:SPACE_DIM,nmp_p) = force_mp_l(1:SPACE_DIM,imp) 
+        force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
         force_mp_p(4  ,nmp_p) = real(imp,PREC)
       end if
     end do  
@@ -468,23 +468,23 @@ subroutine allreduce( force_mp_l, force_mp )
 
     do imp_p = 1, sum( nmp_pall(0:npar_mpi-1) )
       imp = int( force_mp_pall(4,imp_p) )
-      force_mp(1:SPACE_DIM,imp) = force_mp(1:SPACE_DIM,imp) + force_mp_pall(1:SPACE_DIM,imp_p)
+      force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_pall(1:SDIM,imp_p)
     end do
 
     print *,"[unpack ] ", mpi_wtime()-st
 !    st = mpi_wtime()
 !
-!    call mpi_bcast(force_mp,SPACE_DIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
+!    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
 !
 !    print *,"[time5] ", mpi_wtime()-st
 
 !--------------------------------------------------
   case ( comm_reduce_bcast )
 !--------------------------------------------------
-    call mpi_reduce(force_mp_l, force_mp, SPACE_DIM*nmp_real, PREC_MPI, &
+    call mpi_reduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
                     MPI_SUM, 0, mpi_comm_local, ierr)
 
-    call mpi_bcast(force_mp,SPACE_DIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
+    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
 
 #ifdef RIKEN_TUNE2
 !--------------------------------------------------
@@ -494,8 +494,8 @@ subroutine allreduce( force_mp_l, force_mp )
       klen = (nmp_real-1+npar_mpi) / npar_mpi
       ksta = 1+klen*irank
       kend = min(ksta+klen-1, nmp_real)
-      count(irank) = (kend-ksta+1)*SPACE_DIM
-      disp(irank)  = (ksta-1)*SPACE_DIM
+      count(irank) = (kend-ksta+1)*SDIM
+      disp(irank)  = (ksta-1)*SDIM
     enddo
     klen = (nmp_real-1+npar_mpi) / npar_mpi
     ksta = 1+klen*local_rank_mpi
@@ -515,19 +515,19 @@ subroutine allreduce( force_mp_l, force_mp )
     klen = (nmp_real-1+nnprocs) / nnprocs
     ksta = 1+klen*irank
     kend = min(ksta+klen-1, nmp_real)
-    ircnt = (kend-ksta+1)*SPACE_DIM
+    ircnt = (kend-ksta+1)*SDIM
     call mpi_reduce(force_mp_l(1,ksta,0), force_mp(1,ksta), ircnt, PREC_MPI, &
                     MPI_SUM, 0, mpi_comm_local, ierr)
   enddo
 !
-  call mpi_bcast(force_mp, SPACE_DIM*nmp_real, PREC_MPI, &
+  call mpi_bcast(force_mp, SDIM*nmp_real, PREC_MPI, &
                  0, mpi_comm_local, ierr)
 #endif
 
 !--------------------------------------------------
   case default
 !--------------------------------------------------
-    call mpi_allreduce(force_mp_l, force_mp, SPACE_DIM*nmp_real, PREC_MPI, &
+    call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
                        MPI_SUM, mpi_comm_local, ierr)
   end select
 

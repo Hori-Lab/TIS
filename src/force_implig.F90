@@ -17,7 +17,7 @@ subroutine force_implig(irep, force_mp)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
   ! ------------------------------------------------------------
 
   integer :: iadd, ist, icon, icon2, imp1, imp2, jmp1, jmp2

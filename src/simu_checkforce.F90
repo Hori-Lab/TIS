@@ -33,10 +33,10 @@ subroutine simu_checkforce()
   integer :: i, imp, idimn
   integer :: ier = 0
   real(PREC) :: af_ene, xyz_save, tempk, ddrand
-  real(PREC) :: force_mp(SPACE_DIM, MXMP), ff(SPACE_DIM), zure(3)
+  real(PREC) :: force_mp(SDIM, MXMP), ff(SDIM), zure(3)
   character(CARRAY_MSG_ERROR) :: error_message
   ! -----------------------------------------------------------------
-  real(PREC), allocatable :: velo_mp(:,:,:)     ! (SPACE_DIM, MXMP, REPLICA=1)
+  real(PREC), allocatable :: velo_mp(:,:,:)     ! (SDIM, MXMP, REPLICA=1)
   real(PREC), allocatable :: energy(:,:)         ! (E_TYPE%MAX, REPLICA=1)
   real(PREC), allocatable :: energy_unit(:,:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX, REPLICA=1)
   real(PREC), allocatable :: replica_energy(:,:)! (2, REPLICA=1)
@@ -51,7 +51,7 @@ subroutine simu_checkforce()
   ! Allocation
   error_message = 'failed in memory allocation at mloop_simulator, PROGRAM STOP'
   ! velo_mp
-  allocate( velo_mp(SPACE_DIM, nmp_real, n_replica_all), stat=ier)
+  allocate( velo_mp(SDIM, nmp_real, n_replica_all), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL,error_message)
   ! energy
   allocate( energy(E_TYPE%MAX, n_replica_all), stat=ier)

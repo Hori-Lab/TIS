@@ -26,15 +26,15 @@ subroutine allocate_simu()
 
   error_message = 'failed in memory allocation at mloop_simulator, PROGRAM STOP'
   ! velo_mp
-  allocate( velo_mp(SPACE_DIM, nmp_real, n_replica_mpi), stat=ier)
+  allocate( velo_mp(SDIM, nmp_real, n_replica_mpi), stat=ier)
   if(ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
 
   ! accel_mp
-  allocate( accel_mp(SPACE_DIM, nmp_real, n_replica_mpi), stat=ier)
+  allocate( accel_mp(SDIM, nmp_real, n_replica_mpi), stat=ier)
   if(ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
 
   ! force_mp
-  allocate( force_mp(SPACE_DIM, nmp_all), stat=ier)
+  allocate( force_mp(SDIM, nmp_all), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
   
   ! rcmass_mp

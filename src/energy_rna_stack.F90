@@ -41,7 +41,7 @@ subroutine energy_rna_stack(irep, energy_unit, energy)
   integer :: ist, imirror
   real(PREC) :: dist, dist2, efull, ex
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist10, roverdist12
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   character(CARRAY_MSG_ERROR) :: error_message
   integer :: ksta, kend
 #ifdef MPI_PAR3

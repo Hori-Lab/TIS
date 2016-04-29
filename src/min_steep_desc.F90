@@ -28,8 +28,8 @@ subroutine min_steep_desc(flg_converge)
    
    logical, intent(out) :: flg_converge  ! If converged, this flag become .TRUE.
 
-   real(PREC) :: xyz(SPACE_DIM, nmp_all)
-   real(PREC) :: pxyz(SPACE_DIM,nmp_all)
+   real(PREC) :: xyz(SDIM, nmp_all)
+   real(PREC) :: pxyz(SDIM,nmp_all)
    real(PREC),save :: e_total
    real(PREC) :: e_total_new
 

@@ -18,8 +18,8 @@ subroutine simu_xyz_adjst()
   ! local variables
   integer :: imp
   integer :: irep
-  real(PREC) :: xyzg(SPACE_DIM), sumxyz(SPACE_DIM)
-  real(PREC) :: pxyzg(SPACE_DIM), psumxyz(SPACE_DIM)
+  real(PREC) :: xyzg(SDIM), sumxyz(SDIM)
+  real(PREC) :: pxyzg(SDIM), psumxyz(SDIM)
 
   ! ------------------------------------------------------------------
 

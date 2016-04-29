@@ -17,7 +17,7 @@ subroutine force_ion(irep, force_mp)
 
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   ! --------------------------------------------------------------------
   ! local variables                                                             

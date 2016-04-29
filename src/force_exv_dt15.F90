@@ -15,13 +15,13 @@ subroutine force_exv_dt15(irep, force_mp)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(SPACE_DIM, nmp_all)
+  real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iexv, imirror
   real(PREC) :: dist, dr, dr2, dij, a, a2, coef, dv_dr
   real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist14
-  real(PREC) :: v21(SPACE_DIM), for(SPACE_DIM)
+  real(PREC) :: v21(SDIM), for(SDIM)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
 #endif

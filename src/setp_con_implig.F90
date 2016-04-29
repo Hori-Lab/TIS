@@ -18,9 +18,9 @@ subroutine setp_con_implig(xyz_mp_init, &
 
   implicit none
   !-----------------------------------------------------------------
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
 
   
   !-----------------------------------------------------------------

@@ -16,7 +16,7 @@ subroutine setp_native_bond(xyz_mp_init)
   implicit none
   
   ! -----------------------------------------------------------------------
-  real(PREC), intent(in) :: xyz_mp_init(SPACE_DIM, MXMP)
+  real(PREC), intent(in) :: xyz_mp_init(SDIM, MXMP)
 
   ! -----------------------------------------------------------------------
   ! local variables

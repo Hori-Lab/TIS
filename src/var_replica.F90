@@ -31,7 +31,7 @@ module var_replica
      real(PREC) :: winz_z(MXREPLICA)
      real(PREC) :: winz_kxy(MXREPLICA)
      real(PREC) :: winz_kz(MXREPLICA) 
-     real(PREC) :: pull_direction(SPACE_DIM, MXPULLING)
+     real(PREC) :: pull_direction(SDIM, MXPULLING)
      logical :: flg_exchange   !< flag for exchange
 
      ! for FO-REM

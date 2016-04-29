@@ -81,7 +81,7 @@ subroutine inp_replica_para()
 
   ! Pulling
   i_pull = 0
-  inrep%pull_direction(1:SPACE_DIM, 1:MXPULLING) = 0.0
+  inrep%pull_direction(1:SDIM, 1:MXPULLING) = 0.0
 
 #ifdef MPI_PAR
   if (myrank == 0) then

@@ -24,7 +24,7 @@ subroutine energy_bond(irep, energy_unit, energy)
   integer :: ksta, kend
   integer :: ibd, iunit, junit, imp1, imp2
   real(PREC) :: efull, dist, ddist, ddist2
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif

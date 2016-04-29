@@ -19,7 +19,7 @@ subroutine setp_aicg(iatomnum, xyz, cname_ha, dssp)
 #endif
   implicit none    
 
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
   character(4), intent(in) :: cname_ha(MXATOM_MP, MXMP)
   character(1), intent(inout) :: dssp(MXMP)
@@ -214,7 +214,7 @@ subroutine contact_make(iatomnum, xyz, cname_ha, ncon_atm)
 
   implicit none
 
-  real(PREC), intent(in) :: xyz(SPACE_DIM, MXATOM_MP, MXMP)
+  real(PREC), intent(in) :: xyz(SDIM, MXATOM_MP, MXMP)
   integer,    intent(in) :: iatomnum(MXMP)
   character(4), intent(in) :: cname_ha(MXATOM_MP, MXMP)
   integer,    intent(out) :: ncon_atm(MXCON,16)

@@ -37,7 +37,7 @@ subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
   real(PREC) :: rcut_off, rcut_off_pro, rcut_off_rna
   real(PREC) :: rjudge
   real(PREC) :: dist, efull, ex
-  real(PREC) :: v21(SPACE_DIM)
+  real(PREC) :: v21(SDIM)
   real(PREC), parameter :: rjudge_contact = 1.2e0_PREC
 #ifdef MPI_PAR3
   integer :: klen
