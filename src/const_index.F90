@@ -16,8 +16,9 @@ module const_index
      integer :: FMAT        !< 7: Fluctuation matching method
      integer :: ENERGY_DCD  !< 8: Energy calculation for DCD trajectory
      integer :: EMIN        !< 9: Energy minimization
+     integer :: WIDOM       !<10: Widom method to calculate chemical potential(s)
   endtype run_mode
-  type(run_mode), parameter :: RUN = run_mode(1,2,3,4,5,6,7,8,9)
+  type(run_mode), parameter :: RUN = run_mode(1,2,3,4,5,6,7,8,9,10)
 
   ! i_simulate_type: define dynamics 
   type simu_type

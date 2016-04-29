@@ -53,6 +53,7 @@ path_natinfo = ./ninfo
 **           = 7 : Fluctuation matching method (not available)
 **           = 8 : Energy calculation for DCD trajectory (i_periodic shold be 0)
 **           = 9 : Energy minimization
+**           =10 : Widom method to calculate chemical potential(s)
 i_run_mode = 2
 
 ** i_simulate_type: define dynamics 
@@ -1037,4 +1038,8 @@ REPLICA(13) = 12.0
 REPLICA(14) = 13.0
 REPLICA(15) = 14.0
 REPLICA(16) = 15.0
+>>>>
+
+<<<< widom
+insertion_step = 10
 >>>>
