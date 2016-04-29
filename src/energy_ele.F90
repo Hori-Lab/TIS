@@ -20,7 +20,7 @@ subroutine energy_ele(irep, e_exv, e_exv_unit)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, grep, iele1, imirror
-  integer :: itype1, itype2, imptype1, imptype2
+  integer :: itype1, itype2
   real(PREC) :: dist1, dist2, ew, ek, rk
   real(PREC) :: exv, rcdist, cutoff2, xtanh, rsig, rek_corr
   real(PREC) :: v21(SPACE_DIM)
@@ -48,7 +48,7 @@ subroutine energy_ele(irep, e_exv, e_exv_unit)
   ksta = 1
   kend = lele(irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist2,dist1,itype1,itype2,imptype1,imptype2, &
+!$omp do private(imp1,imp2,v21,dist2,dist1,itype1,itype2, &
 !$omp&           rsig,xtanh,rek_corr,exv,iunit,junit,imirror)
   do iele1=ksta, kend
 
@@ -97,9 +97,6 @@ subroutine energy_ele(irep, e_exv, e_exv_unit)
         exv = ek*rek_corr*coef_ele(iele1, irep)/dist1*exp(-dist1*rcdist) 
      end if
      
-     ! ------ reset charge for phosphate in 3SPN2 ------
-     imptype1 = imp2type(imp1)
-     imptype2 = imp2type(imp2)
      ! --------------------------------------------------------------------
      ! sum of the energy
      e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv

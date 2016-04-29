@@ -21,7 +21,6 @@ subroutine force_ele(irep, force_mp)
   integer :: imp1, imp2
   integer :: ksta, kend
   integer :: grep, iele1, itype1, itype2
-  integer :: imptype1, imptype2
   integer :: imirror
   real(PREC) :: dist1, dist2, rdist1, xtanh, rsig, rek_corr
   real(PREC) :: dvdw_dr, rcdist, cutoff2
@@ -69,7 +68,7 @@ subroutine force_ele(irep, force_mp)
   kend = lele(irep)
 #endif
 
-!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,itype1,itype2, imptype1, imptype2,&
+!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,itype1,itype2,&
 !$omp&           rsig,xtanh,rek_corr,dvdw_dr,for,imirror)
   do iele1=ksta, kend
      imp1 = iele2mp(1, iele1, irep)
@@ -115,9 +114,6 @@ subroutine force_ele(irep, force_mp)
      end if
      ! if(dvdw_dr > 4.0e0_PREC) dvdw_dr = 4.0e0_PREC
         
-     imptype1 = imp2type(imp1)
-     imptype2 = imp2type(imp2)
-
      for(1:3) = dvdw_dr * v21(1:3)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - for(1:3)
      force_mp(1:3, imp2) = force_mp(1:3, imp2) + for(1:3)
