@@ -1,4 +1,4 @@
-!simu_tingegral_pre
+!time_ingegral_pre
 !> @brief
 
 #ifdef TIME
@@ -9,7 +9,7 @@
 #define TIME_E(x) !
 #endif
 
-subroutine simu_tintegral_pre(flg_step_each_replica)
+subroutine time_integral_pre(flg_step_each_replica)
 
   use const_maxsize
   use const_physical
@@ -116,14 +116,14 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
      endif
      
      ! calc force and acceleration
-     call simu_force(force_mp, irep)
+     call force_sumup(force_mp, irep)
 
      !mcanonical
      ! multicanonical algorithm --------------------
      ! based on Gosavi et al. JMB,2006,357,986
      TIME_S( tm_muca )
      if(inmmc%i_modified_muca == 1)then
-        call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+        call energy_sumup(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
         e_md = e_exv_muca(E_TYPE%TOTAL)
         fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
              exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
@@ -219,8 +219,7 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
   
   ! calc energy
   ! ## Here, replica_energy is dummy.
-  call energy_allrep(e_exv_unit, e_exv, &
-       velo_mp, replica_energy, .false., tempk)
+  call energy_allrep(e_exv_unit, e_exv, velo_mp, replica_energy, .false., tempk)
   call simu_radiusg(rg_unit, rg)
   call simu_rmsd(rmsd_unit, rmsd)
   
@@ -278,4 +277,4 @@ subroutine simu_tintegral_pre(flg_step_each_replica)
      end do
   endif
 
-end subroutine simu_tintegral_pre
+end subroutine time_integral_pre

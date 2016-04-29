@@ -106,7 +106,7 @@ subroutine mloop_simulator()
      ! -----------------------------------------------------------------
      ! preparing time integral
      ! -----------------------------------------------------------------
-     call simu_tintegral_pre(flg_step_each_replica)
+     call time_integral_pre(flg_step_each_replica)
 
      ! #################################################################
      !  time integral
@@ -132,7 +132,7 @@ subroutine mloop_simulator()
            ! -----------------------------------------------------------------
            ! time integral
            ! -----------------------------------------------------------------
-           call simu_tintegral(flg_step_each_replica)
+           call time_integral(flg_step_each_replica)
         endif
         TIME_E( tm_tinte )
 
@@ -140,7 +140,7 @@ subroutine mloop_simulator()
         ! treatment after time integral
         ! -----------------------------------------------------------------
         TIME_S( tm_tinte_post )
-        call simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
+        call time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
         TIME_E( tm_tinte_post )
         if(flg_exit_loop_mstep) then
            TIME_E( tm_main_loop )

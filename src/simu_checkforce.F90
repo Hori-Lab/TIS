@@ -1,6 +1,6 @@
 ! simu_checkforce
 !> @brief This subroutine is to calculate the force from the gradient of the energy &
-!>        and compare with the value of force which is calculated by ``simu_force" subroutine.&
+!>        and compare with the value of force which is calculated by ``force_sumup" subroutine.&
 !>        This subroutine is especially for debug (checking).
 
 ! ***********************************************************************
@@ -95,7 +95,7 @@ subroutine simu_checkforce()
   call energy_allrep(e_exv_unit, e_exv, &
                    velo_mp, replica_energy, .false., tempk)
 
-  call simu_force(force_mp, IDX_REPLICA)
+  call force_sumup(force_mp, IDX_REPLICA)
   flg_hb_energy = .False.
 
   do imp = 1, nmp_real

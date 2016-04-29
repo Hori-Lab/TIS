@@ -23,14 +23,14 @@ interface
       logical, intent(in)  :: flg_replica
    endsubroutine energy_allrep
 
-   subroutine simu_energy(irep, velo_mp, e_exv, e_exv_unit)
+   subroutine energy_sumup(irep, velo_mp, e_exv, e_exv_unit)
       use const_maxsize
       implicit none
       integer,    intent(in)  :: irep
       real(PREC), intent(in)  :: velo_mp(:,:)      ! (3, nmp_real)
       real(PREC), intent(out) :: e_exv(:)          ! (E_TYPE%MAX)
       real(PREC), intent(out) :: e_exv_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
-   endsubroutine simu_energy
+   endsubroutine energy_sumup
 
    subroutine write_traject_file(ibefore_time, istep, tempk, velo_mp)
       use const_maxsize

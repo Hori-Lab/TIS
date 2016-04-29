@@ -238,7 +238,7 @@ FOBJ1 = \
 	simu_anneal.o simu_searchingtf.o simu_radiusg.o simu_rmsd.o\
 	time_integral_pre.o time_integral.o time_integral_post.o\
 	min_steep_desc.o min_conj_grad.o\
-	energy.o\
+	energy_sumup.o\
 	energy_allrep.o energy_velo.o energy_bond.o energy_dih_gauss.o\
 	energy_bangle.o energy_dih.o energy_dih_harmonic.o energy_rna_stack.o \
 	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o\
@@ -252,7 +252,7 @@ FOBJ1 = \
 	energy_aicg13_gauss.o energy_aicg14_gauss.o\
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
-	force.o\
+	force_sumup.o\
 	force_bond.o force_bangle.o force_dih.o force_dih_gauss.o\
 	force_fbangle.o force_fdih.o force_aicg13_gauss.o force_aicg14_gauss.o\
 	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_nlocal_morse.o \

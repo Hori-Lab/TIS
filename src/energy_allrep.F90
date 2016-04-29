@@ -83,14 +83,14 @@ subroutine energy_allrep(e_exv_unit,     &
 #endif
 
   interface
-  subroutine simu_energy(irep, velo_mp, e_exv, e_exv_unit)
+  subroutine energy_sumup(irep, velo_mp, e_exv, e_exv_unit)
      use const_maxsize
      implicit none
      integer,    intent(in)  :: irep
      real(PREC), intent(in)  :: velo_mp(:,:)      ! (3, nmp_real)
      real(PREC), intent(out) :: e_exv(:)          ! (E_TYPE%MAX)
      real(PREC), intent(out) :: e_exv_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
-  endsubroutine simu_energy
+  endsubroutine energy_sumup
   endinterface
 
 ! ------------------------------------------------------------------------
@@ -116,8 +116,7 @@ subroutine energy_allrep(e_exv_unit,     &
 
   do irep = 1, n_replica_mpi
 
-     call simu_energy(irep, velo_mp(:,:,irep),              &
-                     e_exv(:,irep), e_exv_unit(:,:,:,irep)) 
+     call energy_sumup(irep, velo_mp(:,:,irep), e_exv(:,irep), e_exv_unit(:,:,:,irep)) 
 
   enddo
 
@@ -207,8 +206,7 @@ subroutine energy_allrep(e_exv_unit,     &
         !#############################################
         ! Calculate energy
         !#############################################
-        call simu_energy(irep, velo_mp(:,:,irep), &
-             new_e_exv(:,irep), new_e_exv_unit(:,:,:,irep)) 
+        call energy_sumup(irep, velo_mp(:,:,irep), new_e_exv(:,irep), new_e_exv_unit(:,:,:,irep)) 
         replica_energy(2, grep) = new_e_exv(E_TYPE%TOTAL, irep)
 
         !#########################################

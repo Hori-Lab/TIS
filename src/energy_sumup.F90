@@ -1,4 +1,4 @@
-! simu_energy
+!energy_sumup
 !> @brief The subroutine to calculate all the energy terms
 
 !#define MEM_ALLOC
@@ -14,10 +14,10 @@
 ! ************************************************************************
 ! subroutine for the energy
 ! ************************************************************************
-subroutine simu_energy(irep,          &
-                       velo_mp,       &
-                       e_exv,         &
-                       e_exv_unit)
+subroutine energy_sumup(irep,          &
+                        velo_mp,       &
+                        e_exv,         &
+                        e_exv_unit)
 
   use if_energy
   use const_maxsize
@@ -117,25 +117,25 @@ subroutine simu_energy(irep,          &
      call energy_aicg13_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
   end if
 
-  !if (inmisc%i_add_int == 1) then
-  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-     call energy_fbangle(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-  endif
+!  !if (inmisc%i_add_int == 1) then
+!  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
+!     call energy_fbangle(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!  endif
 
   TIME_S( tm_energy_dih)
   call energy_dih   (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
   TIME_E( tm_energy_dih)
 
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-     call energy_aicg14_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     call energy_dih_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-  end if
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!     call energy_aicg14_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     call energy_dih_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!  end if
 
-  !if (inmisc%i_add_int == 1) then
-  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-     call energy_fdih(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-  endif
+!  !if (inmisc%i_add_int == 1) then
+!  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
+!     call energy_fdih(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!  endif
 
   TIME_S( tm_energy_dih_harmonic) 
   call energy_dih_harmonic   (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
@@ -153,22 +153,22 @@ subroutine simu_energy(irep,          &
      call energy_exv_dt15(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
   endif
 
-  if(inmgo%i_multi_mgo >= 1) then
-     TIME_S( tm_energy_nlocal_mgo) 
-     call energy_nlocal_mgo(irep, now_con, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     TIME_E( tm_energy_nlocal_mgo) 
-  else if (inmisc%force_flag(INTERACT%ENM)) then
-     TIME_S( tm_energy_enm) 
-     call energy_enm(irep, now_con, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
-     TIME_E( tm_energy_enm) 
-  else
+!  if(inmgo%i_multi_mgo >= 1) then
+!     TIME_S( tm_energy_nlocal_mgo) 
+!     call energy_nlocal_mgo(irep, now_con, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     TIME_E( tm_energy_nlocal_mgo) 
+!  else if (inmisc%force_flag(INTERACT%ENM)) then
+!     TIME_S( tm_energy_enm) 
+!     call energy_enm(irep, now_con, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+!     TIME_E( tm_energy_enm) 
+!  else
      TIME_S( tm_energy_nlocal_go) 
      call energy_nlocal_go(irep, now_con, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
      call energy_nlocal_morse(irep, now_morse, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
      call energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
      TIME_E( tm_energy_nlocal_go) 
-  end if
+!  end if
 
 !$omp barrier
 
@@ -233,11 +233,11 @@ subroutine simu_energy(irep,          &
   endif
 
 !sasa
-  if (inmisc%force_flag(INTERACT%SASA)) then
-     TIME_S( tm_energy_sasa)
-     call energy_sasa(irep, e_exv_l(:,tn))
-     TIME_E( tm_energy_sasa)
-  endif
+!  if (inmisc%force_flag(INTERACT%SASA)) then
+!     TIME_S( tm_energy_sasa)
+!     call energy_sasa(irep, e_exv_l(:,tn))
+!     TIME_E( tm_energy_sasa)
+!  endif
 
 !$omp end parallel
 
@@ -392,4 +392,4 @@ subroutine simu_energy(irep,          &
   deallocate( now_allcon )
 #endif
 
-end subroutine simu_energy
+end subroutine energy_sumup

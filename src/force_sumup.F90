@@ -1,4 +1,4 @@
-! simu_force
+!force_sumup
 !> @brief Subroutine for force calculation
 
 #ifdef TIME
@@ -12,9 +12,9 @@
 ! ************************************************************************
 ! subroutine for the force
 ! ************************************************************************
-subroutine simu_force(force_mp, &  ! [ o]
-                      irep      &  ! [i ]
-                      )
+subroutine force_sumup(force_mp, &  ! [ o]
+                       irep      &  ! [i ]
+                       )
             
   use const_maxsize
   use const_physical
@@ -90,24 +90,24 @@ subroutine simu_force(force_mp, &  ! [ o]
                          force_mp_mgo(1,1,1,1,tn), &
                          ene_unit_l(1,1,tn))
     
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     call force_aicg13_gauss(irep, force_mp_l(1,1,tn), &
-                                  force_mp_mgo(1,1,1,1,tn), &
-                                  ene_unit_l(1,1,tn))
-  end if
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     call force_aicg13_gauss(irep, force_mp_l(1,1,tn), &
+!                                  force_mp_mgo(1,1,1,1,tn), &
+!                                  ene_unit_l(1,1,tn))
+!  end if
 
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-     call force_aicg14_gauss(irep, force_mp_l(1,1,tn), &
-                                  force_mp_mgo(1,1,1,1,tn), &
-                                  ene_unit_l(1,1,tn))
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!     call force_aicg14_gauss(irep, force_mp_l(1,1,tn), &
+!                                  force_mp_mgo(1,1,1,1,tn), &
+!                                  ene_unit_l(1,1,tn))
      
-  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     
-     call force_dih_gauss(irep, force_mp_l(1,1,tn), &
-                               force_mp_mgo(1,1,1,1,tn), &
-                               ene_unit_l(1,1,tn))
-  end if
+!  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     
+!     call force_dih_gauss(irep, force_mp_l(1,1,tn), &
+!                               force_mp_mgo(1,1,1,1,tn), &
+!                               ene_unit_l(1,1,tn))
+!  end if
 
   call force_dih_harmonic(irep, force_mp_l(1,1,tn), &
                          force_mp_mgo(1,1,1,1,tn), &
@@ -130,14 +130,14 @@ subroutine simu_force(force_mp, &  ! [ o]
   ! Calculate flexible local interactions
 
   !if (inmisc%i_add_int == 1) then
-  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-     call force_fbangle(irep, force_mp_l(1,1,tn), &
-                             force_mp_mgo(1,1,1,1,tn), &
-                             ene_unit_l(1,1,tn))
-     call force_fdih  (irep, force_mp_l(1,1,tn), &
-                            force_mp_mgo(1,1,1,1,tn), &
-                            ene_unit_l(1,1,tn))
-  end if
+!  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
+!     call force_fbangle(irep, force_mp_l(1,1,tn), &
+!                             force_mp_mgo(1,1,1,1,tn), &
+!                             ene_unit_l(1,1,tn))
+!     call force_fdih  (irep, force_mp_l(1,1,tn), &
+!                            force_mp_mgo(1,1,1,1,tn), &
+!                            ene_unit_l(1,1,tn))
+!  end if
 
 !$omp master
   TIME_E( tm_force_local )
@@ -145,18 +145,18 @@ subroutine simu_force(force_mp, &  ! [ o]
   TIME_S( tm_force_go )
 !$omp end master
 
-  if(inmgo%i_multi_mgo >= 1) then
-     call force_nlocal_mgo(irep, force_mp_l(1,1,tn), &
-                                force_mp_mgo(1,1,1,1,tn), &
-                                      ene_unit_l(1,1,tn))
-     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
-  else if (inmisc%force_flag(INTERACT%ENM)) then
-     call force_enm(irep, force_mp_l(1,1,tn))
-  else
+!  if(inmgo%i_multi_mgo >= 1) then
+!     call force_nlocal_mgo(irep, force_mp_l(1,1,tn), &
+!                                force_mp_mgo(1,1,1,1,tn), &
+!                                      ene_unit_l(1,1,tn))
+!     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
+!  else if (inmisc%force_flag(INTERACT%ENM)) then
+!     call force_enm(irep, force_mp_l(1,1,tn))
+!  else
      call force_nlocal_go(irep, force_mp_l(1,1,tn))
      call force_nlocal_morse(irep, force_mp_l(1,1,tn))
      call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
-  end if
+!  end if
 
 !$omp master
   TIME_E( tm_force_go )
@@ -212,17 +212,19 @@ subroutine simu_force(force_mp, &  ! [ o]
   endif
 !$omp master
   TIME_E( tm_force_hp )
-
-  TIME_S( tm_force_sasa ) !sasa
 !$omp end master
 
-  if (inmisc%force_flag(INTERACT%SASA)) then
-     call force_sasa  (irep, force_mp_l(1,1,tn))
-  endif
-
-!$omp master
-  TIME_E( tm_force_sasa ) !sasa
-!$omp end master
+!!$omp master
+!  TIME_S( tm_force_sasa ) !sasa
+!!$omp end master
+!
+!  if (inmisc%force_flag(INTERACT%SASA)) then
+!     call force_sasa  (irep, force_mp_l(1,1,tn))
+!  endif
+!
+!!$omp master
+!  TIME_E( tm_force_sasa ) !sasa
+!!$omp end master
 
 !$omp end parallel
 
@@ -532,4 +534,4 @@ subroutine allreduce( force_mp_l, force_mp )
 end subroutine allreduce
 #endif
 
-end subroutine simu_force
+end subroutine force_sumup

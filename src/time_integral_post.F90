@@ -1,4 +1,4 @@
-!simu_tintegral_post
+!time_integral_post
 !> @brief
 
 #ifdef TIME
@@ -24,7 +24,7 @@
 !           = 1 Langevin dynamics (recommended)
 !           = 2 Newtonian dynamics (velocity Verlet) with Berendsen thermostat
 ! **********************************************************************
-subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
+subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   
   use const_maxsize
   use const_physical
@@ -364,4 +364,4 @@ subroutine simu_tintegral_post(flg_step_each_replica, flg_exit_loop_mstep)
   endif
   TIME_E( tm_others )
 
-end subroutine simu_tintegral_post
+end subroutine time_integral_post

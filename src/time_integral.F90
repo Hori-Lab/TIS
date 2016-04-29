@@ -1,4 +1,4 @@
-!simu_tintegral
+!time_integral
 !> @brief
 
 #ifdef TIME
@@ -10,7 +10,7 @@
 #endif
 
   
-subroutine simu_tintegral(flg_step_each_replica)
+subroutine time_integral(flg_step_each_replica)
 
   use const_maxsize
   use const_physical
@@ -28,15 +28,10 @@ subroutine simu_tintegral(flg_step_each_replica)
                           e_exv_muca, e_exv_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor
-
-  
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
                    time_s, time_e
-
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
@@ -44,7 +39,6 @@ subroutine simu_tintegral(flg_step_each_replica)
   logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
 
   ! -----------------------------------------------------------------
-  ! local variables
   integer    :: i,k,imp, irep, grep
   real(PREC) :: r_force(1:SPACE_DIM), dxyz(1:3)
   real(PREC) :: r_boxmuller(SPACE_DIM, nmp_real, n_replica_mpi)
@@ -118,7 +112,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
-           call simu_force(force_mp, irep)
+           call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            
            !mcanonical
@@ -126,7 +120,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              call energy_sumup(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
               e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
@@ -184,7 +178,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            TIME_E( tm_copyxyz )
            
            TIME_S( tm_force )
-           call simu_force(force_mp, irep)
+           call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            
            !mcanonical
@@ -192,7 +186,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              call energy_sumup(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
               e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
@@ -263,7 +257,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            TIME_E( tm_copyxyz )
            
            TIME_S( tm_force )
-           call simu_force(force_mp, irep)
+           call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            
            !mcanonical
@@ -271,7 +265,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            ! based on Gosavi et al. JMB,2006,357,986
            TIME_S( tm_muca )
            if(inmmc%i_modified_muca == 1)then
-              call simu_energy(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
+              call energy_sumup(irep, velo_mp(:,:,irep), e_exv_muca, e_exv_unit_muca)
               e_md = e_exv_muca(E_TYPE%TOTAL)
               fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
                    exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
@@ -325,7 +319,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
-           call simu_force(force_mp, irep)
+           call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            
         else if(i_simulate_type == SIM%BROWNIAN_HI) then
@@ -357,7 +351,7 @@ subroutine simu_tintegral(flg_step_each_replica)
            TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
-           call simu_force(force_mp, irep)
+           call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            !----------------------------------------------
 #ifdef _DEBUG
@@ -575,4 +569,4 @@ contains
 
   end subroutine get_random_number
 
-end subroutine simu_tintegral
+end subroutine time_integral
