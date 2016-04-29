@@ -1,4 +1,4 @@
-! energy_ele
+! energy_ele_coulomb
 !> @brief Calculate the energy of electrostatic interaction 
 
 subroutine energy_ele_coulomb(irep, energy, energy_unit)
@@ -9,9 +9,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   use var_inp,     only : inperi
   use var_setp,    only : inmisc, inele
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
@@ -21,11 +19,10 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   real(PREC), intent(out)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
-  integer :: imp1, imp2, iunit, junit, iele1, imirror
+  integer :: imp1, imp2, iunit, junit, iele, imirror
   real(PREC) :: dist1, dist2
-  real(PREC) :: exv, cutoff2
+  real(PREC) :: ene, cutoff2
   real(PREC) :: v21(SPACE_DIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -47,16 +44,16 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   kend = lele(irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,dist1,&
-!$omp&           exv,iunit,junit,imirror)
-  do iele1=ksta, kend
+!$omp&           ene,iunit,junit,imirror)
+  do iele=ksta, kend
 
-     imp1 = iele2mp(1, iele1, irep)
-     imp2 = iele2mp(2, iele1, irep)
+     imp1 = iele2mp(1, iele, irep)
+     imp2 = iele2mp(2, iele, irep)
         
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
-        imirror = iele2mp(3, iele1, irep)
+        imirror = iele2mp(3, iele, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
      
@@ -66,13 +63,13 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     exv = coef_ele(iele1,irep)/dist1
+     ene = coef_ele(iele,irep)/dist1
 
-     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + exv
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     energy_unit(iunit, junit, E_TYPE%ELE) = energy_unit(iunit, junit, E_TYPE%ELE) + exv
+     energy_unit(iunit, junit, E_TYPE%ELE) = energy_unit(iunit, junit, E_TYPE%ELE) + ene
   end do
 !$omp end do nowait
 
