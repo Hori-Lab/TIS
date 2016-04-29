@@ -68,12 +68,12 @@ subroutine min_conj_grad(flg_converge)
       velo_mp(:,:,:) = 0.0e0_PREC
 
       TIME_S( tm_energy )
-      call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
+      call energy_sumup(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
       TIME_E( tm_energy )
       e_total = e_exv(E_TYPE%TOTAL, IREP)
 
       TIME_S( tm_force )
-      call simu_force(force_mp, IREP)
+      call force_sumup(force_mp, IREP)
       TIME_E( tm_force )
 
       allocate(pvec(SPACE_DIM, nmp_all))
@@ -91,13 +91,13 @@ subroutine min_conj_grad(flg_converge)
 
    ! Calc energy
    TIME_S( tm_energy )
-   call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
+   call energy_sumup(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
    TIME_E( tm_energy )
    e_total_new = e_exv(E_TYPE%TOTAL, IREP)
 
    ! Calc force
    TIME_S( tm_force )
-   call simu_force(force_new, IREP)
+   call force_sumup(force_new, IREP)
    TIME_E( tm_force )
 
    dotp1 = func_dotp(-force_mp, pvec)
@@ -122,13 +122,13 @@ subroutine min_conj_grad(flg_converge)
    
       ! Calc energy
       TIME_S( tm_energy )
-      call simu_energy(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
+      call energy_sumup(IREP, velo_mp(:,:,IREP), e_exv(:,IREP), e_exv_unit(:,:,:,IREP))
       TIME_E( tm_energy )
       e_total_new = e_exv(E_TYPE%TOTAL, IREP)
    
       ! Calc force
       TIME_S( tm_force )
-      call simu_force(force_new, IREP)
+      call force_sumup(force_new, IREP)
       TIME_E( tm_force )
    
       !dotp1 = func_dotp(-force_mp, pvec)
