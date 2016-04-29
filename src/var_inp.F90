@@ -78,7 +78,7 @@ module var_inp
                            ! 2: iclass
                            ! 3: imunit
                            ! 4: imunit + inunit(2) - inunit(1)
-                           ! 5: 1:PDB 2:inp_file 3:sequence
+                           ! 5: 1:PDB 2:generate 3:sequence
   integer, save :: ifile_ini(4, MXINI)
   integer, save :: ifile_dssp(MXPDB) ! aicg
   integer, save :: ifile_out_pdb

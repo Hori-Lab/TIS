@@ -157,7 +157,7 @@ subroutine inp_unitstate()
               ifile_pdb(3, ipdb) = imunit + 1
               ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
 
-              if(name == 'inp_file') then
+              if(name == 'generate') then
                  ifile_pdb(5, ipdb) = 2
               else
                  ifile_pdb(5, ipdb) = 1
@@ -170,7 +170,7 @@ subroutine inp_unitstate()
               iunit2us(1, imunit) = iunit
               iunit2us(2, imunit) = instate
               iclass_unit(iunit) = iclass
-              if (name == 'inp_file') then
+              if (name == 'generate') then
                  flg_unit_generate_ion(iunit) = .True.
               endif
            end do
@@ -221,7 +221,7 @@ subroutine inp_unitstate()
               ifile_pdb(3, ipdb) = imunit + 1
               ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
               
-              if(name == 'inp_file') then
+              if(name == 'generate') then
                  ifile_pdb(5, ipdb) = 2
               else
                  ifile_pdb(5, ipdb) = 1
