@@ -1,7 +1,7 @@
 !energy_exv_dt15
 !> @brief Calculates the energy related to excluded volume.   &
-!>        The values are added into "e_exv(ENERGY%EXV_DT15)" and  &
-!>        "e_exv_unit(ENERGY%EXV_DT15)".
+!>        The values are added into "energy(ENERGY%EXV_DT15)" and  &
+!>        "energy_unit(ENERGY%EXV_DT15)".
 !
 ! Reference:
 !
@@ -13,7 +13,7 @@
 !     epsilon = epsilon_i * epsilon_j
 !        Dij  = cdist_exvwca
 
-subroutine energy_exv_dt15(irep, e_exv_unit, e_exv)
+subroutine energy_exv_dt15(irep, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -27,8 +27,8 @@ subroutine energy_exv_dt15(irep, e_exv_unit, e_exv)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
@@ -97,11 +97,11 @@ subroutine energy_exv_dt15(irep, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%EXV_DT15) = e_exv(E_TYPE%EXV_DT15) + ene
+     energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) + ene
    
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%EXV_DT15) = e_exv_unit(iunit, junit, E_TYPE%EXV_DT15) + ene
+     energy_unit(iunit, junit, E_TYPE%EXV_DT15) = energy_unit(iunit, junit, E_TYPE%EXV_DT15) + ene
 
   end do
 !$omp end do nowait

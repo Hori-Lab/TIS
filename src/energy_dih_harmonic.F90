@@ -1,10 +1,10 @@
 !energy_dih_harmonic
 !> @brief Calculates the energy related to dihedral-angle term   &
 !>        for "CLASS%LIG" molecules.                             &
-!>        Values are added into "e_exv(E_TYPE%DIHE_HARMONIC)" and      &
-!>        "e_exv_unit(,,E_TYPE%DIHE_HARMONIC)".
+!>        Values are added into "energy(E_TYPE%DIHE_HARMONIC)" and      &
+!>        "energy_unit(,,E_TYPE%DIHE_HARMONIC)".
 
-subroutine energy_dih_harmonic(irep, e_exv_unit, e_exv)
+subroutine energy_dih_harmonic(irep, energy_unit, energy)
       
   use const_maxsize
   use const_physical
@@ -19,8 +19,8 @@ subroutine energy_dih_harmonic(irep, e_exv_unit, e_exv)
 
   ! -----------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   ! -----------------------------------------------------------------------
   integer :: ksta, kend
@@ -67,12 +67,12 @@ subroutine energy_dih_harmonic(irep, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%DIHE_HARMONIC) = e_exv(E_TYPE%DIHE_HARMONIC) + efull
+     energy(E_TYPE%DIHE_HARMONIC) = energy(E_TYPE%DIHE_HARMONIC) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp4)
-     e_exv_unit(iunit, junit, E_TYPE%DIHE_HARMONIC) = &
-          e_exv_unit(iunit, junit, E_TYPE%DIHE_HARMONIC) + efull
+     energy_unit(iunit, junit, E_TYPE%DIHE_HARMONIC) = &
+          energy_unit(iunit, junit, E_TYPE%DIHE_HARMONIC) + efull
 
   end do ! dih
 !$omp end do nowait

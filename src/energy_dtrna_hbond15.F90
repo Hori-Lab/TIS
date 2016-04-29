@@ -1,8 +1,8 @@
 !energy_dtrna_hbond15
 !> @brief Calculates the energy of hydrogen-bond interaction between &
 !>        RNA particles.
-!>        The values are added into "e_exv(E_TYPE%HBOND_DTRNA)" and   &
-!>        "e_exv_unit(E_TYPE%HBOND_DTRNA)".
+!>        The values are added into "energy(E_TYPE%HBOND_DTRNA)" and   &
+!>        "energy_unit(E_TYPE%HBOND_DTRNA)".
 !
 ! Reference:
 !    N.A. Denesyuk and D. Thirumalai
@@ -43,7 +43,7 @@
 ! psi1   : 1=2-4-6      v12, v24, v46
 
 
-subroutine energy_dtrna_hbond15(irep, e_exv_unit, e_exv)
+subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
   use mt_stream
   use const_maxsize
@@ -63,8 +63,8 @@ subroutine energy_dtrna_hbond15(irep, e_exv_unit, e_exv)
 
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
+  real(PREC), intent(inout) :: energy(:)
+  real(PREC), intent(inout) :: energy_unit(:,:,:)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -128,13 +128,13 @@ subroutine energy_dtrna_hbond15(irep, e_exv_unit, e_exv)
         iunit2 = imp2unit(idtrna_hb2mp(2,ihb))
 
         if (flg_hb_tertiary(ihb)) then
-           e_exv(E_TYPE%THBOND_DTRNA) = e_exv(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
-           e_exv_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
-                     e_exv_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
+           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
+           energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
+                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
         else
-           e_exv(E_TYPE%HBOND_DTRNA) = e_exv(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
-           e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
-                     e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
+           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
+           energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
+                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
         endif
      end do
 !$omp end do nowait
@@ -390,13 +390,13 @@ subroutine energy_dtrna_hbond15(irep, e_exv_unit, e_exv)
         iunit2 = imp2unit(idtrna_hb2mp(2,ihb))
 
         if (flg_hb_tertiary(ihb)) then
-           e_exv(E_TYPE%THBOND_DTRNA) = e_exv(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
-           e_exv_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
-                     e_exv_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
+           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
+           energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
+                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
         else
-           e_exv(E_TYPE%HBOND_DTRNA) = e_exv(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
-           e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
-                     e_exv_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
+           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
+           energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
+                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
         endif
 
         if (hb_energy(ihb,irep) < -(tempk * BOLTZC)) then

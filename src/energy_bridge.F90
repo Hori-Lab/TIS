@@ -2,7 +2,7 @@
 !> @brief Calculate energy of bridge option
 
 ! ************************************************************************
-subroutine energy_bridge(irep, e_exv_unit, e_exv)
+subroutine energy_bridge(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine energy_bridge(irep, e_exv_unit, e_exv)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -41,11 +41,11 @@ subroutine energy_bridge(irep, e_exv_unit, e_exv)
         cbd2 = inmisc%coef_brid(ibrid)
         efull = cbd2 * (dist - inmisc%brid_dist(ibrid))**2
         
-        e_exv(E_TYPE%BRIDGE) = e_exv(E_TYPE%BRIDGE) + efull
+        energy(E_TYPE%BRIDGE) = energy(E_TYPE%BRIDGE) + efull
         iunit = imp2unit(imp)
         junit = imp2unit(jmp)
-        e_exv_unit(iunit, junit, E_TYPE%BRIDGE) =   &
-              e_exv_unit(iunit, junit, E_TYPE%BRIDGE) + efull
+        energy_unit(iunit, junit, E_TYPE%BRIDGE) =   &
+              energy_unit(iunit, junit, E_TYPE%BRIDGE) + efull
      end if
    
   end do
@@ -78,14 +78,14 @@ subroutine energy_bridge(irep, e_exv_unit, e_exv)
         cbd2 = inmisc%coef_brid_com(ibrid)
         efull = cbd2 * (dist - inmisc%brid_com_dist(ibrid))**2
         
-        e_exv(E_TYPE%BRIDGE) = e_exv(E_TYPE%BRIDGE) + efull
+        energy(E_TYPE%BRIDGE) = energy(E_TYPE%BRIDGE) + efull
 
         !! NOTE: Energy for unit is not considered for BRIDGE_CENTER.
 
         !iunit = imp2unit(imp)
         !junit = imp2unit(jmp)
-        !e_exv_unit(iunit, junit, E_TYPE%BRIDGE) =   &
-        !      e_exv_unit(iunit, junit, E_TYPE%BRIDGE) + efull
+        !energy_unit(iunit, junit, E_TYPE%BRIDGE) =   &
+        !      energy_unit(iunit, junit, E_TYPE%BRIDGE) + efull
      end if
    
   end do

@@ -6,7 +6,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   use if_write
   use var_inp,     only : ifile_out_opt
   use var_replica, only : n_replica_mpi
-  use var_simu,    only : ibefore_time, tempk, velo_mp, e_exv, e_exv_unit, &
+  use var_simu,    only : ibefore_time, tempk, velo_mp, energy, energy_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, replica_energy
 #ifdef MPI_PAR
   use mpiconst
@@ -34,7 +34,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   
   ! calc energy
   ! ## Here, replica_energy is dummy.
-  call energy_allrep(e_exv_unit, e_exv, &
+  call energy_allrep(energy_unit, energy, &
        velo_mp, replica_energy, .false., tempk)
   call simu_radiusg(rg_unit, rg)
   call simu_rmsd(rmsd_unit, rmsd)
@@ -45,13 +45,13 @@ subroutine simu_calc_energy_dcd(istep_write)
 
   call write_tseries(ibefore_time, istep_write, &
                      rg_unit, rg, rmsd_unit, rmsd, &
-                     e_exv_unit, e_exv, tempk, flg_header)
+                     energy_unit, energy, tempk, flg_header)
   if (ifile_out_opt == 1) then
      ! something to write to opt file
 
      !write(outfile%opt,'(a1,1x,i10,1x,f15.6,1x,f15.6,1x,f15.6)') &
      !                   '#',istep_write, inmisc%rest1d_s(1), &
-     !                   e_exv(E_TYPE%REST1D,irep), e_exv(E_TYPE%TOTAL,irep)
+     !                   energy(E_TYPE%REST1D,irep), energy(E_TYPE%TOTAL,irep)
   endif
   flg_header = .false.
 #ifdef MPI_PAR

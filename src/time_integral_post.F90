@@ -42,7 +42,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
                           n_exchange, max_exchange, iopt_stage, &
                           tstep, tempk, velo_mp, rlan_const, &
-                          e_exv, e_exv_unit, qscore, rg, rg_unit, rmsd, rmsd_unit, &
+                          energy, energy_unit, qscore, rg, rg_unit, rmsd, rmsd_unit, &
                           replica_energy
 
   use time, only : total_time, tm_lap, tm_energy, tm_radiusg_rmsd, &
@@ -113,7 +113,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      ! calc energy and radius
      TIME_S( tm_energy )
      replica_energy(:,:) = 0.0e0_PREC
-     call energy_allrep(e_exv_unit, e_exv, &
+     call energy_allrep(energy_unit, energy, &
           velo_mp, replica_energy, flg_step_rep_exc, tempk)
      TIME_E( tm_energy )
      
@@ -142,7 +142,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      call write_tseries(ibefore_time, istep, &
                         rg_unit, rg,                  &
                         rmsd_unit, rmsd,              &
-                        e_exv_unit, e_exv, tempk)
+                        energy_unit, energy, tempk)
 
      if (ifile_out_opt == 1) then
         ! something to write to opt file
@@ -165,7 +165,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   TIME_S( tm_implig )
   if (flg_step_implig) then
      do irep = 1, n_replica_mpi
-        call energy_implig(irep, e_exv_unit(:,:,:,irep), e_exv(:,irep), IMPLIGENERGY_TYPE%FOR_MC)
+        call energy_implig(irep, energy_unit(:,:,:,irep), energy(:,irep), IMPLIGENERGY_TYPE%FOR_MC)
         ! calculate implicit-ligand binding energy based on strucutre (not ligand-state).
         
         call simu_mc_implig(irep, istep, tempk)

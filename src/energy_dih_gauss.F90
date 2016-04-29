@@ -1,9 +1,9 @@
 !energy_dih_gauss
 !> @brief Calculates the energy related to 1-4 residues.
-!>        Values are added into "e_exv(E_TYPE%DIHE)" and &
-!>        "e_exv_unit(,,E_TYPE%DIHE)".
+!>        Values are added into "energy(E_TYPE%DIHE)" and &
+!>        "energy_unit(,,E_TYPE%DIHE)".
 
-subroutine energy_dih_gauss(irep, e_exv_unit, e_exv)
+subroutine energy_dih_gauss(irep, energy_unit, energy)
   
   use const_maxsize
   use const_index
@@ -19,8 +19,8 @@ subroutine energy_dih_gauss(irep, e_exv_unit, e_exv)
 
   ! ---------------------------------------------------------------------------
   integer, intent(in) :: irep
-  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) 
-  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(E_TYPE%MAX) 
+  real(PREC), intent(inout) :: energy_unit(nunit_all, nunit_all, E_TYPE%MAX)
   
   ! ---------------------------------------------------------------------------
   ! local variables
@@ -116,8 +116,8 @@ subroutine energy_dih_gauss(irep, e_exv_unit, e_exv)
      iunit = imp2unit( imp1 )
      junit = imp2unit( imp4 )
 
-     e_exv(E_TYPE%DIHE) = e_exv(E_TYPE%DIHE) + efull
-     e_exv_unit(iunit, junit, E_TYPE%DIHE) = e_exv_unit(iunit, junit, E_TYPE%DIHE) + efull
+     energy(E_TYPE%DIHE) = energy(E_TYPE%DIHE) + efull
+     energy_unit(iunit, junit, E_TYPE%DIHE) = energy_unit(iunit, junit, E_TYPE%DIHE) + efull
      
      !end if
   end do

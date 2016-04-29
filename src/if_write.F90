@@ -7,7 +7,7 @@ interface
    !subroutine write_tseries(ibefore_time, ntstep, istep, &
    subroutine write_tseries(ibefore_time, istep, &
                             rg_unit, rg, rmsd_unit, rmsd, &
-                            e_exv_unit, e_exv, temp_in, &
+                            energy_unit, energy, temp_in, &
                             flg_header)
       use const_maxsize
       integer(L_INT), intent(in) :: ibefore_time
@@ -17,8 +17,8 @@ interface
       real(PREC), intent(in) :: rg(:)               ! (replica)
       real(PREC), intent(in) :: rmsd_unit(:,:)      ! (unit, replica)
       real(PREC), intent(in) :: rmsd(:)             ! (replica)
-      real(PREC), intent(in) :: e_exv_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
-      real(PREC), intent(in) :: e_exv(:,:)          ! (E_TYPE%MAX, replica)
+      real(PREC), intent(in) :: energy_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
+      real(PREC), intent(in) :: energy(:,:)          ! (E_TYPE%MAX, replica)
       real(PREC), intent(in) :: temp_in
       logical, intent(in), optional :: flg_header
    endsubroutine write_tseries

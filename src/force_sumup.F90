@@ -164,9 +164,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_S( tm_force_exv ) 
 !$omp end master
 
-  if (inmisc%i_residue_exv_radii == 0) then
+  if (inmisc%i_residuenergy_radii == 0) then
      call force_exv (irep, force_mp_l(1,1,tn))
-  else if (inmisc%i_residue_exv_radii == 1) then
+  else if (inmisc%i_residuenergy_radii == 1) then
      call force_exv_restype (irep, force_mp_l(1,1,tn))
   endif
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then

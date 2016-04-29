@@ -2,7 +2,7 @@
 !> @brief Calculates the boxing energy, when ``i_in_box=1" in ``<<<<md_information" block.
 
 ! ****************************************************************
-subroutine energy_box(irep, e_exv_unit, e_exv)
+subroutine energy_box(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -12,8 +12,8 @@ subroutine energy_box(irep, e_exv_unit, e_exv)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
 
   ! ------------------------------------------------------------
   ! local variables
@@ -68,10 +68,10 @@ subroutine energy_box(irep, e_exv_unit, e_exv)
               efull = coef*rdbox12 - emin
            end if
 
-           e_exv(E_TYPE%BOX) = e_exv(E_TYPE%BOX) + efull
+           energy(E_TYPE%BOX) = energy(E_TYPE%BOX) + efull
            iunit = imp2unit(imp)
            junit = iunit
-           e_exv_unit(iunit, junit, E_TYPE%BOX) = e_exv_unit(iunit, junit, E_TYPE%BOX) + efull
+           energy_unit(iunit, junit, E_TYPE%BOX) = energy_unit(iunit, junit, E_TYPE%BOX) + efull
         end if
 
      end do

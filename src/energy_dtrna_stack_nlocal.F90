@@ -1,8 +1,8 @@
 !energy_dtrna_stack_nlocal
 !> @brief Calculates the energy of tertiary stacking-bond interaction between &
 !>        RNA particles.
-!>        The values are added into "e_exv(E_TYPE%TSTACK_DTRNA)" and   &
-!>        "e_exv_unit(E_TYPE%TSTACK_DTRNA)".
+!>        The values are added into "energy(E_TYPE%TSTACK_DTRNA)" and   &
+!>        "energy_unit(E_TYPE%TSTACK_DTRNA)".
 !
 ! Reference:
 !    N.A. Denesyuk and D. Thirumalai
@@ -43,7 +43,7 @@
 ! psi1   : 1=2-4-6      v12, v24, v46
 
 
-subroutine energy_dtrna_stack_nlocal(irep, e_exv_unit, e_exv)
+subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -58,8 +58,8 @@ subroutine energy_dtrna_stack_nlocal(irep, e_exv_unit, e_exv)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
+  real(PREC), intent(inout) :: energy(:)
+  real(PREC), intent(inout) :: energy_unit(:,:,:)
 
   integer :: iunit1, iunit2
   integer :: ist, ist_2nd
@@ -201,10 +201,10 @@ subroutine energy_dtrna_stack_nlocal(irep, e_exv_unit, e_exv)
      !===== Total =====
      efull = coef_dtrna_tst(0,ist) / ediv
 
-     e_exv(E_TYPE%TSTACK_DTRNA) = e_exv(E_TYPE%TSTACK_DTRNA) + efull
+     energy(E_TYPE%TSTACK_DTRNA) = energy(E_TYPE%TSTACK_DTRNA) + efull
 
-     e_exv_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) = &
-               e_exv_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) + efull
+     energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) = &
+               energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) + efull
 
   end do
 !!$omp end do nowait

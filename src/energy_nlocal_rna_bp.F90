@@ -11,7 +11,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit, e_exv)
+subroutine energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit, energy)
 
    use const_maxsize
    use const_physical
@@ -30,8 +30,8 @@ subroutine energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit, e_exv)
    ! --------------------------------------------------------------------
    integer,    intent(in)    :: irep
    integer,    intent(out)   :: now_rna_bp(:,:)
-   real(PREC), intent(inout) :: e_exv(:)
-   real(PREC), intent(inout) :: e_exv_unit(:,:,:)
+   real(PREC), intent(inout) :: energy(:)
+   real(PREC), intent(inout) :: energy_unit(:,:,:)
 
    ! --------------------------------------------------------------------
    ! local variables
@@ -123,11 +123,11 @@ subroutine energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit, e_exv)
  
          ! --------------------------------------------------------------------
          ! sum of the energy
-         e_exv(E_TYPE%PAIR_RNA) = e_exv(E_TYPE%PAIR_RNA) + efull
+         energy(E_TYPE%PAIR_RNA) = energy(E_TYPE%PAIR_RNA) + efull
     
          iunit = imp2unit(imp1)
          junit = imp2unit(imp2)
-         e_exv_unit(iunit, junit, E_TYPE%PAIR_RNA) = e_exv_unit(iunit, junit, E_TYPE%PAIR_RNA) + efull
+         energy_unit(iunit, junit, E_TYPE%PAIR_RNA) = energy_unit(iunit, junit, E_TYPE%PAIR_RNA) + efull
       end do
 !$omp end do nowait
 
@@ -166,11 +166,11 @@ subroutine energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit, e_exv)
 
          ! --------------------------------------------------------------------
          ! sum of the energy
-         e_exv(E_TYPE%PAIR_RNA) = e_exv(E_TYPE%PAIR_RNA) + efull
+         energy(E_TYPE%PAIR_RNA) = energy(E_TYPE%PAIR_RNA) + efull
  
          iunit = imp2unit(imp1)
          junit = imp2unit(imp2)
-         e_exv_unit(iunit, junit, E_TYPE%PAIR_RNA) = e_exv_unit(iunit, junit, E_TYPE%PAIR_RNA) + efull
+         energy_unit(iunit, junit, E_TYPE%PAIR_RNA) = energy_unit(iunit, junit, E_TYPE%PAIR_RNA) + efull
       end do
 !$omp end do nowait
 

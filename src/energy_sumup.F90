@@ -16,8 +16,8 @@
 ! ************************************************************************
 subroutine energy_sumup(irep,          &
                         velo_mp,       &
-                        e_exv,         &
-                        e_exv_unit)
+                        energy,         &
+                        energy_unit)
 
   use if_energy
   use const_maxsize
@@ -34,8 +34,8 @@ subroutine energy_sumup(irep,          &
 ! --------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(in)  :: velo_mp(:,:)      ! (SPACE_DIM, nmp_real)
-  real(PREC), intent(out) :: e_exv(:)          ! (E_TYPE%MAX)
-  real(PREC), intent(out) :: e_exv_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
+  real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -59,15 +59,15 @@ subroutine energy_sumup(irep,          &
      'failed in memory deallocation at mloop_simulator, PROGRAM STOP'
 
   integer :: n, tn
-  real(PREC), allocatable :: e_exv_l(:,:)         !(E_TYPE%MAX, 0:nthreads-1)
-  real(PREC), allocatable :: e_exv_unit_l(:,:,:,:) !(nunit_all,nunit_all,E_TYPE%MAX,0:nthreads-1)
+  real(PREC), allocatable :: energy_l(:,:)         !(E_TYPE%MAX, 0:nthreads-1)
+  real(PREC), allocatable :: energy_unit_l(:,:,:,:) !(nunit_all,nunit_all,E_TYPE%MAX,0:nthreads-1)
   integer, allocatable :: now_allcon_l(:, :)      !(2, ncon+nmorse+nrna_bp)
 
 
 ! ------------------------------------------------------------------------
 ! zero clear
-  e_exv(:)         = 0.0e0_PREC
-  e_exv_unit(:,:,:) = 0.0e0_PREC
+  energy(:)         = 0.0e0_PREC
+  energy_unit(:,:,:) = 0.0e0_PREC
 
 #ifdef MEM_ALLOC
   allocate(now_con(2, ncon), stat=ier)
@@ -86,9 +86,9 @@ subroutine energy_sumup(irep,          &
   now_allcon(:, :) = 0
 
 ! --------------------------------------------------------------------
-  allocate( e_exv_l(E_TYPE%MAX, 0:nthreads-1), stat=ier)
+  allocate( energy_l(E_TYPE%MAX, 0:nthreads-1), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-  allocate( e_exv_unit_l(nunit_all, nunit_all, E_TYPE%MAX, 0:nthreads-1), stat=ier)
+  allocate( energy_unit_l(nunit_all, nunit_all, E_TYPE%MAX, 0:nthreads-1), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
   allocate( now_allcon_l(2, ncon+nmorse+nrna_bp), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
@@ -97,76 +97,76 @@ subroutine energy_sumup(irep,          &
   tn = 0
 !$  tn = omp_get_thread_num()
 
-  e_exv_l(:,tn) = 0.0e0_PREC
-  e_exv_unit_l(:,:,:,tn) = 0.0e0_PREC
+  energy_l(:,tn) = 0.0e0_PREC
+  energy_unit_l(:,:,:,tn) = 0.0e0_PREC
 
   TIME_S( tm_energy_velo) 
-  call energy_velo(velo_mp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_velo(velo_mp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_velo) 
 
   TIME_S( tm_energy_bond) 
-  call energy_bond  (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_bond) 
 
   TIME_S( tm_energy_bangle)
-  call energy_bangle(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_bangle)
 
   if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
       inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     call energy_aicg13_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_aicg13_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   end if
 
 !  !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-!     call energy_fbangle(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_fbangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  endif
 
   TIME_S( tm_energy_dih)
-  call energy_dih   (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_dih   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_dih)
 
 !  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-!     call energy_aicg14_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_aicg14_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!     call energy_dih_gauss(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_dih_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  end if
 
 !  !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-!     call energy_fdih(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_fdih(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  endif
 
   TIME_S( tm_energy_dih_harmonic) 
-  call energy_dih_harmonic   (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_dih_harmonic   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_dih_harmonic) 
 
-  call energy_rna_stack(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  call energy_rna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   if (inmisc%i_dtrna_model == 2013) then
-     call energy_dtrna_stack(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_dtrna_hbond13(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   else if (inmisc%i_dtrna_model == 2015) then
-     call energy_dtrna_stack_nlocal(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_dtrna_stack(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_dtrna_hbond15(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_exv_dt15(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_dtrna_stack_nlocal(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_dtrna_hbond15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
 
 !  if(inmgo%i_multi_mgo >= 1) then
 !     TIME_S( tm_energy_nlocal_mgo) 
-!     call energy_nlocal_mgo(irep, now_con, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-!     call energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+!     call energy_nlocal_mgo(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     TIME_E( tm_energy_nlocal_mgo) 
 !  else if (inmisc%force_flag(INTERACT%ENM)) then
 !     TIME_S( tm_energy_enm) 
-!     call energy_enm(irep, now_con, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+!     call energy_enm(irep, now_con, energy_l(:,tn), energy_unit_l(:,:,:,tn))
 !     TIME_E( tm_energy_enm) 
 !  else
      TIME_S( tm_energy_nlocal_go) 
-     call energy_nlocal_go(irep, now_con, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_nlocal_morse(irep, now_morse, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-     call energy_nlocal_rna_bp(irep, now_rna_bp, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      TIME_E( tm_energy_nlocal_go) 
 !  end if
 
@@ -191,13 +191,13 @@ subroutine energy_sumup(irep,          &
 !$omp end master
 
   TIME_S( tm_energy_exv) 
-  if (inmisc%i_residue_exv_radii == 0) then
-     call energy_exv_rep12 (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
-  else if (inmisc%i_residue_exv_radii == 1) then
-     call energy_exv_restype(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+  if (inmisc%i_residuenergy_radii == 0) then
+     call energy_exv_rep12 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  else if (inmisc%i_residuenergy_radii == 1) then
+     call energy_exv_restype(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then 
-     call energy_exv_wca (irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_exv_wca (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
   TIME_E( tm_energy_exv) 
 
@@ -207,35 +207,35 @@ subroutine energy_sumup(irep,          &
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
         if(inele%i_calc_method == 0) then         ! neighboring list (default)
-           call energy_ele(irep, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+           call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
-           call energy_ele2(irep, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+           call energy_ele2(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         else                                      ! direct calculation for K computer
-           call energy_ele3(irep, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+           call energy_ele3(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         end if
 
      elseif (inele%i_function_form == 1) then ! Coulomb potential
-        call energy_ele_coulomb(irep, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+        call energy_ele_coulomb(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
      endif
   endif
   TIME_E( tm_energy_ele)
 
   if (inmisc%class_flag(CLASS%ION)) then
      TIME_S( tm_energy_exv) 
-     call energy_ion(irep, e_exv_unit_l(:,:,:,tn), e_exv_l(:,tn))
+     call energy_ion(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      TIME_E( tm_energy_exv) 
   endif
 
   if (inmisc%force_flag(INTERACT%HP)) then
      TIME_S( tm_energy_hp) 
-     call energy_hp(irep, e_exv_l(:,tn), e_exv_unit_l(:,:,:,tn))
+     call energy_hp(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
      TIME_E( tm_energy_hp) 
   endif
 
 !sasa
 !  if (inmisc%force_flag(INTERACT%SASA)) then
 !     TIME_S( tm_energy_sasa)
-!     call energy_sasa(irep, e_exv_l(:,tn))
+!     call energy_sasa(irep, energy_l(:,tn))
 !     TIME_E( tm_energy_sasa)
 !  endif
 
@@ -243,88 +243,88 @@ subroutine energy_sumup(irep,          &
 
   TIME_S( tmc_energy )
   do n = 1, nthreads-1
-    e_exv_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,0) = &
-    e_exv_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,0) + &
-    e_exv_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,n)
-    e_exv_l(1:E_TYPE%MAX,0) = &
-    e_exv_l(1:E_TYPE%MAX,0) + &
-    e_exv_l(1:E_TYPE%MAX,n)
+    energy_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,0) = &
+    energy_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,0) + &
+    energy_unit_l(1:nunit_all,1:nunit_all,1:E_TYPE%MAX,n)
+    energy_l(1:E_TYPE%MAX,0) = &
+    energy_l(1:E_TYPE%MAX,0) + &
+    energy_l(1:E_TYPE%MAX,n)
   end do
 
   TIME_E( tmc_energy )
 
   TIME_S( tmc_energy )
 #ifdef MPI_PAR3
-  call mpi_allreduce(e_exv_unit_l, e_exv_unit, &
+  call mpi_allreduce(energy_unit_l, energy_unit, &
                      nunit_all*nunit_all*E_TYPE%MAX, PREC_MPI, &
                      MPI_SUM, mpi_comm_local, ierr)
-  call mpi_allreduce(e_exv_l, e_exv, &
+  call mpi_allreduce(energy_l, energy, &
                      E_TYPE%MAX, PREC_MPI, &
                      MPI_SUM, mpi_comm_local, ierr)
 #else
-  e_exv_unit(:,:,:) = e_exv_unit_l(:,:,:,0)
-  e_exv(:) = e_exv_l(:,0)
+  energy_unit(:,:,:) = energy_unit_l(:,:,:,0)
+  energy(:) = energy_l(:,0)
 #endif
   TIME_E( tmc_energy )
  
   if(inmgo%i_multi_mgo >= 1) then
      TIME_S( tm_energy_mgo)
-     call energy_mgo(e_exv_unit, e_exv)
+     call energy_mgo(energy_unit, energy)
      TIME_E( tm_energy_mgo)
   end if
 
-  deallocate( e_exv_l,     stat=ier)
+  deallocate( energy_l,     stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-  deallocate( e_exv_unit_l, stat=ier)
+  deallocate( energy_unit_l, stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
   deallocate( now_allcon_l,stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
 
 
   if(inmisc%i_in_box == 1) then
-     call energy_box(irep, e_exv_unit, e_exv)
+     call energy_box(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_in_cap == 1) then
-     call energy_cap(irep, e_exv_unit, e_exv)
+     call energy_cap(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_cylinder == 1) then
-     call energy_cylinder(irep, e_exv_unit, e_exv)
+     call energy_cylinder(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_bridge == 1) then
-     call energy_bridge(irep, e_exv_unit, e_exv)
+     call energy_bridge(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_pulling == 1) then
-     call energy_pulling(irep, e_exv_unit, e_exv)
+     call energy_pulling(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_anchor == 1) then
-     call energy_anchor(irep, e_exv_unit, e_exv)
+     call energy_anchor(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_rest1d == 1) then
-     call energy_rest1d(irep, e_exv_unit, e_exv)
+     call energy_rest1d(irep, energy_unit, energy)
   end if
 
   if(inmisc%i_window == 1) then
-     call energy_window(irep, e_exv_unit, e_exv)
+     call energy_window(irep, energy_unit, energy)
   end if
   
   if(inmisc%i_winz == 1) then
-     call energy_winz(irep, e_exv_unit, e_exv)
+     call energy_winz(irep, energy_unit, energy)
   end if
 
   ! implicit ligand model
   if(inmisc%i_implig == 1) then
-     call energy_implig(irep, e_exv_unit, e_exv, IMPLIGENERGY_TYPE%FOR_NON_MC)
+     call energy_implig(irep, energy_unit, energy, IMPLIGENERGY_TYPE%FOR_NON_MC)
      ! calculate implicit_ligand binding energy based on [state of implicit-ligand &  structure].
   end if
   
-!  e_exv_unit(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX) = e_exv_unit_l(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX, 1)
-!  e_exv(1:E_TYPE%MAX) = e_exv_l(1:E_TYPE%MAX, 1)
+!  energy_unit(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX) = energy_unit_l(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX, 1)
+!  energy(1:E_TYPE%MAX) = energy_l(1:E_TYPE%MAX, 1)
 
   ! --------------------------------------------------------------------
   ! calc energy of each interaction unit
@@ -335,24 +335,24 @@ subroutine energy_sumup(irep,          &
   if(inmisc%i_output_energy_style == 0) then
      do iunit = 1, nunit_all
         do junit = 1, iunit - 1
-           e_exv_unit(iunit, iunit, 1:E_TYPE%MAX)                     &
-                =  e_exv_unit(iunit, iunit, 1:E_TYPE%MAX)             &
-                + 0.5e0_PREC * e_exv_unit(junit, iunit, 1:E_TYPE%MAX)
+           energy_unit(iunit, iunit, 1:E_TYPE%MAX)                     &
+                =  energy_unit(iunit, iunit, 1:E_TYPE%MAX)             &
+                + 0.5e0_PREC * energy_unit(junit, iunit, 1:E_TYPE%MAX)
         end do
         do junit = iunit + 1, nunit_all
-           e_exv_unit(iunit, iunit, 1:E_TYPE%MAX)                     &
-                =  e_exv_unit(iunit, iunit, 1:E_TYPE%MAX)             &
-                + 0.5e0_PREC * e_exv_unit(iunit, junit, 1:E_TYPE%MAX)
+           energy_unit(iunit, iunit, 1:E_TYPE%MAX)                     &
+                =  energy_unit(iunit, iunit, 1:E_TYPE%MAX)             &
+                + 0.5e0_PREC * energy_unit(iunit, junit, 1:E_TYPE%MAX)
         end do
      end do
   else
      do iunit = 1, nunit_all
         do junit = iunit + 1, nunit_all
            do i = 1, E_TYPE%MAX
-              sume = e_exv_unit(iunit, junit, i) &
-                   + e_exv_unit(junit, iunit, i)
-              e_exv_unit(iunit, junit, i) = sume
-              e_exv_unit(junit, iunit, i) = sume
+              sume = energy_unit(iunit, junit, i) &
+                   + energy_unit(junit, iunit, i)
+              energy_unit(iunit, junit, i) = sume
+              energy_unit(junit, iunit, i) = sume
            end do
         end do
      end do
@@ -360,9 +360,9 @@ subroutine energy_sumup(irep,          &
   end if
   do i = 1, E_TYPE%MAX
      if(i == E_TYPE%TOTAL .or. i == E_TYPE%VELO) cycle
-     e_exv_unit(1:nunit_all, 1:nunit_all, E_TYPE%TOTAL)                 &
-          =  e_exv_unit(1:nunit_all, 1:nunit_all, E_TYPE%TOTAL)  &
-          + e_exv_unit(1:nunit_all, 1:nunit_all, i)
+     energy_unit(1:nunit_all, 1:nunit_all, E_TYPE%TOTAL)                 &
+          =  energy_unit(1:nunit_all, 1:nunit_all, E_TYPE%TOTAL)  &
+          + energy_unit(1:nunit_all, 1:nunit_all, i)
   end do
   TIME_E( tm_energy_unit)
 
@@ -375,12 +375,12 @@ subroutine energy_sumup(irep,          &
         if(i == E_TYPE%TOTAL  .or. i == E_TYPE%VELO    .or. i == E_TYPE%BOND .or. &
            i == E_TYPE%BANGLE .or. i == E_TYPE%DIHE    .or. i == E_TYPE%GO   .or. &
            i == E_TYPE%MORSE  .or. i == E_TYPE%DIHE_HARMONIC) cycle
-        e_exv(E_TYPE%TOTAL) = e_exv(E_TYPE%TOTAL) + e_exv(i)
+        energy(E_TYPE%TOTAL) = energy(E_TYPE%TOTAL) + energy(i)
      end do
   else
      do i = 1, E_TYPE%MAX
         if(i == E_TYPE%TOTAL .or. i == E_TYPE%VELO) cycle
-        e_exv(E_TYPE%TOTAL) = e_exv(E_TYPE%TOTAL) + e_exv(i)
+        energy(E_TYPE%TOTAL) = energy(E_TYPE%TOTAL) + energy(i)
      end do
   end if
   TIME_E( tm_energy_total)

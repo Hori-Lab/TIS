@@ -1,9 +1,9 @@
 !energy_dih
 !> @brief Calculates the energy related to dihedral-angle term.
-!>        Values are added into "e_exv(E_TYPE%DIHE)" and      &
-!>        "e_exv_unit(,,E_TYPE%DIHE)".
+!>        Values are added into "energy(E_TYPE%DIHE)" and      &
+!>        "energy_unit(,,E_TYPE%DIHE)".
 
-subroutine energy_dih(irep, e_exv_unit, e_exv)
+subroutine energy_dih(irep, energy_unit, energy)
       
   use const_maxsize
   use const_index
@@ -17,8 +17,8 @@ subroutine energy_dih(irep, e_exv_unit, e_exv)
 
   ! -----------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   ! -----------------------------------------------------------------------
   integer :: ksta, kend
@@ -61,8 +61,8 @@ subroutine energy_dih(irep, e_exv_unit, e_exv)
      ! sum of the energy
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv(E_TYPE%DIHE) = e_exv(E_TYPE%DIHE) + efull
-     e_exv_unit(iunit, junit, E_TYPE%DIHE) = e_exv_unit(iunit, junit, E_TYPE%DIHE) + efull
+     energy(E_TYPE%DIHE) = energy(E_TYPE%DIHE) + efull
+     energy_unit(iunit, junit, E_TYPE%DIHE) = energy_unit(iunit, junit, E_TYPE%DIHE) + efull
 
   end do ! idih
 !$omp end do nowait

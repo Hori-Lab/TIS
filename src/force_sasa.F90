@@ -1,7 +1,7 @@
 !force_sasa
 !> @brief Calculates the force related to solvent accessible surface area (sasa)
-!>        The values are added into "e_exv(ENERGY%SASA)" and  &
-!>        "e_exv_unit(ENERGY%SASA)".
+!>        The values are added into "energy(ENERGY%SASA)" and  &
+!>        "energy_unit(ENERGY%SASA)".
 
 subroutine force_sasa(irep, force_mp)
 

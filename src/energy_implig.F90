@@ -8,7 +8,7 @@
 !>     calculate implicit-ligand energy for output (NON_MC_procedure) &
 !>     based on [istate_implig and ligand-binding site's coordinate].
 
-subroutine energy_implig(irep, e_exv_unit, e_exv, iflag_for_mc)
+subroutine energy_implig(irep, energy_unit, energy, iflag_for_mc)
 
   use const_maxsize 
   use const_index
@@ -23,8 +23,8 @@ subroutine energy_implig(irep, e_exv_unit, e_exv, iflag_for_mc)
 
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep             ! replica number 
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
   integer,    intent(in)    :: iflag_for_mc     ! flag for Monte Carlo ((simu_mc_implig).
   ! if (iflag_for_mc==IMPLIGENERGY_TYPE%FOR_MC) then 
   !   calculate implicit-ligand energy for MC_procedure (simu_mc_implig).
@@ -49,13 +49,13 @@ subroutine energy_implig(irep, e_exv_unit, e_exv, iflag_for_mc)
 
 
 ! initialization  (especially for_MC)
-!       e_exv(E_TYPE%IMPLIG) = 0.0e0_PREC
-!       e_exv_unit(iunit, junit, E_TYPE%IMPLIG) = 0.0e0_PREC
+!       energy(E_TYPE%IMPLIG) = 0.0e0_PREC
+!       energy_unit(iunit, junit, E_TYPE%IMPLIG) = 0.0e0_PREC
   if(iflag_for_mc == IMPLIGENERGY_TYPE%FOR_MC) then 
-     e_exv(E_TYPE%IMPLIG) = 0.0e0_PREC
-     e_exv_unit(1:nunit_all, 1:nunit_all, E_TYPE%IMPLIG) = 0.0e0_PREC
+     energy(E_TYPE%IMPLIG) = 0.0e0_PREC
+     energy_unit(1:nunit_all, 1:nunit_all, E_TYPE%IMPLIG) = 0.0e0_PREC
   endif
-! FOR_NON_MC case, e_exv and e_exv_unit are already initialized at simu_energy.
+! FOR_NON_MC case, energy and energy_unit are already initialized at simu_energy.
 
 ! initialization
 ! Etbind_implig(MXSITE_IMPLIG, MXREPLICA)
@@ -113,9 +113,9 @@ subroutine energy_implig(irep, e_exv_unit, e_exv, iflag_for_mc)
            Etbind_implig(ist, irep) = Etbind_implig(ist, irep) + Ebind_implig(icon2)
            
            if (iflag_for_mc == IMPLIGENERGY_TYPE%FOR_NON_MC) then
-              e_exv(E_TYPE%IMPLIG) = e_exv(E_TYPE%IMPLIG) + Ebind_implig(icon2)
-              e_exv_unit(iunit, junit, E_TYPE%IMPLIG) =  &
-                   e_exv_unit(iunit, junit, E_TYPE%IMPLIG) + Ebind_implig(icon2)
+              energy(E_TYPE%IMPLIG) = energy(E_TYPE%IMPLIG) + Ebind_implig(icon2)
+              energy_unit(iunit, junit, E_TYPE%IMPLIG) =  &
+                   energy_unit(iunit, junit, E_TYPE%IMPLIG) + Ebind_implig(icon2)
            endif
        enddo
      end if

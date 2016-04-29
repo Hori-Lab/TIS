@@ -37,8 +37,8 @@ subroutine simu_checkforce()
   character(CARRAY_MSG_ERROR) :: error_message
   ! -----------------------------------------------------------------
   real(PREC), allocatable :: velo_mp(:,:,:)     ! (SPACE_DIM, MXMP, REPLICA=1)
-  real(PREC), allocatable :: e_exv(:,:)         ! (E_TYPE%MAX, REPLICA=1)
-  real(PREC), allocatable :: e_exv_unit(:,:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX, REPLICA=1)
+  real(PREC), allocatable :: energy(:,:)         ! (E_TYPE%MAX, REPLICA=1)
+  real(PREC), allocatable :: energy_unit(:,:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX, REPLICA=1)
   real(PREC), allocatable :: replica_energy(:,:)! (2, REPLICA=1)
 
   ! -----------------------------------------------------------------
@@ -53,11 +53,11 @@ subroutine simu_checkforce()
   ! velo_mp
   allocate( velo_mp(SPACE_DIM, nmp_real, n_replica_all), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL,error_message)
-  ! e_exv
-  allocate( e_exv(E_TYPE%MAX, n_replica_all), stat=ier)
+  ! energy
+  allocate( energy(E_TYPE%MAX, n_replica_all), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL,error_message)
-  ! e_exv_unit
-  allocate( e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_all), stat=ier) 
+  ! energy_unit
+  allocate( energy_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_all), stat=ier) 
   if (ier/=0) call util_error(ERROR%STOP_ALL,error_message)
   ! replica_energy
   allocate( replica_energy(2, n_replica_all), stat=ier)
@@ -92,7 +92,7 @@ subroutine simu_checkforce()
      call simu_neighbor(irep)
   enddo
   
-  call energy_allrep(e_exv_unit, e_exv, &
+  call energy_allrep(energy_unit, energy, &
                    velo_mp, replica_energy, .false., tempk)
 
   call force_sumup(force_mp, IDX_REPLICA)
@@ -105,18 +105,18 @@ subroutine simu_checkforce()
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) + small
         call simu_copyxyz(IDX_REPLICA)
    
-        call energy_allrep(e_exv_unit, e_exv, &
+        call energy_allrep(energy_unit, energy, &
                          velo_mp, replica_energy, .false., tempk)
             
-        af_ene = e_exv(E_TYPE%TOTAL, IDX_REPLICA)
+        af_ene = energy(E_TYPE%TOTAL, IDX_REPLICA)
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_mp_rep(idimn, imp, IDX_REPLICA) - 2.0_PREC * small
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) - 2.0_PREC * small
         call simu_copyxyz(IDX_REPLICA)
    
-        call energy_allrep(e_exv_unit, e_exv, &
+        call energy_allrep(energy_unit, energy, &
                          velo_mp, replica_energy, .false., tempk)
    
-        ff(idimn) = -(af_ene - e_exv(E_TYPE%TOTAL, IDX_REPLICA)) * 0.5_PREC / small
+        ff(idimn) = -(af_ene - energy(E_TYPE%TOTAL, IDX_REPLICA)) * 0.5_PREC / small
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_save
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_save
      end do
@@ -144,9 +144,9 @@ subroutine simu_checkforce()
   ! Deallocation
   if (allocated(velo_mp)    ) deallocate(velo_mp,     stat=ier)
   if (ier/=0                ) call util_error(ERROR%STOP_ALL,error_message)
-  if (allocated(e_exv)      ) deallocate(e_exv,       stat=ier)
+  if (allocated(energy)      ) deallocate(energy,       stat=ier)
   if (ier/=0                ) call util_error(ERROR%STOP_ALL,error_message)
-  if (allocated(e_exv_unit)  ) deallocate(e_exv_unit,   stat=ier)
+  if (allocated(energy_unit)  ) deallocate(energy_unit,   stat=ier)
   if (ier/=0                ) call util_error(ERROR%STOP_ALL,error_message)
   if (allocated(replica_energy)) deallocate(replica_energy, stat=ier)
   if (ier/=0                ) call util_error(ERROR%STOP_ALL,error_message)

@@ -1,7 +1,7 @@
 !energy_exv_wca
 !> @brief Calculates the energy related to excluded volume.   &
-!>        The values are added into "e_exv(ENERGY%EXV_WCA)" and  &
-!>        "e_exv_unit(ENERGY%EXV_WCA)".
+!>        The values are added into "energy(ENERGY%EXV_WCA)" and  &
+!>        "energy_unit(ENERGY%EXV_WCA)".
 !
 ! Weeks−Chandler−Andersen (WCA) potential
 !
@@ -19,7 +19,7 @@
 !     epsilon0 = coef_exvwca
 !        D0    = cdist_exvwca
 
-subroutine energy_exv_wca(irep, e_exv_unit, e_exv)
+subroutine energy_exv_wca(irep, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -32,8 +32,8 @@ subroutine energy_exv_wca(irep, e_exv_unit, e_exv)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
@@ -98,11 +98,11 @@ subroutine energy_exv_wca(irep, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%EXV_WCA) = e_exv(E_TYPE%EXV_WCA) + ene
+     energy(E_TYPE%EXV_WCA) = energy(E_TYPE%EXV_WCA) + ene
    
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%EXV_WCA) = e_exv_unit(iunit, junit, E_TYPE%EXV_WCA) + ene
+     energy_unit(iunit, junit, E_TYPE%EXV_WCA) = energy_unit(iunit, junit, E_TYPE%EXV_WCA) + ene
   end do
 !$omp end do nowait
 

@@ -2,7 +2,7 @@
 !> @brief Calculate energy of pulling option
 
 ! ************************************************************************
-subroutine energy_pulling(irep, e_exv_unit, e_exv)
+subroutine energy_pulling(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine energy_pulling(irep, e_exv_unit, e_exv)
   implicit none
   ! ----------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -37,10 +37,10 @@ subroutine energy_pulling(irep, e_exv_unit, e_exv)
         cbd2 = inmisc%coef_pull(ipull)
         efull = cbd2 * dist**2;
    
-        e_exv(E_TYPE%PULLING) = e_exv(E_TYPE%PULLING) + efull
+        energy(E_TYPE%PULLING) = energy(E_TYPE%PULLING) + efull
         iunit = imp2unit(imp)
         junit = iunit
-        e_exv_unit(iunit, junit, E_TYPE%PULLING) = e_exv_unit(iunit, junit, E_TYPE%PULLING) + efull
+        energy_unit(iunit, junit, E_TYPE%PULLING) = energy_unit(iunit, junit, E_TYPE%PULLING) + efull
      end if
 
   enddo
@@ -54,10 +54,10 @@ subroutine energy_pulling(irep, e_exv_unit, e_exv)
      force_xyz(:) = inmisc%pull_unravel_xyz(:,ipull,grep)
      efull = - dot_product(vij, force_xyz)
 
-     e_exv(E_TYPE%PULLING) = e_exv(E_TYPE%PULLING) + efull
+     energy(E_TYPE%PULLING) = energy(E_TYPE%PULLING) + efull
      iunit = imp2unit(imp)
      junit = imp2unit(jmp)
-     e_exv_unit(iunit, junit, E_TYPE%PULLING) = e_exv_unit(iunit, junit, E_TYPE%PULLING) + 0.5 * efull
+     energy_unit(iunit, junit, E_TYPE%PULLING) = energy_unit(iunit, junit, E_TYPE%PULLING) + 0.5 * efull
   enddo
 
 end subroutine energy_pulling

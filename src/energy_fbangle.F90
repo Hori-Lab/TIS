@@ -1,9 +1,9 @@
 !energy_fbangle
 !> @brief Calculates the energy related to flexible bond-angle term. &
-!>        Values are added into "e_exv(E_TYPE%BANGLE)" and           &
-!>        "e_exv_unit(,,E_TYPE%BANGLE)"
+!>        Values are added into "energy(E_TYPE%BANGLE)" and           &
+!>        "energy_unit(,,E_TYPE%BANGLE)"
 
-subroutine energy_fbangle(irep, e_exv_unit, e_exv)
+subroutine energy_fbangle(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -20,8 +20,8 @@ subroutine energy_fbangle(irep, e_exv_unit, e_exv)
 
   ! ---------------------------------------------------------------------------
   integer, intent(in) :: irep
-  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) 
-  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX) 
+  real(PREC), intent(inout) :: energy(E_TYPE%MAX) 
+  real(PREC), intent(inout) :: energy_unit(nunit_all, nunit_all, E_TYPE%MAX) 
   
   ! ---------------------------------------------------------------------------
   ! local variables
@@ -72,12 +72,12 @@ subroutine energy_fbangle(irep, e_exv_unit, e_exv)
 
      ! -------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%BANGLE) = e_exv(E_TYPE%BANGLE) + efull
+     energy(E_TYPE%BANGLE) = energy(E_TYPE%BANGLE) + efull
 
      iunit = imp2unit( imp(1) )
      junit = imp2unit( imp(2) )
      
-     e_exv_unit(iunit, junit, E_TYPE%BANGLE) = e_exv_unit(iunit, junit, E_TYPE%BANGLE) + efull
+     energy_unit(iunit, junit, E_TYPE%BANGLE) = energy_unit(iunit, junit, E_TYPE%BANGLE) + efull
      
   end do
 !$omp end do nowait

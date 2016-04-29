@@ -1,9 +1,9 @@
 !energy_sasa
 !> @brief Calculates the energy related to solvent accessible surface area (sasa)
-!>        The values are added into "e_exv(ENERGY%SASA)" and  &
-!>        "e_exv_unit(ENERGY%SASA)".
+!>        The values are added into "energy(ENERGY%SASA)" and  &
+!>        "energy_unit(ENERGY%SASA)".
 
-subroutine  energy_sasa(irep, e_exv)
+subroutine  energy_sasa(irep, energy)
 
   use const_maxsize
   use const_physical
@@ -18,7 +18,7 @@ subroutine  energy_sasa(irep, e_exv)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
 
   integer :: lunout
   integer :: ksta, kend
@@ -118,7 +118,7 @@ subroutine  energy_sasa(irep, e_exv)
               write(lunout,'(I10,f12.2)')imp, sasa(imp)
            endif
         end if
-        e_exv(E_TYPE%SASA) = e_exv(E_TYPE%SASA) + insasa%coef_surf * sasa(imp)
+        energy(E_TYPE%SASA) = energy(E_TYPE%SASA) + insasa%coef_surf * sasa(imp)
      end if
   end do
 !!$omp end do

@@ -1,9 +1,9 @@
 !energy_exv_rep12
 !> @brief Calculates the energy related to excluded volume   &
-!>        The values are added into "e_exv(ENERGY%EXV)" and  &
-!>        "e_exv_unit(ENERGY%EXV)".
+!>        The values are added into "energy(ENERGY%EXV)" and  &
+!>        "energy_unit(ENERGY%EXV)".
 
-subroutine  energy_exv_rep12(irep, e_exv_unit, e_exv)
+subroutine  energy_exv_rep12(irep, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -18,8 +18,8 @@ subroutine  energy_exv_rep12(irep, e_exv_unit, e_exv)
 
   ! ------------------------------------------------------------------------
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out) :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
@@ -41,7 +41,7 @@ subroutine  energy_exv_rep12(irep, e_exv_unit, e_exv)
   ! ------------------------------------------------------------------------
   ! The formula of (r/x)**12 repulsion energy
   !
-  ! e_exv = crep12 * (cdist_rep12/dist)**12
+  ! energy = crep12 * (cdist_rep12/dist)**12
   ! 
   ! crep12   :  value of controling energy size of repulsion
   ! cdist_rep12  : radius of rejection volume
@@ -129,11 +129,11 @@ subroutine  energy_exv_rep12(irep, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%EXV) = e_exv(E_TYPE%EXV) + ene
+     energy(E_TYPE%EXV) = energy(E_TYPE%EXV) + ene
    
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%EXV) = e_exv_unit(iunit, junit, E_TYPE%EXV) + ene
+     energy_unit(iunit, junit, E_TYPE%EXV) = energy_unit(iunit, junit, E_TYPE%EXV) + ene
   end do
 !$omp end do nowait
 

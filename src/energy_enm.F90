@@ -11,7 +11,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine energy_enm(irep, now_con, e_exv, e_exv_unit)
+subroutine energy_enm(irep, now_con, energy, energy_unit)
 
   use const_maxsize
   use const_physical
@@ -28,8 +28,8 @@ subroutine energy_enm(irep, now_con, e_exv, e_exv_unit)
   ! ---------------------------------------------------------------------
   integer,    intent(in)    :: irep
   integer,    intent(out)   :: now_con(:,:)
-  real(PREC), intent(inout) :: e_exv(:)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
+  real(PREC), intent(inout) :: energy(:)
+  real(PREC), intent(inout) :: energy_unit(:,:,:)
 
   ! ---------------------------------------------------------------------
   ! local variables
@@ -104,8 +104,8 @@ subroutine energy_enm(irep, now_con, e_exv, e_exv_unit)
    
      ! ----------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%GO) = e_exv(E_TYPE%GO) + efull
-     e_exv_unit(iunit, junit, E_TYPE%GO) = e_exv_unit(iunit, junit, E_TYPE%GO) + efull
+     energy(E_TYPE%GO) = energy(E_TYPE%GO) + efull
+     energy_unit(iunit, junit, E_TYPE%GO) = energy_unit(iunit, junit, E_TYPE%GO) + efull
   end do
 !$omp end do nowait
 !!$omp end master

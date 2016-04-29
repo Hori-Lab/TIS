@@ -14,8 +14,8 @@
 ! ************************************************************************
 ! subroutine for the energy
 ! ************************************************************************
-subroutine energy_allrep(e_exv_unit,     &
-                              e_exv,         &
+subroutine energy_allrep(energy_unit,     &
+                              energy,         &
                               velo_mp,       &
                               replica_energy,&
                               flg_replica,   &  ! flag for calculating replica_energy
@@ -39,8 +39,8 @@ subroutine energy_allrep(e_exv_unit,     &
 
   implicit none
 ! --------------------------------------------------------------------
-  real(PREC), intent(out) :: e_exv_unit(:,:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX, replica)
-  real(PREC), intent(out) :: e_exv(:,:)          ! (E_TYPE%MAX,replica)
+  real(PREC), intent(out) :: energy_unit(:,:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX, replica)
+  real(PREC), intent(out) :: energy(:,:)          ! (E_TYPE%MAX,replica)
   real(PREC), intent(in)  :: velo_mp(:,:,:)      ! (3, nmp_real, replica)
   real(PREC), intent(out) :: replica_energy(:,:)
   logical,    intent(in)  :: flg_replica         ! flag for calculating replica_energy
@@ -72,8 +72,8 @@ subroutine energy_allrep(e_exv_unit,     &
      'failed in memory deallocation at mloop_simulator, PROGRAM STOP'
 
   ! for energy_replica
-  real(PREC) :: new_e_exv(E_TYPE%MAX, n_replica_mpi)
-  real(PREC) :: new_e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_mpi)
+  real(PREC) :: new_energy(E_TYPE%MAX, n_replica_mpi)
+  real(PREC) :: new_energy_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_mpi)
 
 #ifdef _DUMP_COMMON
   integer :: i_dump, j_dump, k_dump, l_dump
@@ -83,20 +83,20 @@ subroutine energy_allrep(e_exv_unit,     &
 #endif
 
   interface
-  subroutine energy_sumup(irep, velo_mp, e_exv, e_exv_unit)
+  subroutine energy_sumup(irep, velo_mp, energy, energy_unit)
      use const_maxsize
      implicit none
      integer,    intent(in)  :: irep
      real(PREC), intent(in)  :: velo_mp(:,:)      ! (3, nmp_real)
-     real(PREC), intent(out) :: e_exv(:)          ! (E_TYPE%MAX)
-     real(PREC), intent(out) :: e_exv_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
+     real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
+     real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
   endsubroutine energy_sumup
   endinterface
 
 ! ------------------------------------------------------------------------
 ! zero clear
-  e_exv(:,:)         = 0.0e0_PREC
-  e_exv_unit(:,:,:,:) = 0.0e0_PREC
+  energy(:,:)         = 0.0e0_PREC
+  energy_unit(:,:,:,:) = 0.0e0_PREC
 
 #ifdef _DUMP_COMMON
   lundump = outfile%dump
@@ -107,7 +107,7 @@ subroutine energy_allrep(e_exv_unit,     &
 
 #ifdef _DEBUG
   if (     (size(velo_mp,3) /= n_replica_mpi) &
-      .OR. (size(e_exv ,2)  /= n_replica_mpi) .OR. (size(e_exv_unit, 4)  /= n_replica_mpi)  &
+      .OR. (size(energy ,2)  /= n_replica_mpi) .OR. (size(energy_unit, 4)  /= n_replica_mpi)  &
       .OR. (size(qscore,1)  /= n_replica_mpi) .OR. (size(qscore_unit,3) /= n_replica_mpi) )&
       error_message = 'defect at energy_allrep'
       call util_error(ERROR%STOP_ALL, error_message)
@@ -116,7 +116,7 @@ subroutine energy_allrep(e_exv_unit,     &
 
   do irep = 1, n_replica_mpi
 
-     call energy_sumup(irep, velo_mp(:,:,irep), e_exv(:,irep), e_exv_unit(:,:,:,irep)) 
+     call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep)) 
 
   enddo
 
@@ -130,7 +130,7 @@ subroutine energy_allrep(e_exv_unit,     &
   do irep = 1, n_replica_mpi
 
      grep = irep2grep(irep)
-     replica_energy(1, grep) = e_exv(E_TYPE%TOTAL, irep)
+     replica_energy(1, grep) = energy(E_TYPE%TOTAL, irep)
 
      label_own = rep2lab(grep)
      label_opp = get_pair(label_own)
@@ -206,8 +206,8 @@ subroutine energy_allrep(e_exv_unit,     &
         !#############################################
         ! Calculate energy
         !#############################################
-        call energy_sumup(irep, velo_mp(:,:,irep), new_e_exv(:,irep), new_e_exv_unit(:,:,:,irep)) 
-        replica_energy(2, grep) = new_e_exv(E_TYPE%TOTAL, irep)
+        call energy_sumup(irep, velo_mp(:,:,irep), new_energy(:,irep), new_energy_unit(:,:,:,irep)) 
+        replica_energy(2, grep) = new_energy(E_TYPE%TOTAL, irep)
 
         !#########################################
         ! Set back replica variables

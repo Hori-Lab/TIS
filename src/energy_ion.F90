@@ -2,7 +2,7 @@
 !> @brief Calculate all the energy terms related to ion, &
 !>        including LJ, hydration term, excluded volume term
 
-subroutine  energy_ion(irep, e_exv_unit, e_exv)
+subroutine  energy_ion(irep, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -19,8 +19,8 @@ subroutine  energy_ion(irep, e_exv_unit, e_exv)
 
 ! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
-  real(PREC), intent(inout)   :: e_exv(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(inout)   :: energy(:)         ! (E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
   ! local variables
@@ -93,11 +93,11 @@ subroutine  energy_ion(irep, e_exv_unit, e_exv)
 
         ! --------------------------------------------------------------------
         ! sum of the energy
-        e_exv(E_TYPE%HYD_ION) = e_exv(E_TYPE%HYD_ION) + exv
+        energy(E_TYPE%HYD_ION) = energy(E_TYPE%HYD_ION) + exv
 
         iunit = imp2unit(imp1)
         junit = imp2unit(imp2)
-        e_exv_unit(iunit, junit, E_TYPE%HYD_ION) = e_exv_unit(iunit, junit, E_TYPE%HYD_ION) + exv
+        energy_unit(iunit, junit, E_TYPE%HYD_ION) = energy_unit(iunit, junit, E_TYPE%HYD_ION) + exv
 
      end do
 !$omp end do nowait
@@ -150,11 +150,11 @@ subroutine  energy_ion(irep, e_exv_unit, e_exv)
 
         ! --------------------------------------------------------------------
         ! sum of the energy
-        e_exv(E_TYPE%EXV_ION) = e_exv(E_TYPE%EXV_ION) + exv
+        energy(E_TYPE%EXV_ION) = energy(E_TYPE%EXV_ION) + exv
 
         iunit = imp2unit(imp1)
         junit = imp2unit(imp2)
-        e_exv_unit(iunit, junit, E_TYPE%EXV_ION) = e_exv_unit(iunit, junit, E_TYPE%EXV_ION) + exv
+        energy_unit(iunit, junit, E_TYPE%EXV_ION) = energy_unit(iunit, junit, E_TYPE%EXV_ION) + exv
      end do
 !$omp end do nowait
 

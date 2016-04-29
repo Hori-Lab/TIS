@@ -11,7 +11,7 @@
 ! factor_go: value of amino acid specifity (ex. 1.0, MJ)
 ! go_nat: distance of native contact 
 ! ************************************************************************
-subroutine energy_nlocal_morse(irep, now_morse, e_exv_unit, e_exv)
+subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
 
   use const_maxsize
   use const_physical
@@ -28,8 +28,8 @@ subroutine energy_nlocal_morse(irep, now_morse, e_exv_unit, e_exv)
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   integer,    intent(out)   :: now_morse(:,:)
-  real(PREC), intent(inout) :: e_exv(:)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:)
+  real(PREC), intent(inout) :: energy(:)
+  real(PREC), intent(inout) :: energy_unit(:,:,:)
 
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
@@ -117,11 +117,11 @@ subroutine energy_nlocal_morse(irep, now_morse, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%MORSE) = e_exv(E_TYPE%MORSE) + efull
+     energy(E_TYPE%MORSE) = energy(E_TYPE%MORSE) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%MORSE) = e_exv_unit(iunit, junit, E_TYPE%MORSE) + efull
+     energy_unit(iunit, junit, E_TYPE%MORSE) = energy_unit(iunit, junit, E_TYPE%MORSE) + efull
   end do
 !$omp end do nowait
 !!$omp end master

@@ -1,7 +1,7 @@
 ! energy_velo
 !> @brief Calculate the kinetic energy
 
-subroutine energy_velo(velo_mp, e_exv_unit, e_exv)
+subroutine energy_velo(velo_mp, energy_unit, energy)
       
   use const_maxsize
   use const_index
@@ -16,8 +16,8 @@ subroutine energy_velo(velo_mp, e_exv_unit, e_exv)
 
   ! ---------------------------------------------------------------------
   real(PREC), intent(in)    :: velo_mp(:,:)     ! (SPACE_DIM, nmp_real)
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
 
   ! ---------------------------------------------------------------------
   ! local variables
@@ -30,8 +30,8 @@ subroutine energy_velo(velo_mp, e_exv_unit, e_exv)
 
   ! ---------------------------------------------------------------------
   if(i_simulate_type == SIM%BROWNIAN) then
-     e_exv(E_TYPE%VELO) = 0.0e0_PREC
-     e_exv_unit(:, :, E_TYPE%VELO) = 0.0e0_PREC
+     energy(E_TYPE%VELO) = 0.0e0_PREC
+     energy_unit(:, :, E_TYPE%VELO) = 0.0e0_PREC
      return
   endif
 
@@ -53,10 +53,10 @@ subroutine energy_velo(velo_mp, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%VELO) = e_exv(E_TYPE%VELO) + ev
+     energy(E_TYPE%VELO) = energy(E_TYPE%VELO) + ev
 
      iunit = imp2unit(imp)
-     e_exv_unit(iunit, iunit, E_TYPE%VELO) = e_exv_unit(iunit, iunit, E_TYPE%VELO) + ev
+     energy_unit(iunit, iunit, E_TYPE%VELO) = energy_unit(iunit, iunit, E_TYPE%VELO) + ev
   end do
 !$omp end do nowait
    

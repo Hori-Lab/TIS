@@ -2,7 +2,7 @@
 !> @brief Calculates the cylinder energy, when ``i_cylinder=1" in ``<<<< md_information" block.
 
 ! ****************************************************************
-subroutine energy_cylinder(irep, e_exv_unit, e_exv)
+subroutine energy_cylinder(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -12,8 +12,8 @@ subroutine energy_cylinder(irep, e_exv_unit, e_exv)
   implicit none
   ! ------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX) ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(nunit_all,nunit_all,E_TYPE%MAX) ! (unit, unit, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(E_TYPE%MAX) ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(nunit_all,nunit_all,E_TYPE%MAX) ! (unit, unit, E_TYPE%MAX)
 
   ! ------------------------------------------------------------
   ! local variables
@@ -39,9 +39,9 @@ subroutine energy_cylinder(irep, e_exv_unit, e_exv)
         end if
 
         ! Inclement energy
-        !write(*, *) e_exv(1)
-        e_exv(E_TYPE%CYLINDER) = e_exv(E_TYPE%CYLINDER) + efull
-        e_exv_unit(iunit, iunit, E_TYPE%CYLINDER) = e_exv_unit(iunit, iunit, E_TYPE%CYLINDER) + efull
+        !write(*, *) energy(1)
+        energy(E_TYPE%CYLINDER) = energy(E_TYPE%CYLINDER) + efull
+        energy_unit(iunit, iunit, E_TYPE%CYLINDER) = energy_unit(iunit, iunit, E_TYPE%CYLINDER) + efull
 
      end do
      

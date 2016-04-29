@@ -1,7 +1,7 @@
 ! energy_bond
 !> @brief Calculate the bonded energy
 
-subroutine energy_bond(irep, e_exv_unit, e_exv)
+subroutine energy_bond(irep, energy_unit, energy)
       
   use const_maxsize
   use const_physical
@@ -16,8 +16,8 @@ subroutine energy_bond(irep, e_exv_unit, e_exv)
 
   ! ----------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv_unit(:,:,:) !(nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) !(nunit_all, nunit_all, E_TYPE%MAX)
 
   ! ----------------------------------------------------------------------
   ! local variables
@@ -54,11 +54,11 @@ subroutine energy_bond(irep, e_exv_unit, e_exv)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%BOND) = e_exv(E_TYPE%BOND) + efull
+     energy(E_TYPE%BOND) = energy(E_TYPE%BOND) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%BOND) = e_exv_unit(iunit, junit, E_TYPE%BOND) + efull
+     energy_unit(iunit, junit, E_TYPE%BOND) = energy_unit(iunit, junit, E_TYPE%BOND) + efull
   end do
 !$omp end do nowait
 

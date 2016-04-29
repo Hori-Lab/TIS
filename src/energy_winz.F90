@@ -2,7 +2,7 @@
 !> @brief Calculate energy of winz option
 
 ! ************************************************************************
-subroutine energy_winz(irep, e_exv_unit, e_exv)
+subroutine energy_winz(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
@@ -13,8 +13,8 @@ subroutine energy_winz(irep, e_exv_unit, e_exv)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX)
-  real(PREC), intent(inout) :: e_exv(E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(nunit_all, nunit_all, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(E_TYPE%MAX)
 
   integer :: grep 
   integer :: iwind
@@ -50,6 +50,6 @@ subroutine energy_winz(irep, e_exv_unit, e_exv)
   efull = kz * dz * dz
 
   ! Increment energy
-  e_exv(E_TYPE%WINDOW) = e_exv(E_TYPE%WINDOW) + efull
+  energy(E_TYPE%WINDOW) = energy(E_TYPE%WINDOW) + efull
   
 end subroutine energy_winz

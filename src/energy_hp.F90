@@ -4,7 +4,7 @@
 ! **************************************************************************
 ! Calculation of hydrophobic energy
 
-subroutine  energy_hp(irep, e_exv, e_exv_unit)
+subroutine  energy_hp(irep, energy, energy_unit)
 
   use const_maxsize
   use const_physical
@@ -17,8 +17,8 @@ subroutine  energy_hp(irep, e_exv, e_exv_unit)
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp, jmp, iunit 
@@ -83,9 +83,9 @@ subroutine  energy_hp(irep, e_exv, e_exv_unit)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     e_exv(E_TYPE%HPENE) = e_exv(E_TYPE%HPENE) + exv
+     energy(E_TYPE%HPENE) = energy(E_TYPE%HPENE) + exv
      iunit = imp2unit(imp)
-     e_exv_unit(iunit, iunit, E_TYPE%HPENE) = e_exv_unit(iunit, iunit, E_TYPE%HPENE) + exv
+     energy_unit(iunit, iunit, E_TYPE%HPENE) = energy_unit(iunit, iunit, E_TYPE%HPENE) + exv
   end do !end ihp
 !$omp end do nowait
 

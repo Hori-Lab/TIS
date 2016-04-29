@@ -60,7 +60,7 @@ subroutine inp_energy_func()
   inflp%i_flp = 0 ! flexible_local_potential
 
   inmisc%i_use_atom_protein = 0
-  inmisc%i_residue_exv_radii = 0
+  inmisc%i_residuenergy_radii = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
   inmisc%flg_coef_from_ninfo = .false.
@@ -375,9 +375,9 @@ subroutine inp_energy_func()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_use_atom_protein, cvalue)
 
-        cvalue = 'i_residue_exv_radii'
+        cvalue = 'i_residuenergy_radii'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_residue_exv_radii, cvalue)
+             inmisc%i_residuenergy_radii, cvalue)
 
         cvalue = 'i_output_energy_style'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -437,7 +437,7 @@ subroutine inp_energy_func()
 
   call MPI_Bcast(inmisc%flg_coef_from_ninfo,   1,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%i_residue_exv_radii,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(inmisc%i_residuenergy_radii,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_triple_angle_term,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_temp_independent,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
@@ -550,13 +550,13 @@ subroutine inp_energy_func()
 
 
   ! -----------------------------------------------------------------
-  ! parameter set for excluded volume interaction: inmisc%i_residue_exv_radii
-  if(inmisc%i_residue_exv_radii == 0) then
+  ! parameter set for excluded volume interaction: inmisc%i_residuenergy_radii
+  if(inmisc%i_residuenergy_radii == 0) then
      write (lunout, *) 'using constant radii for excluded volume interactions'
-  else if(inmisc%i_residue_exv_radii == 1) then
+  else if(inmisc%i_residuenergy_radii == 1) then
      write (lunout, *) 'using residue type dependent radii for excluded volume interactions'
   else
-     error_message = 'Error: invalid value for inmisc%i_residue_exv_radii'
+     error_message = 'Error: invalid value for inmisc%i_residuenergy_radii'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 

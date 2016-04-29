@@ -7,8 +7,8 @@ subroutine allocate_simu()
   use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : velo_mp, accel_mp, force_mp, rcmass_mp, &
-                          e_exv_unit_muca, rlan_const, nLAN_CONST, &
-                          e_exv, e_exv_unit, qscore, qscore_unit, &
+                          energy_unit_muca, rlan_const, nLAN_CONST, &
+                          energy, energy_unit, qscore, qscore_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, &
 #ifdef MPI_PAR
                           replica_energy_l, &
@@ -41,20 +41,20 @@ subroutine allocate_simu()
   allocate( rcmass_mp(nmp_all), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
   
-  ! e_exv_unit_muca
-  allocate( e_exv_unit_muca(nunit_all, nunit_all, E_TYPE%MAX), stat=ier)
+  ! energy_unit_muca
+  allocate( energy_unit_muca(nunit_all, nunit_all, E_TYPE%MAX), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
   
   ! rlan_const 
   allocate( rlan_const(nLAN_CONST, nmp_real, n_replica_mpi), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
   
-  ! e_exv
-  allocate( e_exv(E_TYPE%MAX, n_replica_mpi), stat=ier)
+  ! energy
+  allocate( energy(E_TYPE%MAX, n_replica_mpi), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
   
-  ! e_exv_unit
-  allocate( e_exv_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_mpi), stat=ier) 
+  ! energy_unit
+  allocate( energy_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_mpi), stat=ier) 
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
   
   ! qscore
@@ -114,10 +114,10 @@ contains
          allocated(accel_mp) .OR.&
          allocated(force_mp) .OR.&
          allocated(rcmass_mp) .OR.&
-         allocated(e_exv_unit_muca) .OR.&
+         allocated(energy_unit_muca) .OR.&
          allocated(rlan_const) .OR.&
-         allocated(e_exv) .OR.&
-         allocated(e_exv_unit) .OR.&
+         allocated(energy) .OR.&
+         allocated(energy_unit) .OR.&
          allocated(qscore) .OR.&
          allocated(qscore_unit) .OR.&
          allocated(rg) .OR.&
@@ -150,10 +150,10 @@ subroutine deallocate_simu()
   if (allocated(accel_mp)) deallocate(accel_mp)
   if (allocated(force_mp)) deallocate(force_mp)
   if (allocated(rcmass_mp)) deallocate(rcmass_mp)
-  if (allocated(e_exv_unit_muca)) deallocate(e_exv_unit_muca)
+  if (allocated(energy_unit_muca)) deallocate(energy_unit_muca)
   if (allocated(rlan_const)) deallocate(rlan_const)
-  if (allocated(e_exv)) deallocate(e_exv)
-  if (allocated(e_exv_unit)) deallocate(e_exv_unit)
+  if (allocated(energy)) deallocate(energy)
+  if (allocated(energy_unit)) deallocate(energy_unit)
   if (allocated(qscore)) deallocate(qscore)
   if (allocated(qscore_unit)) deallocate(qscore_unit)
   if (allocated(rg)) deallocate(rg)

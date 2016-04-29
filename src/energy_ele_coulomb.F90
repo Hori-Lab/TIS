@@ -1,7 +1,7 @@
 ! energy_ele
 !> @brief Calculate the energy of electrostatic interaction 
 
-subroutine energy_ele_coulomb(irep, e_exv, e_exv_unit)
+subroutine energy_ele_coulomb(irep, energy, energy_unit)
 
   use const_maxsize
   use const_physical
@@ -17,8 +17,8 @@ subroutine energy_ele_coulomb(irep, e_exv, e_exv_unit)
 
   ! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
-  real(PREC), intent(out)   :: e_exv(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out)   :: e_exv_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(out)   :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(out)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
   ! local variables
@@ -68,11 +68,11 @@ subroutine energy_ele_coulomb(irep, e_exv, e_exv_unit)
      
      exv = coef_ele(iele1,irep)/dist1
 
-     e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + exv
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     e_exv_unit(iunit, junit, E_TYPE%ELE) = e_exv_unit(iunit, junit, E_TYPE%ELE) + exv
+     energy_unit(iunit, junit, E_TYPE%ELE) = energy_unit(iunit, junit, E_TYPE%ELE) + exv
   end do
 !$omp end do nowait
 
