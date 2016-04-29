@@ -66,22 +66,7 @@ subroutine energy_ele_coulomb(irep, e_exv, e_exv_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     if (inmisc%i_temp_independent == 0) then
-        exv = coef_ele(iele1,irep)/dist1
-
-     else if (inmisc%i_temp_independent == 1) then
-     !   exv = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
-     !        * exp(-dist1*rcdist)
-        write(*,*) 'error in energy_ele_coulomb'
-        stop
-
-     else if (inmisc%i_temp_independent == 2) then
-     !   rk = dist1 * rcdist
-     !   exv = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
-     !        * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
-        write(*,*) 'error in energy_ele_coulomb'
-        stop
-     endif
+     exv = coef_ele(iele1,irep)/dist1
 
      e_exv(E_TYPE%ELE) = e_exv(E_TYPE%ELE) + exv
      
