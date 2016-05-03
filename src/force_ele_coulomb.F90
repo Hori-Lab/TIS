@@ -56,8 +56,7 @@ subroutine force_ele_coulomb(irep, force_mp)
   kend = lele(irep)
 #endif
 
-!$omp do private(imp1,imp2,v21,dist2,dist1, &
-!$omp&           dv_dr,for,imirror)
+!$omp do private(imp1,imp2,v21,dist2,dist1,dv_dr,for,imirror)
   do iele=ksta, kend
      imp1 = iele2mp(1, iele, irep)
      imp2 = iele2mp(2, iele, irep)

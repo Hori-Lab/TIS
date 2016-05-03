@@ -43,8 +43,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   ksta = 1
   kend = lele(irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist2,dist1,&
-!$omp&           ene,iunit,junit,imirror)
+!$omp do private(imp1,imp2,v21,dist2,dist1,ene,iunit,junit,imirror)
   do iele=ksta, kend
 
      imp1 = iele2mp(1, iele, irep)

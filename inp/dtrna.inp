@@ -1,15 +1,14 @@
 <<<< filenames
 path = ./data
 filename = dtrna
-OUTPUT pdb dcd psf rst movie
+OUTPUT pdb dcd psf rst
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
 >>>> 
 
 <<<< job_cntl  
-##i_run_mode = 2
-i_run_mode = 1
+i_run_mode = 2
 i_simulate_type = 1
 i_initial_state = 6
 >>>>

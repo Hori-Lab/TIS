@@ -1,7 +1,7 @@
 <<<< filenames
-path = ./data
+path = ./
 filename = azo_db
-OUTPUT pdb dcd psf rst movie
+OUTPUT pdb dcd psf rst opt
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -23,14 +23,13 @@ psizez = 350.0
 <<<< unit_and_state
 i_seq_read_style = 4
 i_go_native_read_style = 2
-1    rna    azo_00_00.cg.pdb
-2    ion    azo_05_12.ion.pdb
+1    rna    azo.rna.pdb
+2    ion    azo_05_12.ion.min.pdb
 >>>>
-##2    ion    inp_file
 
 <<<< initial_struct
-1           azo_00_00.cg.pdb
-2           azo_05_12.ion.pdb
+1           azo.rna.pdb
+2           azo_05_12.ion.min.pdb
 >>>>
 
 <<<< initial_ion
@@ -64,10 +63,10 @@ i_redef_para = 1
 
 <<<< energy_function       
 LOCAL(1)      L_DTRNA
-###NLOCAL(1/1)   DTRNA EXV_WCA ELE
-NLOCAL(1/1)   DTRNA ELE
-NLOCAL(1/2)   ELE
-NLOCAL(2/2)   ELE
+LOCAL(2)      NOTHING
+NLOCAL(1/1)   DTRNA ELE EXV_DT15
+NLOCAL(1/2)   ELE EXV_DT15
+NLOCAL(2/2)   ELE EXV_DT15
 i_triple_angle_term = 0
 i_use_atom_protein = 0
 i_use_atom_dna = 0

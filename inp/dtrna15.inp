@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./data
 filename = azo
-OUTPUT pdb dcd psf rst movie
+OUTPUT pdb dcd psf rst opt
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -23,12 +23,12 @@ psizez = 350.0
 <<<< unit_and_state
 i_seq_read_style = 4
 i_go_native_read_style = 2
-1    rna    azo_00_00.cg.min.pdb
+1    rna    azo.rna.pdb
 2    ion    azo_05_12.ion.min.pdb
 >>>>
 
 <<<< initial_struct
-1           azo_00_00.cg.min.pdb
+1           azo.rna.pdb
 2           azo_05_12.ion.min.pdb
 >>>>
 
@@ -109,5 +109,5 @@ i_calc_method = 0
 >>>>
 
 <<<< redefine_para
-viscosity = 0.000015
+viscosity = 0.000010
 >>>>
