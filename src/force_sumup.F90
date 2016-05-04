@@ -123,10 +123,13 @@ subroutine force_sumup(force_mp, &  ! [ o]
         call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn))
         call force_dtrna_stack(irep, force_mp_l(1,1,tn))
         call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
-        call force_exv_dt15 (irep, force_mp_l(1,1,tn))
      endif
   endif
 
+  ! Also used in ion-only simulations
+  if (inmisc%force_flag(INTERACT%EXV_DT15)) then
+        call force_exv_dt15 (irep, force_mp_l(1,1,tn))
+  endif
   ! Calculate flexible local interactions
 
   !if (inmisc%i_add_int == 1) then

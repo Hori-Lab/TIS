@@ -89,9 +89,9 @@ subroutine setpara( xyz_mp_init )
   if (inmisc%class_flag(CLASS%ION)) then
      call setp_mapara_ion()
   endif
-  if (inmisc%class_flag(CLASS%RNA)) then
+  !if (inmisc%class_flag(CLASS%RNA)) then  ! Commented out for ion-only simulations
      call setp_mapara_rna(infile%para_rna, outfile%data)
-  endif
+  !endif
   if (inmisc%class_flag(CLASS%LIG)) then
      call setp_mapara_ligand()
   endif
