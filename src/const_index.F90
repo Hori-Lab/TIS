@@ -423,8 +423,10 @@ module const_index
      integer :: VELO
      integer :: ACCEL
      integer :: REPLICA
+     integer :: DTRNA15
+     integer :: RANDOM
   endtype rst_block
-  type(rst_block), parameter :: RSTBLK = rst_block(1,2,3,4,5)
+  type(rst_block), parameter :: RSTBLK = rst_block(1,2,3,4,5,6,7)
 
   type emin_type
      integer :: VOID

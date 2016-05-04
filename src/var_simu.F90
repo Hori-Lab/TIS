@@ -69,7 +69,7 @@ module var_simu
   real(PREC), allocatable, save :: hb_energy(:,:)     ! (1:ndtrna_hb, REPLICA)
   logical, allocatable, save :: hb_status(:,:)        ! (1:ndtrna_hb, REPLICA)
   logical, save :: flg_hb_energy
-  logical, allocatable, save :: st_status(:,:)        ! (1:ndtrna_hb, REPLICA)
+  logical, allocatable, save :: st_status(:,:)        ! (1:ndtrna_st, REPLICA)
 
 
   logical, save :: flg_ppr_release(MXBRIDGE) = .false.

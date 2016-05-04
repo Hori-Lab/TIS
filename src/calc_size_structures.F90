@@ -3,7 +3,7 @@
 
 subroutine calc_size_structures()
 
-  use const_maxsize, only : M_INT, S_REAL
+  use const_maxsize, only : M_INT, S_REAL, LOGIC
   use var_inp,  only : infile, outfile, num_file, inperi
   use var_setp, only : inpara, inpro, inion,&
                        inrna, indtrna13, indtrna15, inarna, &
@@ -24,6 +24,7 @@ subroutine calc_size_structures()
 
   integer, parameter :: i = 1
   real,    parameter :: r = 1.0
+  logical, parameter :: l = .True.
 
 #ifdef USE_SIZEOF
 #else
@@ -35,6 +36,7 @@ subroutine calc_size_structures()
   ! ---------------------------------------------------------------------
   M_INT = sizeof(i)
   S_REAL = sizeof(r)
+  LOGIC = sizeof(l)
   
   ! var_inp
   infile%sz = sizeof(infile)

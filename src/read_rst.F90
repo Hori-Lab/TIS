@@ -5,8 +5,8 @@ subroutine read_rst(itype_wanted)
    use const_physical
    use var_setp,   only : insimu
    use var_inp,    only : infile
-   use var_struct, only : nmp_real, nmp_all, xyz_mp_rep
-   use var_simu,   only : velo_mp, accel_mp
+   use var_struct, only : nmp_real, nmp_all, xyz_mp_rep, ndtrna_hb, ndtrna_st
+   use var_simu,   only : velo_mp, accel_mp, hb_status, st_status
    use var_replica,only : rep2lab, grep2irep, grep2rank, n_replica_all, lab2rep
    use mpiconst
 #ifdef MPI_PAR
@@ -24,6 +24,7 @@ subroutine read_rst(itype_wanted)
    integer :: io_err
    integer :: nblock_size
    real(PREC), allocatable :: temp_array(:,:)
+   logical, allocatable :: temp_array_logic(:)
    character(CARRAY_MSG_ERROR) :: error_message
    logical, allocatable :: flg_done(:)
 #ifdef MPI_PAR
@@ -214,6 +215,71 @@ subroutine read_rst(itype_wanted)
             enddo
             flg_done(:) = .true.
             exit
+   
+         !----------------------------
+         ! DTRNA15
+         !----------------------------
+         case(RSTBLK%DTRNA15)
+            read (luninp) grep
+            read (luninp) n
+            if (n /= ndtrna_hb) then
+               write(error_message,*) 'Error: ndtrna_hb is not consistent. n=',n,&
+                                      'ndtrna_hb=',ndtrna_hb
+               call util_error(ERROR%STOP_ALL, error_message)
+            endif
+            read (luninp) n
+            if (n /= ndtrna_st) then
+               write(error_message,*) 'Error: ndtrna_st is not consistent. n=',n,&
+                                      'ndtrna_st=',ndtrna_st
+               call util_error(ERROR%STOP_ALL, error_message)
+            endif
+
+            rank = grep2rank(grep)  ! Not-replica case, rank = 0
+            irep = grep2irep(grep)  ! Not-replica case, irep = 1
+   
+            ! hb_status
+            allocate(temp_array_logic(ndtrna_hb))
+            read (luninp) (temp_array_logic(i), i=1,ndtrna_hb)
+
+            if (rank == 0) then
+               hb_status(1:ndtrna_hb,irep) = temp_array_logic(1:ndtrna_hb)
+            endif
+#ifdef MPI_PAR
+            if (rank == 0) then
+               call MPI_bcast(hb_status, ndtrna_hb*n_replica_mpi, LOGIC, &
+                              0, mpi_comm_local, ierr)
+            else
+               call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
+               call MPI_send(temp_array_logic, ndtrna_hb, LOGIC, &
+                             rank, TAG, mpi_comm_rep, ierr)
+            endif
+#endif
+            deallocate(temp_array_logic)
+
+            ! st_status
+            allocate(temp_array_logic(ndtrna_st))
+            read (luninp) (temp_array_logic(i), i=1,ndtrna_st)
+
+            if (rank == 0) then
+               st_status(1:ndtrna_st,irep) = temp_array_logic(1:ndtrna_st)
+            endif
+#ifdef MPI_PAR
+            if (rank == 0) then
+               call MPI_bcast(st_status, ndtrna_st*n_replica_mpi, LOGIC, &
+                              0, mpi_comm_local, ierr)
+            else
+               !call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
+               ! irep was already sent when sending hb_status
+               call MPI_send(temp_array_logic, ndtrna_st, LOGIC, &
+                             rank, TAG, mpi_comm_rep, ierr)
+            endif
+#endif
+            deallocate(temp_array_logic)
+
+            flg_done(grep) = .true.
+            if (all(flg_done)) then
+               exit
+            endif
   
          case default
             write(error_message,*) 'Unknown block-identifier in restart file. itype=',itype
@@ -298,6 +364,25 @@ subroutine read_rst(itype_wanted)
             lab2rep(i) = irep
          enddo
 
+
+      !----------------------------
+      ! DTRNA15
+      !----------------------------
+      case(RSTBLK%DTRNA15)
+         if (local_rank_mpi == 0) then
+            do i = 1, n_replica_mpi
+               call MPI_recv(irep, 1, MPI_INTEGER, 0, TAG, mpi_comm_rep, istatus, ierr)
+               call MPI_recv(hb_status(:,irep), ndtrna_hb, LOGIC, &
+                             0, TAG, mpi_comm_rep, istatus, ierr)
+               call MPI_recv(st_status(:,irep), ndtrna_st, LOGIC, &
+                             0, TAG, mpi_comm_rep, istatus, ierr)
+            enddo
+         endif
+         call MPI_bcast(ndtrna_hb, ndtrna_hb*n_replica_mpi, LOGIC, &
+                        0, mpi_comm_local, ierr)
+         call MPI_bcast(ndtrna_st, ndtrna_st*n_replica_mpi, LOGIC, &
+                        0, mpi_comm_local, ierr)
+
       case default
          write(error_message,*) 'unknown identifier of block in restart file'
          call util_error(ERROR%STOP_ALL, error_message)
@@ -337,6 +422,9 @@ contains
       case(RSTBLK%REPLICA)
          write(error_message,*) &
          'Absence or malformed format of "REPLICA" block in restart file.'
+      case(RSTBLK%DTRNA15)
+         write(error_message,*) &
+         'Absence or malformed format of "DTRNA15" block in restart file.'
       case default
       endselect
 

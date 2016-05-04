@@ -32,6 +32,7 @@ module const_maxsize
 #endif
   integer, save      :: S_REAL    !< byte size of default real   (single precision)
   integer, save      :: M_INT     !< byte size of default integer   (medium-size integer)
+  integer, save      :: LOGIC     !< byte size of default logical
   integer, parameter :: L_INT = 8 !< byte size of larger integer ("long long int" in C)
 
   ! Files
