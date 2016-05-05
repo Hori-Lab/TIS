@@ -41,7 +41,13 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   character(4) :: hdr
   character(80) :: title
 
-  ! These are supposed to be assigned in Makefile.
+! Git
+#ifdef VERGIT
+  character(14), parameter :: VERSION_DATE = VERDATE
+  character(7),  parameter :: VERSION_BUILD = VERBUILD
+
+! Subversion
+#else
 #ifdef VERMAJOR
   integer, parameter :: VERSION_MAJOR = VERMAJOR
 #else
@@ -56,6 +62,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   integer, parameter :: VERSION_BUILD = VERBUILD  
 #else
   integer, parameter :: VERSION_BUILD = 0
+#endif
 #endif
   ! ---------------------------------------------------------------------
 
@@ -155,14 +162,27 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
         write (ioutfile(grep)) ntitle
 
         ! title text
-        title(1:40)  = "==================== Molecular Dynamics "
-        write(title(41:80),'(a20,i2,a1,i0.2,a1,i0.4,a10)')  &
-                            "Code : CafeMol ver. ",VERSION_MAJOR,&
-                            ".",VERSION_MINOR,".",VERSION_BUILD, " ========="
+! Git
+#ifdef VERGIT
+        title(1:2) = "= "
+        write(title(3:21), '(a12,a7)')     'Git commit: ',VERSION_BUILD
+        write(title(22:55), '(a13,a14,a7)') ' compiled on ',VERSION_DATE, ' (UTC),'
+        title(56:80) = " written by Naoto Hori =="
         write (ioutfile(grep)) title
-        title(1:40)  = "==================== Developed by Kyoto "
-        title(41:80) = "University ============================="
+        title(1:40)  = "==== modified from CafeMol 2.1 developed"
+        title(41:80) = " by Takada Lab at Kyoto University ====="
         write (ioutfile(grep)) title
+! Subversion
+#else
+        ! title text
+        title(1:45)  = "========================= Molecular Dynamics "
+        write(title(46:80),'(a10,i2,a1,i0.2,a1,i0.4,a15)')  &
+               "Code ver. ",VERSION_MAJOR,".",VERSION_MINOR,".",VERSION_BUILD, " =============="
+        write (ioutfile(grep)) title
+        title(1:40)  = "==== modified from CafeMol 2.1 developed"
+        title(41:80) = " by Takada Lab at Kyoto University ====="
+        write (ioutfile(grep)) title
+#endif
 
         ! temperature and lunit2mp is needed
         ! when you transfer dcd file to movie file.

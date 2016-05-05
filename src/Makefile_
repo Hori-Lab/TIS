@@ -42,14 +42,22 @@ UTIL8 = ../utility/a2rst
 # -D_DUMP_REP_EX
 # --------------------------------------------------------------------
 #  Revision numbers to be written in data files.
-#  (SVNREV should be commented out when release.)
-#SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
-VERSION  = -DVERMAJOR=0 -DVERMINOR=0 # Major and minor revision
-#VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
-VERSION += -DVERBUILD=0000 # Build number
+#  Subversion:
+##SVNREV := $(shell LC_ALL=en_US.UTF-8 svn info | awk '/^Revision/{print $$2}')
+#VERSION  = -DVERMAJOR=0 -DVERMINOR=0 # Major and minor revision
+##VERSION += -DVERBUILD=$(SVNREV) # Build number (Switch to the next line when release.)
+#VERSION += -DVERBUILD=0000 # Build number
 # Notice to trunk users:
 #   If 'svn' command does not work on your computer, please comment out(#) SVNREV
 #   and switch DVERBUILD line to the second one.
+#
+#  Git:
+VERSION = -DVERGIT
+GIT_VER = $(shell git log -1 --format="%h")
+#   CUSTOM_FLAGS += -DVERGIT=\"$(GIT_VER)\"
+VERSION += -DVERBUILD="\"$(GIT_VER)\""
+DATESEQ = $(shell date -u +%Y%m%d%H%M%S)  # Date
+VERSION += -DVERDATE="\"$(DATESEQ)\""
 # --------------------------------------------------------------------
 
 

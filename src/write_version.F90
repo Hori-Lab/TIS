@@ -9,6 +9,18 @@ subroutine write_version( lunout )
    
    ! ##############################################
    ! These are supposed to be assigned in Makefile.
+#ifdef VERGIT
+   character(14), parameter :: VERSION_DATE = VERDATE
+   character(7),  parameter :: VERSION_BUILD = VERBUILD
+
+   write(lunout, '(13a)', ADVANCE='no') '# Git commit '
+   write(lunout, '(7a)' , ADVANCE='no') VERSION_BUILD
+   write(lunout, '(13a)', ADVANCE='no') ' compiled on '
+   write(lunout, '(14a)', ADVANCE='no') VERSION_DATE
+   write(lunout, '(6a)'               ) ' (UTC)'
+
+#else
+! Subversion
 #ifdef VERMAJOR
    integer, parameter :: VERSION_MAJOR = VERMAJOR
 #else
@@ -32,5 +44,6 @@ subroutine write_version( lunout )
    write(lunout, '(i0.2)', ADVANCE='no') VERSION_MINOR
    write(lunout, '(1a)',   ADVANCE='no') '.'
    write(lunout, '(i0.4)'              ) VERSION_BUILD
+#endif
 
 endsubroutine write_version
