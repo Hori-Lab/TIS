@@ -92,7 +92,7 @@ subroutine mloop_nativeinfo(istep_sim)
   if (myrank == 0) then
 #endif
         
-  if(i_ninfo_type == 1) then
+  if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
 
      inat = 1
      lun = iopen_lunnum + 1
