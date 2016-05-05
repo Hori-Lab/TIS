@@ -1462,6 +1462,8 @@ subroutine setp_mapara_rna(lunpara, lunout)
         itype = DT15EXV%CA2
      else if (ctype(1:2) == 'Cl') then
         itype = DT15EXV%CL
+     else if (ctype(1:2) == 'Na') then
+        itype = DT15EXV%NA
      else if (ctype(1:1) == 'K') then
         itype = DT15EXV%K
      else if (ctype(1:1) == 'P') then

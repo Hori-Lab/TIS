@@ -84,6 +84,9 @@ subroutine setp_dtrna15()
         else if (cmp2seq(imp) == 'K  ') then
            exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%K))
            exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%K)
+        else if (cmp2seq(imp) == 'Na ') then
+           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%NA))
+           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%NA)
         else if (cmp2seq(imp) == 'Cl ') then
            exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%CL))
            exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%CL)

@@ -263,6 +263,8 @@ contains
          imp2chemicaltype = CHEMICALTYPE%MG
       else if (cmp2seq(imp) == 'K  ') then
          imp2chemicaltype = CHEMICALTYPE%K
+      else if (cmp2seq(imp) == 'Na ') then
+         imp2chemicaltype = CHEMICALTYPE%NA
       else if (cmp2seq(imp) == 'Cl ') then
          imp2chemicaltype = CHEMICALTYPE%CL
       ! ------ protein ------

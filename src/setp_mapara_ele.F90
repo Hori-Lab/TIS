@@ -115,13 +115,7 @@ subroutine setp_mapara_ele()
         read (ctmp00, *) char50, char3, x
         write (lunout, '(5a, g10.3)') '---reading LENGTH_PER_UNIT: ', trim(char50), ' ', char3, ' ', x
 
-        if (char3 == 'OTH') then
-            aaid = 21
-        else if (char3 == 'P  ') then
-            aaid = 22
-        else
-            aaid = ifunc_seq2id(char3)
-        end if
+        aaid = ifunc_seq2id(char3)
         inele%length_per_unit(aaid) = x
      end if
   end do ! iline

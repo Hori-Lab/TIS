@@ -253,12 +253,13 @@ module const_index
      integer :: C       !< 26: Cytosine
      integer :: MG      !< 27: ion
      integer :: K       !< 28: ion
-     integer :: CL      !< 29: ion
-     integer :: MAX     !< 29 
+     integer :: NA      !< 29: ion
+     integer :: CL      !< 30: ion
+     integer :: MAX     !< 30
   endtype chemical_type
   type(chemical_type), parameter :: CHEMICALTYPE = &
        chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,&
-                     20,21,22,23,24,25,26,27,28,29,29)
+                     20,21,22,23,24,25,26,27,28,29,30,30)
 
   type ion_type
      integer :: VOID      !< 0
@@ -463,19 +464,20 @@ module const_index
   type(nearest_neighbor), parameter :: NN = nearest_neighbor(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16)
 
   type dtrna15_exv
-     integer :: P
-     integer :: S
-     integer :: A
-     integer :: G
-     integer :: C
-     integer :: U
-     integer :: MG2
-     integer :: CA2
-     integer :: CL
-     integer :: K
+     integer :: P    !<  1
+     integer :: S    !<  2
+     integer :: A    !<  3
+     integer :: G    !<  4
+     integer :: C    !<  5
+     integer :: U    !<  6
+     integer :: MG2  !<  7
+     integer :: CA2  !<  8
+     integer :: CL   !<  9
+     integer :: K    !< 10 
+     integer :: NA   !< 11
      integer :: MAX
   endtype dtrna15_exv
-  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,10)
+  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,11)
 
   type seq2id
      integer :: ALA  !< 1
@@ -503,22 +505,23 @@ module const_index
      integer :: P2   !< 23
      integer :: MG   !< 24
      integer :: K    !< 25
-     integer :: CL   !< 26
-     integer :: RA   !< 27
-     integer :: RC   !< 28
-     integer :: RG   !< 29
-     integer :: RT   !< 30
-     integer :: RU   !< 31
-     integer :: RI   !< 32
-     integer :: DA   !< 33
-     integer :: DC   !< 34
-     integer :: DG   !< 35
-     integer :: DT   !< 36
-     integer :: DU   !< 37
-     integer :: DI   !< 38
-     integer :: MAX  !< 38
+     integer :: NA   !< 26
+     integer :: CL   !< 27
+     integer :: RA   !< 28
+     integer :: RC   !< 29
+     integer :: RG   !< 30
+     integer :: RT   !< 31
+     integer :: RU   !< 32
+     integer :: RI   !< 33
+     integer :: DA   !< 34
+     integer :: DC   !< 35
+     integer :: DG   !< 36
+     integer :: DT   !< 37
+     integer :: DU   !< 38
+     integer :: DI   !< 39
+     integer :: MAX  !< 39
   endtype seq2id
   type(seq2id), parameter :: SEQID = seq2id(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,&
-                             20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38, 38)
+                             20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,39)
   
 endmodule const_index

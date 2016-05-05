@@ -68,6 +68,8 @@ integer function ifunc_seq2id(name)
      ifunc_seq2id = SEQID%MG
   else if(name == 'K  ') then
      ifunc_seq2id = SEQID%K
+  else if(name == 'NA ' .or. name == 'Na ') then
+     ifunc_seq2id = SEQID%NA
   else if(name == 'CL ' .or. name == 'Cl ') then
      ifunc_seq2id = SEQID%CL
 

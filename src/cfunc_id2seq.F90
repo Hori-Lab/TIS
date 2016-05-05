@@ -68,6 +68,8 @@ character(3) function cfunc_id2seq(id)
         cfunc_id2seq = 'K  '
      case (SEQID%CL)
         cfunc_id2seq = 'CL '
+     case (SEQID%NA)
+        cfunc_id2seq = 'NA '
      
      case default
         write(error_message,'(a,i10)') 'Error: in cfunc_id2seq there is no id such ',id

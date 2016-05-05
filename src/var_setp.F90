@@ -213,8 +213,8 @@ module var_setp
 
      real(PREC) :: exv_dist
      real(PREC) :: exv_coef   ! 2013
-     real(PREC) :: exv_rad(10)  ! 2015
-     real(PREC) :: exv_eps(10)  ! 2015
+     real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015
+     real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015
      real(PREC) :: exv_adjust   ! 2015
      integer :: n_sep_nlocal_P
      integer :: n_sep_nlocal_S
@@ -627,8 +627,8 @@ module var_setp
      real(PREC) :: ionic_strength
      real(PREC) :: cdist(MXREPLICA)
      real(PREC) :: coef(MXREPLICA)
-     real(PREC) :: coef_charge_type(SEQID%CL)
-     real(PREC) :: length_per_unit(SEQID%CL)
+     real(PREC) :: coef_charge_type(SEQID%MAX)
+     real(PREC) :: length_per_unit(SEQID%MAX)
      logical :: flag_ele(MXMP)
      logical :: flag_charge_change
      integer :: n_charge_change

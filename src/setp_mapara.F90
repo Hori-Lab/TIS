@@ -210,6 +210,8 @@ contains
          char2ichem = CHEMICALTYPE%MG
       else if (c(1:2) == 'CL') then
          char2ichem = CHEMICALTYPE%CL
+      else if (c(1:2) == 'NA') then
+         char2ichem = CHEMICALTYPE%NA
       else if (c(1:1) == 'K') then
          char2ichem = CHEMICALTYPE%K
       else
