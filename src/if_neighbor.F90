@@ -4,14 +4,14 @@
 module if_neighbor
 interface
 
-   subroutine simu_neighbor_pre(xyz_mp, ineigh_unit)
+   subroutine neighbor_pre(xyz_mp, ineigh_unit)
       use const_maxsize
       implicit none
       real(PREC), intent(in)  :: xyz_mp(:,:)
       integer,    intent(out) :: ineigh_unit(MXUNIT, MXUNIT)
-   endsubroutine simu_neighbor_pre
+   endsubroutine neighbor_pre
 
-   subroutine simu_neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
+   subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
      use const_maxsize
      use mpiconst
      use var_struct, only : nmp_all
@@ -20,7 +20,7 @@ interface
      integer, intent(in)  :: iexv2mp_in (3,MXMPNEIGHBOR*nmp_all)
      integer, intent(in) ,optional :: nexv_lall(0:npar_mpi-1)
      integer, intent(out),optional :: iexv2mp_out(3,MXMPNEIGHBOR*nmp_all)
-   endsubroutine simu_neighbor_sort
+   endsubroutine neighbor_sort
 
 endinterface
 endmodule if_neighbor

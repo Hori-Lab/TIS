@@ -1,7 +1,7 @@
-! simu_neighbor_list_hb
+! neighbor_list_hb
 !> @brief This subroutine is to make neighborlist especially for the hydrogen-bonding interaction
 
-subroutine simu_neighbor_list_hb(irep)
+subroutine neighbor_list_hb(irep)
   
   use const_maxsize
   use const_index
@@ -105,4 +105,4 @@ subroutine simu_neighbor_list_hb(irep)
      enddo
   enddo
 
-end subroutine simu_neighbor_list_hb
+end subroutine neighbor_list_hb

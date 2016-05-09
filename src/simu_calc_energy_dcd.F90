@@ -29,7 +29,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   ! calc neighbour list
   ! -----------------------------------------------------------------
   do irep=1, n_replica_mpi
-     call simu_neighbor(irep)
+     call neighbor(irep)
   enddo
   
   ! calc energy

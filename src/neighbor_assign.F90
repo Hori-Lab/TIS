@@ -1,4 +1,4 @@
-! simu_neighbor_assign
+! neighbor_assign
 !> @brief Assignment and sorting of neighborling list for each energy type
 
 #ifdef TIME
@@ -10,7 +10,7 @@
 #endif
 
 ! *********************************************************************
-subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
+subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   
   use if_neighbor
   use const_maxsize
@@ -164,7 +164,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
      imp = imp_l2g(imp_l)
      iunit = imp2unit(imp)
 
-     !write(*, *) 'simu_neighbor_assign: lmp2neigh', lmp2neigh(imp_l-ksta+1,n)
+     !write(*, *) 'neighbor_assign: lmp2neigh', lmp2neigh(imp_l-ksta+1,n)
      loop_lneigh: do inum = istart, lmp2neigh(imp_l-ksta+1,n)
         
         jmp = ineigh2mp(inum,n)
@@ -262,7 +262,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = inrna%n_sep_nlocal_B
                  case default 
-                    error_message = 'Error: logical defect in simu_neighbor_assign'
+                    error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
                  
@@ -310,7 +310,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = indtrna13%n_sep_nlocal_B
                  case default 
-                    error_message = 'Error: logical defect in simu_neighbor_assign'
+                    error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
                  
@@ -322,7 +322,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  !if(jmp < imp + isep_nlocal) then
                  !   i_exvol = 0
                  !end if
-                 error_message = 'Error: EXV_WCA is only for RNA currently, in simu_neighbor_assign'
+                 error_message = 'Error: EXV_WCA is only for RNA currently, in neighbor_assign'
                  call util_error(ERROR%STOP_ALL, error_message)
               endif
            end if ! (iunit==junit)
@@ -350,7 +350,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = indtrna15%n_sep_nlocal_B
                  case default 
-                    error_message = 'Error: logical defect in simu_neighbor_assign'
+                    error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
                  
@@ -365,7 +365,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  !if(jmp < imp + isep_nlocal) then
                  !   i_exvol = 0
                  !end if
-                 error_message = 'Error: EXV_DT15 is only for RNA currently, in simu_neighbor_assign'
+                 error_message = 'Error: EXV_DT15 is only for RNA currently, in neighbor_assign'
                  call util_error(ERROR%STOP_ALL, error_message)
               endif
 
@@ -375,7 +375,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
               i_exv_dt15 = 1 
 
            else
-              error_message = 'Error: EXV_DT15 is only for RNA currently, in simu_neighbor_assign'
+              error_message = 'Error: EXV_DT15 is only for RNA currently, in neighbor_assign'
               call util_error(ERROR%STOP_ALL, error_message)
                 
            end if ! (iunit==junit)
@@ -456,7 +456,7 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 #ifdef SHARE_NEIGH_PNL
   nexv_l = iexv
 
-  call simu_neighbor_sort(irep, nexv_l, iexv2mp_l, iexv2mp_l_sort)
+  call neighbor_sort(irep, nexv_l, iexv2mp_l, iexv2mp_l_sort)
 
   TIME_S( tmc_neighbor )
 
@@ -479,14 +479,14 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   TIME_E( tmc_neighbor )
 
-  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
+  call neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 #else
   nexv = iexv
   nexv_lall(:) = 0  ! NIS aza
   nexv_lall(0) = nexv
 
-  call simu_neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
-  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
+  call neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
+  call neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 #endif
 
 #else
@@ -494,8 +494,8 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
   nexv_lall(:) = 0  ! NIS aza
   nexv_lall(0) = nexv
 
-  call simu_neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
-  call simu_neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
+  call neighbor_sort(irep, nexv, iexv2mp_l, iexv2mp_pre)
+  call neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 
 #endif
 
@@ -528,4 +528,4 @@ subroutine simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   end if
 
-end subroutine simu_neighbor_assign
+end subroutine neighbor_assign

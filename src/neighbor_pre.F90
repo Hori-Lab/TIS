@@ -1,8 +1,8 @@
-!simu_neighbor_pre
+!neighbor_pre
 !> @brief Constructs the unit-level neighboring list by calculating  &
 !>        unit-unit distances.
 
-subroutine simu_neighbor_pre(xyz_mp, ineigh_unit)
+subroutine neighbor_pre(xyz_mp, ineigh_unit)
   
   use const_maxsize
   use const_index
@@ -101,4 +101,4 @@ subroutine simu_neighbor_pre(xyz_mp, ineigh_unit)
      end do
   end do
 
-end subroutine simu_neighbor_pre
+end subroutine neighbor_pre

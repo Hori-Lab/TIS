@@ -1,4 +1,4 @@
-! simu_neighbor_list_hp
+! neighbor_list_hp
 !> @brief This subroutine is to make neighborlist especially for the hydrophobic interaction.
 
 #ifdef TIME
@@ -11,7 +11,7 @@
 
 ! *********************************************************************
 ! neighbor list for hydrohpobic interaction
-subroutine simu_neighbor_list_hp(irep)
+subroutine neighbor_list_hp(irep)
   
   use const_maxsize
   use const_index
@@ -224,9 +224,9 @@ subroutine simu_neighbor_list_hp(irep)
 
 #endif
      if(ineigh > MXMPHP*nhp) then
-        error_message = 'Error: too big nhpneigh in simu_neighbor_list_hp'
+        error_message = 'Error: too big nhpneigh in neighbor_list_hp'
         call util_error(ERROR%STOP_ALL, error_message)
      end if
 
 ! end do ! irep
-end subroutine simu_neighbor_list_hp
+end subroutine neighbor_list_hp

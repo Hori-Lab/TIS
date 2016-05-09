@@ -1,4 +1,4 @@
-! simu_neighbor_list_ele
+! neighbor_list_ele
 !> @brief Construct a neighbor list for electrostatic interaction
 
 #ifdef TIME
@@ -10,7 +10,7 @@
 #endif
 
 ! *********************************************************************
-subroutine simu_neighbor_list_ele(jrep)
+subroutine neighbor_list_ele(jrep)
 
   use const_maxsize
   use const_index
@@ -195,7 +195,7 @@ subroutine simu_neighbor_list_ele(jrep)
 
   !if(iele > MXELE) then
   if(iele > (MXMPELE*ncharge)) then
-     error_message = 'Error: too big nele in simu_neighbor_list_ele'
+     error_message = 'Error: too big nele in neighbor_list_ele'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
@@ -203,10 +203,10 @@ subroutine simu_neighbor_list_ele(jrep)
 
 ! DBG
 #ifdef _DEBUG
-  write(6,*) 'simu_neighbor_list_ele, irep, lele(irep) ' , irep, lele(irep)
+  write(6,*) 'neighbor_list_ele, irep, lele(irep) ' , irep, lele(irep)
   call flush(6)
 #endif
 
 !  write (*, *) ncharge, lele(irep), sqrt(rneighbor2_ele)
 
-end subroutine simu_neighbor_list_ele
+end subroutine neighbor_list_ele

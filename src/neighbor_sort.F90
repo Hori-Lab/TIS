@@ -1,7 +1,7 @@
-! simu_neighbor_sort
+! neighbor_sort
 !> @brief Sort neighbor list for each energy type
 
-subroutine simu_neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
+subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
   
   use const_maxsize
   use const_index
@@ -85,7 +85,7 @@ subroutine simu_neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
 
   ! ------------------------------------------------------------
   if(iexv2 /= nexv) then
-     error_message = 'Error: invalid value for nexv in simu_neighbor_sort'
+     error_message = 'Error: invalid value for nexv in neighbor_sort'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
@@ -132,4 +132,4 @@ contains
 
   end subroutine sort
 
-end subroutine simu_neighbor_sort
+end subroutine neighbor_sort

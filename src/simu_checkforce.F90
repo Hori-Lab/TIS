@@ -89,7 +89,7 @@ subroutine simu_checkforce()
 
   do irep = 1, n_replica_mpi
      call simu_copyxyz(irep)
-     call simu_neighbor(irep)
+     call neighbor(irep)
   enddo
   
   call energy_allrep(energy_unit, energy, &

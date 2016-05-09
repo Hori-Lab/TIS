@@ -235,10 +235,10 @@ FOBJ1 = \
 	simu_fmat.o simu_ppr.o\
 	simu_hydro_tensors.o\
 	simu_minimize.o simu_mc_implig.o simu_calc_energy_dcd.o\
-	simu_neighbor.o simu_neighbor_pre.o simu_neighbor_list.o\
-	simu_neighbor_assign.o simu_neighbor_sort.o\
-	simu_neighbor_list_ele.o simu_neighbor_list_ele2.o\
-	simu_neighbor_list_hp.o simu_neighbor_list_hb.o\
+	neighbor.o neighbor_pre.o neighbor_list.o\
+	neighbor_assign.o neighbor_sort.o\
+	neighbor_list_ele.o neighbor_list_ele2.o\
+	neighbor_list_hp.o neighbor_list_hb.o\
 	simu_copyxyz.o simu_copyxyz_ele.o\
 	simu_copyxyz_mgo.o simu_copyxyz_replica.o simu_copyxyz_ref.o\
 	simu_xyz_adjst.o simu_velo_mrand.o simu_velo_mrand_old.o\

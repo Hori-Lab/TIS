@@ -1,4 +1,4 @@
-! simu_neighbor_list_ele2
+! neighbor_list_ele2
 !> @brief Construct a neighbor list for electrostatic interaction
 
 #ifdef TIME
@@ -10,7 +10,7 @@
 #endif
 
 ! *********************************************************************
-subroutine simu_neighbor_list_ele2(jrep)
+subroutine neighbor_list_ele2(jrep)
   
   use const_maxsize
   use const_index
@@ -123,4 +123,4 @@ subroutine simu_neighbor_list_ele2(jrep)
   end do
   write (*, *) ncharge, sum_lele_k, sqrt(rneighbor2_ele)
 
-end subroutine simu_neighbor_list_ele2
+end subroutine neighbor_list_ele2

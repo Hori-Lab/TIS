@@ -28,7 +28,7 @@ subroutine setp_native_neighbor_list(xyz_mp_init, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! calc neigh_unit
-  call simu_neighbor_pre(xyz_mp_init, ineigh_unit)
+  call neighbor_pre(xyz_mp_init, ineigh_unit)
 
   ! -------------------------------------------------------------------
   ! calc ineigh2mp

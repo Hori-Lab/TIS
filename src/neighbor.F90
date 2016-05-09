@@ -1,4 +1,4 @@
-! simu_neighbor
+! neighbor
 !> @brief This subroutine is to make neighborlist for the whole of non-local interaction.
 
 #ifdef TIME
@@ -10,7 +10,7 @@
 #endif
 
 ! *********************************************************************
-subroutine simu_neighbor(irep)
+subroutine neighbor(irep)
   
   use const_maxsize
   use const_index
@@ -42,20 +42,20 @@ subroutine simu_neighbor(irep)
 
   TIME_S( tm_neighbor_exv )
   ! make neighborlist
-  call simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
+  call neighbor_list(irep, ineigh2mp, lmp2neigh)
 
   ! assign iconcal2con and iexv2mp
-  call simu_neighbor_assign(irep, ineigh2mp, lmp2neigh)
+  call neighbor_assign(irep, ineigh2mp, lmp2neigh)
   TIME_E( tm_neighbor_exv )
   
   TIME_S( tm_neighbor_ele )
   if (inmisc%force_flag(INTERACT%ELE)) then
      ! make neighborlist for electrostatic interaction
      if(inele%i_calc_method == 0) then
-        call simu_neighbor_list_ele(irep)
+        call neighbor_list_ele(irep)
 !     if(inele%i_calc_method == 0) then
      else if(inele%i_calc_method == 1) then
-        call simu_neighbor_list_ele2(irep)
+        call neighbor_list_ele2(irep)
      end if
   endif
   TIME_E( tm_neighbor_ele )
@@ -63,12 +63,12 @@ subroutine simu_neighbor(irep)
   TIME_S( tm_neighbor_hp )
   if (inmisc%force_flag(INTERACT%HP)) then
      ! make neighborlist for hydrophobic interaction
-     call simu_neighbor_list_hp(irep)
+     call neighbor_list_hp(irep)
   endif
   TIME_E( tm_neighbor_hp )
 
   if (inmisc%i_dtrna_model == 2015) then
-     call simu_neighbor_list_hb(irep)
+     call neighbor_list_hb(irep)
   endif
 
-end subroutine simu_neighbor
+end subroutine neighbor

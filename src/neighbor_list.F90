@@ -1,10 +1,10 @@
-!simu_neighbor_list
+!neighbor_list
 !> @brief Constructs the neighboring list for non-local interactions. &
 !>        In the runup to caluculations, this subroutine calls        &
-!>        "simu_neighbor_pre" to specify which unit pair(s) contain   &
+!>        "neighbor_pre" to specify which unit pair(s) contain   &
 !>        non-local contacts.
 
-subroutine simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
+subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
   
   use if_neighbor
   use const_maxsize
@@ -36,7 +36,7 @@ subroutine simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! calc neigh_unit
-  call simu_neighbor_pre(xyz_mp_rep(:,:,irep), ineigh_unit)
+  call neighbor_pre(xyz_mp_rep(:,:,irep), ineigh_unit)
 
   ! -------------------------------------------------------------------
   ! calc ineigh2mp
@@ -86,8 +86,8 @@ subroutine simu_neighbor_list(irep, ineigh2mp, lmp2neigh)
 !$omp end parallel
 
   if(any(ineighbor > MXMPNEIGHBOR*nmp_all/nthreads)) then
-     error_message = 'Error: too big ineighbor in simu_neighbor_list'
+     error_message = 'Error: too big ineighbor in neighbor_list'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-end subroutine simu_neighbor_list
+end subroutine neighbor_list

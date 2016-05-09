@@ -32,7 +32,7 @@ subroutine simu_minimize(flg_converge)
    ! --------------------------------------------------------------
    if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
       TIME_S( tm_neighbor )
-      call simu_neighbor(IREP)
+      call neighbor(IREP)
       TIME_E( tm_neighbor )
    end if
  

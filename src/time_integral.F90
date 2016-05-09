@@ -51,7 +51,7 @@ subroutine time_integral(flg_step_each_replica)
   if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
      do irep=1, n_replica_mpi
         TIME_S( tm_neighbor )
-        call simu_neighbor(irep)
+        call neighbor(irep)
         TIME_E( tm_neighbor )
      enddo
   end if
