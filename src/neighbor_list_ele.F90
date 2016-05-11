@@ -21,17 +21,12 @@ subroutine neighbor_list_ele(jrep)
                           lele, iele2mp, coef_ele, ncharge
   use var_replica, only : irep2grep
   use time
-#ifdef MPI_PAR2
   use mpiconst
-#endif
 
   implicit none
 
-  ! -------------------------------------------------------------------
   integer, intent(in) :: jrep
 
-  ! -------------------------------------------------------------------
-  ! local variables
   integer :: imp, jmp, iunit, junit, irep, grep
   integer :: icharge, jcharge, iele, imirror, n_index
   integer :: icalc(MXUNIT, MXUNIT)
@@ -39,7 +34,6 @@ subroutine neighbor_list_ele(jrep)
   character(CARRAY_MSG_ERROR) :: error_message
 #ifdef MPI_PAR2
   integer :: icharge_l
-
 #ifdef SHARE_NEIGH
   integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
   real(PREC) :: coef_ele_l(MXMPELE*ncharge)
@@ -47,7 +41,6 @@ subroutine neighbor_list_ele(jrep)
   integer :: nele_lall(0:npar_mpi-1)
   integer :: disp(0:npar_mpi-1), count(0:npar_mpi-1)
 #endif
-
 #endif
 
   ! -------------------------------------------------------------------

@@ -110,8 +110,8 @@ FC = gfortran
 FC_UTIL = gfortran
 CPP = -cpp -DTIME 
 INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-##OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
+#OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
 LIB =
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -207,7 +207,7 @@ FOBJ1 = \
 	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
 	setp_mapara_ion.o setp_redef_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_group.o setp_anneal_para.o setp_searchingtf_para.o setp_minimize_para.o\
-	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o\
+	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
 	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o setp_para_enm.o setp_para_mgo.o\
 	setp_energy_unit.o setp_bridge_para.o setp_pulling_para.o setp_cylinder_para.o\
 	setp_anchor_para.o setp_rest1d_para.o setp_fix_para.o setp_hydrophobic.o\
@@ -223,7 +223,7 @@ FOBJ1 = \
 	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
 	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o mloop_simulator.o\
-	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o\
+	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o\
 	mloop_fmat_homo.o mloop_fmat_hetero.o\
 	simu_checkforce.o\
 	simu_para.o\
@@ -275,7 +275,7 @@ FOBJ1 = \
 	write_rep_adjust.o write_version.o\
 	read_pull.o read_pdb_rna.o\
 	read_dssp.o read_dssp_pro.o read_paraaicg.o read_paraaicg2.o\
-	write_fmat.o mloop_recalc_coef.o
+	write_fmat.o mloop_recalc_coef.o widom.o
 	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 
 

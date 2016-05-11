@@ -107,3 +107,101 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
 !$omp end do nowait
 
 end subroutine energy_exv_dt15
+
+
+subroutine energy_exv_dt15_tp(irep, energy)
+
+  use const_maxsize
+  use const_physical
+  use const_index
+  use var_setp,    only : indtrna15
+  use var_inp,     only : inperi
+  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
+                          exv_radius_mp, exv_epsilon_mp, &
+                          ntp, xyz_tp, iclass_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
+  use mpiconst
+
+  implicit none
+
+  integer,    intent(in)  :: irep
+  real(PREC), intent(out) :: energy(E_TYPE%MAX)         ! (E_TYPE%MAX)
+
+  integer :: itp1, itp2, imp2
+  integer :: imirror
+  real(PREC) :: dist, dij, a
+  real(PREC) :: coef
+  real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
+  real(PREC) :: ene 
+  real(PREC) :: v21(SDIM), vx(SDIM)
+
+  ! ------------------------------------------------------------------------
+
+  a = indtrna15%exv_adjust
+  ene = 0.0
+
+  do itp1 = 1, ntp
+     do imp2=1, nmp_real
+   
+        !if (iclass_tp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+        !   dij = indtrna15%exv_dist
+        !else
+           dij = tp_exv_dt15_rad(itp1) + exv_radius_mp(imp2)
+        !endif
+        
+        !if(inperi%i_periodic == 0) then
+        !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+        !else
+           vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+           call util_pbneighbor(vx, imirror)
+           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+        !end if
+        
+        dist = sqrt(dot_product(v21,v21))
+   
+        if(dist > dij) cycle
+   
+        ! --------------------------------------------------------------------
+        dist = dist + a - dij
+        roverdist  = a / dist
+        roverdist2 = roverdist * roverdist
+        roverdist4 = roverdist2 * roverdist2
+        roverdist6 = roverdist2 * roverdist4
+        roverdist12 = roverdist6 * roverdist6
+        ene = ene + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+   
+     end do
+
+     do itp2 = itp1+1, ntp
+        !if (iclass_tp(it1) == CLASS%RNA .AND. iclass_tp(itp2) == CLASS%RNA) then
+        !   dij = indtrna15%exv_dist
+        !else
+           dij = tp_exv_dt15_rad(itp1) + tp_exv_dt15_rad(itp2) 
+        !endif
+        
+        !if(inperi%i_periodic == 0) then
+        !   v21(1:3) = xyz_tp(1:3,itp2) - xyz_tp(1:3,itp1)
+        !else
+           vx(1:3) = xyz_tp(1:3,itp2) - xyz_tp(1:3,itp1)
+           call util_pbneighbor(vx, imirror)
+           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+        !end if
+        
+        dist = sqrt(dot_product(v21,v21))
+      
+        if(dist > dij) cycle
+      
+        ! --------------------------------------------------------------------
+        dist = dist + a - dij
+        roverdist  = a / dist
+        roverdist2 = roverdist * roverdist
+        roverdist4 = roverdist2 * roverdist2
+        roverdist6 = roverdist2 * roverdist4
+        roverdist12 = roverdist6 * roverdist6
+      
+        ene = ene + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+     enddo
+  enddo
+
+  energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) + ene
+
+end subroutine energy_exv_dt15_tp

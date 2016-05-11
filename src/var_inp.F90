@@ -41,6 +41,7 @@ module var_inp
      integer :: psf   = 55
      integer :: fmat  = 56
      integer :: opt   = 57
+     integer :: chp   = 58
      integer :: rst(MXREPLICA)
      integer :: ts(MXREPLICA)
      integer :: movie(MXREPLICA)
@@ -91,6 +92,7 @@ module var_inp
   integer, save :: ifile_out_psf
   integer, save :: ifile_out_rst
   integer, save :: ifile_out_opt
+  integer, save :: ifile_out_chp
 
   integer, save :: i_run_mode
   integer, save :: i_simulate_type

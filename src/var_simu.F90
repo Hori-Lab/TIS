@@ -74,4 +74,9 @@ module var_simu
 
   logical, save :: flg_ppr_release(MXBRIDGE) = .false.
 
+  ! Widom
+  integer(L_INT), save :: widom_iw
+  real(PREC), save :: widom_energy
+  real(PREC), save :: widom_chp
+
 end module var_simu

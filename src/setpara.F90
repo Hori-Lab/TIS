@@ -122,6 +122,9 @@ subroutine setpara( xyz_mp_init )
 #endif
   call setp_md_info()
 
+  ! Widom method
+  if (i_run_mode == RUN%WIDOM    ) call setp_widom_para()
+
   ! annealing
   if (i_run_mode == RUN%SA       ) call setp_anneal_para()
 

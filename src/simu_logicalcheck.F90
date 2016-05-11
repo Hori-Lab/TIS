@@ -48,6 +48,8 @@ subroutine simu_logicalcheck()
 
   case (RUN%EMIN)
 
+  case (RUN%WIDOM)
+
   case default
      error_code = 90
 

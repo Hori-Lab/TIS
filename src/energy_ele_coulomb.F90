@@ -7,7 +7,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   use const_physical
   use const_index
   use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele
+  use var_setp,    only : inele
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele
   use mpiconst
 
@@ -73,3 +73,73 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
 !$omp end do nowait
 
 end subroutine energy_ele_coulomb
+
+
+subroutine energy_ele_coulomb_tp(irep, energy)
+
+  use const_maxsize
+  use const_physical
+  use const_index
+  use var_inp,     only : inperi
+  use var_setp,    only : inele
+  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_real, lmp2charge, coef_charge, &
+                          ntp, xyz_tp, charge_tp
+  use var_replica, only : irep2grep
+  use mpiconst
+
+  implicit none
+
+  integer,    intent(in)    :: irep
+  real(PREC), intent(out)   :: energy(E_TYPE%MAX)
+
+  integer :: itp1, itp2, imp2, imirror, grep
+  real(PREC) :: dist2, coef1, ene
+  real(PREC) :: cutoff2
+  real(PREC) :: v21(SDIM), vx(SDIM)
+
+  cutoff2 = inele%cutoff_ele ** 2
+  grep = irep2grep(irep)
+
+  ene = 0.0
+
+!$omp do private(itp1,imp2,itp2,v21,vx,dist2,imirror)
+  do itp1 = 1, ntp
+
+     coef1 = charge_tp(itp1) * inele%coef(grep)
+
+     do imp2 = 1, nmp_real
+   
+        !if(inperi%i_periodic == 0) then
+        !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+        !else
+           vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+           call util_pbneighbor(vx, imirror)
+           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+        !end if
+        
+        dist2 = dot_product(v21,v21)
+        if(dist2 > cutoff2) cycle
+           
+        ene = ene + coef1 * coef_charge( lmp2charge(imp2),grep ) / sqrt(dist2)
+     end do
+
+     do itp2 = itp1+1, ntp
+        !if(inperi%i_periodic == 0) then
+        !   v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
+        !else
+           vx(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
+           call util_pbneighbor(vx, imirror)
+           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+        !end if
+        
+        dist2 = dot_product(v21,v21)
+        if(dist2 > cutoff2) cycle
+           
+        ene = ene + coef1 * charge_tp(itp2) / sqrt(dist2)
+     enddo
+  enddo
+!$omp end do nowait
+
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
+
+end subroutine energy_ele_coulomb_tp

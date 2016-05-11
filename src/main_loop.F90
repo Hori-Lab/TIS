@@ -13,10 +13,7 @@ subroutine main_loop()
   use var_mgo,     only : inmgo
   use var_fmat,    only : infmat, i_num_sum
   use var_simu,    only : istep_sim, mstep_sim
-    
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
   character(CARRAY_MSG_ERROR) :: error_message
@@ -84,6 +81,13 @@ subroutine main_loop()
      ! -------------------------------------------------------------------
      if (inmisc%force_flag(INTERACT%DTRNA)) then
         call mloop_dtrna()
+     end if
+
+     ! -------------------------------------------------------------------
+     ! setting up for Widom method
+     ! -------------------------------------------------------------------
+     if (i_run_mode == RUN%WIDOM    ) then
+        call mloop_widom()
      end if
 
      ! -------------------------------------------------------------------

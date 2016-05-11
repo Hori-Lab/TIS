@@ -258,6 +258,14 @@ module var_struct
   real(PREC), allocatable, save :: cutoff_dmin_hp(:, :) !(MXMPHP*nhp, REPLICA) 
   real(PREC), allocatable, save :: cutoff_dmax_hp(:, :) !(MXMPHP*nhp, REPLICA)
 
+  ! Test particles used in widom method
+  integer, save :: ntp
+  integer, save :: iclass_tp(MXTP)
+  real(PREC), save :: xyz_tp(SDIM,MXTP)
+  real(PREC), save :: charge_tp(MXTP)
+  real(PREC), save :: tp_exv_dt15_eps(MXTP)
+  real(PREC), save :: tp_exv_dt15_rad(MXTP)
+
 contains
 
   integer function get_icon_type (imp, jmp)

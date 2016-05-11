@@ -673,6 +673,21 @@ module var_setp
   type(input_window), save :: inwind
 
   !==========================================
+  ! Widom method (calculate chemical potential)
+  type input_widom
+     integer :: n_step_interval
+     integer :: n_trial
+     integer :: n_Mg_add
+     integer :: n_Na_add
+     integer :: n_K_add
+     integer :: n_Cl_add
+     integer :: n_max_mp_add
+     integer :: sz
+  endtype input_widom
+
+  type(input_widom), save :: inwidom
+
+  !==========================================
   
   integer, save :: irand !< variable for random number
 !  integer, parameter :: NSTREAM=128

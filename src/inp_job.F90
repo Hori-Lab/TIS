@@ -121,6 +121,8 @@ subroutine inp_job()
      write (lunout, *) 'Energy calculation for DCD trajectory'
   else if(i_run_mode == RUN%EMIN) then
      write (lunout, *) 'Energy minimization'
+  else if(i_run_mode == RUN%WIDOM) then
+     write (lunout, *) 'Widom method to calculate chemical potential(s)'
   else
      error_message = 'Error: invalid value about i_run_mode'
      call util_error(ERROR%STOP_ALL, error_message)

@@ -131,6 +131,9 @@ module const_maxsize
   integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues
   integer, parameter :: MXMPHP = 500   !< maximum # of hydrophobic neighbors per residue
 
+  ! Test particles used in Widom method
+  integer, parameter :: MXTP = 3
+
   ! character length
   integer, parameter :: CARRAY_MSG_ERROR = 512  !< maximum # of characters in error message
   integer, parameter :: CARRAY_MXFILE = 256  !< maximum # of characters in input filename

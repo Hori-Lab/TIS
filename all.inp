@@ -1041,5 +1041,11 @@ REPLICA(16) = 15.0
 >>>>
 
 <<<< widom
-insertion_step = 10
+n_step_interval = 1
+n_trial = 1
+n_Mg_add = 0
+n_Na_add = 1
+n_Cl_add = 1
+n_K_add = 0
+n_max_mp_add = 2
 >>>>

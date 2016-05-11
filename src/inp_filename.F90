@@ -11,7 +11,7 @@ subroutine inp_filename()
                           ifile_out_movie, ifile_out_crd, ifile_out_velo, &
                           ifile_out_dcd, ifile_out_vdcd, ifile_out_pdb,   &
                           ifile_out_rep, ifile_out_psf, ifile_out_rst,&
-                          fullpath, iopen_lunnum, ifile_out_opt
+                          fullpath, iopen_lunnum, ifile_out_opt, ifile_out_chp
   use var_replica, only :  n_replica_all
 #ifdef MPI_PAR
   use mpiconst
@@ -30,7 +30,7 @@ subroutine inp_filename()
   integer :: irep       ! index for replica
   ! -------------------------------------------------------------------- mod
   integer :: iline, nlines, iequa, nequat
-  integer :: imovie, icrd, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt
+  integer :: imovie, icrd, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -44,6 +44,7 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: filename_psf
   character(CARRAY_MXFILE) :: filename_rst
   character(CARRAY_MXFILE) :: filename_opt
+  character(CARRAY_MXFILE) :: filename_chp
   ! -------------------------------------------------------------------- mod
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
@@ -74,19 +75,20 @@ subroutine inp_filename()
   ! -----------------------------------------------------------------------
   path = ""
   filename_header   = ""
-  filename_data     = "./cafemol.data"
-  filename_ninfo    = "./cafemol.ninfo"
-  filename_movie    = "./cafemol.movie"
-  filename_crd      = "./cafemol.crd"
-  filename_velo     = "./cafemol.velo"
-  filename_dcd      = "./cafemol.dcd"
-  filename_vdcd     = "./cafemol.vdcd"
-  filename_pdb      = "./cafemol.pdb"
-  filename_rep      = "./cafemol.rep"
-  filename_fmat     = "./cafemol.fmat"
-  filename_psf      = "./cafemol.psf"
-  filename_rst      = "./cafemol.rst"
-  filename_opt      = "./cafemol.opt"
+  filename_data     = "./md.data"
+  filename_ninfo    = "./md.ninfo"
+  filename_movie    = "./md.movie"
+  filename_crd      = "./md.crd"
+  filename_velo     = "./md.velo"
+  filename_dcd      = "./md.dcd"
+  filename_vdcd     = "./md.vdcd"
+  filename_pdb      = "./md.pdb"
+  filename_rep      = "./md.rep"
+  filename_fmat     = "./md.fmat"
+  filename_psf      = "./md.psf"
+  filename_rst      = "./md.rst"
+  filename_opt      = "./md.opt"
+  filename_chp      = "./md.chp"
 
   imovie = 0
   icrd   = 0
@@ -97,6 +99,7 @@ subroutine inp_filename()
   ipsf   = 0
   irst   = 0
   iopt   = 0
+  ichp   = 0
 
   ! -----------------------------------------------------------------------
   ! read input file
@@ -187,6 +190,10 @@ subroutine inp_filename()
                  filename_opt = filename_header
                  filename_opt(n:n+3) = '.opt'  
                  iopt = 1
+              else if (char7 == 'chp') then
+                 filename_chp = filename_header
+                 filename_chp(n:n+3) = '.chp'  
+                 ichp = 1
               end if
 
               isw = 0
@@ -218,6 +225,7 @@ subroutine inp_filename()
   call MPI_Bcast(filename_vdcd,  CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_rst,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_opt,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_chp,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
 ! --------------------------------------------------------------------------
   call MPI_Bcast(ipdb,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ipsf,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
@@ -228,6 +236,7 @@ subroutine inp_filename()
   call MPI_Bcast(ivdcd,  1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(irst,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iopt,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ichp,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
 #endif
   
   ! -----------------------------------------------------------------------
@@ -831,13 +840,44 @@ subroutine inp_filename()
   end if
 
   ! -----------------------------------------------------------------------
+  ! open chp file 
+  ! -----------------------------------------------------------------------
+  if(ichp == 1) then
+     ifile_out_chp = 1
+#ifdef MPI_PAR
+     if (myrank == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_chp, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_chp(1:m-1)
+     else
+        filename = filename_chp
+     end if
+  
+     write (*, '(a14,i3,a3,a)') "open chp file(",outfile%chp,"): ", trim(filename)
+     open(outfile%chp, file = filename, status = FILE_STATUS, &
+                         action = 'write', iostat = iopen_status)
+     if(iopen_status > 0) then
+        error_message = 'Error: cannot open the file: ' // filename
+        call util_error(ERROR%STOP_STD, error_message)
+     end if
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     ifile_out_chp = 0
+  end if
+
+  ! -----------------------------------------------------------------------
   ! open dump file 
   ! -----------------------------------------------------------------------
 #ifdef _DUMP_COMMON
-  open(outfile%dump, file='cafemol.dump', status=FILE_STATUS,action='write',&
+  open(outfile%dump, file='md.dump', status=FILE_STATUS,action='write',&
         iostat = iopen_status)
   if (iopen_status > 0) then
-     error_message = 'Error: cannot open cafemol.dump'
+     error_message = 'Error: cannot open md.dump'
      call util_error(ERROR%STOP_STD, error_message)
   endif
 #endif
