@@ -27,7 +27,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
   real(PREC), intent(out) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
@@ -119,16 +119,17 @@ subroutine energy_exv_dt15_tp(irep, energy)
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp, &
                           ntp, xyz_tp, iclass_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
+  use var_simu,    only : widom_flg_exv_inf
   use mpiconst
 
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: energy(E_TYPE%MAX)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(E_TYPE%MAX)         ! (E_TYPE%MAX)
 
   integer :: itp1, itp2, imp2
   integer :: imirror
-  real(PREC) :: dist, dij, a
+  real(PREC) :: dist, dij, a, d_inf
   real(PREC) :: coef
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
@@ -137,6 +138,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
   ! ------------------------------------------------------------------------
 
   a = indtrna15%exv_adjust
+  d_inf = indtrna15%exv_inf
   ene = 0.0
 
   do itp1 = 1, ntp
@@ -160,8 +162,13 @@ subroutine energy_exv_dt15_tp(irep, energy)
    
         if(dist > dij) cycle
    
-        ! --------------------------------------------------------------------
         dist = dist + a - dij
+        if (dist < d_inf) then
+           widom_flg_exv_inf = .True.
+           return
+        endif
+
+        ! --------------------------------------------------------------------
         roverdist  = a / dist
         roverdist2 = roverdist * roverdist
         roverdist4 = roverdist2 * roverdist2
@@ -190,8 +197,13 @@ subroutine energy_exv_dt15_tp(irep, energy)
       
         if(dist > dij) cycle
       
-        ! --------------------------------------------------------------------
         dist = dist + a - dij
+        if (dist < d_inf) then
+           widom_flg_exv_inf = .True.
+           return
+        endif
+
+        ! --------------------------------------------------------------------
         roverdist  = a / dist
         roverdist2 = roverdist * roverdist
         roverdist4 = roverdist2 * roverdist2

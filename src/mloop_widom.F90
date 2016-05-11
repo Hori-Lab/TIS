@@ -5,7 +5,7 @@ subroutine mloop_widom
    use var_setp,   only : inwidom, indtrna15
    use var_struct, only : ntp, iclass_tp, charge_tp, &
                           tp_exv_dt15_eps, tp_exv_dt15_rad
-   use var_simu,   only : widom_iw, widom_energy, widom_chp
+   use var_simu,   only : widom_iw, widom_chp
 
    integer :: i, itp
 
@@ -43,7 +43,6 @@ subroutine mloop_widom
    enddo
 
    widom_iw = 0
-   widom_energy = 0.0e0_PREC
    widom_chp    = 0.0e0_PREC
 
 endsubroutine mloop_widom

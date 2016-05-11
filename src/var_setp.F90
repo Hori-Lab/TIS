@@ -215,7 +215,8 @@ module var_setp
      real(PREC) :: exv_coef   ! 2013
      real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015
      real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015
-     real(PREC) :: exv_adjust   ! 2015
+     real(PREC) :: exv_adjust ! 2015
+     real(PREC) :: exv_inf    ! 2015 for Widom insertion
      integer :: n_sep_nlocal_P
      integer :: n_sep_nlocal_S
      integer :: n_sep_nlocal_B

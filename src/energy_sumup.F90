@@ -22,10 +22,9 @@ subroutine energy_sumup(irep,          &
   use if_energy
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inflp, inele
+  use var_setp,    only : inmisc, inele !,inflp
   use var_struct,  only : nunit_all, ncon, nmorse, nrna_bp
   use var_mgo,     only : inmgo
-
   use time
   use mpiconst
 

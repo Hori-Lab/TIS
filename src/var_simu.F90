@@ -76,7 +76,7 @@ module var_simu
 
   ! Widom
   integer(L_INT), save :: widom_iw
-  real(PREC), save :: widom_energy
   real(PREC), save :: widom_chp
+  logical, save :: widom_flg_exv_inf
 
 end module var_simu

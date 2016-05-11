@@ -1,0 +1,115 @@
+<<<< filenames
+path = ./data
+filename = widom
+OUTPUT pdb dcd psf rst opt chp
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 10
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 1
+>>>>
+
+<<<< widom
+n_step_interval = 100
+n_trial = 500
+n_Mg_add = 0
+n_Na_add = 1
+n_Cl_add = 1
+n_K_add = 0
+n_max_mp_add = 2
+>>>>
+
+<<<< periodic_bound
+psizex = 150.0
+psizey = 150.0
+psizez = 150.0
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 3
+1    ion    BOX150_NaCl_0050mM.pdb
+>>>>
+
+<<<< initial_struct
+1           BOX150_NaCl_0050mM.pdb
+>>>>
+
+<<<< initial_ion
+num_Na_ion = 102
+num_k_ion  =   0
+num_cl_ion = 102 
+num_mg_ion =   0
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 1000000
+tstep_size = 0.05
+n_step_save = 1000
+n_step_neighbor = 10
+n_step_rst = 10000
+i_com_zeroing = 0
+i_no_trans_rot = 0
+tempk = 310.0
+n_seed = 5
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      NOTHING
+NLOCAL(1/1)   ELE EXV_DT15
+
+i_dtrna_model = 2015
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< electrostatic
+cutoff_ele = 50.0
+*cutoff_ele = 75.0
+
+ionic_strength = 0.1
+diele_water = 99999.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 0
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+i_function_form = 1
+
+** calculation method for electrostatic interaction in K computer (optional)
+**            = 0 neighboring list (default)
+**            = 1 neighboring list for K computer
+**            = 2 direct caluculation for K computer
+i_calc_method = 0
+
+***CHARGE_CHANGE 3   0.0
+***CHARGE_CHANGE 585  0.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000010
+>>>>
