@@ -5,7 +5,8 @@
 subroutine simu_radiusg(rg_unit, rg)
 
   use const_maxsize
-  use var_struct,  only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep
+  use const_index
+  use var_struct,  only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep, iclass_unit
   use var_replica, only : n_replica_mpi
 #ifdef MPI_PAR
   use mpiconst
@@ -33,6 +34,9 @@ subroutine simu_radiusg(rg_unit, rg)
      sumz = 0.0e0_PREC
 
      do iunit = 1, nunit_real
+        if (iclass_unit(iunit) == CLASS%ION) then
+           cycle
+        endif
         sx = 0.0e0_PREC
         sy = 0.0e0_PREC
         sz = 0.0e0_PREC
@@ -59,6 +63,10 @@ subroutine simu_radiusg(rg_unit, rg)
      ssdist = 0.0e0_PREC
      ssdist2 = 0.0e0_PREC
      do iunit = 1, nunit_real
+        if (iclass_unit(iunit) == CLASS%ION) then
+           rg_unit(iunit,irep) = 0.0
+           cycle
+        endif
         sumx = 0.0e0_PREC
         sumy = 0.0e0_PREC
         sumz = 0.0e0_PREC

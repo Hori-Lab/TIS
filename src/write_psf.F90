@@ -92,6 +92,8 @@ subroutine write_psf()
       write(lunout,*) ''
    endif
 
+   flush(lunout)
+
 #ifdef MPI_PAR
   endif
 #endif
