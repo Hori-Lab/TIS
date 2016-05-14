@@ -57,6 +57,9 @@ subroutine setp_electrostatic()
 !  inele%diele_water    = INVALID_VALUE
   inele%i_calc_method = 0
   inele%n_charge_change = 0
+  inele%i_function_form = -1
+  inele%ewld_alpha = INVALID_VALUE
+  inele%ewld_hmax = INVALID_VALUE
   
   inele%flag_ele(1:MXMP) = .false.
   icalc(1:MXUNIT) = .false. 
@@ -122,6 +125,14 @@ subroutine setp_electrostatic()
         cvalue = 'i_calc_method'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%i_calc_method, cvalue)
+
+        cvalue = 'ewld_alpha'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inele%ewld_alpha, cvalue)
+
+        cvalue = 'ewld_hmax'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inele%ewld_hmax, cvalue)
      end do
 
      if(ctmp00(1:11) == 'CHARGE_TYPE') then
@@ -311,11 +322,26 @@ subroutine setp_electrostatic()
   if(inele%i_function_form == 0) then
      continue  ! default
   else if (inele%i_function_form == 1) then
+     continue
+     !write (lunout, *) "Coulomb potential is enabled."
+  else if (inele%i_function_form == 2) then
+     continue
      !write (lunout, *) "Coulomb potential is enabled."
   else
      error_message = 'Error: invalid value for inele%i_function_form'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
+
+  if (inele%i_function_form == 2) then ! Ewald summation
+     if (inele%ewld_alpha > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for inele%ewld_alpha'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+     if (inele%ewld_hmax > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for inele%ewld_hmax'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  endif
 
   ! output for .data
   !if (nlines /= 0) then

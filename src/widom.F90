@@ -3,7 +3,7 @@ subroutine widom
    use const_physical
    use const_index
    use var_inp,    only : inperi, outfile
-   use var_setp,   only : inwidom, mts
+   use var_setp,   only : inwidom, mts, inele
    use var_struct, only : ntp, xyz_tp
    use var_simu,   only : istep, tempk, &
                           widom_iw, widom_chp, widom_flg_exv_inf
@@ -43,7 +43,13 @@ subroutine widom
          cycle
       endif
 
-      call energy_ele_coulomb_tp(irep, energy_test)
+      if (inele%i_function_form == 1) then ! Coulomb potential
+         call energy_ele_coulomb_tp(irep, energy_test)
+      elseif (inele%i_function_form == 2) then ! Coulomb potential
+         call energy_ele_coulomb_ewld_tp(irep, energy_test)
+      else
+         call util_error(ERROR%STOP_ALL, 'Error in widom.F90')
+      endif
 
       test_total = energy_test(E_TYPE%EXV_DT15) + energy_test(E_TYPE%ELE)
 

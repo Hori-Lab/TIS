@@ -43,7 +43,6 @@ subroutine setp_mapara_ele()
   ! -------------------------------------------------------------------
   inele%i_diele  = 0   ! default
   inele%i_charge = 0   ! default
-  inele%i_function_form = 0   ! default
   inele%cutoff_ele     = INVALID_VALUE
   inele%ionic_strength = INVALID_VALUE
   inele%diele_water    = INVALID_VALUE
@@ -90,9 +89,6 @@ subroutine setp_mapara_ele()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%i_charge, cvalue)
 
-        cvalue = 'i_function_form'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inele%i_function_form, cvalue)
      end do ! iequa
 
      if(ctmp00(1:11) == 'CHARGE_TYPE') then
@@ -156,15 +152,6 @@ subroutine setp_mapara_ele()
      !write (lunout, *) "using charge values based on Manning's theory"
   else
      error_message = 'Error: invalid value for inele%i_charge'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  if(inele%i_function_form == 0) then
-     continue  ! default
-  else if (inele%i_function_form == 1) then
-     !write (lunout, *) "Coulomb potential is enabled."
-  else
-     error_message = 'Error: invalid value for inele%i_function_form'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 

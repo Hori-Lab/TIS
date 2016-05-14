@@ -215,6 +215,9 @@ subroutine energy_sumup(irep,          &
 
      elseif (inele%i_function_form == 1) then ! Coulomb potential
         call energy_ele_coulomb(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+
+     elseif (inele%i_function_form == 2) then ! Coulomb potential
+        call energy_ele_coulomb_ewld(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
      endif
   endif
   TIME_E( tm_energy_ele)

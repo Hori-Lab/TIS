@@ -9,7 +9,7 @@ subroutine main_loop()
   use const_index
   use var_inp,     only : i_go_native_read_style, i_run_mode, &
                           ifile_out_psf, outfile
-  use var_setp,    only : insimu, inmisc, inflp
+  use var_setp,    only : insimu, inmisc, inflp, inele
   use var_mgo,     only : inmgo
   use var_fmat,    only : infmat, i_num_sum
   use var_simu,    only : istep_sim, mstep_sim
@@ -81,6 +81,15 @@ subroutine main_loop()
      ! -------------------------------------------------------------------
      if (inmisc%force_flag(INTERACT%DTRNA)) then
         call mloop_dtrna()
+     end if
+
+     ! -------------------------------------------------------------------
+     ! setting up for Ewald method
+     ! -------------------------------------------------------------------
+     if (inmisc%force_flag(INTERACT%ELE)) then
+        if (inele%i_function_form == 2) then
+           call mloop_ewld()
+        endif
      end if
 
      ! -------------------------------------------------------------------

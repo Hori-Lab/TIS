@@ -79,4 +79,10 @@ module var_simu
   real(PREC), save :: widom_chp
   logical, save :: widom_flg_exv_inf
 
+  ! Ewald
+  integer, save :: ewld_f_n
+  real(PREC), allocatable, save :: ewld_f_rlv(:,:)  ! Reciplocal lattice vector
+  real(PREC), allocatable, save :: ewld_f_coef(:)
+  real(PREC), save :: ewld_s_coef    ! Self interaction
+
 end module var_simu

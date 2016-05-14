@@ -110,8 +110,8 @@ FC = gfortran
 FC_UTIL = gfortran
 CPP = -cpp -DTIME 
 INC =
-#OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
 LIB =
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -224,7 +224,7 @@ FOBJ1 = \
 	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o mloop_simulator.o\
 	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o\
-	mloop_fmat_homo.o mloop_fmat_hetero.o\
+	mloop_fmat_homo.o mloop_fmat_hetero.o mloop_ewld.o\
 	simu_checkforce.o\
 	simu_para.o\
 	simu_initial.o simu_initial_xyz.o simu_md_plotxyz.o \
@@ -255,7 +255,7 @@ FOBJ1 = \
 	energy_hp.o energy_sasa.o energy_ion.o energy_box.o energy_cap.o\
 	energy_cylinder.o energy_anchor.o energy_rest1d.o energy_bridge.o\
 	energy_pulling.o energy_implig.o\
-	energy_ele.o energy_ele2.o energy_ele3.o energy_ele_coulomb.o\
+	energy_ele.o energy_ele2.o energy_ele3.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
 	energy_window.o energy_winz.o energy_fbangle.o energy_fdih.o\
 	energy_aicg13_gauss.o energy_aicg14_gauss.o\
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\

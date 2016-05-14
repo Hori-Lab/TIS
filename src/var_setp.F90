@@ -630,6 +630,8 @@ module var_setp
      real(PREC) :: coef(MXREPLICA)
      real(PREC) :: coef_charge_type(SEQID%MAX)
      real(PREC) :: length_per_unit(SEQID%MAX)
+     real(PREC) :: ewld_alpha
+     real(PREC) :: ewld_hmax
      logical :: flag_ele(MXMP)
      logical :: flag_charge_change
      integer :: n_charge_change
