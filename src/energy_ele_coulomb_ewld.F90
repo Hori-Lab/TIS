@@ -11,6 +11,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, &
                           ncharge, coef_charge, icharge2mp
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_coef
+  use var_replica, only : irep2grep
   use mpiconst
 
   implicit none
@@ -22,12 +23,14 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 
   ! ------------------------------------------------------------------------
   integer :: ksta, kend
-  integer :: imp1, imp2, iunit, junit, iele, imirror, ich1, ich2, ig
+  integer :: imp1, imp2, iunit, junit, iele, imirror, ich1, ich2, ig, grep
   real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, q2, dp
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif
+
+  grep = irep2grep(irep)
 
   !================================================
   !================== Real space ==================
@@ -92,7 +95,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 !        dist1 = sqrt(dist2)
 !        
 !        q2 = coef_charge(ich2,irep)
-!        ene = inele%coef(irep) * q1 * q2 * erfc(inele%ewld_alpha*dist1) / dist1
+!        ene = inele%coef(grep) * q1 * q2 * erfc(inele%ewld_alpha*dist1) / dist1
 !   
 !        energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
 !        
@@ -125,7 +128,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      ene = ene + ewld_f_coef(ig) * (scos ** 2 + ssin ** 2)
   end do
 
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(irep) * ene
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ene
 
 
   !================================================
@@ -138,7 +141,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      ene = ene + q1**2
   end do
 
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(irep) * ewld_s_coef * ene
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_s_coef * ene
 
 end subroutine energy_ele_coulomb_ewld
 
@@ -150,7 +153,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy, energy_unit)
   use const_index
   use var_inp,     only : inperi
   use var_setp,    only : inele
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, &
+  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, &
                           ncharge, coef_charge, icharge2mp, nmp_real, lmp2charge, &
                           ntp, xyz_tp, charge_tp
   use var_replica, only : irep2grep
@@ -258,7 +261,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy, energy_unit)
      ene = ene + ewld_s_coef * q1**2
   end do
 
-  ene = ene * inele%coef(irep)
+  ene = ene * inele%coef(grep)
 
 end subroutine energy_ele_coulomb_ewld_tp
 

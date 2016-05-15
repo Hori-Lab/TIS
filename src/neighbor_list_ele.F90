@@ -73,6 +73,8 @@ subroutine neighbor_list_ele(jrep)
      rneighbor2_ele = (1.2 * inele%cutoff_ele * inele%cdist(grep))**2
   else if (inele%i_function_form == 1) then  ! Coulomb 
      rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
+  else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
+     rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
   endif
 
   iele = 0

@@ -19,7 +19,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inmisc, inele, inflp
+  use var_setp,   only : inmisc, inele !, inflp
   use var_struct, only : nunit_all, nmp_all
   use var_mgo,    only : inmgo
   use time
@@ -200,6 +200,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
      elseif (inele%i_function_form == 1) then ! Coulomb potential
         call force_ele_coulomb(irep, force_mp_l(1,1,tn))
+
+     elseif (inele%i_function_form == 2) then ! Coulomb potential (Ewald)
+        call force_ele_coulomb_ewld(irep, force_mp_l(1,1,tn))
      endif
   endif
 

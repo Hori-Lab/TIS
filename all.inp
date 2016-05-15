@@ -408,6 +408,7 @@ i_charge = 1
 ** function form
 **           = 0 Debye-Huckel (default)
 **           = 1 Coulomb
+**           = 2 Coulomb (Ewald)
 i_function_form = 0 
 
 ** calculation method for electrostatic interaction in K computer (optional)
@@ -432,6 +433,10 @@ CHARGE_ADD 3   u 89-93
 ** Change the value of "imp"th charge to "value"
 CHARGE_CHANGE imp(integer) value(real)
 CHARGE_CHANGE 100 0.500
+
+** Ewald
+ewld_alpha = 0.3
+ewld_hmax  = 20
 >>>>
 
 

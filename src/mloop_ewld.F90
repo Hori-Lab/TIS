@@ -96,9 +96,9 @@ subroutine mloop_ewld()
                              / ( factor**2 * h2(1:ewld_f_n) )
    ewld_f_rlv(:,1:ewld_f_n) = factor * h(:,1:ewld_f_n)
 
-   do i = 1, ewld_f_n
-      write(*,*) i, h(1,i), h(2,i), h(3,i), sqrt(h2(i)), ewld_f_rlv(1,i), ewld_f_rlv(2,i), ewld_f_rlv(3,i), ewld_f_coef(i)
-   enddo
+   !do i = 1, ewld_f_n
+   !   write(*,*) i, h(1,i), h(2,i), h(3,i), sqrt(h2(i)), ewld_f_rlv(1,i), ewld_f_rlv(2,i), ewld_f_rlv(3,i), ewld_f_coef(i)
+   !enddo
 
    deallocate(h)
    deallocate(h2)

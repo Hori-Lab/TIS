@@ -124,12 +124,12 @@ subroutine simu_checkforce()
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
-        write (lunout, "('imp=', i4, 2x, 'f_finite', 3f10.4, 2x, 'f_analysis=', 3f10.4)") &
+        write (lunout, "('imp=', i4, 2x, 'f_finite', 3f10.4, 2x, 'f_analytic=', 3f10.4)") &
                imp, (ff(i), i = 1, 3), (force_mp(i, imp), i = 1, 3)
 
         zure(1:3) = ff(1:3) - force_mp(1:3, imp)
         
-        write (lunout, "('f_finite - f_analysis', i4, 3f10.4)") imp, (zure(i), i = 1, 3)
+        write (lunout, "('f_finite - f_analytic', i4, 3f10.4)") imp, (zure(i), i = 1, 3)
 
         if(abs(zure(1)) > small .or. abs(zure(2)) > small .or. abs(zure(3)) > small) then
            write (*, "('f_finite - f_analysis', i4, 3f10.4)") &
