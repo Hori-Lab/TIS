@@ -18,6 +18,27 @@ subroutine widom
    real(PREC) :: energy_test(E_TYPE%MAX), test_total, chp
    real(PREC) :: kT
 
+interface
+   subroutine energy_exv_dt15_tp(irep, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)  :: irep
+      real(PREC), intent(out) :: energy(:)
+   endsubroutine energy_exv_dt15_tp
+   subroutine energy_ele_coulomb_tp(irep, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(out)   :: energy(:)
+   endsubroutine energy_ele_coulomb_tp
+   subroutine energy_ele_coulomb_ewld_tp(irep, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(out)   :: energy(:)
+   endsubroutine energy_ele_coulomb_ewld_tp
+endinterface
+
    kT = BOLTZC * tempk
    
    do iw = 1, inwidom%n_trial

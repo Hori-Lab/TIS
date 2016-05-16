@@ -4,9 +4,10 @@
 subroutine mloop_ewld()
 
    use const_physical
-   use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef
+   use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef, ewld_s_sum
    use var_setp, only : inele
    use var_inp,  only : inperi
+   use var_struct,only: coef_charge, ncharge
    
    implicit none
 
@@ -27,6 +28,8 @@ subroutine mloop_ewld()
    real(PREC) :: alpha, hmax, pbcsize, hmax2 
    real(PREC) :: r2, factor, rswp, vswp(3), v(3)
    logical :: flg_swp
+
+   integer, parameter :: IREP=1
 
    alpha = inele%ewld_alpha
    hmax  = inele%ewld_hmax
@@ -97,7 +100,7 @@ subroutine mloop_ewld()
    ewld_f_rlv(:,1:ewld_f_n) = factor * h(:,1:ewld_f_n)
 
    !do i = 1, ewld_f_n
-   !   write(*,*) i, h(1,i), h(2,i), h(3,i), sqrt(h2(i)), ewld_f_rlv(1,i), ewld_f_rlv(2,i), ewld_f_rlv(3,i), ewld_f_coef(i)
+   !   write(*,*) 'RLV:', i, h(1,i), h(2,i), h(3,i), sqrt(h2(i)), ewld_f_rlv(1,i), ewld_f_rlv(2,i), ewld_f_rlv(3,i), ewld_f_coef(i)
    !enddo
 
    deallocate(h)
@@ -107,6 +110,12 @@ subroutine mloop_ewld()
    ! For Self interaction
    !===================================================
    ewld_s_coef = alpha / sqrt(F_PI)
+
+   ewld_s_sum = 0.0
+   do i = 1, ncharge
+      ewld_s_sum = ewld_s_sum + coef_charge(i,IREP)**2
+   end do
+   ewld_s_sum = ewld_s_coef * ewld_s_sum
 
 endsubroutine mloop_ewld
 

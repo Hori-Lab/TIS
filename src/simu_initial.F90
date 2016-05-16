@@ -4,16 +4,13 @@ subroutine simu_initial()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp, only : i_initial_state, i_initial_velo, &
-                      i_seq_read_style, i_simulate_type, flg_rst
+  use var_inp, only : i_initial_state, i_initial_velo, i_seq_read_style, flg_rst
   use var_setp, only : insimu, inmisc
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp
   use var_replica, only : n_replica_mpi
   use var_simu, only : istep_sim, velo_mp, tempk
   use mt_stream
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 

@@ -435,8 +435,8 @@ CHARGE_CHANGE imp(integer) value(real)
 CHARGE_CHANGE 100 0.500
 
 ** Ewald
-ewld_alpha = 0.3
-ewld_hmax  = 20
+ewld_alpha = 0.07
+ewld_hmax  = 10.
 >>>>
 
 
