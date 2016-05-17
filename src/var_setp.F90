@@ -678,6 +678,7 @@ module var_setp
   !==========================================
   ! Widom method (calculate chemical potential)
   type input_widom
+     integer :: n_step_skip
      integer :: n_step_interval
      integer :: n_trial
      integer :: n_Mg_add

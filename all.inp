@@ -1046,6 +1046,7 @@ REPLICA(16) = 15.0
 >>>>
 
 <<<< widom
+n_step_skip = 10000
 n_step_interval = 1
 n_trial = 1
 n_Mg_add = 0

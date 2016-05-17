@@ -26,6 +26,7 @@ subroutine setp_widom_para()
 
   ! --------------------------------------------------------------------
   ! default 
+  inwidom%n_step_skip = -1
   inwidom%n_step_interval = -1
   inwidom%n_trial = -1
   inwidom%n_Mg_add = -1
@@ -52,6 +53,10 @@ subroutine setp_widom_para()
         call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
             
         do iequa = 1, nequat
+           cvalue = 'n_step_skip'
+           call ukoto_ivalue2(lunout, csides(1, iequa), &
+                inwidom%n_step_skip, cvalue)
+
            cvalue = 'n_step_interval'
            call ukoto_ivalue2(lunout, csides(1, iequa), &
                 inwidom%n_step_interval, cvalue)
@@ -86,6 +91,10 @@ subroutine setp_widom_para()
      ! checking input variables
      if(inwidom%n_step_interval < 1) then
         error_message = 'Error: invalid value for n_step_interval (widom)'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     else if(inwidom%n_step_skip < 1) then
+        error_message = 'Error: invalid value for n_step_skip (widom)'
         call util_error(ERROR%STOP_ALL, error_message)
 
      else if(inwidom%n_trial < 1) then

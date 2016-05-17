@@ -98,7 +98,9 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   endif
 
   if (i_run_mode == RUN%WIDOM) then
-     if (mod(istep, inwidom%n_step_interval) == 0)   flg_step_widom = .true.
+     if (istep >= inwidom%n_step_skip .and. mod(istep, inwidom%n_step_interval) == 0) then
+        flg_step_widom = .true.
+     endif
   endif
   
   TIME_E( tm_others )
