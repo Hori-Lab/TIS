@@ -93,7 +93,7 @@ subroutine energy_ele_coulomb_tp(irep, energy)
   real(PREC), intent(out)   :: energy(E_TYPE%MAX)
 
   integer :: itp1, itp2, imp2, imirror, grep
-  real(PREC) :: dist2, coef1, ene
+  real(PREC) :: q1, dist2, ene
   real(PREC) :: cutoff2
   real(PREC) :: v21(SDIM), vx(SDIM)
 
@@ -105,7 +105,7 @@ subroutine energy_ele_coulomb_tp(irep, energy)
 !$omp do private(itp1,imp2,itp2,v21,vx,dist2,imirror)
   do itp1 = 1, ntp
 
-     coef1 = charge_tp(itp1) * inele%coef(grep)
+     q1 = charge_tp(itp1)
 
      do imp2 = 1, nmp_real
    
@@ -120,7 +120,7 @@ subroutine energy_ele_coulomb_tp(irep, energy)
         dist2 = dot_product(v21,v21)
         if(dist2 > cutoff2) cycle
            
-        ene = ene + coef1 * coef_charge( lmp2charge(imp2),grep ) / sqrt(dist2)
+        ene = ene + q1 * coef_charge( lmp2charge(imp2),grep ) / sqrt(dist2)
      end do
 
      do itp2 = itp1+1, ntp
@@ -135,11 +135,11 @@ subroutine energy_ele_coulomb_tp(irep, energy)
         dist2 = dot_product(v21,v21)
         if(dist2 > cutoff2) cycle
            
-        ene = ene + coef1 * charge_tp(itp2) / sqrt(dist2)
+        ene = ene + q1 * charge_tp(itp2) / sqrt(dist2)
      enddo
   enddo
 !$omp end do nowait
 
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ene
 
 end subroutine energy_ele_coulomb_tp

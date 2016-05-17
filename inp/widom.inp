@@ -33,17 +33,17 @@ psizez = 150.0
 <<<< unit_and_state
 i_seq_read_style = 4
 i_go_native_read_style = 3
-1    ion    BOX150_NaCl_0050mM.pdb
+1    ion    BOX150_NaCl_0050mM_eq.pdb
 >>>>
 
 <<<< initial_struct
-1           BOX150_NaCl_0050mM.pdb
+1           BOX150_NaCl_0050mM_eq.pdb
 >>>>
 
 <<<< initial_ion
-num_Na_ion = 102
+num_Na_ion = 101
 num_k_ion  =   0
-num_cl_ion = 102 
+num_cl_ion = 101 
 num_mg_ion =   0
 >>>>
 
