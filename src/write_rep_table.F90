@@ -6,7 +6,7 @@ subroutine write_rep_table()
 
    use const_maxsize
    use const_index
-   use var_inp,     only : outfile
+   use var_io,     only : outfile
    use var_replica, only : flg_rep, rep2val, lab2val, rep2step, n_replica_all
 #ifdef MPI_PAR
    use mpiconst

@@ -5,7 +5,7 @@ subroutine simu_searchingtf(istep, ntstep, qscore, tempk)
   
   use const_maxsize
   use const_index
-  use var_inp, only : outfile
+  use var_io, only : outfile
   use var_setp, only : insear
 
 #ifdef MPI_PAR

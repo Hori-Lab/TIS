@@ -33,7 +33,7 @@ subroutine mloop_simulator()
   use if_mloop
   use if_write
   use if_energy
-  use var_inp,     only : i_run_mode, outfile
+  use var_io,     only : i_run_mode, outfile
   use var_setp,    only : inele, insimu
   use var_replica, only : n_replica_mpi
   use var_simu,    only : imstep, mstep, istep, ntstep, ibefore_time, &

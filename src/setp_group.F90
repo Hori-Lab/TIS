@@ -5,7 +5,7 @@ subroutine setp_group()
 
   use const_maxsize
   use const_index
-  use var_inp,    only : infile, outfile
+  use var_io,    only : infile, outfile
   use var_struct, only : nmp_all, cmass_mp, grp
 
 #ifdef MPI_PAR

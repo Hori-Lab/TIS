@@ -5,7 +5,7 @@ subroutine write_xyz_pdb(istep)
 
   use const_maxsize
   use const_index
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
   use var_struct,  only : nunit_real, lunit2mp, ires_mp, &
                           cmp2seq, cmp2atom, xyz_mp_rep, iclass_mp
   use var_replica, only : n_replica_mpi, irep2grep

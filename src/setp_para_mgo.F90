@@ -7,7 +7,7 @@ subroutine setp_para_mgo()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,    only : infile, outfile
+  use var_io,    only : infile, outfile
   use var_setp,   only : insimu
   use var_struct, only : nunit_all
   use var_mgo,    only : inmgo, iunit2sysmbr_mgo, iact2unit_mgo, &

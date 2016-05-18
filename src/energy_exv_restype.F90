@@ -8,12 +8,9 @@ subroutine  energy_exv_restype(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,   only : inperi
-  use var_setp,  only : inexv
+  use var_setp,  only : inexv, inperi
   use var_struct,only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, exv_radius_mp
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 

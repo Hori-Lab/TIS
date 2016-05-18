@@ -9,7 +9,7 @@ subroutine setp_native_sasa()
   use const_physical
   use const_maxsize
   use const_index
-  use var_inp, only : outfile
+  use var_io, only : outfile
   use var_setp, only : insasa
   use var_struct, only : nmp_real, cmp2seq, iclass_mp,para_sasa, rad_sasa, & 
                          surf, connect, imp2unit, cmp2atom

@@ -10,7 +10,7 @@ subroutine read_paraaicg()
                          factor_bd, factor_ba, factor_dih, factor_go, &
                          coef_bd, coef_ba, coef_dih, coef_go, &
                          ibd2mp, iba2mp, idih2mp, icon2unit, imp2unit 
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inmisc
 
 #ifdef MPI_PAR

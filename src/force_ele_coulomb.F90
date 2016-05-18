@@ -6,8 +6,7 @@ subroutine force_ele_coulomb(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inele
+  use var_setp,   only : inele, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use mpiconst
 

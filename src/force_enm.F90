@@ -14,22 +14,16 @@
 subroutine force_enm(irep, force_mp)
 
   use const_maxsize
-  use var_inp,    only : inperi
+  use var_setp,   only : inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
                          ncon, icon2mp, coef_go, go_nat
-
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: imp1, imp2, icon, imirror
   integer :: ksta, kend
   real(PREC) :: coef, for, dist

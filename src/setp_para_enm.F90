@@ -6,20 +6,12 @@ subroutine setp_para_enm()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
-  use var_enm, only : inenm
-
-#ifdef MPI_PAR
+  use var_io,   only : infile, outfile
+  use var_setp, only : inenm
   use mpiconst
-#endif
 
   implicit none
 
-  ! ----------------------------------------------------------------------
-  ! intent(out) :: inenm
-
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: luninp, lunout
   integer :: iline, nlines, iequa, nequat
 

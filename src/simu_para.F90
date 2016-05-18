@@ -3,7 +3,7 @@ subroutine simu_para()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : i_run_mode
+  use var_io,     only : i_run_mode
   use var_setp,    only : insimu, inmmc
   use var_replica, only : inrep, n_replica_all, lab2step, step_ratio
   use var_struct,  only : nmp_real, cmass_mp

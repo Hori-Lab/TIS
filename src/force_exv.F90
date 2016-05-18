@@ -6,20 +6,15 @@ subroutine force_exv(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inpro, inrna, inligand, inmisc
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lexv, iexv2mp, iclass_mp
+  use var_setp,   only : inpro, inrna, inligand, inmisc, inperi
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp
   use mpiconst
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2
   integer :: iexv, imirror

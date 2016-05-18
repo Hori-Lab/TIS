@@ -7,7 +7,7 @@ subroutine setp_mapara_ligand()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inligand
 #ifdef MPI_PAR
   use mpiconst

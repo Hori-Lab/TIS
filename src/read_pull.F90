@@ -2,7 +2,7 @@ subroutine read_pull(ipull, factor, filename)
 
    use const_maxsize
    use const_index
-   use var_inp, only : iopen_lunnum, outfile
+   use var_io, only : iopen_lunnum, outfile
    use var_setp, only : inmisc
 
    implicit none

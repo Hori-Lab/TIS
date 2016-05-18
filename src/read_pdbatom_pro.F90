@@ -17,7 +17,7 @@ subroutine read_pdbatom_pro(pdb_atom,  & ![i ] pdb atom information
   use const_maxsize
   use const_index
   use const_physical
-  use var_setp,   only : pdbatom
+  use var_io, only : pdbatom
   implicit none
 
   ! ---------------------------------------------------------------------

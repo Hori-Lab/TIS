@@ -7,7 +7,7 @@ subroutine setp_fmat_para()
   use const_index
   use const_physical
   use var_struct, only : nbd, nba, ndih, ncon, nrna_bp, nrna_st
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_fmat, only : infmat, fix_pro, fix_rna, &
                        aamsf_pro, aamsf_rna, &
                        aamsf_hetero_bl, aamsf_hetero_ba, aamsf_hetero_dih, &

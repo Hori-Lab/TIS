@@ -7,7 +7,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : ifile_pdb, num_file
+  use var_io,    only : ifile_pdb, num_file
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all,  &
                          lunit2mp, ires_mp, iclass_unit, iclass_mp, &
                          cmp2seq, cmp2atom, imp2type, imp2unit, nres

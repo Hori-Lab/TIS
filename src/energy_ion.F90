@@ -7,23 +7,17 @@ subroutine  energy_ion(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inion
+  use var_setp,    only : inmisc, inion, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
                           lexv, iexv2mp, iontype_mp
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
-! ------------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
   real(PREC), intent(inout)   :: energy(:)         ! (E_TYPE%MAX)
 
-  ! ------------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, itype1, itype2
   integer :: iexv, imirror

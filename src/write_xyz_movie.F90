@@ -9,7 +9,7 @@ subroutine write_xyz_movie(ibefore_time, istep, tempk_in)
 
   use const_maxsize
   use const_index
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
   use var_struct,  only : nunit_real, nmp_real, lunit2mp, ires_mp, &
                           pxyz_mp_rep, cmp2seq, cmp2atom, iclass_mp
   use var_replica, only : n_replica_mpi, irep2grep, flg_rep, rep2val

@@ -6,8 +6,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inele
+  use var_setp,    only : inele, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele
   use mpiconst
 
@@ -80,8 +79,7 @@ subroutine energy_ele_coulomb_tp(irep, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inele
+  use var_setp,    only : inele, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_real, lmp2charge, coef_charge, &
                           ntp, xyz_tp, charge_tp
   use var_replica, only : irep2grep

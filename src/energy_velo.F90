@@ -5,7 +5,7 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
       
   use const_maxsize
   use const_index
-  use var_inp,     only : i_simulate_type
+  use var_io,     only : i_simulate_type
   use var_setp,    only : ifix_mp
   use var_struct,  only : nmp_real, cmass_mp, imp2unit
 #ifdef MPI_PAR3

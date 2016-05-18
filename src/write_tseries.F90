@@ -12,7 +12,7 @@ subroutine write_tseries(ibefore_time, istep, &
 
   use const_maxsize
   use const_index
-  use var_inp,     only : outfile, iunit2us, i_run_mode
+  use var_io,     only : outfile, iunit2us, i_run_mode
   use var_setp,    only : inmisc
   use var_struct,  only : nunit_real, nunit_all
   use var_mgo,     only : inmgo, ishadow2real_unit_mgo, coef_mgo, &

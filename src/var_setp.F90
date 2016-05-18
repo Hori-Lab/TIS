@@ -700,23 +700,24 @@ module var_setp
 
   integer, save :: ifix_mp(MXMP) !< 
 
-  ! PDB ATOM Record Format (See http://www.wwpdb.org/docs.html )
-  Type pdbatom
-     character(6) :: c_recname  ! 1-6    Record name.
-     integer      :: i_serial   ! 7-11   Atom serial number
-     character(4) :: c_name     ! 13-16  Atom name.
-     character(1) :: c_altloc   ! 17     Alternate location indicator.
-     character(3) :: c_resname  ! 18-20  Residue name.
-     character(1) :: c_chainid  ! 22     Chain identifier.
-     integer      :: i_resseq   ! 23-26  Residue sequence number.
-     character(1) :: c_icode    ! 27     Code for insertion of residues.
-     real(PREC)   :: x ! 31-38  Orthogonal coordinates in Angstroms. 
-     real(PREC)   :: y ! 39-46  Orthogonal coordinates in Angstroms. 
-     real(PREC)   :: z ! 47-54  Orthogonal coordinates in Angstroms.
-     real(PREC)   :: occupancy  ! 55-60  Occupancy. (Not used)
-     real(PREC)   :: tempfactor ! 61-66  Temperature factor. (Not used)
-     character(2) :: c_element  ! 77-78  Element symbol. (Not used)
-     character(2) :: c_charge   ! 79-80  Charge on the atom. (Not used)
-  end type pdbatom
+  ! periodic boundary  
+  type periodic_boundary
+     integer :: i_periodic
+     integer :: n_mirror_index
+     real(PREC) :: psize(3)
+     real(PREC) :: psizeh(3)
+     real(PREC) :: d_mirror(3, 27)
+     integer :: sz
+  endtype periodic_boundary
+  type(periodic_boundary), save :: inperi
 
+  ! elastic network
+  type input_enmparameter
+     real(PREC) :: cenm !< constant coefficient of the energy function for elastic network model
+     real(PREC) :: dfcontact_enm !< cutoff distance to define the native contact for elastic network model
+     integer    :: i_enm !< flag variable for elastic network model
+     integer    :: sz !< size of the structure
+  end type input_enmparameter
+
+  type(input_enmparameter), save :: inenm
 end module var_setp

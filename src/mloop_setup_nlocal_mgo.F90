@@ -6,7 +6,7 @@ subroutine mloop_setup_nlocal_mgo()
 
   use const_maxsize
   use const_index
-  use var_inp,    only : outfile
+  use var_io,    only : outfile
   use var_struct, only : nmp_all, nunit_all, &
                          ncon, icon2unit, coef_go, ncon_unit
   use var_mgo,    only : inmgo, enegap_mgo, offset_mgo, offset_unit, &

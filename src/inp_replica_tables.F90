@@ -5,7 +5,7 @@ subroutine inp_replica_tables()
 
    use const_maxsize
    use const_index
-   use var_inp,     only : flg_rst
+   use var_io,     only : flg_rst
    use var_replica, only : inrep, rep2lab, lab2rep, lab2val, &
                            lab2step, exchange_step, rep2step,     &
                            flg_rep, rep2val, n_replica_all,  &

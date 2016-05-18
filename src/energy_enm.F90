@@ -16,12 +16,10 @@ subroutine energy_enm(irep, now_con, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
+  use var_setp,    only : inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, &
                           ncon, icon2mp, icon2unit, coef_go, go_nat
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 

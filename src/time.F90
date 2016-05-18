@@ -6,7 +6,7 @@ module time
 
 use mpiconst
 use const_index
-use var_inp, only : i_run_mode, i_simulate_type
+use var_io, only : i_run_mode, i_simulate_type
 use var_setp, only : inmisc, inmmc
 
 implicit none

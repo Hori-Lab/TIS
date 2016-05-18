@@ -7,7 +7,7 @@ subroutine setp_para_ion()
   
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only: inion
 
 #ifdef MPI_PAR

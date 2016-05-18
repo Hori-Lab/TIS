@@ -7,7 +7,7 @@ subroutine setp_native_secstruct()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : outfile, ifile_pdb, num_file
+  use var_io,    only : outfile, ifile_pdb, num_file
   use var_struct, only : nmp_all, imp2unit, istype_mp
 #ifdef MPI_PAR
   use mpiconst
@@ -370,7 +370,7 @@ contains
   ! ***********************************************************************
   subroutine  protonate(nmp_all, xyz_n, xyz_ca, xyz_c, xyz_o, xyz_h)
     
-    use var_inp, only : outfile
+    use var_io, only : outfile
     implicit none
 
     ! -------------------------------------------------------------------

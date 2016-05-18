@@ -8,8 +8,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inpro, inrna, inligand
+  use var_setp,    only : inpro, inrna, inligand, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
                           lexv, iexv2mp, iclass_mp
   use mpiconst

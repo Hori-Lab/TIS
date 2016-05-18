@@ -7,18 +7,15 @@ subroutine force_implig(irep, force_mp)
   use const_maxsize
   use const_index   
   use const_physical
-  use var_inp,    only : inperi
-  use var_setp,   only : inpro
+  use var_setp,   only : inpro, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nmp_all
   use var_mgo,    only : inmgo, ishadow2real_mp_mgo
-  use var_implig, only : inimplig, ncon_implig, icon2mp_implig, &
-                         vdwrad_implig, istate_implig
+  use var_implig, only : inimplig, ncon_implig, icon2mp_implig, vdwrad_implig, istate_implig
 
   implicit none
-  ! ------------------------------------------------------------
+
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
-  ! ------------------------------------------------------------
 
   integer :: iadd, ist, icon, icon2, imp1, imp2, jmp1, jmp2
   integer :: imirror
@@ -28,7 +25,6 @@ subroutine force_implig(irep, force_mp)
   real(PREC) :: vdwrad8, vdwrad12, vdwrad14, dist4, dist8, dist12, dist14
   real(PREC) :: roverdist12, roverdist14, dvdw_dr, dist1, distoverr_m1, dvdr
   real(PREC) :: vdwrad1_inv, gauss_2_inv
-  ! ------------------------------------------------------------------------
 
   ! set parameter
   pre_go = inpro%cgo1210

@@ -3,7 +3,7 @@ program aa2cg
    use const_maxsize
    use const_index
    use const_physical
-   use var_inp,    only : infile, num_file
+   use var_io,    only : infile, num_file
    use var_setp,   only : inpro, inrna, inmisc
    use var_struct, only : nunit_real, nunit_all,  nmp_all,  &
                           lunit2mp, ires_mp, iclass_unit, iclass_mp, &

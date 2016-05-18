@@ -9,8 +9,7 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
   use if_neighbor
   use const_maxsize
   use const_index
-  use var_inp, only : inperi
-  use var_setp, only : inmisc
+  use var_setp, only : inmisc, inperi
   use var_struct, only : nmp_real, lunit2mp, xyz_mp_rep, pxyz_mp_rep, &
                          imp2unit, nmp_all
   use mpiconst

@@ -8,7 +8,7 @@ subroutine inp_unitstate()
   use const_maxsize
   use const_index
   use var_setp,   only : inmisc
-  use var_inp,    only : infile, outfile, iopen_lunnum,  &
+  use var_io,    only : infile, outfile, iopen_lunnum,  &
                          ifile_pdb, num_file, &
                          i_seq_read_style, i_go_native_read_style, &
                          ius2unit, iunit2us, flg_unit_generate_ion

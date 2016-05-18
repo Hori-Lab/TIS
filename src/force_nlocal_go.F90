@@ -16,8 +16,7 @@ subroutine force_nlocal_go(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inrna, inpro, inmisc
+  use var_setp,   only : inrna, inpro, inmisc, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
                          ncon, icon2mp, coef_go, go_nat2, iclass_mp, nmp_all
   use mpiconst

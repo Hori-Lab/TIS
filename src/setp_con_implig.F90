@@ -9,7 +9,7 @@ subroutine setp_con_implig(xyz_mp_init, &
   use var_implig, only : inimplig, naa_site_implig, p_implig,&
                          ncon_implig, icon2mp_implig, vdwrad_implig, inimplig_bindsite
   use var_struct, only : lunit2mp, icon2mp, ncon, imp2unit
-  use var_inp,    only : outfile
+  use var_io,    only : outfile
 
 
 #ifdef MPI_PAR

@@ -7,7 +7,7 @@ subroutine setp_pulling_para()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inmisc
   use var_struct, only: nmp_all, lunit2mp
   use var_replica, only: flg_rep, n_replica_all, rep2val, inrep, lab2val

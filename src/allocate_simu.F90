@@ -3,7 +3,7 @@ subroutine allocate_simu()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : i_simulate_type
+  use var_io,     only : i_simulate_type
   use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : velo_mp, accel_mp, force_mp, rcmass_mp, &

@@ -15,7 +15,7 @@ subroutine step_adjustment(istep, n_exchange, i_loadbalance)
   use var_struct,  only : lele
   use var_replica, only : inrep, n_replica_all, n_replica_mpi, &
                           irep2grep, lab2step, rep2step, exchange_step
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
   use time
 #ifdef MPI_PAR
   use mpiconst

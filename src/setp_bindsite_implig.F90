@@ -6,7 +6,7 @@ subroutine setp_bindsite_implig()
 
   use const_maxsize
   use const_index
-  use var_inp,    only : infile, ius2unit, outfile
+  use var_io,    only : infile, ius2unit, outfile
   use var_struct, only : nunit_all
 
 

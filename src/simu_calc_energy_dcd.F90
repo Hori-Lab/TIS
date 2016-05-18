@@ -4,7 +4,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   use const_index
   use if_mloop
   use if_write
-  use var_inp,     only : ifile_out_opt
+  use var_io,     only : ifile_out_opt
   use var_replica, only : n_replica_mpi
   use var_simu,    only : ibefore_time, tempk, velo_mp, energy, energy_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, replica_energy

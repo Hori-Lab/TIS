@@ -49,7 +49,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
   use var_setp,    only : inmisc, mts
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &

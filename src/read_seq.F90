@@ -6,7 +6,7 @@ subroutine read_seq()
   
   use const_maxsize
   use const_index
-  use var_inp,    only : infile, outfile
+  use var_io,    only : infile, outfile
   use var_setp,   only : inion, inmisc
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all, &
                          lunit2mp, iclass_unit, iclass_mp, &

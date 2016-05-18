@@ -5,8 +5,7 @@ subroutine mloop_ewld()
 
    use const_physical
    use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef, ewld_s_sum
-   use var_setp, only : inele
-   use var_inp,  only : inperi
+   use var_setp, only : inele, inperi
    use var_struct,only: coef_charge, ncharge
    
    implicit none

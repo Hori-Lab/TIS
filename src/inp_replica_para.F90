@@ -6,7 +6,7 @@ subroutine inp_replica_para()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,     only : infile, i_run_mode
+  use var_io,     only : infile, i_run_mode
   use var_replica, only : inrep, flg_rep, flg_npar_rep, &
                           n_replica_all, n_dimension, &
                           CHAR_REPTYPE

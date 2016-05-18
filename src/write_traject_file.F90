@@ -6,7 +6,7 @@ subroutine write_traject_file(ibefore_time, istep, tempk, velo_mp)
 
   use if_write
   use const_maxsize
-  use var_inp, only : ifile_out_movie, ifile_out_dcd, ifile_out_vdcd
+  use var_io, only : ifile_out_movie, ifile_out_dcd, ifile_out_vdcd
   use var_setp,only : insimu
 
 #ifdef MPI_PAR

@@ -7,7 +7,7 @@ subroutine inp_datafile()
 
   use const_maxsize
   use const_index
-  use var_inp,    only : infile, outfile, iopen_lunnum,  &
+  use var_io,    only : infile, outfile, iopen_lunnum,  &
                          ifile_ini, ifile_dssp,    &
                          num_file, i_initial_state, i_initial_velo, &
                          i_aicg, &    ! aicg

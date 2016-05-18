@@ -10,7 +10,7 @@ subroutine inp_energy_func()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,    only : infile, ius2unit, outfile, &
+  use var_io,    only : infile, ius2unit, outfile, &
                          i_aicg  !aicg
        
   use var_setp,   only : inmisc, inflp

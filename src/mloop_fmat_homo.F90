@@ -25,7 +25,7 @@ subroutine mloop_fmat_homo(iloop)
                           nl_sum, nl_sum2, i_num_sum, infmat, bp_sum, bp_sum2, st_sum, st_sum2, &
                           fix_pro, fix_rna
    use var_setp, only   : inpro, inrna
-   use var_inp,  only   : outfile
+   use var_io,  only   : outfile
    use mpiconst
 
    implicit none

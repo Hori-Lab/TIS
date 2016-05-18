@@ -19,19 +19,14 @@ subroutine force_nlocal_mgo(irep, force_mp, force_mp_mgo, ene_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inpro
+  use var_setp,   only : inpro, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
-                         ncon, icon2mp, coef_go, go_nat2, &
-                         nunit_all, nmp_all
+                         ncon, icon2mp, coef_go, go_nat2, nunit_all, nmp_all
   use var_mgo,    only : ncontype_mgo, irefcon_mgo, icon2sysmbr_mgo, inmgo
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all), ene_unit(nunit_all, nunit_all)
   real(PREC), intent(inout) :: force_mp_mgo(3, nmp_all, &
@@ -39,8 +34,6 @@ subroutine force_nlocal_mgo(irep, force_mp, force_mp_mgo, ene_unit)
 ! real(PREC), intent(inout) :: force_mp_mgo(3, inmgo%i_multi_mgo*nmp_all, &
 !                                           inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, isys, istat
   integer :: icon

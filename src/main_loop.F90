@@ -7,7 +7,7 @@ subroutine main_loop()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : i_go_native_read_style, i_run_mode, &
+  use var_io,     only : i_go_native_read_style, i_run_mode, &
                           ifile_out_psf, outfile
   use var_setp,    only : insimu, inmisc, inflp, inele
   use var_mgo,     only : inmgo

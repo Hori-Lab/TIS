@@ -1,7 +1,6 @@
 ! inp_job
 !> @brief This subroutine is to read and set the parameters for job-control.
 
-
 ! ********************************************************
 ! subroutine for reading parameters of job-control
 ! ********************************************************
@@ -12,21 +11,13 @@ subroutine inp_job()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile,  i_run_mode, i_simulate_type, &
-                      i_initial_state, i_initial_velo, &
-                      flg_rst, inperi
-
-#ifdef MPI_PAR
+  use var_io,   only : infile, outfile,  i_run_mode, i_simulate_type, &
+                       i_initial_state, i_initial_velo, flg_rst
+  use var_setp, only : inperi
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
-  ! intent(out) :: i_simulate_type, i_initial_state, i_initial_velo
-
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: luninp, lunout
   integer :: iline, nlines, iequa, nequat
   character(4) :: kfind

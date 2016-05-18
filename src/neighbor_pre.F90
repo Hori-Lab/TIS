@@ -6,8 +6,7 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
   
   use const_maxsize
   use const_index
-  use var_inp, only: inperi
-  use var_setp,   only : inmisc
+  use var_setp,   only : inmisc, inperi
   use var_struct, only : nunit_all, lunit2mp
 
   implicit none

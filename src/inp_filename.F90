@@ -7,7 +7,7 @@ subroutine inp_filename()
 
   use const_maxsize
   use const_index
-  use var_inp,     only : infile, outfile, i_run_mode,  &
+  use var_io,     only : infile, outfile, i_run_mode,  &
                           ifile_out_movie, ifile_out_velo, &
                           ifile_out_dcd, ifile_out_vdcd, ifile_out_pdb,   &
                           ifile_out_rep, ifile_out_psf, ifile_out_rst,&

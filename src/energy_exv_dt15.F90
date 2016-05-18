@@ -18,8 +18,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : indtrna15
-  use var_inp,     only : inperi
+  use var_setp,    only : indtrna15, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp
   use mpiconst
@@ -114,8 +113,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : indtrna15
-  use var_inp,     only : inperi
+  use var_setp,    only : indtrna15, inperi
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp, &
                           ntp, xyz_tp, iclass_tp, tp_exv_dt15_rad, tp_exv_dt15_eps

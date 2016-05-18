@@ -7,23 +7,17 @@ subroutine force_nlocal_rna_bp(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inrna, inmisc
+  use var_setp,   only : inrna, inmisc, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nrna_bp, irna_bp2mp, &
                          coef_rna_bp, coef_rna_bp_a, coef_rna_bp_fD,  &
                          rna_bp_nat, rna_bp_nat2, nmp_all
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: force_mp(3, nmp_all)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: imp1, imp2
   integer :: ksta, kend
   integer :: ibp, imirror

@@ -158,11 +158,8 @@ MTOBJ = $(MTMOD) $(MTSUB)
 FMOD1 = const_maxsize.o const_index.o const_physical.o
 
 # variable
-FMOD2 = var_inp.o var_struct.o var_setp.o\
-	var_enm.o var_mgo.o var_replica.o\
-	var_implig.o var_simu.o var_flp.o\
-	var_fmat.o\
-	var_cafe.o
+FMOD2 = var_io.o var_struct.o var_setp.o var_mgo.o var_replica.o\
+	  var_implig.o var_simu.o var_flp.o var_fmat.o var_cafe.o
 
 # MPI parameter
 FMOD3 = mpiconst.o time.o

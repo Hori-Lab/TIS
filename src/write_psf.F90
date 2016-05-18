@@ -10,7 +10,7 @@ subroutine write_psf()
    use var_struct, only : nmp_real, imp2unit, iclass_unit,      &
                           cmp2seq, ires_mp, cmp2atom, imp2type, &
                           cmass_mp, nbd, ibd2mp, lmp2charge, coef_charge
-   use var_inp,    only : outfile
+   use var_io,    only : outfile
 #ifdef MPI_PAR
    use mpiconst
 #endif

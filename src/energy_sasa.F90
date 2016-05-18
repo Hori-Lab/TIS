@@ -8,8 +8,8 @@ subroutine  energy_sasa(irep, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi, outfile
-  use var_setp,    only : insasa 
+  use var_io,      only : outfile
+  use var_setp,    only : insasa, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, nmp_real, &
                           para_sasa, rad_sasa, surf, connect,cmp2atom
   use var_simu,    only : istep, sasa

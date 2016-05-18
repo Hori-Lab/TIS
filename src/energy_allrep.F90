@@ -34,7 +34,7 @@ subroutine energy_allrep(energy_unit,     &
   use var_simu,    only : qscore_unit, qscore
 #endif
 #ifdef _DUMP_COMMON
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
 #endif
 
   implicit none

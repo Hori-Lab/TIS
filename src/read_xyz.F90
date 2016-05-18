@@ -8,13 +8,13 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
   use const_physical
   use const_index
   use if_readpdb
-  use var_inp,    only : ifile_pdb, num_file
-  use var_setp,   only : inion, pdbatom
+  use var_io,    only : ifile_pdb, num_file, pdbatom
+  use var_setp,   only : inion
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all,  &
                          lunit2mp, ires_mp, iclass_unit, iclass_mp, &
                          iontype_mp, cmp2seq, cmp2atom, imp2type, imp2unit, nres
-#ifdef MPI_PAR
   use mpiconst
+#ifdef MPI_PAR
   use var_struct, only : exv_radius_mp
 #endif
 

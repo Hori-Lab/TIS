@@ -13,7 +13,7 @@ subroutine setp_nativestruct( xyz_mp_init &  ! [i ]
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : i_go_native_read_style
+  use var_io,    only : i_go_native_read_style
   use var_struct, only : nmp_all
   use var_setp,   only : inmisc
 

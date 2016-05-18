@@ -5,7 +5,7 @@
 subroutine util_error(ierror_out, error_message)
 
   use const_maxsize
-  use var_inp, only : outfile
+  use var_io, only : outfile
 #ifdef MPI_PAR
   use mpiconst
 #endif

@@ -9,7 +9,7 @@ subroutine read_pdbatom(lun, & ![i ] target I/O unit
   use const_maxsize
   use const_index
   use const_physical
-  use var_setp,   only : pdbatom
+  use var_io,   only : pdbatom
   implicit none
 
   ! ---------------------------------------------------------------------

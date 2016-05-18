@@ -5,19 +5,12 @@ subroutine setp_periodic()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile, inperi
-
-#ifdef MPI_PAR
+  use var_io,   only : infile, outfile
+  use var_setp, only : inperi
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
-  ! intent(out) :: xpbound, ypbound, zpbound
-
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: luninp, lunout
   integer :: iline, nlines, iequa, nequat
   character(4) :: kfind
@@ -127,5 +120,3 @@ subroutine setp_periodic()
 #endif
 
 end subroutine setp_periodic
-
-

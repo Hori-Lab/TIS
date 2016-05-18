@@ -7,22 +7,14 @@ subroutine simu_initial_xyz()
   use const_maxsize
   use const_index
   use if_readpdb
-  use var_inp,    only : ifile_ini, num_file, i_initial_state
-  use var_setp,   only : pdbatom
-  use var_struct, only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep,   &
-                         cmp2seq, imp2type
-#ifdef MPI_PAR
+  use var_io,    only : ifile_ini, num_file, i_initial_state, pdbatom
+  use var_struct, only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep, cmp2seq, imp2type
   use mpiconst
-#endif
 
   implicit none
 
-  ! ----------------------------------------------------------------------
-  ! loca variables
   integer :: i, imp, iunit
   integer :: lunini, iclass, nunit_atom(2)
-!  integer :: lunout
-!  integer :: npdb
   integer :: nini, nmpini, nunitini, nunitini_old, nresini
   integer :: lunit2mpini(2, MXUNIT), iresini_mp(MXMP)
   integer :: lunit2atom(2, MXUNIT)

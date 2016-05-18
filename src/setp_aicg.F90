@@ -12,7 +12,7 @@ subroutine setp_aicg(iatomnum, xyz, cname_ha, dssp)
                          coef_bd, coef_ba, coef_dih, coef_go, &
                          nmp_all, ibd2mp, iba2mp, idih2mp, cmp2seq, &
                          iclass_mp, icon2unit, imp2unit
-  use var_inp,  only : outfile
+  use var_io,  only : outfile
   use var_setp, only : inaicg, inmisc
 #ifdef MPI_PAR
   use mpiconst

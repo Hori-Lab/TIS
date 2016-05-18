@@ -6,7 +6,7 @@ subroutine write_rep_traject( istep )
 #include "format.F90"
 
    use const_maxsize
-   use var_inp, only : outfile
+   use var_io, only : outfile
    use var_replica, only : rep2lab, n_replica_all
 #ifdef MPI_PAR
    use mpiconst

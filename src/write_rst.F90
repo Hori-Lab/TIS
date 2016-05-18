@@ -4,7 +4,7 @@ subroutine write_rst()
    use const_index
    use const_physical, only : SDIM
    use var_setp,   only : inmisc, mts
-   use var_inp,    only : outfile, fullpath
+   use var_io,    only : outfile, fullpath
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep, ndtrna_hb, ndtrna_st
    use var_simu,   only : istep_sim, istep, velo_mp, accel_mp, &
                           hb_status, st_status

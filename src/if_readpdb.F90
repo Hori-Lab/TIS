@@ -6,7 +6,7 @@ interface
 
    subroutine read_pdbatom(lun, nunit_atom, lunit2atom, pdb_atom)
       use const_maxsize
-      use var_setp, only: pdbatom
+      use var_io, only: pdbatom
       integer,       intent(in)    :: lun
       integer,       intent(in)    :: nunit_atom(2)
       integer,       intent(out)   :: lunit2atom(2, MXUNIT)
@@ -17,7 +17,7 @@ interface
                                lunit2mp, nmp, nres, ires_mp, xyz_mp, iontype_mp, &
                                cmp2seq, cmp2atom, imp2type, iatomnum, xyz)
       use const_maxsize
-      use var_setp, only: pdbatom
+      use var_io, only: pdbatom
       type(pdbatom), intent(in)    :: pdb_atom(:)
       integer,       intent(in)    :: lunit2atom(2, MXUNIT)
       integer,       intent(in)    :: nunit_atom(2)
@@ -37,7 +37,7 @@ interface
                                lunit2mp, ires_mp,  cmp2seq,  imp2type, iatomnum, &
                                xyz, cname_ha) 
       use const_maxsize
-      use var_setp, only: pdbatom
+      use var_io, only: pdbatom
       type(pdbatom), intent(in)    :: pdb_atom(:)
       integer,       intent(in)    :: lunit2atom(2, MXUNIT)
       integer,       intent(in)    :: nunit_atom(2)

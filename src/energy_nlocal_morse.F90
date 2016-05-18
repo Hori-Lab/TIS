@@ -16,11 +16,9 @@ subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inpro, inrna, inmisc
+  use var_setp,    only : inpro, inrna, inmisc, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
-                          nmorse, imorse2mp, morse_nat, &
-                          coef_morse_fD, coef_morse_a
+                          nmorse, imorse2mp, morse_nat, coef_morse_fD, coef_morse_a
   use mpiconst
 
   implicit none

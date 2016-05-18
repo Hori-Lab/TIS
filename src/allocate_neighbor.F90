@@ -5,23 +5,16 @@ subroutine allocate_neighbor()
 
   use const_maxsize
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele
-  use var_struct,  only : lexv, iexv2mp, lele, iele2mp, &
-                          coef_ele, &
+  use var_setp,    only : inmisc, inele, inperi
+  use var_struct,  only : lexv, iexv2mp, lele, iele2mp, coef_ele, &
                           nhpneigh, lhp2neigh, ineigh2hp, cutoff_dmin_hp, &
                           cutoff_dmax_hp, ncharge, nmp_all, nhp, &
                           nhbneigh, ineigh2hb
   use var_replica, only : n_replica_mpi
-
-#ifdef MPI_PAR2
   use mpiconst
-#endif
 
   implicit none
 
-  ! -------------------------------------------------------------------
-  ! local variables
   integer :: ier
   integer :: ncharge_mpi
   integer :: n_index, n_index_tail

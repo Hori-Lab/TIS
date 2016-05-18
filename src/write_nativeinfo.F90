@@ -5,7 +5,7 @@ subroutine write_nativeinfo(lunout)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inrna, inmisc
+  use var_setp,   only : inpro, inrna, inmisc, inenm
   use var_struct, only : nunit_all, imp2unit, lunit2mp, &
                          nbd, ibd2mp, bd_nat,   &
                          factor_bd, coef_bd, correct_bd_mgo,  &
@@ -23,17 +23,12 @@ subroutine write_nativeinfo(lunout)
                          coef_dih_gauss, wid_dih_gauss, & ! AICG2
                          ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, &
                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb
-  use var_enm,    only : inenm
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
   integer, intent(in) :: lunout
 
-  ! ------------------------------------------------------------------------
-  ! local variable
   integer :: iunit, junit
   integer :: imp1, imp2, imp3, imp4, iunit1, iunit2
   integer :: imp1un, imp2un, imp3un, imp4un

@@ -49,8 +49,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc
+  use var_setp,    only : inmisc, inperi
   use var_struct,  only : xyz_mp_rep, imp2unit, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb
 #ifdef MPI_PAR3
   use mpiconst

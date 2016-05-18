@@ -14,8 +14,7 @@ subroutine neighbor_list_ele(jrep)
 
   use const_maxsize
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele
+  use var_setp,    only : inmisc, inele, inperi
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
                           imp2unit, ncharge, icharge2mp, coef_charge, &
                           lele, iele2mp, coef_ele, ncharge

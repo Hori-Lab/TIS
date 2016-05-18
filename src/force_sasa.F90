@@ -8,8 +8,7 @@ subroutine force_sasa(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : insasa
+  use var_setp,   only : insasa, inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, nmp_real, &
                          para_sasa, rad_sasa, surf, connect, imp2unit, cmp2atom
   use var_simu,    only :sasa

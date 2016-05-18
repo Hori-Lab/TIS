@@ -6,7 +6,7 @@ subroutine inp_split_mpi()
 
   use const_maxsize
   use const_index
-  use var_inp,     only : i_run_mode
+  use var_io,     only : i_run_mode
   use var_replica, only : inrep, n_replica_all, flg_npar_rep, &
                           n_replica_mpi, irep2grep, grep2irep, grep2rank
   use mpiconst

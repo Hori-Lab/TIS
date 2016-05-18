@@ -7,7 +7,7 @@ subroutine setp_md_info()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile, flg_rst, i_simulate_type
+  use var_io, only : infile, outfile, flg_rst, i_simulate_type
   use var_setp, only: insimu, inmisc, irand, mts, &
                       inmmc   !mcanonical
   use var_replica, only : exchange_step, flg_rep,&

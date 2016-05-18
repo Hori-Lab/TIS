@@ -8,10 +8,9 @@ subroutine setpara( xyz_mp_init )
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,    only : infile, outfile, ifile_pdb, num_file,  &
-                         i_run_mode, i_seq_read_style, &
-                         inperi, i_aicg, i_go_native_read_style
-  use var_setp,   only : inpara, inmisc, ifix_mp, inmmc, inflp
+  use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
+                         i_run_mode, i_seq_read_style, i_aicg, i_go_native_read_style
+  use var_setp,   only : inpara, inmisc, ifix_mp, inmmc, inflp, inperi
   use var_struct, only : xyz_ref_mp, iontype_mp
   use var_mgo,    only : inmgo
   use var_implig, only : inimplig

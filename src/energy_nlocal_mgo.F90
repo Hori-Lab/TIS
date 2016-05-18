@@ -18,25 +18,19 @@ subroutine energy_nlocal_mgo(irep, now_con, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inpro
+  use var_setp,    only : inpro, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           ncon, icon2mp, coef_go, go_nat
   use var_mgo,     only : ncontype_mgo, irefcon_mgo
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   integer,    intent(out) :: now_con(:,:)
   real(PREC), intent(inout) :: energy(:)
   real(PREC), intent(inout) :: energy_unit(:,:,:)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: ksta, kend
   integer :: imp1, imp2
   integer :: icon, iswitch, jcon

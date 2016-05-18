@@ -6,7 +6,7 @@ subroutine setp_para_implig()
 
   use const_maxsize
   use const_index
-  use var_inp,    only : infile, outfile
+  use var_io,    only : infile, outfile
   use var_implig, only : inimplig, istate_implig
   use var_replica, only: n_replica_mpi
 #ifdef MPI_PAR

@@ -6,7 +6,7 @@ subroutine write_record_file(istep, velo_mp)
   use if_write
   use const_maxsize
   use const_index
-  use var_inp, only : ifile_out_pdb
+  use var_io, only : ifile_out_pdb
 
 #ifdef MPI_PAR
   use mpiconst

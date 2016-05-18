@@ -7,7 +7,7 @@ subroutine read_dssp(dssp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : ifile_dssp, num_file, ifile_pdb !AICG
+  use var_io,    only : ifile_dssp, num_file, ifile_pdb !AICG
   use var_struct, only : lunit2mp !AICG
 #ifdef MPI_PAR
   use mpiconst

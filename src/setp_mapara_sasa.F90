@@ -6,7 +6,7 @@
 subroutine setp_mapara_sasa()
   use const_maxsize
   use const_index
-  use var_inp, only: infile, outfile
+  use var_io, only: infile, outfile
   use var_setp, only : insasa
 
 #ifdef MPI_PAR

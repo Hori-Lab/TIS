@@ -3,8 +3,7 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inele
+  use var_setp,   only : inele, inperi
   use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all,&
                          ncharge, coef_charge, icharge2mp
   use var_simu,   only : ewld_f_n, ewld_f_rlv, ewld_f_coef

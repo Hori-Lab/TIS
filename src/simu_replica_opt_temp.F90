@@ -22,7 +22,7 @@ subroutine simu_replica_opt_temp(i_current_stage)
    use const_maxsize
    use const_index
    use const_physical
-   use var_inp,     only : outfile
+   use var_io,     only : outfile
    use var_replica, only : n_current_up, n_current_down, n_replica_all, lab2val, inrep, up_or_down
    use mpiconst
 

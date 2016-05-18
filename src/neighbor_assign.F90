@@ -16,8 +16,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,    only : inperi
-  use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15
+  use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15, inperi
   use var_struct, only : nunit_real, iontype_mp, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
                          iclass_unit, ires_mp, nmp_all, &

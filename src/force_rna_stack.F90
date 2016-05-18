@@ -17,8 +17,7 @@ subroutine force_rna_stack(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inrna, inmisc
+  use var_setp,   only : inrna, inmisc, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nrna_st, irna_st2mp, &
                          coef_rna_st, coef_rna_st_a, coef_rna_st_fD,   &
                          rna_st_nat, rna_st_nat2, nmp_all

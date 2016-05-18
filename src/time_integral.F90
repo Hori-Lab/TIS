@@ -18,7 +18,7 @@ subroutine time_integral(flg_step_each_replica)
   use if_mloop
   use if_write
   use if_energy
-  use var_inp,     only : i_run_mode, i_simulate_type
+  use var_io,     only : i_run_mode, i_simulate_type
   use var_setp,    only : insimu, ifix_mp, inmmc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step

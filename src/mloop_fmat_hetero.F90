@@ -31,7 +31,7 @@ subroutine mloop_fmat_hetero()
                           fix_pro, fix_rna, &
                           aamsf_hetero_bl, aamsf_hetero_ba, aamsf_hetero_dih, &
                           aamsf_hetero_nl, aamsf_hetero_rnabp, aamsf_hetero_rnast
-   use var_inp,  only   : outfile
+   use var_io,  only   : outfile
 #ifdef MPI_PAR
    use mpiconst
 #endif

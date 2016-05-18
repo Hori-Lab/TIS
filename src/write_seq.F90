@@ -5,7 +5,7 @@ subroutine write_seq()
   
   use const_maxsize
   use const_index
-  use var_inp,    only : outfile
+  use var_io,    only : outfile
   use var_struct, only : nunit_real, nmp_real, &
                          lunit2mp, cmp2seq
 #ifdef MPI_PAR

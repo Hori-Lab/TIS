@@ -4,7 +4,7 @@ subroutine read_rst(itype_wanted)
    use const_index
    use const_physical
    use var_setp,   only : insimu
-   use var_inp,    only : infile
+   use var_io,    only : infile
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep, ndtrna_hb, ndtrna_st
    use var_simu,   only : velo_mp, accel_mp, hb_status, st_status
    use var_replica,only : rep2lab, grep2irep, grep2rank, n_replica_all, lab2rep

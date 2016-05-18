@@ -6,7 +6,7 @@ subroutine simu_logicalcheck()
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc
-  use var_inp,     only : i_run_mode
+  use var_io,     only : i_run_mode
   use var_setp,    only : inmisc
   use var_replica
 #ifdef MPI_PAR

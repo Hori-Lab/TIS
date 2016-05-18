@@ -22,7 +22,7 @@
 function rfunc_propensity(id_mp, itype)
 
   use const_maxsize
-  use var_inp, only : outfile
+  use var_io, only : outfile
   implicit none
 
   real(PREC) :: rfunc_propensity

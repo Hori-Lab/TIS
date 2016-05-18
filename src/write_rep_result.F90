@@ -8,7 +8,7 @@ subroutine write_rep_result()
   use var_replica, only : n_replica_all, hist_attempt, hist_combination, &
                           hist_exchange, total_attempt, inrep, &
                           rate_exchange, flg_rep, n_turnover
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
 #ifdef MPI_PAR
    use mpiconst
 #endif

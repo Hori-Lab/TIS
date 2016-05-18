@@ -6,7 +6,7 @@ subroutine setp_minimize_para()
    use const_maxsize
    use const_index
    use const_physical
-   use var_inp, only : infile, outfile, ifile_out_opt
+   use var_io, only : infile, outfile, ifile_out_opt
    use var_setp, only : insimu
    use var_emin, only : inemin
 #ifdef MPI_PAR

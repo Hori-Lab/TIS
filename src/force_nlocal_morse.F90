@@ -16,25 +16,17 @@ subroutine force_nlocal_morse(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inrna, inpro, inmisc
+  use var_setp,   only : inrna, inpro, inmisc, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, nmorse, imorse2mp, &
-                         coef_morse_a, coef_morse_fD, morse_nat, &
-                         iclass_mp, nmp_all
-
-#ifdef MPI_PAR
+                         coef_morse_a, coef_morse_fD, morse_nat, iclass_mp, nmp_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(out) :: force_mp(3, nmp_all)
 
-  ! ---------------------------------------------------------------------
-  ! local variables
-  integer :: imp1, imp2!, iunit, junit
+  integer :: imp1, imp2
   integer :: ksta, kend
   integer :: imorse, imirror
   real(PREC) :: rcut_off

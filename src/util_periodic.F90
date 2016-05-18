@@ -4,7 +4,7 @@
 subroutine util_periodic(irep)
       
   use const_maxsize
-  use var_inp, only : inperi
+  use var_setp,   only : inperi
   use var_struct, only : nmp_real, pxyz_mp_rep
   implicit none
   

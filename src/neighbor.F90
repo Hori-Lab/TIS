@@ -14,8 +14,7 @@ subroutine neighbor(irep)
   
   use const_maxsize
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele
+  use var_setp,    only : inmisc, inele, inperi
   use var_struct,  only : lexv, nmp_all
 
   use time

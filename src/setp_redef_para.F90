@@ -6,7 +6,7 @@ subroutine setp_redef_para()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inpara, inpro, inligand, inexv
 
 #ifdef MPI_PAR

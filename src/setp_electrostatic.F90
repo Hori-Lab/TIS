@@ -6,7 +6,7 @@ subroutine setp_electrostatic()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp,  only : infile, outfile
+  use var_io,  only : infile, outfile
   use var_struct, only : nunit_real, lunit2mp
   use var_setp, only : inele, inmisc
 

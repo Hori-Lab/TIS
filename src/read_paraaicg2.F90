@@ -12,7 +12,7 @@ subroutine read_paraaicg2()
                          wid_aicg13_gauss, wid_aicg14_gauss,wid_dih_gauss, &
                          ibd2mp, iba2mp, idih2mp, icon2unit, imp2unit
 
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inmisc
 
 #ifdef MPI_PAR

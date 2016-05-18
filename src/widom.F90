@@ -2,11 +2,10 @@ subroutine widom
 
    use const_physical
    use const_index
-   use var_inp,    only : inperi, outfile
-   use var_setp,   only : inwidom, mts, inele
-   use var_struct, only : ntp, xyz_tp
-   use var_simu,   only : istep, tempk, &
-                          widom_iw, widom_chp, widom_flg_exv_inf
+   use var_io,    only : outfile
+   use var_setp,  only : inwidom, mts, inele, inperi
+   use var_struct,only : ntp, xyz_tp
+   use var_simu,  only : istep, tempk, widom_iw, widom_chp, widom_flg_exv_inf
    use mt_stream
 
    implicit none

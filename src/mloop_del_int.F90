@@ -5,7 +5,7 @@
 subroutine mloop_del_int()
 
   use const_maxsize
-  use var_inp, only : ius2unit
+  use var_io, only : ius2unit
   use var_setp, only : inmisc
   use var_struct, only : nmp_all, lunit2mp, imp2unit, &
                          nba, iba2mp, factor_ba, coef_ba, &

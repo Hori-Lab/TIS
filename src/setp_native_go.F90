@@ -435,8 +435,7 @@ contains
   subroutine get_parameters_by_contype(icon_type, dfcontact2_enm, dfcontact2, &
                                        cenm, cgo1210, cgomorse_D, cgomorse_a)
       use const_index
-      use var_setp,   only : inpro, inrna
-      use var_enm,    only : inenm
+      use var_setp,   only : inpro, inrna, inenm
       implicit none
       integer, intent(in) :: icon_type
       real(PREC), intent(out) :: dfcontact2_enm

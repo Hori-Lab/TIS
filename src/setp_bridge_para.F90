@@ -6,7 +6,7 @@ subroutine setp_bridge_para()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile, i_run_mode
+  use var_io, only : infile, outfile, i_run_mode
   use var_setp, only : inmisc
 
 #ifdef MPI_PAR

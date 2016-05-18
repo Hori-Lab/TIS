@@ -5,7 +5,7 @@ subroutine setp_searchingtf_para()
   
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : insear
   use var_struct, only : nunit_real, nmp_real, iclass_unit
 

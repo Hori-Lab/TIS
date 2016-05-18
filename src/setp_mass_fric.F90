@@ -8,7 +8,7 @@ subroutine setp_mass_fric()
   use const_maxsize
   use const_index
   use const_physical
-  use var_inp, only : infile, outfile, i_simulate_type
+  use var_io, only : infile, outfile, i_simulate_type
   use var_setp, only : inmisc, inpara
   use var_struct, only : lunit2mp, cmass_mp, fric_mp, nmp_all, radius
 

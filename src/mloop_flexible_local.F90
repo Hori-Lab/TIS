@@ -7,7 +7,7 @@ subroutine mloop_flexible_local()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inflp
   use var_struct, only: nres, nfba, nfdih, nmp_all, &
        fba_para_x, fba_para_y, fba_para_y2, fdih_para, &
@@ -320,7 +320,7 @@ subroutine set_flp_ba_dih(iflp_mp, idel_mp)
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile, ius2unit
+  use var_io, only : infile, outfile, ius2unit
   use var_setp, only : inflp, inmisc
   use var_struct, only : nmp_real, nunit_all, lunit2mp, imp2unit
   use var_mgo, only : inmgo

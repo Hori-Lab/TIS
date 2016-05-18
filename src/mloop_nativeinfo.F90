@@ -6,8 +6,8 @@ subroutine mloop_nativeinfo(istep_sim)
 
   use const_maxsize
   use const_index
-  use var_inp,    only : iopen_lunnum
-  use var_setp,   only : inpro, inrna, inligand, inmisc
+  use var_io,    only : iopen_lunnum
+  use var_setp,   only : inpro, inrna, inligand, inmisc, inenm
   use var_struct, only : nmp_all, nunit_all, imp2unit, iclass_unit, &
                          nbd, ibd2mp, factor_bd, coef_bd, &
                          nba, iba2mp, factor_ba, coef_ba, &
@@ -15,20 +15,14 @@ subroutine mloop_nativeinfo(istep_sim)
                          ncon, icon2mp, icon2unit, factor_go, coef_go, &
                          get_icon_type, ncon_unit, imp2type, iallcon2unit,&
                          nmorse, imorse2unit, &
-                         nrna_bp, irna_bp2unit, &
-                         factor_rna_bp, nhb_bp, coef_rna_bp, &
-                         nrna_st, &
-                         factor_rna_st, coef_rna_st, rna_base_type, &
-                         ndtrna_st, ndtrna_hb
-
-  use var_enm,    only : inenm
-#ifdef MPI_PAR
+                         nrna_bp, irna_bp2unit, factor_rna_bp, nhb_bp, coef_rna_bp, &
+                         nrna_st, factor_rna_st, coef_rna_st, rna_base_type, ndtrna_st, ndtrna_hb
   use mpiconst
+#ifdef MPI_PAR
   use var_replica,only : n_replica_all
   use var_struct, only : imorse2mp, imorse_dummy_mgo, &
                          dih_nat, dih_sin_nat, dih_cos_nat, &
-                         bd_nat, &
-                         ba_nat, &
+                         bd_nat, ba_nat, &
                          go_nat, go_nat2, icon_dummy_mgo, &
                          irna_bp2mp, rna_bp_nat, rna_bp_nat2, &
                          morse_nat, morse_nat2, factor_morse, &

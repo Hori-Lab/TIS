@@ -6,8 +6,7 @@ subroutine energy_ele(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inmisc, inele, inion
+  use var_setp,    only : inmisc, inele, inion, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, iontype_mp, imp2type
   use var_replica, only : irep2grep
   use mpiconst

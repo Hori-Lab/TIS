@@ -5,7 +5,7 @@ subroutine write_fmat(istep_sim)
 
    use const_maxsize
    use const_index
-   use var_inp,  only : outfile
+   use var_io,  only : outfile
    use var_setp, only : inrna, inpro
    use var_struct, only : coef_bd, coef_ba, coef_dih, coef_go, &
                           coef_rna_bp, coef_rna_st, &

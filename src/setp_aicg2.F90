@@ -15,7 +15,7 @@ subroutine setp_aicg2(iatomnum, xyz, cname_ha)
                          wid_aicg13_gauss, wid_aicg14_gauss,wid_dih_gauss, &
                          ibd2mp, iba2mp, idih2mp, &
                          icon2unit, imp2unit
-  use var_inp,  only : outfile
+  use var_io,  only : outfile
   use var_setp, only : inaicg2, inmisc
 #ifdef MPI_PAR
   use mpiconst

@@ -7,7 +7,7 @@ subroutine read_dcd()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile
+  use var_io, only : infile
   use var_struct, only : nmp_real, pxyz_mp_rep,xyz_mp_rep
   use var_replica, only : n_replica_mpi, irep2grep
 #ifdef MPI_PAR

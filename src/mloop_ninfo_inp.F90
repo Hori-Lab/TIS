@@ -5,7 +5,7 @@ subroutine mloop_ninfo_inp(istep_sim, i_ninfo_type, inat_unit, cnat_fname)
   
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile, ius2unit
+  use var_io, only : infile, outfile, ius2unit
 
 #ifdef MPI_PAR
   use mpiconst

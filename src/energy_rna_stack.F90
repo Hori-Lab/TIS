@@ -19,14 +19,11 @@ subroutine energy_rna_stack(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : inrna, inmisc
+  use var_setp,    only : inrna, inmisc, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           nrna_st, irna_st2mp, rna_st_nat, rna_st_nat2, &
                           coef_rna_st, coef_rna_st_fD, coef_rna_st_a
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 

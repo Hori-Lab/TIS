@@ -8,8 +8,8 @@ subroutine force_dtrna_hbond13(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_struct,  only : xyz_mp_rep, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, nmp_all
+  use var_setp,  only : inperi
+  use var_struct,only : xyz_mp_rep, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, nmp_all
   use mpiconst
 
   implicit none

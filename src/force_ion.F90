@@ -6,21 +6,15 @@ subroutine force_ion(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : inion, inmisc
+  use var_setp,   only : inion, inmisc, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, nmp_all, iontype_mp
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(SDIM, nmp_all)
 
-  ! --------------------------------------------------------------------
-  ! local variables                                                             
   integer :: ksta, kend
   integer :: imp1, imp2, itype1, itype2
   integer :: iexv, imirror

@@ -7,7 +7,7 @@ subroutine setp_del_int()
 
   use const_maxsize
   use const_index
-  use var_inp, only : infile, outfile
+  use var_io, only : infile, outfile
   use var_setp, only : inmisc
 #ifdef MPI_PAR
   use mpiconst

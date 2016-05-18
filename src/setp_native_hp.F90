@@ -10,7 +10,7 @@ subroutine setp_native_hp()
 
   use const_maxsize
   use const_index
-  use var_inp, only : outfile
+  use var_io, only : outfile
   use var_setp, only : inmisc, inhp
   use var_struct, only : nunit_real, lunit2hp, lunit2mp, &
               nhp, ihp2mp, ncoor_hp, ncoor_max_hp, coef_aa_hp, &

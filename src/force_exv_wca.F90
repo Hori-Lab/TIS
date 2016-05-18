@@ -6,10 +6,8 @@ subroutine force_exv_wca(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,    only : inperi
-  use var_setp,   only : indtrna13
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                         lexv, iexv2mp !,iclass_mp
+  use var_setp,   only : indtrna13, inperi
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
   use mpiconst
 
   implicit none

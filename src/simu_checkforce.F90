@@ -10,7 +10,7 @@ subroutine simu_checkforce()
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : outfile
+  use var_io,     only : outfile
   use var_setp,    only : inele, insimu
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, nunit_all
   use var_mgo,     only : inmgo

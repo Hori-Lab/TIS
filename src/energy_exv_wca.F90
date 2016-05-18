@@ -24,8 +24,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_inp,     only : inperi
-  use var_setp,    only : indtrna13
+  use var_setp,    only : indtrna13, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
   use mpiconst
 

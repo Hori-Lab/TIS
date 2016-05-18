@@ -6,8 +6,7 @@ subroutine force_exv_dt15(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : indtrna15
-  use var_inp,    only : inperi
+  use var_setp,   only : indtrna15, inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
                          lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
   use mpiconst

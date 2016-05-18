@@ -20,7 +20,7 @@ subroutine min_conj_grad(flg_converge)
    use const_maxsize
 
    use if_mloop
-   use var_inp,    only : outfile
+   use var_io,    only : outfile
    use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep
    use var_setp,   only : insimu
    use var_simu,   only : istep,istep_sim, force_mp, velo_mp, energy, energy_unit

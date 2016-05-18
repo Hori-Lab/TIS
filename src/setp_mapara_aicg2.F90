@@ -7,7 +7,7 @@ subroutine setp_mapara_aicg2()
   
   use const_maxsize
   use const_index
-  use var_inp,  only : infile, outfile
+  use var_io,  only : infile, outfile
   use var_setp, only : inaicg2
 #ifdef MPI_PAR
   use mpiconst

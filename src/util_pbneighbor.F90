@@ -4,7 +4,7 @@
 subroutine util_pbneighbor(vx, imirror)
 
   use const_maxsize
-  use var_inp, only : inperi
+  use var_setp, only : inperi
 
   implicit none
 

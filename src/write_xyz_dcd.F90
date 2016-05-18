@@ -7,7 +7,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
 
   use const_maxsize
   use const_index
-  use var_inp, only : outfile
+  use var_io, only : outfile
   use var_setp, only : insimu
   use var_struct, only : nunit_real, nmp_real, lunit2mp, pxyz_mp_rep
   use var_replica, only : flg_rep, &
