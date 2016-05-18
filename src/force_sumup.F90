@@ -134,12 +134,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
   !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-!     call force_fbangle(irep, force_mp_l(1,1,tn), &
-!                             force_mp_mgo(1,1,1,1,tn), &
-!                             ene_unit_l(1,1,tn))
-!     call force_fdih  (irep, force_mp_l(1,1,tn), &
-!                            force_mp_mgo(1,1,1,1,tn), &
-!                            ene_unit_l(1,1,tn))
+!     call force_fbangle(irep, force_mp_l(1,1,tn), force_mp_mgo(1,1,1,1,tn), ene_unit_l(1,1,tn))
+!     call force_fdih  (irep, force_mp_l(1,1,tn), force_mp_mgo(1,1,1,1,tn))
 !  end if
 
 !$omp master

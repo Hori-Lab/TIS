@@ -27,7 +27,6 @@ module var_inp
      integer :: para_exv      = 30 ! excluded volume
      integer :: dcd(MXREPLICA)
      integer :: velo(MXREPLICA)
-     !integer :: crd(MXREPLICA)
      integer :: sz
   end type inunit
   type(inunit), save :: infile
@@ -45,7 +44,6 @@ module var_inp
      integer :: rst(MXREPLICA)
      integer :: ts(MXREPLICA)
      integer :: movie(MXREPLICA)
-     integer :: crd(MXREPLICA)
      integer :: velo(MXREPLICA)
      integer :: dcd(MXREPLICA)
      integer :: vdcd(MXREPLICA)
@@ -83,7 +81,6 @@ module var_inp
   integer, save :: ifile_ini(4, MXINI)
   integer, save :: ifile_dssp(MXPDB) ! aicg
   integer, save :: ifile_out_pdb
-  integer, save :: ifile_out_crd
   integer, save :: ifile_out_velo
   integer, save :: ifile_out_movie
   integer, save :: ifile_out_dcd

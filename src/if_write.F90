@@ -34,23 +34,5 @@ interface
       real(PREC), intent(in) :: velo_mp(:,:,:)
    endsubroutine write_xyz_dcd
 
-   subroutine write_crd(i_record_file, istep, velo_mp)
-      use const_maxsize
-      implicit none
-      integer, intent(in) :: i_record_file
-      integer(L_INT), intent(in) :: istep
-!      real(PREC), intent(in), optional :: velo_mp(:,:,:)
-      real(PREC), intent(in) :: velo_mp(:,:,:)
-   endsubroutine write_crd
-
-
-   subroutine read_crd(i_record_file, velo_mp)
-     use const_maxsize
-     implicit none
-      integer, intent(in) :: i_record_file
-!     real(PREC), intent(out), optional :: velo_mp(:,:,:)
-     real(PREC), intent(out) :: velo_mp(:,:,:)
-   endsubroutine read_crd
-
 endinterface
 endmodule if_write

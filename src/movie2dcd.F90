@@ -74,7 +74,7 @@ program movie2dcd
            if(input_status < 0) then
               exit a_loop
            else
-              write (*, *) 'Error: input error in pdb2crd'
+              write (*, *) 'Error: input error in movie2dcd'
            end if
 
         end if

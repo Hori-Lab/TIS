@@ -2,13 +2,13 @@
 !> @brief Opens files for program outputs, including .data, .ninfo, .ts, &
 !>        .movie, .dcd, and so on
 
-! open crd , velo and dcd files   Added Feb 2009
+! open  velo and dcd files   Added Feb 2009
 subroutine inp_filename()
 
   use const_maxsize
   use const_index
   use var_inp,     only : infile, outfile, i_run_mode,  &
-                          ifile_out_movie, ifile_out_crd, ifile_out_velo, &
+                          ifile_out_movie, ifile_out_velo, &
                           ifile_out_dcd, ifile_out_vdcd, ifile_out_pdb,   &
                           ifile_out_rep, ifile_out_psf, ifile_out_rst,&
                           fullpath, iopen_lunnum, ifile_out_opt, ifile_out_chp
@@ -30,7 +30,7 @@ subroutine inp_filename()
   integer :: irep       ! index for replica
   ! -------------------------------------------------------------------- mod
   integer :: iline, nlines, iequa, nequat
-  integer :: imovie, icrd, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp
+  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -38,7 +38,7 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: path, filename
   character(CARRAY_MXFILE) :: filename_data, filename_ninfo, filename_ts
   character(CARRAY_MXFILE) :: filename_movie, filename_dcd, filename_vdcd
-  character(CARRAY_MXFILE) :: filename_pdb, filename_crd, filename_velo
+  character(CARRAY_MXFILE) :: filename_pdb, filename_velo
   character(CARRAY_MXFILE) :: filename_rep
   character(CARRAY_MXFILE) :: filename_fmat
   character(CARRAY_MXFILE) :: filename_psf
@@ -78,7 +78,6 @@ subroutine inp_filename()
   filename_data     = "./md.data"
   filename_ninfo    = "./md.ninfo"
   filename_movie    = "./md.movie"
-  filename_crd      = "./md.crd"
   filename_velo     = "./md.velo"
   filename_dcd      = "./md.dcd"
   filename_vdcd     = "./md.vdcd"
@@ -91,7 +90,6 @@ subroutine inp_filename()
   filename_chp      = "./md.chp"
 
   imovie = 0
-  icrd   = 0
   ivelo  = 0
   idcd   = 0
   ivdcd  = 0
@@ -154,11 +152,7 @@ subroutine inp_filename()
            else if (isw == 1) then
               read (ctmp00(i1:i2), *) char7
 
-              if (char7 == 'crd') then
-                 filename_crd = filename_header
-                 filename_crd(n:n+3) = '.crd'
-                 icrd = 1
-              else if (char7 == 'velo') then
+              if (char7 == 'velo') then
                  filename_velo = filename_header
                  filename_velo(n:n+4) = '.velo'
                  ivelo = 1
@@ -218,7 +212,6 @@ subroutine inp_filename()
   call MPI_Bcast(filename_psf  , CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
 ! --------------------------------------------------------------------------
   call MPI_Bcast(filename_pdb,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(filename_crd,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_velo,  CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_movie, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_dcd,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
@@ -229,7 +222,6 @@ subroutine inp_filename()
 ! --------------------------------------------------------------------------
   call MPI_Bcast(ipdb,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ipsf,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(icrd,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ivelo,  1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imovie, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(idcd,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
@@ -354,63 +346,6 @@ subroutine inp_filename()
 #ifdef MPI_PAR
   end if
 #endif
-  
-  ! -----------------------------------------------------------------------
-  ! open crd file 
-  ! -----------------------------------------------------------------------
-  if(icrd == 1) then
-     ifile_out_crd = 1
-
-#ifdef MPI_PAR
-     if (local_rank_mpi == 0) then
-#endif
-     n = index(path, ' ')
-     m = index(filename_crd, ' ')
-
-     if(path /= '')then
-        filename = path(1:n-1)//'/'//filename_crd(1:m-1)
-     else
-        filename = filename_crd
-     end if
-
-     filename_save = filename
-     i_cend_save     = index(filename_save, '.crd') - 1
-     lunnum = iopen_lunnum
-     iopen_lunnum = iopen_lunnum + n_replica_all
-#ifdef MPI_REP
-     jlen = (n_replica_all-1+npar_rep)/npar_rep
-     jsta = 1+jlen*local_rank_rep
-     jend = min(jsta+jlen-1, n_replica_all)
-     lunnum = lunnum + jsta - 1
-     do irep = jsta, jend
-#else
-     do irep = 1, n_replica_all
-#endif
-
-        outfile%crd(irep) = lunnum
-        lunnum = lunnum + 1
-
-        if (flg_replica) then 
-           write(crep,'(i100)') irep + n_zeroize
-           filename =  filename_save(1:i_cend_save) // '_'  &
-                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.crd'
-        endif ! replica
-
-        write (*, '(a14,i3,a3,a)') "open crd file(",outfile%crd(irep),"): ", trim(filename)
-        open(outfile%crd(irep), file = filename, status = FILE_STATUS,  &
-             action = 'write', iostat = iopen_status)
-        if(iopen_status > 0) then
-           error_message = 'Error: cannot open the file: ' // filename
-           call util_error(ERROR%STOP_STD, error_message)
-        end if
-     enddo
-  
-#ifdef MPI_PAR
-     end if
-#endif
-  else
-     ifile_out_crd = 0
-  end if
   
   ! -----------------------------------------------------------------------
   ! open velo file 

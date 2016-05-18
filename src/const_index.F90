@@ -436,12 +436,6 @@ module const_index
      integer :: MAX
   endtype emin_type
   type(emin_type), parameter :: EMIN_METHOD = emin_type(0,1,2,2)
-  
-  type record_file_type
-     integer :: CRD
-     integer :: VELO
-  endtype record_file_type
-  type(record_file_type), parameter :: RECORD_FILE = record_file_type(1,2)
 
   type nearest_neighbor
      integer :: AA  !<  1

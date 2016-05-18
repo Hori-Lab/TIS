@@ -78,10 +78,6 @@ subroutine simu_initial()
      if(i_initial_velo == INIVELO%MAXWELL) then
         call simu_velo_mrand(tempk)
 
-     ! Given in .velo file
-     else if(i_initial_velo == INIVELO%CARD) then
-        call read_crd(RECORD_FILE%VELO, velo_mp)
-
      else if(i_initial_velo == INIVELO%RST) then
         call read_rst(RSTBLK%VELO)
 

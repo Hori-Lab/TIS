@@ -10,7 +10,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   use var_setp,    only : inele
   use var_struct,  only : imp2unit, pxyz_mp_rep, lele, iele2mp, coef_ele, &
                           ncharge, coef_charge, icharge2mp
-  use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_coef, ewld_s_sum
+  use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_sum
   use var_replica, only : irep2grep
   use mpiconst
 
@@ -166,7 +166,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   use const_index
   use var_inp,     only : inperi
   use var_setp,    only : inele
-  use var_struct,  only : pxyz_mp_rep, coef_charge, icharge2mp, nmp_real, lmp2charge, &
+  use var_struct,  only : pxyz_mp_rep, coef_charge, nmp_real, lmp2charge, &
                           ntp, xyz_tp, charge_tp
   use var_replica, only : irep2grep
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_coef
@@ -182,9 +182,6 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   integer :: itp1, itp2, imp2, imirror, ig, grep
   real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp
   real(PREC) :: v21(SDIM), vx(SDIM)
-#ifdef MPI_PAR3
-  integer :: klen
-#endif
 
   grep = irep2grep(irep)
 

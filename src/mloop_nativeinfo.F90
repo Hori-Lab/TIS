@@ -8,7 +8,7 @@ subroutine mloop_nativeinfo(istep_sim)
   use const_index
   use var_inp,    only : iopen_lunnum
   use var_setp,   only : inpro, inrna, inligand, inmisc
-  use var_struct, only : nmp_all, nunit_all, lunit2mp, imp2unit, iclass_unit, &
+  use var_struct, only : nmp_all, nunit_all, imp2unit, iclass_unit, &
                          nbd, ibd2mp, factor_bd, coef_bd, &
                          nba, iba2mp, factor_ba, coef_ba, &
                          ndih, idih2mp, factor_dih, coef_dih, &

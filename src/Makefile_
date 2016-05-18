@@ -3,7 +3,6 @@ TARGET = ../cfml
 
 # .. utilites
 UTIL1 = ../crd2pdb
-UTIL2 = ../pdb2crd
 UTIL3 = ../movie2dcd
 UTIL4 = ../dcd2movie
 UTIL5 = ../aa2cg
@@ -179,9 +178,9 @@ FSUB1 = ifunc_seq2id.o  ifunc_char2int.o ifunc_seq2hanum.o ifunc_nn2id.o\
 
 FSUB2 = read_xyz.o read_xyz_cg.o read_pdb_pro.o\
 	read_seq.o read_nativeinfo.o read_pdb_ligand.o read_pdb_cg.o\
-	read_pdbatom.o read_pdbatom_pro.o read_crd.o read_rst.o read_dcd.o\
+	read_pdbatom.o read_pdbatom_pro.o read_rst.o read_dcd.o\
 	write_seq.o write_nativeinfo.o write_psf.o write_record_file.o\
-	write_xyz_pdb.o write_crd.o write_traject_file.o\
+	write_xyz_pdb.o write_traject_file.o\
 	write_xyz_movie.o write_xyz_dcd.o write_tseries.o write_rst.o\
 	util_error.o util_unitstate.o util_posmass.o\
 	util_bondangle.o util_dihangle.o util_sort_contact.o\
@@ -287,7 +286,7 @@ SUB3    = movie2dcd.o
 SUB4    = dcd2movie.o
 
 all : $(TARGET)
-#all : $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL7) $(UTIL8)
+#all : $(TARGET) $(UTIL1) $(UTIL3) $(UTIL4) $(UTIL7) $(UTIL8)
 aa2cg : $(UTIL5)
 
 $(TARGET): $(OBJS) main.o
@@ -304,8 +303,6 @@ f_get_coeff.o : $(MTDIR)/f_get_coeff.F90
 
 $(UTIL1) : $(SUB1)
 	$(FC_UTIL) $(FLAG) -o $@  $(SUB1)
-$(UTIL2) : $(SUB2)
-	$(FC_UTIL) $(FLAG) -o $@  $(SUB2)
 $(UTIL3) : $(SUB3)
 	$(FC_UTIL) $(FLAG) -o $@  $(SUB3)
 $(UTIL4) : $(SUB4)
@@ -318,7 +315,7 @@ $(UTIL8) : $(OBJS) a2rst.o
 	$(FC) $(FLAG) -o $@  $(OBJS) a2rst.o
 
 clean:
-	/bin/rm -f *.o *.mod $(TARGET) $(UTIL1) $(UTIL2) $(UTIL3) $(UTIL4) $(UTIL5) $(UTIL7) $(UTIL8)
+	/bin/rm -f *.o *.mod $(TARGET) $(UTIL1) $(UTIL3) $(UTIL4) $(UTIL5) $(UTIL7) $(UTIL8)
 
 # suffix rule
 .F90.o:

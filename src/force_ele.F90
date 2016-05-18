@@ -9,7 +9,7 @@ subroutine force_ele(irep, force_mp)
   use var_inp,    only : inperi
   use var_setp,   only : inmisc, inele, inion
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         lele, iele2mp, coef_ele, nmp_all, iontype_mp, imp2type
+                         lele, iele2mp, coef_ele, nmp_all, iontype_mp
   use var_replica,only : irep2grep
   use mpiconst
 
