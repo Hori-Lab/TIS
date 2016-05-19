@@ -211,7 +211,7 @@ FOBJ1 = \
 	setp_native_bond.o setp_native_bangle.o setp_native_dih.o setp_native_charge.o\
 	setp_native_hp.o setp_native_neighbor_list.o setp_native_go.o\
 	setp_native_sasa.o setp_para_implig.o setp_con_implig.o setp_bindsite_implig.o\
-	setp_mapara_aicg.o setp_aicg.o setp_mapara_aicg2.o setp_aicg2.o\
+	setp_mapara_aicg.o setp_aicg.o setp_aicg2.o\
 	setp_mapara_flp.o setp_mapara_sasa.o setp_mapara_exv.o\
 	setp_modified_muca.o setp_electrostatic.o setp_dtrna15.o\
 	step_adjustment.o setp_fmat_para.o\

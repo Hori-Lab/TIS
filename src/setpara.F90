@@ -265,7 +265,7 @@ subroutine setpara( xyz_mp_init )
       inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
       inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
       if(i_aicg == AICG%AUTO) then
-         call setp_mapara_aicg2()
+         call setp_mapara_aicg()
          call setp_aicg2(iatomnum, xyz, cname_ha)
       else if(i_aicg == AICG%USER) then
          call read_paraaicg2()
