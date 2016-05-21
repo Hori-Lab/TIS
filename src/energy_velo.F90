@@ -5,12 +5,10 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
       
   use const_maxsize
   use const_index
-  use var_io,     only : i_simulate_type
+  use var_io,      only : i_simulate_type
   use var_setp,    only : ifix_mp
   use var_struct,  only : nmp_real, cmass_mp, imp2unit
-#ifdef MPI_PAR3
   use mpiconst
-#endif
 
   implicit none
 
@@ -48,8 +46,7 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
    
      if(ifix_mp(imp) == 1) cycle
 
-     ev = 0.5e0_PREC * cmass_mp(imp)   &
-         * (velo_mp(1, imp)**2 + velo_mp(2, imp)**2 + velo_mp(3, imp)**2)
+     ev = 0.5e0_PREC * cmass_mp(imp) * dot_product(velo_mp(:,imp), velo_mp(:,imp))
 
      ! --------------------------------------------------------------------
      ! sum of the energy
