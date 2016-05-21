@@ -187,7 +187,7 @@ FSUB2 = read_xyz.o read_xyz_cg.o read_pdb_pro.o\
 	util_uintra2xyz.o ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
 	ukoto_uichec2.o ukoto_uiunpk2.o
 
-FSUB3 = cafe_read_ref.o cafe_read_dcd.o cafe_write_dcd.o
+FSUB3 = cafe_read_dcd.o cafe_write_dcd.o
 
 # programs
 
