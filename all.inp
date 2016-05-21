@@ -54,6 +54,7 @@ path_natinfo = ./ninfo
 **           = 8 : Energy calculation for DCD trajectory (i_periodic shold be 0)
 **           = 9 : Energy minimization
 **           =10 : Widom method to calculate chemical potential(s)
+**           =11 : Grand Canonical
 i_run_mode = 2
 
 ** i_simulate_type: define dynamics 
@@ -103,6 +104,17 @@ psizez = 100.0
 ** Path to DCD file to read. (Not only filename!)
 ** <<<< energy_dcd
 1 = data/cafemol_go_1chain.dcd
+>>>>
+
+
+<<<< grand_canonical
+chp = -0.15
+n_step_interval = 10
+*n_Mg_add = 0
+*n_Na_add = 1
+*n_Cl_add = 1
+*n_K_add = 0
+n_max_mp_add = 120
 >>>>
 
 

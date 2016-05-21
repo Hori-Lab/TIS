@@ -692,6 +692,20 @@ module var_setp
   type(input_widom), save :: inwidom
 
   !==========================================
+  ! Grand Canonical
+  type input_gc
+     integer :: n_step_interval
+     !integer :: n_Mg_add
+     !integer :: n_Na_add
+     !integer :: n_K_add
+     !integer :: n_Cl_add
+     integer :: n_max_mp_add
+     integer :: sz
+  endtype input_gc
+
+  type(input_widom), save :: ingc
+
+  !==========================================
   
   integer, save :: irand !< variable for random number
 !  integer, parameter :: NSTREAM=128

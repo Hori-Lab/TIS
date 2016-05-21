@@ -17,8 +17,9 @@ module const_index
      integer :: ENERGY_DCD  !< 8: Energy calculation for DCD trajectory
      integer :: EMIN        !< 9: Energy minimization
      integer :: WIDOM       !<10: Widom method to calculate chemical potential(s)
+     integer :: GC          !<11: Grand Canonical
   endtype run_mode
-  type(run_mode), parameter :: RUN = run_mode(1,2,3,4,5,6,7,8,9,10)
+  type(run_mode), parameter :: RUN = run_mode(1,2,3,4,5,6,7,8,9,10,11)
 
   ! i_simulate_type: define dynamics 
   type simu_type

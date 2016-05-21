@@ -50,6 +50,8 @@ subroutine simu_logicalcheck()
 
   case (RUN%WIDOM)
 
+  case (RUN%GC)
+
   case default
      error_code = 90
 

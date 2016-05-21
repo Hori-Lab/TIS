@@ -124,6 +124,9 @@ subroutine setpara( xyz_mp_init )
   ! Widom method
   if (i_run_mode == RUN%WIDOM    ) call setp_widom_para()
 
+  ! Grand Canonical
+  if (i_run_mode == RUN%GC       ) call setp_gc_para()
+
   ! annealing
   if (i_run_mode == RUN%SA       ) call setp_anneal_para()
 

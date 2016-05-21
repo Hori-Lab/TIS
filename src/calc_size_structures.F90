@@ -7,7 +7,7 @@ subroutine calc_size_structures()
   use var_io,   only : infile, outfile, num_file
   use var_setp, only : inpara, inpro, inion, inperi, inenm,&
                        inrna, indtrna13, indtrna15, inarna, &
-                       insimu, inwidom, inann, insear, inmisc, &
+                       insimu, inwidom, ingc, inann, insear, inmisc, &
                        inmmc, inaicg, inaicg2, inligand, inele, inhp, inflp,&
                        insasa, inexv
   use var_mgo,     only : inmgo
@@ -54,6 +54,7 @@ subroutine calc_size_structures()
   insimu%sz = sizeof(insimu)
   inann%sz  = sizeof(inann)
   inwidom%sz= sizeof(inwidom)
+  ingc%sz= sizeof(ingc)
   insear%sz = sizeof(insear)
   inmisc%sz = sizeof(inmisc)
   inmmc%sz  = sizeof(inmmc)
