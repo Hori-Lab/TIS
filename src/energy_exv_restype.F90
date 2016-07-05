@@ -49,16 +49,16 @@ subroutine  energy_exv_restype(irep, energy_unit, energy)
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH_PNL
-  klen=(lexv(2,E_TYPE%EXV,irep)-lexv(1,E_TYPE%EXV,irep)+npar_mpi)/npar_mpi
-  ksta=lexv(1,E_TYPE%EXV,irep)+klen*local_rank_mpi
-  kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV,irep))
+  klen=(lexv(2,E_TYPE%EXV12,irep)-lexv(1,E_TYPE%EXV12,irep)+npar_mpi)/npar_mpi
+  ksta=lexv(1,E_TYPE%EXV12,irep)+klen*local_rank_mpi
+  kend=min(ksta+klen-1,lexv(2,E_TYPE%EXV12,irep))
 #else
-  ksta = lexv(1, E_TYPE%EXV, irep)
-  kend = lexv(2, E_TYPE%EXV, irep)
+  ksta = lexv(1, E_TYPE%EXV12, irep)
+  kend = lexv(2, E_TYPE%EXV12, irep)
 #endif
 #else
-  ksta = lexv(1, E_TYPE%EXV, irep)
-  kend = lexv(2, E_TYPE%EXV, irep)
+  ksta = lexv(1, E_TYPE%EXV12, irep)
+  kend = lexv(2, E_TYPE%EXV12, irep)
 #endif
   !$omp do private(imp1,imp2,v21,dist2,cutoff2,cdist2, &
   !$omp&           roverdist2,roverdist4, &
@@ -92,11 +92,11 @@ subroutine  energy_exv_restype(irep, energy_unit, energy)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     energy(E_TYPE%EXV) = energy(E_TYPE%EXV) + ene
+     energy(E_TYPE%EXV12) = energy(E_TYPE%EXV12) + ene
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     energy_unit(iunit, junit, E_TYPE%EXV) = energy_unit(iunit, junit, E_TYPE%EXV) + ene
+     energy_unit(iunit, junit, E_TYPE%EXV12) = energy_unit(iunit, junit, E_TYPE%EXV12) + ene
   end do
   !$omp end do nowait
 

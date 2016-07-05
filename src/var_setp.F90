@@ -33,11 +33,14 @@ module var_setp
      integer :: n_sep_nlocal !< the minimum number of amino acids that separate a non-local pair
      integer :: n_sep_contact !< the minimum number of amino acids that separate a contact pair
      real(PREC) :: cutoff_go !< truncation distance for computing non-local Go interaction
+     real(PREC) :: cutoff_LJ !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_exvol !< truncation distance for computing nonlocal non-native repulsion
      real(PREC) :: dfcontact !< the cutoff distance to define the native contact
      real(PREC) :: cgo1210 !< constant coefficient "go of the energy function for non-local Go interaction
+     real(PREC) :: cdist_rep6  !< reference distance d in the non-native repulsive interaction
      real(PREC) :: cdist_rep12 !< reference distance d in the non-native repulsive interaction
      real(PREC) :: crep12 !< constant coefficient "ev in the non-native repulsive interaction
+     real(PREC) :: crep6  !< constant coefficient "ev in the non-native repulsive interaction
      integer    :: sz !< size of the structure
   endtype input_protein_parameter
   type(input_protein_parameter), save :: inpro

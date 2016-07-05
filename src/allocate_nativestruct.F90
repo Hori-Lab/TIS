@@ -9,12 +9,14 @@ subroutine allocate_nativestruct()
    use var_setp,    only : inmisc
    use var_struct,  only : nmp_all, &
                            ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
+                           ifene2mp, fene_nat, dist2_fene, coef_fene, &
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba, &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
                            dih_sin_nat, dih_cos_nat, correct_dih_mgo,                    &
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
+                           iLJ2mp, lmp2LJ, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,           &
                            imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
                            morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
                            irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
@@ -72,6 +74,24 @@ subroutine allocate_nativestruct()
    allocate( correct_bd_mgo(MXMPBD*nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    correct_bd_mgo(:) = 1.0e0_PREC
+
+   ! FENE
+   allocate( ifene2mp(2, MXMPFENE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   ifene2mp(:,:) = 0
+
+   allocate( fene_nat(MXMPFENE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   fene_nat(:) = 0.0e0_PREC
+
+   allocate( dist2_fene(MXMPFENE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   dist2_fene(:) = 0.0e0_PREC
+
+   allocate( coef_fene(MXMPFENE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_fene(:) = 0.0e0_PREC
+
 
    ! bond angle
    allocate( iba2mp(3, MXMPBA*nmp_all), stat=ier)
@@ -224,6 +244,31 @@ subroutine allocate_nativestruct()
    allocate( coef_go(nmp_all*MXMPCON), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_go(:) = 0.0e0_PREC
+
+   ! LJ
+   allocate( iLJ2mp(2, nmp_all*MXMPLJ), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iLJ2mp(:,:) = 0
+
+   allocate( lmp2LJ(nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   lmp2LJ(:) = 0
+
+   allocate( iLJ2unit(2, nmp_all*MXMPLJ), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iLJ2unit(:,:) = 0
+
+   allocate( LJ_nat(nmp_all*MXMPLJ), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   LJ_nat(:) = 0.0e0_PREC
+
+   allocate( LJ_nat2(nmp_all*MXMPLJ), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   LJ_nat2(:) = 0.0e0_PREC
+
+   allocate( coef_LJ(nmp_all*MXMPLJ), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_LJ(:) = 0.0e0_PREC
 
    ! go (morse)
    allocate( imorse2mp(2, MXMPMORSE*nmp_all),     stat=ier)
@@ -484,6 +529,12 @@ contains
       if (allocated(coef_bd))           flg_error = .true.
       if (allocated(correct_bd_mgo))    flg_error = .true.
        
+      ! FENE
+      if (allocated(ifene2mp))            flg_error = .true.
+      if (allocated(fene_nat))            flg_error = .true.
+      if (allocated(dist2_fene))          flg_error = .true.
+      if (allocated(coef_fene))           flg_error = .true.
+       
       ! bond angle
       if (allocated(iba2mp))            flg_error = .true.
       if (allocated(iba2type))          flg_error = .true.
@@ -620,6 +671,7 @@ endsubroutine allocate_nativestruct
 subroutine deallocate_nativestruct
 
    use var_struct,  only : ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
+                           ifene2mp, fene_nat, dist2_fene, coef_fene, &
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba,       &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
@@ -655,6 +707,12 @@ subroutine deallocate_nativestruct
    if (allocated(factor_bd))          deallocate(factor_bd)
    if (allocated(coef_bd))            deallocate(coef_bd)
    if (allocated(correct_bd_mgo))     deallocate(correct_bd_mgo)
+
+   ! FENE
+   if (allocated(ifene2mp))             deallocate(ifene2mp)
+   if (allocated(fene_nat))             deallocate(fene_nat)
+   if (allocated(dist2_fene))           deallocate(dist2_fene)
+   if (allocated(coef_fene))            deallocate(coef_fene)
 
    ! bond angle
    if (allocated(iba2mp))             deallocate(iba2mp)

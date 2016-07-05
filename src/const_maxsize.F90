@@ -51,18 +51,22 @@ module const_maxsize
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
   integer, parameter :: MXUNIT = 200       !< maximum # of interaction units
-  integer, parameter :: MXMP = 50000       !< maximum # of mass points
+  integer, parameter :: MXMP = 10000       !< maximum # of mass points
   integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 
   integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
   integer, parameter :: MXMPBD = 1
   integer, parameter :: MXBD = MXMPBD * MXMP        !< maximum # of bonds
+  integer, parameter :: MXMPFENE = 1
+  integer, parameter :: MXFENE = MXMPFENE * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPBA = 2
   integer, parameter :: MXBA = MXMPBA * MXMP    !< maximum # of bond angles
   integer, parameter :: MXMPDIH = 2
   integer, parameter :: MXDIH = MXMPDIH * MXMP   !< maximum # of dihedral angles
   integer, parameter :: MXMPCON = 20       !< maximum # of Go-type contacts per residue 
   integer, parameter :: MXCON = MXMPCON * MXMP  !< maximum # of total contacts
+  integer, parameter :: MXMPLJ = 20       !< maximum # of Go-type contacts per residue 
+  integer, parameter :: MXLJ = MXMPLJ * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPRNABP = 2
   integer, parameter :: MXRNABP = MXMPRNABP * MXMP  !< maximum # of contacts
   integer, parameter :: MXMPRNAST = 2

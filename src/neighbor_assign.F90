@@ -19,6 +19,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15, inperi
   use var_struct, only : nunit_real, iontype_mp, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
+                         lmp2LJ, iLJ2mp, coef_LJ, &
                          iclass_unit, ires_mp, nmp_all, &
                          lmp2morse, lmp2rna_bp, lmp2rna_st, &
                          imorse2mp, irna_bp2mp, irna_st2mp, &
@@ -45,8 +46,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: iunit, junit
   integer :: isep_nlocal
   integer :: isep_nlocal_rna
-  integer :: icon, iexv, nexv
-  integer :: istart, isearch, isearch_morse
+  integer :: icon, iLJ, iexv, nexv
+  integer :: istart, isearch, isearch_LJ, isearch_morse
   integer :: isearch_rna_bp, isearch_rna_st
   integer :: i_exvol, i_ion_hyd, i_ion_exv
   integer :: i_sasa, i_exv_wca, i_exv_dt15 !sasa
@@ -58,8 +59,10 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   type calc_type
      integer :: GO
+     integer :: LJ
      integer :: MORSE
-     integer :: EXV
+     integer :: EXV12
+     integer :: EXV6
      integer :: PAIR_RNA
      integer :: STACK_RNA
      integer :: ION_HYD
@@ -71,7 +74,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: EXV_DT15
      integer :: MAX
   endtype calc_type
-  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,12)
+  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,14)
   integer :: icalc(CALC%MAX, nunit_real, nunit_real)
 
   character(CARRAY_MSG_ERROR) :: error_message
@@ -89,6 +92,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   iexv     = 0
   isearch  = 1
+  isearch_LJ  = 1
   isearch_morse  = 1
   isearch_rna_bp = 1
   isearch_rna_st = 1
@@ -102,11 +106,17 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%GO)) then
            icalc(CALC%GO, iunit, junit) = 1
         end if
+        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LJ)) then
+           icalc(CALC%LJ, iunit, junit) = 1
+        end if
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%MORSE)) then
            icalc(CALC%MORSE, iunit, junit) = 1
         end if
-        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV)) then
-           icalc(CALC%EXV, iunit, junit) = 1
+        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV12)) then
+           icalc(CALC%EXV12, iunit, junit) = 1
+        end if
+        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV6)) then
+           icalc(CALC%EXV6, iunit, junit) = 1
         end if
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%PAIR_RNA)) then
            icalc(CALC%PAIR_RNA, iunit, junit) = 1
@@ -143,6 +153,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   ! --------------------------------------------------------------------
   if( imp_l2g(1) /= 1 ) then
     isearch  = lmp2con  (imp_l2g(1)-1) + 1
+    isearch_LJ  = lmp2LJ  (imp_l2g(1)-1) + 1
     isearch_morse  = lmp2morse(imp_l2g(1)-1) + 1
     if (inmisc%class_flag(CLASS%RNA)) then
        isearch_rna_bp = lmp2rna_bp(imp_l2g(1)-1) + 1
@@ -187,6 +198,25 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  isearch = icon + 1
 !                 cycle loop_lneigh
                  if(coef_go(icon) > ZERO_JUDGE) then
+                    i_exvol = 0
+                 end if
+              end if
+           end do
+        end if
+
+        ! -----------------------------------------------------------------
+        ! LJ
+        if(icalc(CALC%LJ, iunit, junit) == 1) then
+
+           do iLJ = isearch_LJ, lmp2LJ(imp)
+              kmp = iLJ2mp(2, iLJ)
+
+              if(jmp < kmp) exit
+
+              if(jmp == kmp) then
+                 isearch_LJ = iLJ + 1
+!                 cycle loop_lneigh
+                 if(coef_LJ(iLJ) > ZERO_JUDGE) then
                     i_exvol = 0
                  end if
               end if
@@ -250,7 +280,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
         ! -----------------------------------------------------------------
         ! exvol
-        if(icalc(CALC%EXV, iunit, junit) == 1) then
+        if(icalc(CALC%EXV12, iunit, junit) == 1) then
            if(iunit == junit) then
               if (iclass_unit(iunit) == CLASS%RNA) then
                  select case (imp2type(imp))
@@ -289,7 +319,53 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               iexv = iexv + 1
               iexv2mp_l(1, iexv) = imp 
               iexv2mp_l(2, iexv) = jmp
-              iexv2mp_l(3, iexv) = E_TYPE%EXV
+              iexv2mp_l(3, iexv) = E_TYPE%EXV12
+!             cycle loop_lneigh
+           end if
+        end if
+        
+        ! -----------------------------------------------------------------
+        ! exvol 6
+        if(icalc(CALC%EXV6, iunit, junit) == 1) then
+           if(iunit == junit) then
+              if (iclass_unit(iunit) == CLASS%RNA) then
+                 select case (imp2type(imp))
+                 case (MPTYPE%RNA_PHOS) !P
+                    isep_nlocal_rna = inrna%n_sep_nlocal_P
+                 case (MPTYPE%RNA_SUGAR)!S
+                    isep_nlocal_rna = inrna%n_sep_nlocal_S
+                 case (MPTYPE%RNA_BASE) !B 
+                    isep_nlocal_rna = inrna%n_sep_nlocal_B
+                 case default 
+                    error_message = 'Error: logical defect in neighbor_assign'
+                    call util_error(ERROR%STOP_ALL, error_message)
+                 endselect
+                 
+                 if (jmp < imp + isep_nlocal_rna) then
+!                    cycle loop_lneigh
+                    i_exvol = 0
+                 end if
+
+              else if (iclass_unit(iunit) == CLASS%LIG) then !explig
+                 if(ires_mp(imp) == ires_mp(jmp)) then
+!                    cycle loop_lneigh
+                    i_exvol = 0
+                 end if
+
+              else
+                 if(jmp < imp + isep_nlocal) then
+!                    cycle loop_lneigh
+                    i_exvol = 0
+                 end if
+
+              endif
+           end if ! (iunit==junit)
+
+           if(i_exvol == 1) then
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV6
 !             cycle loop_lneigh
            end if
         end if
@@ -440,6 +516,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
      istart   = lmp2neigh(imp_l-ksta+1,n) + 1 
      isearch  = lmp2con  (imp_l2g(min(imp_l+1,nmp_l))-1) + 1
+     isearch_LJ  = lmp2LJ(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_morse = lmp2morse(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      if (inmisc%class_flag(CLASS%RNA)) then
         isearch_rna_bp= lmp2rna_bp(imp_l2g(min(imp_l+1,nmp_l))-1) + 1

@@ -13,7 +13,9 @@ cdih_1 = 1.0
 cdih_3 = 0.5
 
 * the minimum number of amino acids that separate a non-local pair
-n_sep_nlocal = 4
+** = 2 when SOP
+*n_sep_nlocal = 4
+n_sep_nlocal = 2
 * the minimum number of amino acids that separate a contact pair
 n_sep_contact = 4
 * truncation distance for computing non-local Go interaction
@@ -30,4 +32,12 @@ cgo1210 = 0.3
 cdist_rep12 = 4.0
 * constant coefficient "ev in the non-native repulsive interaction
 crep12 = 0.2
+
+* reference distance d in the non-native repulsive interaction
+cdist_rep12 = 4.0
+* constant coefficient "ev in the non-native repulsive interaction
+crep12 = 0.2
+
+cdist_rep6 = 3.8
+crep6 = 1.0
 >>>>

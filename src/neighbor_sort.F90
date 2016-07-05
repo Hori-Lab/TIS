@@ -50,8 +50,14 @@ subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
   
   ! ------------------------------------------------------------
   ! exvol protein
-  if(inmisc%force_flag(INTERACT%EXV)) then
-     call sort( E_TYPE%EXV )
+  if(inmisc%force_flag(INTERACT%EXV12)) then
+     call sort( E_TYPE%EXV12 )
+  end if
+
+  ! ------------------------------------------------------------
+  ! exvol protein
+  if(inmisc%force_flag(INTERACT%EXV6)) then
+     call sort( E_TYPE%EXV6 )
   end if
 
   ! ------------------------------------------------------------

@@ -111,7 +111,7 @@ subroutine setpara( xyz_mp_init )
   endif
 
   ! excluded volume
-  if (inmisc%force_flag(INTERACT%EXV)) then
+  if (inmisc%force_flag(INTERACT%EXV12)) then
      call setp_mapara_exv()
   endif
   ! -----------------------------------------------------------------------

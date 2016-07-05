@@ -10,9 +10,11 @@ subroutine mloop_nativeinfo(istep_sim)
   use var_setp,   only : inpro, inrna, inligand, inmisc, inenm
   use var_struct, only : nmp_all, nunit_all, imp2unit, iclass_unit, &
                          nbd, ibd2mp, factor_bd, coef_bd, &
+                         nfene, &
                          nba, iba2mp, factor_ba, coef_ba, &
                          ndih, idih2mp, factor_dih, coef_dih, &
                          ncon, icon2mp, icon2unit, factor_go, coef_go, &
+                         nLJ, iLJ2unit, &
                          get_icon_type, ncon_unit, imp2type, iallcon2unit,&
                          nmorse, imorse2unit, &
                          nrna_bp, irna_bp2unit, factor_rna_bp, nhb_bp, coef_rna_bp, &
@@ -23,7 +25,9 @@ subroutine mloop_nativeinfo(istep_sim)
   use var_struct, only : imorse2mp, imorse_dummy_mgo, &
                          dih_nat, dih_sin_nat, dih_cos_nat, &
                          bd_nat, ba_nat, &
+                         ifene2mp, fene_nat, coef_fene, dist2_fene, &
                          go_nat, go_nat2, icon_dummy_mgo, &
+                         iLJ2mp, coef_LJ, LJ_nat, LJ_nat2, &
                          irna_bp2mp, rna_bp_nat, rna_bp_nat2, &
                          morse_nat, morse_nat2, factor_morse, &
                          idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -73,9 +77,11 @@ subroutine mloop_nativeinfo(istep_sim)
   call mloop_ninfo_inp(istep_sim, i_ninfo_type, inat_unit, cnat_fname)
 
   nbd = 0
+  nfene = 0
   nba = 0
   ndih = 0
   ncon = 0
+  nLJ = 0
   nmorse = 0
   nrna_bp = 0
   nrna_st = 0
@@ -141,6 +147,14 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(factor_bd,   MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_bd,   2*MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
+  ! FENE
+  call MPI_Bcast(nfene,         1,              MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ifene2mp,    2*MXMPBD*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ifene2type,    MXMPBD*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(fene_nat,      MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_fene,   2*MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(dist2_fene,    MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+
   ! angle
   call MPI_Bcast(nba,       1,                MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iba2mp,    3*MXMPBA*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
@@ -185,6 +199,14 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(go_nat2,          MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(factor_go,        MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_go,          MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+
+  ! LJ
+  call MPI_Bcast(nLJ,           1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(iLJ2mp,        2*MXMPCON*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(iLJ2unit,      2*MXMPCON*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(LJ_nat,          MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(LJ_nat2,         MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_LJ,         MXMPCON*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
   ! go (morse)
   call MPI_Bcast(nmorse, 1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
@@ -529,7 +551,7 @@ subroutine mloop_nativeinfo(istep_sim)
   if (allocated(iallcon2unit)) then
      deallocate(iallcon2unit)
   endif
-  allocate( iallcon2unit(2, ncon+nmorse+nrna_bp), stat=ier)
+  allocate( iallcon2unit(2, ncon+nmorse+nrna_bp+nLJ), stat=ier)
   if (ier/=0) then
      write(error_message,*) 'failed in memory allocation at mloop_nativeinfo'
      call util_error(ERROR%STOP_ALL, error_message)
@@ -543,5 +565,9 @@ subroutine mloop_nativeinfo(istep_sim)
   if (nrna_bp /= 0) then
      iallcon2unit(1:2, ncon+nmorse+1:ncon+nmorse+nrna_bp) = irna_bp2unit(1:2, 1:nrna_bp)
   endif
+  if (nLJ /= 0) then
+     iallcon2unit(1:2, ncon+nmorse+nrna_bp+1:ncon+nmorse+nrna_bp+nLJ) = iLJ2unit(1:2, 1:nLJ)
+  endif
+
 
 end subroutine mloop_nativeinfo

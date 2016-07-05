@@ -278,7 +278,7 @@ subroutine inp_filename()
      open(outfile%ninfo, file = filename, status = FILE_STATUS, &
                          action = 'write', iostat = iopen_status)
      if(iopen_status > 0) then
-        error_message = 'Error: cannot open the file: ' // filename
+        error_message = 'Error: cannot open the file: ' // trim(filename)
         call util_error(ERROR%STOP_STD, error_message)
      end if
 #ifdef MPI_PAR

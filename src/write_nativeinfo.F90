@@ -9,11 +9,13 @@ subroutine write_nativeinfo(lunout)
   use var_struct, only : nunit_all, imp2unit, lunit2mp, &
                          nbd, ibd2mp, bd_nat,   &
                          factor_bd, coef_bd, correct_bd_mgo,  &
+                         nfene, ifene2mp, fene_nat, coef_fene, dist2_fene,  &
                          nba, iba2mp, ba_nat, factor_ba, coef_ba,   &
                          correct_ba_mgo, ndih, idih2mp, dih_nat,    &
                          factor_dih, coef_dih, correct_dih_mgo, &
                          ncon, icon2mp, factor_go,       &
                          coef_go, icon_dummy_mgo, go_nat, ncon_unit, &
+                         nLJ, iLJ2mp, coef_LJ, LJ_nat,  &
                          iclass_unit, ibd2type, iba2type, idih2type, icon2type, &
                          nrna_bp,nrna_bp_unit, nrna_st, cmp2atom, rna_bp_nat, &
                          irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
@@ -72,6 +74,30 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! nbd > 0
+
+  
+  ! -------------------------------------------------------------------
+  ! FENE
+  if (nfene > 0) then
+     write (lunout, '(a)') '<<<< FENE'
+     write (lunout, '(a)', ADVANCE='NO') '**      ibd iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+     write (lunout, '(a)')               '        dist        dist2         coef'
+       
+     do ibd = 1, nfene
+        imp1 = ifene2mp(1, ibd)
+        imp2 = ifene2mp(2, ibd)
+        iunit1 = imp2unit(imp1)
+        iunit2 = iunit1
+        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+        write (lunout, "(a4, 7(1xi6), 3(1xf12.4))") &
+             'FENE', ibd, iunit1, iunit2, imp1, imp2, imp1un, imp2un, &
+             fene_nat(ibd), dist2_fene(ibd), coef_fene(ibd)
+     end do
+        
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! nfene > 0
 
   
   ! -------------------------------------------------------------------
@@ -306,6 +332,47 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! ncon > 0
+
+
+  ! ------------------------------------------------------------------
+  ! LJ
+  if (nLJ > 0) then
+     write (lunout, '(a)') '<<<< LJ'
+     write (lunout, '(a, i6)') '** total_contact = ', nLJ
+     
+     do iunit = 1, nunit_all
+        do junit = iunit, nunit_all
+           write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
+           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           write (lunout, '(a)', ADVANCE='NO') '**         iLJ iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+           write (lunout, '(a)') '    distance        coef'
+           do icon = 1, nLJ
+              imp1 = iLJ2mp(1, icon)
+              imp2 = iLJ2mp(2, icon)
+              iunit1 = imp2unit(imp1)
+              iunit2 = imp2unit(imp2)
+              imp1un = imp1 - lunit2mp(1, iunit1) + 1
+              imp2un = imp2 - lunit2mp(1, iunit2) + 1
+                 
+              if(iunit == iunit1 .and. junit == iunit2) then
+                 if (iclass_unit(iunit) == CLASS%RNA .OR. iclass_unit(junit) == CLASS%RNA) then
+                    if (icon2type(icon) == CONTYPE%RNA_BP)then
+                       cycle
+                    endif
+                 endif
+                 write (lunout, "(a7, 7(1xi6), 2(f12.4))") &
+                      'contact', icon, iunit1, iunit2, imp1, imp2, &
+                      imp1un, imp2un, &
+                      LJ_nat(icon), coef_LJ(icon)
+              end if
+           end do
+           !write (lunout, '(a)') ''
+        end do
+     end do
+   
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! nLJ > 0
 
 
   ! ------------------------------------------------------------------

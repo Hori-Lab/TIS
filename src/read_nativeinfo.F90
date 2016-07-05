@@ -13,9 +13,11 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   use var_setp, only : inmisc
   use var_struct, only : lunit2mp, imp2unit, cmp2seq,&
        nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
+       nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
        nba, iba2mp, ba_nat, factor_ba, coef_ba, &
        ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, &
        ncon, icon2mp, icon2unit, go_nat, go_nat2, factor_go, icon_dummy_mgo, coef_go, &
+       nLJ, iLJ2mp, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,&
        nrna_bp, irna_bp2mp, irna_bp2unit, rna_bp_nat, rna_bp_nat2, &
        factor_rna_bp, irna_bp_dummy_mgo, nhb_bp, coef_rna_bp, &
        nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
@@ -44,7 +46,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: input_status
   integer :: ii, jj, imp1, imp2, imp3, imp4, iunit1, iunit2, imp_tmp
   integer :: imp1un, imp2un, imp3un, imp4un, kunit1
-  integer :: ibd, iba, idih, icon
+  integer :: ibd, ifene, iba, idih, icon, iLJ
   integer :: iba_aicg2, idih_aicg2, idih_aicg2p
   integer :: ibd_read, iba_read, idih_read
   integer :: icon_read, idummy
@@ -71,12 +73,14 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   ! ---------------------------------------------------------------------
 
   ibd = nbd 
+  ifene = nfene
   iba = nba 
   idih = ndih
   iba_aicg2 = nba
   idih_aicg2 = ndih
   idih_aicg2p = ndih
   icon = ncon
+  iLJ = nLJ
   ibp = nrna_bp
   ist = nrna_st
   ibsdist = ndtrna_st
@@ -129,6 +133,40 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         if (ctype2 /= '  ') then
            ibd2type(ibd) = str2bondtype(ctype2)
         endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read FENE
+     if(cline(1:4) == 'fene') then
+        ctype2 = '  '
+        read (cline, *, iostat = input_status)     &
+             cline_head, ibd_read, iunit1, iunit2, &
+             imp1, imp2, imp1un, imp2un,           &
+             bl, factor, coef, ctype2
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        ifene = ifene + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           ifene2mp(1, ifene) = imp1 + ii
+           ifene2mp(2, ifene) = imp2 + ii
+           kunit1 = iunit1
+        else ! NATIVEINFO%ONE_BY_ONE
+           ifene2mp(1, ifene) = imp1un + ii
+           ifene2mp(2, ifene) = imp2un + ii
+           kunit1 = iunit
+        end if
+        fene_nat(ifene) = bl 
+        if (inmisc%flg_coef_from_ninfo) then
+           coef_fene(ifene) = coef
+           dist2_fene(ifene) = factor
+        endif
+
+        !if (ctype2 /= '  ') then
+        !   ibd2type(ibd) = str2bondtype(ctype2)
+        !endif
      end if
 
      ! ------------------------------------------------------------------
@@ -294,6 +332,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         endif
      end if
      end if     
+
      ! ------------------------------------------------------------------
      ! read contact
      if(cline(1:7) == 'contact') then
@@ -329,6 +368,37 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
         if (ctype3 /= '   ') then
            icon2type(icon) = str2gotype(ctype3)
+        endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read LJ
+     if(cline(1:2) == 'LJ') then
+        read (cline, *, iostat = input_status) &
+             cline_head, icon_read, iunit1, iunit2,  &
+             imp1, imp2, imp1un, imp2un,             &
+             go, coef
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        iLJ = iLJ + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           imp1 = imp1 + ii
+           imp2 = imp2 + jj
+        else ! NATIVEINFO%ONE_BY_ONE
+           imp1 = imp1un + ii
+           imp2 = imp2un + jj
+        end if
+        iLJ2unit(1, iLJ) = imp2unit(imp1)
+        iLJ2unit(2, iLJ) = imp2unit(imp2)
+        iLJ2mp(1, iLJ) = imp1
+        iLJ2mp(2, iLJ) = imp2
+        LJ_nat(iLJ) = go
+        LJ_nat2(iLJ) = go**2
+        if (inmisc%flg_coef_from_ninfo) then
+           coef_LJ(iLJ) = coef
         endif
      end if
 
@@ -651,9 +721,11 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
   ! ---------------------------------------------------------------------
   nbd = ibd 
+  nfene = ifene
   nba = iba 
   ndih = idih
   ncon = icon
+  nLJ  = iLJ
   nrna_bp = ibp
   nrna_st = ist
   ndtrna_st = ibsdist

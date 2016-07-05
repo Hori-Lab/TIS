@@ -82,6 +82,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
                          force_mp_mgo(1,1,1,1,tn), &
                          ene_unit_l(1,1,tn))
 
+  call force_fene  (irep, force_mp_l(1,1,tn), ene_unit_l(1,1,tn))
+
   call force_bangle(irep, force_mp_l(1,1,tn), &
                          force_mp_mgo(1,1,1,1,tn), &
                          ene_unit_l(1,1,tn))
@@ -152,6 +154,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !  else if (inmisc%force_flag(INTERACT%ENM)) then
 !     call force_enm(irep, force_mp_l(1,1,tn))
 !  else
+     call force_LJ(irep, force_mp_l(1,1,tn))
      call force_nlocal_go(irep, force_mp_l(1,1,tn))
      call force_nlocal_morse(irep, force_mp_l(1,1,tn))
      call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
@@ -164,7 +167,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !$omp end master
 
   if (inmisc%i_residuenergy_radii == 0) then
-     call force_exv (irep, force_mp_l(1,1,tn))
+     call force_exv_rep12 (irep, force_mp_l(1,1,tn))
+     call force_exv_rep6 (irep, force_mp_l(1,1,tn))
   else if (inmisc%i_residuenergy_radii == 1) then
      call force_exv_restype (irep, force_mp_l(1,1,tn))
   endif

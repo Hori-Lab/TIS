@@ -243,11 +243,11 @@ FOBJ1 = \
 	time_integral_pre.o time_integral.o time_integral_post.o\
 	min_steep_desc.o min_conj_grad.o\
 	energy_sumup.o\
-	energy_allrep.o energy_velo.o energy_bond.o energy_dih_gauss.o\
+	energy_allrep.o energy_velo.o energy_bond.o energy_fene.o energy_dih_gauss.o\
 	energy_bangle.o energy_dih.o energy_dih_harmonic.o energy_rna_stack.o \
-	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o\
+	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o energy_LJ.o\
 	energy_nlocal_morse.o energy_nlocal_rna_bp.o energy_orderpara.o\
-	energy_exv_rep12.o energy_exv_restype.o energy_exv_wca.o energy_exv_dt15.o\
+	energy_exv_rep12.o energy_exv_rep6.o energy_exv_restype.o energy_exv_wca.o energy_exv_dt15.o\
 	energy_hp.o energy_sasa.o energy_ion.o energy_box.o energy_cap.o\
 	energy_cylinder.o energy_anchor.o energy_rest1d.o energy_bridge.o\
 	energy_pulling.o energy_implig.o\
@@ -257,11 +257,11 @@ FOBJ1 = \
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
 	force_sumup.o\
-	force_bond.o force_bangle.o force_dih.o force_dih_gauss.o\
+	force_bond.o force_fene.o force_bangle.o force_dih.o force_dih_gauss.o\
 	force_fbangle.o force_fdih.o force_aicg13_gauss.o force_aicg14_gauss.o\
-	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_nlocal_morse.o \
+	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_LJ.o force_nlocal_morse.o \
 	force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o force_enm.o\
-	force_exv.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
+	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
 	force_hp.o force_ion.o force_sasa.o force_bridge.o force_pulling.o\
 	force_anchor.o force_rest1d.o force_box.o force_cap.o force_cylinder.o\
 	force_implig.o force_ele.o force_ele2.o force_ele3.o force_ele_coulomb.o force_ele_coulomb_ewld.o\

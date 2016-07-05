@@ -59,6 +59,16 @@ module var_struct
   real(PREC), allocatable, save :: coef_bd(:,:)      !(2, MXBD)
   real(PREC), allocatable, save :: correct_bd_mgo(:) !(MXBD)
 
+  !> parameters for FENE potential
+  integer,    save :: nfene = 0
+  integer,    allocatable, save :: ifene2mp(:,:)     !(2, MXFENE)
+  !integer,    allocatable, save :: ibd2type(:)      !(MXFENE)
+  real(PREC), allocatable, save :: fene_nat(:)       !(MXFENE)
+  !real(PREC), allocatable, save :: factor_fene(:)   !(MXFENE)
+  real(PREC), allocatable, save :: coef_fene(:)      !(MXFENE)
+  real(PREC), allocatable, save :: dist2_fene(:)   !(MXFENE)
+  !real(PREC), allocatable, save :: correct_bd_mgo(:) !(MXFENE)
+
   !> parameters for bond angle potential
   integer,    save :: nba = 0
   integer,    save :: nfba = 0
@@ -110,6 +120,17 @@ module var_struct
   real(PREC), allocatable, save :: go_nat2(:)        !(MXCON)
   real(PREC), allocatable, save :: factor_go(:)      !(MXCON)
   real(PREC), allocatable, save :: coef_go(:)        !(MXCON)
+
+  !> parameters for LJ (12-6) potential
+  integer,    save :: nLJ = 0
+  integer,    allocatable, save :: iLJ2mp(:,:)      !(2, MXLJ)
+  !integer,    allocatable, save :: iLJ2type(:)      !(MXLJ)
+  integer,    allocatable, save :: lmp2LJ(:)        !(MXMP)
+  integer,    allocatable, save :: iLJ2unit(:,:)    !(2, MXLJ)
+  real(PREC), allocatable, save :: LJ_nat(:)        !(MXLJ)
+  real(PREC), allocatable, save :: LJ_nat2(:)       !(MXLJ)
+  !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
+  real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
 
   !> parameter for go (morse) potential
   integer,    save :: nmorse = 0

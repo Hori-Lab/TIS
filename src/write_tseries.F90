@@ -416,7 +416,7 @@ contains
               tenergy(E_TYPE%DIHE_HARMONIC)
     ego     = tenergy(E_TYPE%GO)
     emorse  = tenergy(E_TYPE%MORSE)
-    erepul  = tenergy(E_TYPE%EXV) + tenergy(E_TYPE%EXV_ION) &
+    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_ION) &
             + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
     estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
     ehbond_rna = tenergy(E_TYPE%PAIR_RNA)  + tenergy(E_TYPE%HBOND_DTRNA)

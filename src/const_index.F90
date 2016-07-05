@@ -100,7 +100,7 @@ module const_index
      integer :: BANGLE        !<  4: Bond angle
      integer :: DIHE          !<  5: Dihedral
      integer :: GO            !<  6: Go
-     integer :: EXV           !<  7: Excluded volume
+     integer :: EXV12         !<  7: Excluded volume
      integer :: ELE           !<  8: Electrostatic (Debye Huckel)
      integer :: BOX           !<  9: Box baundary
      integer :: BRIDGE        !< 10: Bridge constraining
@@ -126,11 +126,12 @@ module const_index
      integer :: EXV_DT15      !< 30: excluded volume of DTRNA2015 model
      integer :: TSTACK_DTRNA  !< 31: Denesyuk-Thirumalai RNA base stacking
      integer :: THBOND_DTRNA  !< 32: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: MAX           !< 32: Max value
+     integer :: EXV6          !< 33: Excluded volume
+     integer :: MAX           !< Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
-                   21,22,23,24,25,26,27,28,29,30,31,32,32)
+                   21,22,23,24,25,26,27,28,29,30,31,32,33,33)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -143,33 +144,36 @@ module const_index
      integer :: L_RIGID_LIG !<  8: ligand rigid interaction (not yet released)
      integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
      integer :: L_DTRNA     !< 10: Denesyuk-Thirumalai RNA model
-     integer :: MAX         !< 10: Maximum value
+     integer :: L_FENE      !< 11: FENE
+     integer :: MAX         !< Maximum value
   endtype local_interaction_type
   type(local_interaction_type), parameter :: LINTERACT  & 
-     = local_interaction_type(1,2,3,4,5,6,7,8,9,10,10)
+     = local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
 
 
   type interaction_type
      integer :: NOTHING   !<  1: no interaction (default)
      integer :: GO        !<  2: 12-10 Go potential for native contact pairs
-     integer :: EXV       !<  3: (c/r)**12 repulsive interaction
-     integer :: ELE       !<  4: electrostatic interaction (Debye-Huckel form)
-     integer :: ENM       !<  5: elastic network model (protein)
-     integer :: HP        !<  6: hydrophobic interaction
-     integer :: MORSE     !<  7: Morse Go potential (not yet released)
-     integer :: PAIR_RNA  !<  8: RNA-RNA base pair (not yet released)
-     integer :: ION_HYD   !<  9: hydration interaction (ion-ion, ion-phosphate) (not yet released)
-     integer :: ION_EXV   !< 10: repulsive interaction (ion-ion) (not yet released)
-     integer :: AICG1     !< 11: AICG1(protein)
-     integer :: AICG2     !< 12: AICG2(protein)
-     integer :: SASA      !< 13: SASA(protein) !sasa
-     integer :: DTRNA     !< 14: Denesyuk-Thirumalai RNA model
-     integer :: EXV_WCA   !< 15: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: EXV_DT15  !< 16: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: MAX       !< 16: Maximum value
+     integer :: EXV12     !<  3: (c/r)**12 repulsive interaction
+     integer :: EXV6      !<  4: (c/r)**6 repulsive interaction
+     integer :: ELE       !<  5: electrostatic interaction (Debye-Huckel form)
+     integer :: ENM       !<  6: elastic network model (protein)
+     integer :: HP        !<  7: hydrophobic interaction
+     integer :: MORSE     !<  8: Morse Go potential (not yet released)
+     integer :: PAIR_RNA  !<  9: RNA-RNA base pair (not yet released)
+     integer :: ION_HYD   !< 10: hydration interaction (ion-ion, ion-phosphate) (not yet released)
+     integer :: ION_EXV   !< 11: repulsive interaction (ion-ion) (not yet released)
+     integer :: AICG1     !< 12: AICG1(protein)
+     integer :: AICG2     !< 13: AICG2(protein)
+     integer :: SASA      !< 14: SASA(protein) !sasa
+     integer :: DTRNA     !< 15: Denesyuk-Thirumalai RNA model
+     integer :: EXV_WCA   !< 16: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: EXV_DT15  !< 17: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: LJ        !< 18: Lenard-Jones
+     integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,18)
 
 
   type error_handling

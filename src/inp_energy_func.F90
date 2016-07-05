@@ -630,6 +630,9 @@ contains
     else if(char00(i1:i2) == 'L_GO') then
        itype = LINTERACT%L_GO
 
+    else if(char00(i1:i2) == 'L_FENE') then
+       itype = LINTERACT%L_FENE
+
     else if(char00(i1:i2) == 'L_AICG1') then
        itype = LINTERACT%L_AICG1
 
@@ -676,8 +679,14 @@ contains
     else if(char00(i1:i2) == 'GO') then
        itype = INTERACT%GO
 
-    else if(char00(i1:i2) == 'EXV') then
-       itype = INTERACT%EXV
+    else if(char00(i1:i2) == 'LJ') then
+       itype = INTERACT%LJ
+
+    else if(char00(i1:i2) == 'EXV12') then
+       itype = INTERACT%EXV12
+
+    else if(char00(i1:i2) == 'EXV6') then
+       itype = INTERACT%EXV6
 
     else if(char00(i1:i2) == 'ELE') then
        itype = INTERACT%ELE
@@ -744,7 +753,8 @@ contains
                 cycle
              end if
              
-             if(iforce == INTERACT%GO .or. iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
+             if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ .or. &
+                iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
                 n_go = n_go + 1
              endif
                 
@@ -808,35 +818,38 @@ contains
        ! default setting of local interaction from nonlocal_interaction
        if(n_local_input == 0) then
 
-          if(iclass_unit(iunit) == CLASS%PRO) then
-             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%GO)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
-             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%AICG1)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG1) = .TRUE.
-             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%AICG2)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) = .TRUE.
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS) = .TRUE.
-             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%ENM)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_ENM) = .TRUE.
-             else
+!          if(iclass_unit(iunit) == CLASS%PRO) then
+!             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%GO)) then
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
+!             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%AICG1)) then
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG1) = .TRUE.
+!             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%AICG2)) then
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) = .TRUE.
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS) = .TRUE.
+!             else if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%ENM)) then
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_ENM) = .TRUE.
+!             else
+!!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BOND) = .TRUE.
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
+!             end if
+!
+!          else if(iclass_unit(iunit) == CLASS%RNA) then
+!             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%GO)) then
+!                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
+!             else
 !                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BOND) = .TRUE.
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
-             end if
+!             end if
+!             
+!          else if(iclass_unit(iunit) == CLASS%LIG) then
+!             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_RIGID_LIG) = .TRUE.
+!
+!          else if(iclass_unit(iunit) == CLASS%ION) then
+!             inmisc%flag_local_unit(iunit, iunit, LINTERACT%NOTHING) = .TRUE.
+!
+!          end if
 
-          else if(iclass_unit(iunit) == CLASS%RNA) then
-             if(inmisc%flag_nlocal_unit(iunit, iunit, INTERACT%GO)) then
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_GO) = .TRUE.
-             else
-                inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_BOND) = .TRUE.
-             end if
-             
-          else if(iclass_unit(iunit) == CLASS%LIG) then
-             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_RIGID_LIG) = .TRUE.
-
-          else if(iclass_unit(iunit) == CLASS%ION) then
-             inmisc%flag_local_unit(iunit, iunit, LINTERACT%NOTHING) = .TRUE.
-
-          end if
+          error_message = 'Error: should specify one local interaction for each unit'
+          call util_error(ERROR%STOP_ALL, error_message)
 
        else if(n_local_input == 1) then
 

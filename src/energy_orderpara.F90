@@ -14,7 +14,7 @@ subroutine energy_orderpara(irep, now_allcon)
 
   use const_maxsize
   use const_index
-  use var_struct,  only : nunit_all,  icon2unit, ncon, nmorse, nrna_bp, iallcon2unit
+  use var_struct,  only : nunit_all,  icon2unit, ncon, nLJ, nmorse, nrna_bp, iallcon2unit
   use var_simu,    only : qscore, qscore_unit
   use var_mgo,     only : inmgo, q_mgo
   use time
@@ -47,7 +47,7 @@ subroutine energy_orderpara(irep, now_allcon)
   real(PREC) :: qact_mgo(MXACT_MGO)
 
   ! ---------------------------------------------------------------------
-  nallcon = ncon + nmorse + nrna_bp
+  nallcon = ncon + nLJ + nmorse + nrna_bp
 
 #ifdef MPI_PAR3
   now_cont_l = 0

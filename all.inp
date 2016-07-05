@@ -2,7 +2,7 @@
 ** defining the directory where output date are saved
 path = ./data
 ** the output file names up to the suffix
-filename = cafemol_all
+filename = md
 
 ** There are 3 output formats for record:
 **    pdb: PDB file format (coordinate)
@@ -102,7 +102,7 @@ psizez = 100.0
 
 ** Path to DCD file to read. (Not only filename!)
 ** <<<< energy_dcd
-1 = data/cafemol_go_1chain.dcd
+1 = data/md.dcd
 >>>>
 
 
@@ -116,8 +116,7 @@ psizez = 100.0
 **         = 2 : directly from the input file
 **              (This requires "<<<< sequence" block)
 **         = 3 : from initial_lipid block(not released)
-**         = 4 : from CafeMol(CG) style (The pdb file names
-**               needed to be specified below in this input block)
+**         = 4 : from coarse-grained PDB file
 i_seq_read_style = 1
 
 ** Reading native structure information

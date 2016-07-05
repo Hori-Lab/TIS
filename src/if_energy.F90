@@ -44,6 +44,14 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_bond
    
+   subroutine energy_fene  (irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_fene
+   
    subroutine energy_box(irep, energy_unit, energy)
      use const_maxsize
      implicit none
@@ -157,6 +165,15 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_nlocal_go
    
+   subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      integer,    intent(out)   :: now_LJ(:,:)
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_LJ
+   
    subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
       use const_maxsize
       implicit none
@@ -191,13 +208,21 @@ interface
       integer,    intent(in)  :: now_allcon(:,:)
    endsubroutine energy_orderpara
    
-   subroutine energy_exv (irep, energy_unit, energy)
+   subroutine energy_exv_rep12 (irep, energy_unit, energy)
       use const_maxsize
       implicit none
       integer,    intent(in)  :: irep
       real(PREC), intent(out) :: energy(:)
       real(PREC), intent(out) :: energy_unit(:,:,:)
-   endsubroutine energy_exv
+   endsubroutine energy_exv_rep12
+   
+   subroutine energy_exv_rep6 (irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)  :: irep
+      real(PREC), intent(out) :: energy(:)
+      real(PREC), intent(out) :: energy_unit(:,:,:)
+   endsubroutine energy_exv_rep6
    
    subroutine energy_exv_restype (irep, energy_unit, energy)
       use const_maxsize

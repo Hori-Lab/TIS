@@ -39,9 +39,11 @@ subroutine setp_mapara_pro(lunpara, lunout)
   inpro%cutoff_go           = -1.0
   inpro%cutoff_exvol        = -1.0
   inpro%dfcontact           = -1.0
-  inpro%cgo1210        = -1.0
+  inpro%cgo1210             = -1.0
   inpro%cdist_rep12         = -1.0 
-  inpro%crep12          = -1.0
+  inpro%cdist_rep6          = -1.0 
+  inpro%crep12              = -1.0
+  inpro%crep6               = -1.0
 
   ! ------------------------------------------------------------------- 
 
@@ -114,6 +116,14 @@ subroutine setp_mapara_pro(lunpara, lunout)
         cvalue = 'crep12'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpro%crep12, cvalue)
+
+        cvalue = 'cdist_rep6'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpro%cdist_rep6, cvalue)
+        
+        cvalue = 'crep6'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpro%crep6, cvalue)
      end do
   end do
 
@@ -169,8 +179,16 @@ subroutine setp_mapara_pro(lunpara, lunout)
   else if(inpro%crep12 < 0.0) then
      error_message = 'Error: invalid value for crep12'
      call util_error(ERROR%STOP_ALL, error_message)
-  end if
 
+  else if(inpro%cdist_rep6 < 0.0) then
+     error_message = 'Error: invalid value for cdist_rep6'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  else if(inpro%crep6 < 0.0) then
+     error_message = 'Error: invalid value for crep6'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  end if
 
 
   ! -------------------------------------------------------------------
