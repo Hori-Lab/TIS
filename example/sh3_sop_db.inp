@@ -1,0 +1,115 @@
+<<<< filenames
+path = ./example/sh3_sop
+filename = md_db
+
+OUTPUT pdb dcd psf rst
+
+path_pdb = ./example/sh3_sop
+path_ini = ./example/sh3_sop
+path_natinfo = ./example/sh3_sop
+path_para = ./example/sh3_sop/para
+>>>> 
+
+
+<<<< job_cntl
+**           = 1 : Debug Mode, Check the consistence between force and energy
+i_run_mode = 1
+
+** i_simulate_type: define dynamics 
+**           = 1 : Langevin dynamics
+**           = 5 : Brownian dynamics without hydrodynamic interaction
+**           = 6 : Brownian dynamics with hydrodynamic interaction
+i_simulate_type = 5
+
+i_initial_state = 6
+
+i_initial_velo = 0
+
+** using periodic boundary condition
+*i_periodic   = 0 : not using (default)
+*             = 1 : using periodic boundary condition
+i_periodic = 0
+>>>>
+
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+
+1     protein                  1srl.a.pdb
+>>>>
+
+
+<<<< native_info_sim1
+NINFO(all/all) 1srl.ninfo
+>>>>
+
+
+<<<< initial_struct
+1   1srl_db.a.pdb
+>>>>
+
+
+<<<< energy_function        
+LOCAL(1)     L_FENE
+NLOCAL(1/1)     LJ EXV6
+
+** define which of atoms to be used as the representative for the CG particle
+**       = 0 : for using CA atom (default)
+**       = 1 : for using CB atom
+**       = 2 : for using the center of mass of side chain
+i_use_atom_protein = 0
+
+
+** for excluded volume interactions
+**       = 0 : using same sigmas for all amino-acids (now default, but will be obsolete next version)
+**       = 1 : using type dependent sigmas for different residues (recommended for protein and DNA2)
+i_residue_exv_radii = 0
+
+
+** for output style of energy
+**       = 0 : output inter energy are summed up intra energy half and half (default)
+**       = 1 :  output intra and inter energy separately
+i_output_energy_style = 0
+
+
+** Use coef values in .ninfo file as parameters.
+**       = 0 : not use parameters in ninfo (default)
+**       = 1 :     use parameters in ninfo
+i_coef_from_ninfo = 1
+
+** Calculate temperature-independent energy (for reweighting)
+**       = 0 : disabled (default)
+**       = 1 : enabled  (tempk_ref should be specified in <<<< md_information)
+**i_temp_independent = 0
+
+**i_dtrna_model = 2013 (default)
+**              = 2015
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 10000
+n_step_save = 100
+n_step_rst = 1000
+n_step_neighbor = 100
+
+tstep_size = 0.05
+tempk = 300.0
+tempk_ref = 300.0
+
+i_rand_type = 0
+n_seed = 2
+i_com_zeroing_ini = 0
+i_com_zeroing = 0
+i_no_trans_rot = 0
+
+i_redef_para = 1
+i_mass = 1
+i_fric = 1
+>>>>
+
+<<<< redefine_para
+viscosity = 0.0010
+>>>>
