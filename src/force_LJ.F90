@@ -33,7 +33,7 @@ subroutine force_LJ(irep, force_mp)
 #endif
 
   ! ---------------------------------------------------------------------
-!  rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
+  rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
   !rcut_off2_pro = 1.0e0_PREC / inpro%cutoff_LJ**2
   !if (inmisc%class_flag(CLASS%RNA)) then
   !   rcut_off2_rna = 1.0e0_PREC / inrna%cutoff_LJ**2
@@ -73,7 +73,7 @@ subroutine force_LJ(irep, force_mp)
      dist2 = dot_product(v21,v21)
 
      roverdist2 = LJ_nat2(iLJ) / dist2
-!     if(roverdist2 < rcut_off2) cycle
+     if(roverdist2 < rcut_off2) cycle
      
      roverdist4 = roverdist2 * roverdist2
      roverdist8 = roverdist4 * roverdist4
@@ -83,10 +83,8 @@ subroutine force_LJ(irep, force_mp)
      dLJ_dr = 12.0e0_PREC * coef_LJ(iLJ) / LJ_nat2(iLJ) * (roverdist14 - roverdist8)
      
      if(dLJ_dr > DE_MAX) then
-!        write (*, *) "LJ", imp1, imp2, dLJ_dr
         dLJ_dr = DE_MAX
      end if
-!     if(dLJ_dr > 5.0e0_PREC) dLJ_dr = 5.0e0_PREC
 
      for(1:3) = dLJ_dr * v21(1:3)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - for(1:3)

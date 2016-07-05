@@ -8,19 +8,13 @@ subroutine setp_mapara_pro(lunpara, lunout)
   use const_maxsize
   use const_index
   use var_setp, only : inpro
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
-  ! ----------------------------------------------------------------------
-  ! intent(out) :: inpro
   integer, intent(in) :: lunpara
   integer, intent(in) :: lunout
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: iline, nlines, iequa, nequat
   character(4) :: kfind
   character(CARRAY_MXCOLM) :: cwkinp(CARRAY_MXLINE)
@@ -44,6 +38,7 @@ subroutine setp_mapara_pro(lunpara, lunout)
   inpro%cdist_rep6          = -1.0 
   inpro%crep12              = -1.0
   inpro%crep6               = -1.0
+  inpro%cutoff_LJ           = -1.0
 
   ! ------------------------------------------------------------------- 
 
@@ -96,6 +91,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
         cvalue = 'cutoff_go'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpro%cutoff_go, cvalue)
+
+        cvalue = 'cutoff_LJ'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpro%cutoff_LJ, cvalue)
 
         cvalue = 'cutoff_exvol'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
@@ -158,6 +157,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
 
   else if(inpro%cutoff_go < 0.0) then
      error_message = 'Error: invalid value for cutoff_go'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  else if(inpro%cutoff_LJ < 0.0) then
+     error_message = 'Error: invalid value for cutoff_LJ'
      call util_error(ERROR%STOP_ALL, error_message)
 
   else if(inpro%cutoff_exvol < 0.0) then

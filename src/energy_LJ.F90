@@ -38,7 +38,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
 
   ! --------------------------------------------------------------------
   ! set parameter 
-  !rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
+  rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
   !rcut_off2_pro = 1.0e0_PREC / inpro%cutoff_LJ**2
   !if (inmisc%class_flag(CLASS%RNA)) then
   !   rcut_off2_rna = 1.0e0_PREC / inrna%cutoff_LJ**2
@@ -82,6 +82,14 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
      !   rcut_off2 = rcut_off2_pro
      !endif
 
+     if(coef_LJ(iLJ) >= ZERO_JUDGE) then
+        now_LJ(2, iLJ) = 1
+     else
+        now_LJ(2, iLJ) = 0
+     end if
+
+     if(roverdist2 < rcut_off2) cycle
+
      ! 1.44 = 1.2 *1.2
      rjudge = LJ_nat2(iLJ) * rjudge_contact
      !  judging contact 
@@ -90,13 +98,6 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
      else
         now_LJ(1, iLJ) = 0
      end if
-     if(coef_LJ(iLJ) >= ZERO_JUDGE) then
-        now_LJ(2, iLJ) = 1
-     else
-        now_LJ(2, iLJ) = 0
-     end if
-
-     !if(roverdist2 < rcut_off2) cycle
 
      ! calc energy
      roverdist6 = roverdist2 ** 3

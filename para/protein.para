@@ -20,6 +20,7 @@ n_sep_nlocal = 2
 n_sep_contact = 4
 * truncation distance for computing non-local Go interaction
 cutoff_go = 2.5
+cutoff_LJ = 5.0
 * truncation distance for computing nonlocal non-native repulsion
 cutoff_exvol = 2.0
 

@@ -44,7 +44,8 @@ subroutine force_fene(irep, force_mp, ene_unit)
   kend = nfene
 #endif
 !$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for, &
-!$omp&           force,efull,iunit,junit,isys,istat)
+!$omp&           force,efull,iunit,junit)
+!!!$omp&           force,efull,iunit,junit,isys,istat)
   do ifene = ksta, kend
 
      imp1 = ifene2mp(1, ifene)
@@ -56,14 +57,16 @@ subroutine force_fene(irep, force_mp, ene_unit)
      ddist = dist - fene_nat(ifene)
      ddist2 = ddist**2
 
-     ! calc force
      for = - coef_fene(ifene) * ddist / (1.0 - ddist2 / dist2_fene(ifene)) / dist
      force(1:3) = for * v21(1:3)
 
-     !if(inmgo%i_multi_mgo == 0) then
-        force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
-        force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
+     force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
+     force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
 
+!     if(inmgo%i_multi_mgo == 0) then
+!        force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
+!        force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
+!
 !     else
 !        ! calc energy
 !        efull = (coef_fene(1, ifene) + coef_fene(2, ifene) * ddist2) * ddist2
