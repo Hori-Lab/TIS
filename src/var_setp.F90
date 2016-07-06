@@ -51,45 +51,8 @@ module var_setp
      integer :: num_k_ion
      integer :: num_cl_ion
      integer :: num_mg_ion
-     integer :: num_ion(IONTYPE%MAX_ION)
-     character(3) :: char_ion(IONTYPE%MAX_ION)
-
-     ! parameters
-     real(PREC) :: energy_unit_ion
-
-     ! exv
-     real(PREC) :: cexv_ion
-     real(PREC) :: cdist_exv_ion
-     real(PREC) :: cutoff_exv_ion
-
-     ! LJ+Hydration
-     real(PREC) :: cutoff_lj_ion
-     real(PREC) :: cutoff_hyd_ion
-
-     real(PREC) :: clj(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cdistlj(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cdistme(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: csigmame(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cdistmh1(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: csigmamh1(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh1(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cdistmh2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: csigmamh2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-
-     ! LJ force, energy
-     real(PREC) :: cdistlj2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cutofflj2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: clj_force(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: clj_energy(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-
-     ! hydration force, energy
-     real(PREC) :: rsigmamh1(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh1_force(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh1_energy(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: rsigmamh2(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh2_force(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
-     real(PREC) :: cmh2_energy(IONTYPE%MAX_ALL, IONTYPE%MAX_ALL)
+     integer :: num_ion(IONTYPE%MAX)
+     character(3) :: char_ion(IONTYPE%MAX)
 
      integer    :: sz
   end type input_ion_parameter
@@ -693,17 +656,20 @@ module var_setp
 
   !==========================================
   ! Grand Canonical
-  type input_gc
+  type input_gcmc
      integer :: n_step_interval
      !integer :: n_Mg_add
      !integer :: n_Na_add
      !integer :: n_K_add
      !integer :: n_Cl_add
-     integer :: n_max_mp_add
+     integer :: n_max_add_Na
+     integer :: n_max_add_Cl
+     integer :: n_max_add
+     real(PREC) :: chp
      integer :: sz
-  endtype input_gc
+  endtype input_gcmc
 
-  type(input_widom), save :: ingc
+  type(input_gcmc), save :: ingcmc
 
   !==========================================
   

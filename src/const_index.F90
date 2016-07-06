@@ -113,25 +113,22 @@ module const_index
      integer :: MORSE         !< 16: Morse-type Go
      integer :: STACK_RNA     !< 17: RNA base stacking (distance)
      integer :: PAIR_RNA      !< 18: RNA base pairing
-     integer :: LJ_ION        !< 19: Ion LJ
-     integer :: HYD_ION       !< 20: Ion hydration
-     integer :: EXV_ION       !< 21: Ion excluded volume
-     integer :: REST1D        !< 22: 1D-restraint
-     integer :: CAP           !< 23: Cap boundary
-     integer :: WINDOW        !< 24: Window potential
-     integer :: SASA          !< 25: SASA potential !sasa
-     integer :: EXV_WCA       !< 26: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: STACK_DTRNA   !< 27: Denesyuk-Thirumalai RNA base stacking
-     integer :: HBOND_DTRNA   !< 28: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: CYLINDER      !< 29: Cylindrical boundary
-     integer :: EXV_DT15      !< 30: excluded volume of DTRNA2015 model
-     integer :: TSTACK_DTRNA  !< 31: Denesyuk-Thirumalai RNA base stacking
-     integer :: THBOND_DTRNA  !< 32: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: MAX           !< 32: Max value
+     integer :: REST1D        !< 19: 1D-restraint
+     integer :: CAP           !< 20: Cap boundary
+     integer :: WINDOW        !< 21: Window potential
+     integer :: SASA          !< 22: SASA potential !sasa
+     integer :: EXV_WCA       !< 23: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: STACK_DTRNA   !< 24: Denesyuk-Thirumalai RNA base stacking
+     integer :: HBOND_DTRNA   !< 25: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: CYLINDER      !< 26: Cylindrical boundary
+     integer :: EXV_DT15      !< 27: excluded volume of DTRNA2015 model
+     integer :: TSTACK_DTRNA  !< 28: Denesyuk-Thirumalai RNA base stacking
+     integer :: THBOND_DTRNA  !< 29: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: MAX           !< 29: Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
-                   21,22,23,24,25,26,27,28,29,30,31,32,32)
+                   21,22,23,24,25,26,27,28,29,29)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -268,11 +265,9 @@ module const_index
      integer :: K         !< 2: K+
      integer :: CL        !< 3: Cl- of DNA
      integer :: MG        !< 4: Mg2+ of DNA
-     integer :: MAX_ION   !< 4: Max number of ion
-     integer :: P         !< 5: Phosphate of DNA
-     integer :: MAX_ALL   !< 5: Max number of ion and phosphate
+     integer :: MAX       !< 4: Max number of ion
   endtype ion_type
-  type(ion_type), parameter :: IONTYPE = ion_type(0,1,2,3,4,4,5,5)
+  type(ion_type), parameter :: IONTYPE = ion_type(0,1,2,3,4,4)
 
   ! categories for RNA's bond
   type bd_type

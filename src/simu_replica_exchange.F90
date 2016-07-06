@@ -32,9 +32,7 @@ subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
                            up_or_down, label_order, &
                            n_turnover
    use mt_stream
-#ifdef MPI_PAR
-  use mpiconst
-#endif
+   use mpiconst
    use time
 
    implicit none

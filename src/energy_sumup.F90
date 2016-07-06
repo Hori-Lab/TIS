@@ -222,12 +222,6 @@ subroutine energy_sumup(irep,          &
   endif
   TIME_E( tm_energy_ele)
 
-  if (inmisc%class_flag(CLASS%ION)) then
-     TIME_S( tm_energy_exv) 
-     call energy_ion(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     TIME_E( tm_energy_exv) 
-  endif
-
   if (inmisc%force_flag(INTERACT%HP)) then
      TIME_S( tm_energy_hp) 
      call energy_hp(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))

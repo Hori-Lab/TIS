@@ -86,7 +86,7 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
            imp = nmppdb
            ires = nrespdb
 
-           do im = 1, IONTYPE%MAX_ION
+           do im = 1, IONTYPE%MAX
               do jm = 1, inion%num_ion(im)
                  imp = imp + 1
                  ires = ires + 1

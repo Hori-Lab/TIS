@@ -172,10 +172,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_exv_wca (irep, force_mp_l(1,1,tn))
   endif
 
-  if (inmisc%class_flag(CLASS%ION)) then
-     call force_ion(irep, force_mp_l(1,1,tn))
-  endif
-
 !$omp master
   TIME_E( tm_force_exv )
 

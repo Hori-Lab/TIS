@@ -163,10 +163,6 @@ subroutine write_tseries(ibefore_time, istep, &
            write (lunout, _FMT_TS_ELECT_T_,   ADVANCE = "NO") 'elect'
         end if
    
-        if(inmisc%force_flag(INTERACT%ION_HYD)) then
-           write (lunout, _FMT_TS_HYDION_T_, ADVANCE = "NO") 'hyd_ion'
-        end if
-
         if(inmisc%force_flag(INTERACT%HP)) then
            write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
         end if
@@ -371,7 +367,7 @@ contains
     real(PREC) :: tenergy(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
     real(PREC) :: elocal, ego, erepul
-    real(PREC) :: eelect, ehp, ehyd_ion
+    real(PREC) :: eelect, ehp
     real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
     real(PREC) :: ebox, ecap, ebridge, epulling, eanchor, erest1d
@@ -416,12 +412,10 @@ contains
               tenergy(E_TYPE%DIHE_HARMONIC)
     ego     = tenergy(E_TYPE%GO)
     emorse  = tenergy(E_TYPE%MORSE)
-    erepul  = tenergy(E_TYPE%EXV) + tenergy(E_TYPE%EXV_ION) &
-            + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
+    erepul  = tenergy(E_TYPE%EXV) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
     estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
     ehbond_rna = tenergy(E_TYPE%PAIR_RNA)  + tenergy(E_TYPE%HBOND_DTRNA)
     eelect  = tenergy(E_TYPE%ELE)
-    ehyd_ion  = tenergy(E_TYPE%HYD_ION)
     ehp       = tenergy(E_TYPE%HPENE)
     ebox      = tenergy(E_TYPE%BOX)
     ecap      = tenergy(E_TYPE%CAP)
@@ -504,10 +498,6 @@ contains
 
        if (inmisc%force_flag(INTERACT%ELE)) then
           write (lunout, _FMT_TS_ELECT_,   ADVANCE = "NO") eelect
-       end if
-
-       if(inmisc%force_flag(INTERACT%ION_HYD)) then
-          write (lunout, _FMT_TS_HYDION_, ADVANCE = "NO") ehyd_ion
        end if
 
        if(inmisc%force_flag(INTERACT%HP)) then

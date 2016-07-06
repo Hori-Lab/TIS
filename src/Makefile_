@@ -201,13 +201,13 @@ FOBJ1 = \
 	setpara.o\
 	setp_mapara.o setp_mapara_pro.o\
 	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
-	setp_mapara_ion.o setp_redef_para.o setp_mapara_rna.o\
+	setp_redef_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_group.o setp_anneal_para.o setp_searchingtf_para.o setp_minimize_para.o\
-	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
+	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o setp_gcmc_para.o\
 	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o setp_para_enm.o setp_para_mgo.o\
 	setp_energy_unit.o setp_bridge_para.o setp_pulling_para.o setp_cylinder_para.o\
 	setp_anchor_para.o setp_rest1d_para.o setp_fix_para.o setp_hydrophobic.o\
-	setp_para_ion.o setp_nativestruct.o setp_native_secstruct.o\
+	setp_nativestruct.o setp_native_secstruct.o\
 	setp_native_bond.o setp_native_bangle.o setp_native_dih.o setp_native_charge.o\
 	setp_native_hp.o setp_native_neighbor_list.o setp_native_go.o\
 	setp_native_sasa.o setp_para_implig.o setp_con_implig.o setp_bindsite_implig.o\
@@ -219,7 +219,7 @@ FOBJ1 = \
 	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
 	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o mloop_simulator.o\
-	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o\
+	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o mloop_gcmc.o\
 	mloop_fmat_homo.o mloop_fmat_hetero.o mloop_ewld.o\
 	simu_checkforce.o\
 	simu_para.o\
@@ -248,7 +248,7 @@ FOBJ1 = \
 	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o\
 	energy_nlocal_morse.o energy_nlocal_rna_bp.o energy_orderpara.o\
 	energy_exv_rep12.o energy_exv_restype.o energy_exv_wca.o energy_exv_dt15.o\
-	energy_hp.o energy_sasa.o energy_ion.o energy_box.o energy_cap.o\
+	energy_hp.o energy_sasa.o energy_box.o energy_cap.o\
 	energy_cylinder.o energy_anchor.o energy_rest1d.o energy_bridge.o\
 	energy_pulling.o energy_implig.o\
 	energy_ele.o energy_ele2.o energy_ele3.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
@@ -262,7 +262,7 @@ FOBJ1 = \
 	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_nlocal_morse.o \
 	force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o force_enm.o\
 	force_exv.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
-	force_hp.o force_ion.o force_sasa.o force_bridge.o force_pulling.o\
+	force_hp.o force_sasa.o force_bridge.o force_pulling.o\
 	force_anchor.o force_rest1d.o force_box.o force_cap.o force_cylinder.o\
 	force_implig.o force_ele.o force_ele2.o force_ele3.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
 	force_dtrna_stack.o force_dtrna_stack_nlocal.o\
@@ -271,7 +271,7 @@ FOBJ1 = \
 	write_rep_adjust.o write_version.o\
 	read_pull.o read_pdb_rna.o\
 	read_dssp.o read_dssp_pro.o read_paraaicg.o read_paraaicg2.o\
-	write_fmat.o mloop_recalc_coef.o widom.o
+	write_fmat.o mloop_recalc_coef.o widom.o gcmc.o
 	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 
 

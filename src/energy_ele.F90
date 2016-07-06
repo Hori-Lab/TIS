@@ -6,7 +6,7 @@ subroutine energy_ele(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inmisc, inele, inion, inperi
+  use var_setp,    only : inmisc, inele, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, iontype_mp, imp2type
   use var_replica, only : irep2grep
   use mpiconst
@@ -72,30 +72,20 @@ subroutine energy_ele(irep, energy, energy_unit)
      itype1 = iontype_mp(imp1)
      itype2 = iontype_mp(imp2)
      
-     if((.not. inmisc%class_flag(CLASS%ION)) .or. itype1 <= 0 .or. itype1 > IONTYPE%MAX_ALL .or. itype2 <= 0 .or. itype2 > IONTYPE%MAX_ALL) then
+     if (inmisc%i_temp_independent == 0) then
+        exv = coef_ele(iele1,irep)/dist1*exp(-dist1*rcdist)
 
-        if (inmisc%i_temp_independent == 0) then
-           exv = coef_ele(iele1,irep)/dist1*exp(-dist1*rcdist)
+     else if (inmisc%i_temp_independent == 1) then
+        exv = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
+             * exp(-dist1*rcdist)
 
-        else if (inmisc%i_temp_independent == 1) then
-           exv = coef_ele(iele1,irep) * (1.0e0_PREC / dist1 - 0.5e0_PREC * rcdist) &
-                * exp(-dist1*rcdist)
+     else if (inmisc%i_temp_independent == 2) then
+        rk = dist1 * rcdist
+        exv = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
+             * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
 
-        else if (inmisc%i_temp_independent == 2) then
-           rk = dist1 * rcdist
-           exv = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
-                * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
+     endif
 
-        endif
-
-     else
-        rsig = 1.0/inion%csigmame(itype1, itype2)
-        xtanh = tanh((dist1-inion%cdistme(itype1, itype2))*rsig)
-        rek_corr = 1.0/(0.5*(ew + 5.2) + 0.5*(ew - 5.2)*xtanh)
-        
-        exv = ek*rek_corr*coef_ele(iele1, irep)/dist1*exp(-dist1*rcdist) 
-     end if
-     
      ! --------------------------------------------------------------------
      ! sum of the energy
      energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + exv
