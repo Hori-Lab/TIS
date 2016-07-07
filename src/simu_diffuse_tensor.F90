@@ -18,8 +18,8 @@ subroutine simu_diffuse_tensor(irep,tempk, D)
    real(PREC) :: pre1, pre2
    real(PREC) :: c6, c8
 
-   c6 = BOLTZC * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
-   c8 = BOLTZC * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
+   c6 = BOLTZ_KCAL_MOL * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
+   c8 = BOLTZ_KCAL_MOL * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
    
    D(1:3*nmp_real, 1:3*nmp_real) = 0.0e0_PREC
 

@@ -41,7 +41,7 @@ subroutine simu_mc_implig(irep, istep, tempk)
               !istate_implig(ist, irep) = 1
               istate_implig(ist, irep) = IMPLIGBOUND_STATE%BOUND
            else
-              if(p<exp(-Etbind_implig(ist, irep)/(BOLTZC*tempk)))then
+              if(p<exp(-Etbind_implig(ist, irep)/(BOLTZ_KCAL_MOL*tempk)))then
                  !istate_implig(ist, irep) = 1
                  istate_implig(ist, irep) = IMPLIGBOUND_STATE%BOUND
               endif
@@ -56,7 +56,7 @@ subroutine simu_mc_implig(irep, istep, tempk)
            !istate_implig(ist, irep) = 0
            istate_implig(ist, irep) =  IMPLIGBOUND_STATE%UN_BOUND
         else
-           if(p<exp(Etbind_implig(ist, irep)/(BOLTZC*tempk)))then
+           if(p<exp(Etbind_implig(ist, irep)/(BOLTZ_KCAL_MOL*tempk)))then
               !istate_implig(ist, irep) = 0
               istate_implig(ist, irep) = IMPLIGBOUND_STATE%UN_BOUND
            endif

@@ -27,8 +27,8 @@ subroutine simu_hydro_tensors(irep,tempk)
 
    write(*,*) 'viscosity=',inpara%viscosity
 
-   c6 = BOLTZC * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
-   c8 = BOLTZC * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
+   c6 = BOLTZ_KCAL_MOL * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
+   c8 = BOLTZ_KCAL_MOL * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
    
    write(*,*) 'c6=',c6
    write(*,*) 'c8=',c8

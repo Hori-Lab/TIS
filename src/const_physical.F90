@@ -7,16 +7,17 @@ module const_physical
   integer,    parameter :: SDIM = 3 !< # of space dimension
 
   real(PREC), parameter :: F_PI    = 3.14159265358979323846264338e0_PREC !< Circular constant (Pi)
-  real(PREC), parameter :: F_2PI   = F_PI + F_PI
+  real(PREC), parameter :: F_2PI   = 2.0 * F_PI
 
-  real(PREC), parameter :: EPSI_0  = 8.854187817e-12_PREC   !< Vacuum permittivity [F/m]
+  real(PREC), parameter :: EPSI_0  = 8.854187817e-12_PREC  !< Vacuum permittivity [F/m]
   real(PREC), parameter :: ELE     = 1.6021766208e-19_PREC !< Elementary charge [C]
-  real(PREC), parameter :: K_BOLTZ = 1.38064852e-23_PREC   !< Boltzmann constant [J/K]
+  real(PREC), parameter :: BOLTZ_J = 1.38064852e-23_PREC   !< Boltzmann constant [J/K]
   real(PREC), parameter :: N_AVO   = 6.022140857e23_PREC   !< Avogadro constant [/mol]
-  real(PREC), parameter :: JOUL2KCAL = 4184.0   !< (J -> kcal)
+  real(PREC), parameter :: KCAL2JOUL = 4184.0              !< (kcal -> J)  [J/kcal]
 
-  real(PREC), parameter :: BOLTZC  =  K_BOLTZ*N_AVO/JOUL2KCAL   !< Boltzmann constant [kcal/mol/K]
-  real(PREC), parameter :: JOUL2KCAL_MOL = N_AVO / JOUL2KCAL  !< (J -> kcal/mol)
+  real(PREC), parameter :: JOUL2KCAL = 1.0/KCAL2JOUL   !< (J -> kcal)  [kcal/J]
+  real(PREC), parameter :: JOUL2KCAL_MOL  = JOUL2KCAL * N_AVO  !< (J -> kcal/mol)
+  real(PREC), parameter :: BOLTZ_KCAL_MOL = BOLTZ_J * JOUL2KCAL_MOL   !< Boltzmann constant [kcal/mol/K]
 
   real(PREC), parameter :: DE_MAX  = 20.0e0_PREC !< limit value of force
 

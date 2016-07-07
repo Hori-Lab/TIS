@@ -58,7 +58,7 @@ subroutine setp_mass_fric()
   if (inmisc%i_fric == 1) then
 
      ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)   (tau: cafemol time unit)
-     visc = inpara%viscosity * sqrt(1.0e3_PREC / JOUL2KCAL) * N_AVO * 1.0e-20_PREC
+     visc = inpara%viscosity * sqrt(1.0e3_PREC * JOUL2KCAL) * N_AVO * 1.0e-20_PREC
 
      do imp = 1, nmp_all
         ichemical = imp2chemicaltype(imp)

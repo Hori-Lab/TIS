@@ -20,7 +20,7 @@ subroutine simu_velo_nosehoover(velo_mp, irep, tempk, velo_yojou)
   real(PREC) :: ttemp, veloet2
 
   ! --------------------------------------------------------------------
-  ttemp = tempk * BOLTZC
+  ttemp = tempk * BOLTZ_KCAL_MOL
 
   veloet2 = 0.0e0_PREC
   kmp = 0

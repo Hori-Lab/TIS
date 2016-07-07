@@ -127,7 +127,7 @@ contains
      h  = indtrna%cst_h(inn)
      s  = indtrna%cst_s(inn)
      Tm = indtrna%cst_Tm(inn)
-     coef_dtrna_st(4,ist,:) = - h + BOLTZC * (insimu%tempk - Tm) * s
+     coef_dtrna_st(4,ist,:) = - h + BOLTZ_KCAL_MOL * (insimu%tempk - Tm) * s
   endsubroutine nat_stack
 
 endsubroutine setp_native_dtrna

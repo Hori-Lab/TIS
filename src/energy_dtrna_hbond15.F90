@@ -142,7 +142,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   else
 
 !$omp master
-     beta = 1.0e0_PREC / (tempk * BOLTZC) 
+     beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
 
      !hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
      hbsite_excess_l(1:nhbsite) = 0
@@ -399,7 +399,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
                      energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
         endif
 
-        if (hb_energy(ihb,irep) < -(tempk * BOLTZC)) then
+        if (hb_energy(ihb,irep) < -(tempk * BOLTZ_KCAL_MOL)) then
             write(outfile%opt, '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
         endif
      end do

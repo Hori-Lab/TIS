@@ -4,7 +4,7 @@
 subroutine simu_velo_mrand_old(tempk)
 
   use const_maxsize, only : PREC, MXMP
-  use const_physical, only : BOLTZC
+  use const_physical, only : BOLTZ_KCAL_MOL
   use var_setp, only : irand, ifix_mp
   use var_struct, only : nmp_real, cmass_mp
   use var_simu, only : velo_mp
@@ -35,7 +35,7 @@ subroutine simu_velo_mrand_old(tempk)
      if(ifix_mp(imp) == 1) then
         velo_mp(1:3, imp, irep) = 0.0
      else
-        coef = sqrt(tempk * BOLTZC / cmass_mp(imp))
+        coef = sqrt(tempk * BOLTZ_KCAL_MOL / cmass_mp(imp))
         do idimn = 1, 3
            velo_mp(idimn, imp, irep) = coef * recipe_gasdev(irand)
         end do

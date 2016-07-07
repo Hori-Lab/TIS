@@ -203,13 +203,13 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      
      if(i_simulate_type == SIM%LANGEVIN) then
         do imp = 1, nmp_real
-           rlan_const(1, imp, 1) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZC * tempk &
+           rlan_const(1, imp, 1) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk &
                 / (tstep * cmass_mp(imp) )        )   
            !NOTE: SA should be only 1 replica.
         end do
      elseif (i_simulate_type == SIM%BROWNIAN) then
         do imp = 1, nmp_real
-           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZC * tempk * tstep / fric_mp(imp))
+           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZ_KCAL_MOL * tempk * tstep / fric_mp(imp))
            !NOTE: SA should be only 1 replica.
         end do
      end if
@@ -260,7 +260,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                  tempk = rep2val(grep, REPTYPE%TEMP)
                  do imp   = 1, nmp_real
                     rlan_const(1, imp, irep)  &
-                         = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZC * tempk & 
+                         = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk & 
                                      / (tstep * cmass_mp(imp)) )
                  enddo
               enddo

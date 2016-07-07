@@ -59,7 +59,7 @@ subroutine simu_velo_mrand(tempk_in)
         if(ifix_mp(imp) == 1) then
            velo_mp(1:3, imp, irep) = 0.0
         else
-           coef = sqrt(tempk * BOLTZC / cmass_mp(imp))
+           coef = sqrt(tempk * BOLTZ_KCAL_MOL / cmass_mp(imp))
            do idimn = 1, 3
               velo_mp(idimn, imp, irep) = coef * r_boxmuller(idimn, imp, irep)
            end do

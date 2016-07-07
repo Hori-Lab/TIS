@@ -147,7 +147,7 @@ subroutine time_integral_pre(flg_step_each_replica)
            ulconst1 = 1.0e0_PREC - tstep_fric_h
            ulconst2 = 1.0e0_PREC - tstep_fric_h + tstep_fric_h**2
            
-           rlan_const(1, imp, irep)  = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZC * tempk &
+           rlan_const(1, imp, irep)  = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk &
                 / (tstep * cmass_mp(imp) )    )
            rlan_const(2, imp, irep) = ulconst1 * ulconst2
            rlan_const(3, imp, irep) = tsteph * ulconst1
@@ -194,10 +194,10 @@ subroutine time_integral_pre(flg_step_each_replica)
         ncs = MXCS
         cmass_cs(1:ncs) = inpara%csmass_per*nmp_real
         xyz_cs(1:ncs) = 0.0e0_PREC
-        velo_cs(1:ncs) = sqrt(BOLTZC * tempk / cmass_cs(1:ncs))
+        velo_cs(1:ncs) = sqrt(BOLTZ_KCAL_MOL * tempk / cmass_cs(1:ncs))
         call simu_velo_nosehoover(velo_mp, irep, tempk, velo_yojou(1))
         do ics = 2, ncs
-           velo_yojou(ics) = cmass_cs(ics-1) * velo_cs(ics-1)**2 - BOLTZC * tempk
+           velo_yojou(ics) = cmass_cs(ics-1) * velo_cs(ics-1)**2 - BOLTZ_KCAL_MOL * tempk
         end do
 
      else if(i_simulate_type == SIM%BROWNIAN) then
@@ -205,13 +205,13 @@ subroutine time_integral_pre(flg_step_each_replica)
         rlan_const(:,:,:) = 0.0e0_PREC
         do imp = 1, nmp_real
            rlan_const(1, imp, irep) = tstep / fric_mp(imp) 
-           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZC * tempk * tstep / fric_mp(imp))
+           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZ_KCAL_MOL * tempk * tstep / fric_mp(imp))
         enddo
 
      else if(i_simulate_type == SIM%BROWNIAN_HI) then
         velo_mp(:,:,:) = 0.0e0_PREC
         rlan_const(:,:,:) = 0.0e0_PREC
-        rlan_const(1, :, irep) = tstep / (BOLTZC * tempk)
+        rlan_const(1, :, irep) = tstep / (BOLTZ_KCAL_MOL * tempk)
         rlan_const(2, :, irep) = sqrt( 2.0e0_PREC * tstep )
      endif
      

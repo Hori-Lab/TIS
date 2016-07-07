@@ -296,7 +296,7 @@ subroutine setp_native_bangle(xyz_mp_init)
   !      end do
   !   end do
      
-     !inflp%coeff = BOLTZC * insimu%tempk
+     !inflp%coeff = BOLTZ_KCAL_MOL * insimu%tempk
 
 !#ifdef MPI_PAR
 !     call MPI_Bcast(inflp, inflp%sz, MPI_BYTE, 0, MPI_COMM_WORLD, ierr)

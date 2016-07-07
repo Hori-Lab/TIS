@@ -38,7 +38,7 @@ interface
    endsubroutine energy_ele_coulomb_ewld_tp
 endinterface
 
-   kT = BOLTZC * tempk
+   kT = BOLTZ_KCAL_MOL * tempk
    
    do iw = 1, inwidom%n_trial
 

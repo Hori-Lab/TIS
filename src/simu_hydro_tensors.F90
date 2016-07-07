@@ -39,8 +39,8 @@ subroutine simu_hydro_tensors(irep,tempk)
    !real(PREC), allocatable :: m(:,:)   ! For checking
    character(CARRAY_MSG_ERROR) :: error_message
 
-   c6 = BOLTZC * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
-   c8 = BOLTZC * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
+   c6 = BOLTZ_KCAL_MOL * tempk / (6.0e0_PREC * F_PI * inpara%viscosity)
+   c8 = BOLTZ_KCAL_MOL * tempk / (8.0e0_PREC * F_PI * inpara%viscosity)
    
    diffuse_tensor(1:3*nmp_real, 1:3*nmp_real) = 0.0e0_PREC
 

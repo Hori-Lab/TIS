@@ -55,9 +55,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   if(inele%i_charge == 1) then
      ! Bjerrum length
      if (inmisc%i_temp_independent <= 1) then
-        lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * K_BOLTZ * tempk) * 1.0e10_PREC
+        lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * tempk) * 1.0e10_PREC
      elseif (inmisc%i_temp_independent == 2) then
-        lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * K_BOLTZ * insimu%tempk_ref) * 1.0e10_PREC
+        lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * insimu%tempk_ref) * 1.0e10_PREC
      endif
 
      loop_charge:&
@@ -84,12 +84,12 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   !   = sqrt(1.0e-3 * e0 * ek * kb / 2 * NA * eq**2) * sqrt(T(K) / I(M))
   if (inmisc%i_temp_independent == 0) then
      inele%cdist(grep) = 1.0e10_PREC                               &
-                     * sqrt( (1.0e-3_PREC * EPSI_0 * ek * K_BOLTZ) &
+                     * sqrt( (1.0e-3_PREC * EPSI_0 * ek * BOLTZ_J) &
                             / (2.0_PREC * N_AVO * ELE**2)  )       &
                      * sqrt(tempk / ionic_strength)
   else if (inmisc%i_temp_independent >= 1) then
      inele%cdist(grep) = 1.0e10_PREC                               &
-                     * sqrt( (1.0e-3_PREC * EPSI_0 * ek * K_BOLTZ) &
+                     * sqrt( (1.0e-3_PREC * EPSI_0 * ek * BOLTZ_J) &
                             / (2.0_PREC * N_AVO * ELE**2)  )       &
                      * sqrt(insimu%tempk_ref / ionic_strength)
   endif

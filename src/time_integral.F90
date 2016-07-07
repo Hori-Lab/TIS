@@ -289,7 +289,7 @@ subroutine time_integral(flg_step_each_replica)
            
            do ics = 1, ncs - 1
               velo_cs(ics) = evcs(ics + 1) * (velo_cs(ics) + tsteph * velo_yojou(ics) / cmass_cs(ics))
-              velo_yojou(ics + 1) = cmass_cs(ics) * velo_cs(ics)**2 - BOLTZC * tempk
+              velo_yojou(ics + 1) = cmass_cs(ics) * velo_cs(ics)**2 - BOLTZ_KCAL_MOL * tempk
            end do
            velo_cs(ncs) = velo_cs(ncs) + tsteph * velo_yojou(ncs) / cmass_cs(ncs)
            

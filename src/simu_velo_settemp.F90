@@ -23,7 +23,7 @@ subroutine simu_velo_settemp(velo_mp, irep, tempk)
   real(PREC) :: rtarget
 
   ! --------------------------------------------------------------------
-  ttemp = tempk * BOLTZC
+  ttemp = tempk * BOLTZ_KCAL_MOL
   velo_adjst = inpara%velo_adjst
 
   veloet = 0.0

@@ -28,9 +28,9 @@ subroutine simu_set_dtrna(grep, tempk)
         s  = indtrna13%st_s(inn)
         Tm = indtrna13%st_Tm(inn)
         if (inmisc%i_temp_independent == 0) then
-           coef_dtrna_st(0,ist,grep) = - h + BOLTZC * (tempk - Tm) * s
+           coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
         else if (inmisc%i_temp_independent > 0) then
-           coef_dtrna_st(0,ist,grep) = - h - BOLTZC * Tm * s
+           coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
         endif
      enddo
 
@@ -42,9 +42,9 @@ subroutine simu_set_dtrna(grep, tempk)
         s  = indtrna15%st_s(inn)
         Tm = indtrna15%st_Tm(inn)
         if (inmisc%i_temp_independent == 0) then
-           coef_dtrna_st(0,ist,grep) = - h + BOLTZC * (tempk - Tm) * s
+           coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
         else if (inmisc%i_temp_independent > 0) then
-           coef_dtrna_st(0,ist,grep) = - h - BOLTZC * Tm * s
+           coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
         endif
      enddo
 

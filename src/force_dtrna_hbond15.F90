@@ -60,7 +60,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   ! --------------------------------------------------------------------
 !$omp master
 
-  beta = 1.0e0_PREC / (tempk * BOLTZC) 
+  beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL)
 
   !hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
   hbsite_excess_l(1:nhbsite) = 0

@@ -156,7 +156,7 @@ subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
       ! Y. Sugita et al. J Chem phys (2000)  eq.[14]
       delta = ( (pot_j_m - pot_i_m) / temp_m    &
                -(pot_j_n - pot_i_n) / temp_n )  &
-             / BOLTZC
+             / BOLTZ_KCAL_MOL
 #ifdef DUMP
       write(6,*) 'pot_i_m, pot_i_n = ',pot_i_m,pot_i_n
       write(6,*) 'pot_j_m, pot_j_n = ',pot_j_m,pot_j_n

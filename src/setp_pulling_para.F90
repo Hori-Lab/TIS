@@ -234,15 +234,15 @@ subroutine setp_pulling_para()
      do ipull = 1, inmisc%npull
         if (inmisc%coef_pull(ipull) < 0.0) then
            inmisc%pull_xyz(1:3, ipull) = inmisc%pull_xyz(1:3, ipull) &
-                                        * N_AVO * 1.0e-12 * 1.0e-10 / JOUL2KCAL
+                                        * N_AVO * 1.0e-12 * 1.0e-10 * JOUL2KCAL
         endif
      enddo
 
      inmisc%pull_unravel_xyz(:,:,:) = inmisc%pull_unravel_xyz(:,:,:) &
-                                     * N_AVO * 1.0e-12 * 1.0e-10 / JOUL2KCAL
+                                     * N_AVO * 1.0e-12 * 1.0e-10 * JOUL2KCAL
      if (flg_rep(REPTYPE%PULL)) then
         lab2val(1:n_replica_all, REPTYPE%PULL) = lab2val(1:n_replica_all, REPTYPE%PULL) &
-                                                * N_AVO * 1.0e-12 * 1.0e-10 / JOUL2KCAL
+                                                * N_AVO * 1.0e-12 * 1.0e-10 * JOUL2KCAL
      endif
   endif
 
