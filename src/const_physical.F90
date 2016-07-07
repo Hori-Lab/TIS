@@ -10,14 +10,13 @@ module const_physical
   real(PREC), parameter :: F_2PI   = F_PI + F_PI
 
   real(PREC), parameter :: EPSI_0  = 8.854187817e-12_PREC   !< Vacuum permittivity [F/m]
-  real(PREC), parameter :: K_BOLTZ = 1.380650424e-23_PREC   !< Boltzmann constant [J/K]
-  real(PREC), parameter :: BOLTZC  = 1.986231313e-3_PREC    !< Boltzmann constant [kcal/mol/K]
-!!  real(PREC), parameter :: BOLTZC  = 1.98e-3_PREC    !< Boltzmann constant [kcal/mol/K]
-  real(PREC), parameter :: N_AVO   = 6.0221417930e23_PREC   !< Avogadro constant
-  real(PREC), parameter :: ELE     = 1.60217648740e-19_PREC !< Elementary charge [C]
-  real(PREC), parameter :: JOUL2KCAL_MOL = 1.43862e20_PREC  !< Coefficient of transformation 
-                                                            !< (J -> kcal/mol)
-  real(PREC), parameter :: JOUL2KCAL = 4186.8   !< (J -> kcal)
+  real(PREC), parameter :: ELE     = 1.6021766208e-19_PREC !< Elementary charge [C]
+  real(PREC), parameter :: K_BOLTZ = 1.38064852e-23_PREC   !< Boltzmann constant [J/K]
+  real(PREC), parameter :: N_AVO   = 6.022140857e23_PREC   !< Avogadro constant [/mol]
+  real(PREC), parameter :: JOUL2KCAL = 4184.0   !< (J -> kcal)
+
+  real(PREC), parameter :: BOLTZC  =  K_BOLTZ*N_AVO/JOUL2KCAL   !< Boltzmann constant [kcal/mol/K]
+  real(PREC), parameter :: JOUL2KCAL_MOL = N_AVO / JOUL2KCAL  !< (J -> kcal/mol)
 
   real(PREC), parameter :: DE_MAX  = 20.0e0_PREC !< limit value of force
 
