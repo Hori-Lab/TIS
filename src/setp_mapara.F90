@@ -34,6 +34,7 @@ subroutine setp_mapara(lunpara, lunout)
   inpara%velo_adjst     = -1.0
   inpara%csmass_per     = -1.0
   inpara%rneighbor_dist = -1.0
+  inpara%neigh_margin   = -1.0
   inpara%fric_const     = -1.0
   inpara%cmass(0:CHEMICALTYPE%MAX)  = -1.0
   inpara%radius(0:CHEMICALTYPE%MAX) = -1.0
@@ -70,6 +71,10 @@ subroutine setp_mapara(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpara%rneighbor_dist, cvalue)
         
+        cvalue = 'neigh_margin'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpara%neigh_margin, cvalue)
+        
         cvalue = 'rmass'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpara%cmass(0), cvalue)
@@ -96,6 +101,10 @@ subroutine setp_mapara(lunpara, lunout)
 
   else if(inpara%rneighbor_dist < 0.0) then
      error_message = 'Error: invalid value for rneighbor_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  else if(inpara%neigh_margin < 0.0) then
+     error_message = 'Error: invalid value for neigh_margin'
      call util_error(ERROR%STOP_ALL, error_message)
 
   else if(inpara%cmass(0) < 0.0) then

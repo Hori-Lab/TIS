@@ -27,7 +27,7 @@ subroutine time_integral(flg_step_each_replica)
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           energy_muca, energy_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
-                          diffuse_tensor, random_tensor, dxyz_mp
+                          diffuse_tensor, random_tensor, dxyz_mp, neigh_margin2
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
                    time_s, time_e
@@ -63,7 +63,7 @@ subroutine time_integral(flg_step_each_replica)
               dmax2_2nd = d2
            endif
 
-           if (dmax2 + dmax2_2nd > inpara%neigh_margin2) then
+           if (dmax2 + dmax2_2nd > neigh_margin2) then
               call neighbor(irep)
               exit
            endif
