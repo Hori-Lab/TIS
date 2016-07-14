@@ -80,7 +80,7 @@ subroutine time_integral(flg_step_each_replica)
 
      if (.not. flg_step_each_replica(irep)) then
         
-!        grep = irep2grep(irep)
+        grep = irep2grep(irep)
         
         if (flg_rep(REPTYPE%TEMP)) then
            tempk = rep2val(grep, REPTYPE%TEMP)
