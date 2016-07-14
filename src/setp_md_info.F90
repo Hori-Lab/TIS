@@ -77,6 +77,7 @@ subroutine setp_md_info()
   inmisc%i_del_int        = 0
   inmisc%i_energy_para    = 0
   inmisc%i_neigh_dist     = 0
+  inmisc%i_neigh_dynamic  = 0
   inmisc%i_fric           = 0
   inmisc%i_mass           = 0
   inmisc%i_redef_mass_fric= 0
@@ -208,6 +209,10 @@ subroutine setp_md_info()
         cvalue = 'i_neigh_dist'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_neigh_dist, cvalue)
+
+        cvalue = 'i_neigh_dynamic'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_neigh_dynamic, cvalue)
 
         cvalue = 'i_fric'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -424,9 +429,18 @@ subroutine setp_md_info()
   ! changing rneighbor_dist, inmisc%i_neigh_dist
   if(inmisc%i_neigh_dist == 0) then
   else if(inmisc%i_neigh_dist == 1) then
-     write(lunout, *) 'changing rneihbor_dist: i_neigh_dist = 1'
+     write(lunout, *) 'changing rneighbor_dist: i_neigh_dist = 1'
   else
      error_message = 'Error: invalid value for i_neigh_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  ! -----------------------------------------------------------------
+  if(inmisc%i_neigh_dynamic == 0) then
+  else if(inmisc%i_neigh_dynamic == 1) then
+     write(lunout, *) 'dynamic neihghbor list: i_neigh_dynamic = 1'
+  else
+     error_message = 'Error: invalid value for i_neigh_dynamic'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 

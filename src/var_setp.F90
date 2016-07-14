@@ -459,6 +459,7 @@ module var_setp
 
      ! neighbordist
      integer    :: i_neigh_dist
+     integer    :: i_neigh_dynamic
      real(PREC) :: rneighbordist2_unit(MXUNIT, MXUNIT)
 
      ! bridge
