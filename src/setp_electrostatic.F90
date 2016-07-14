@@ -343,6 +343,11 @@ subroutine setp_electrostatic()
      endif
   endif
 
+  if (inele%i_calc_method /= 0) then
+     error_message = 'Error: invalid value for inele%i_calc_method (only 0 is valid in the current code)'
+     call util_error(ERROR%STOP_ALL, error_message)
+  endif
+
   ! output for .data
   !if (nlines /= 0) then
   if (any(inele%flag_ele)) then
