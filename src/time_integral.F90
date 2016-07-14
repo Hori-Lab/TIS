@@ -27,7 +27,7 @@ subroutine time_integral(flg_step_each_replica)
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           energy_muca, energy_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
-                          diffuse_tensor, random_tensor
+                          diffuse_tensor, random_tensor, dxyz_mp
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
                    time_s, time_e
@@ -48,12 +48,35 @@ subroutine time_integral(flg_step_each_replica)
   ! --------------------------------------------------------------
   ! calc neighbour list
   ! --------------------------------------------------------------
-  if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
-     do irep=1, n_replica_mpi
-        TIME_S( tm_neighbor )
-        call neighbor(irep)
-        TIME_E( tm_neighbor )
+  if (inmisc%i_neigh_dynamic == 1) then
+     TIME_S( tm_neighbor )
+
+     do irep = 1, n_replica_mpi
+        dmax2 = 0.0
+        dmax2_2nd = 0.0
+        do imp = 1, nmp_real
+           d2 = dot_product(dxyz_mp(1:3,imp,irep), dxyz_mp(1:3,imp,irep))
+           if (d2 > dmax2) then
+              dmax2_2nd = dmax2
+              dmax2 = d2
+           else if (d2 > dmax2_2nd) then
+              dmax2_2nd = d2
+           endif
+
+           if (dmax2 + dmax2_2nd > inpara%neigh_margin2) then
+              call neighbor(irep)
+              exit
+           endif
+        enddo
      enddo
+
+     TIME_E( tm_neighbor )
+  else if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
+     TIME_S( tm_neighbor )
+     do irep = 1, n_replica_mpi
+        call neighbor(irep)
+     enddo
+     TIME_E( tm_neighbor )
   end if
   
   !if (inrep%i_loadbalance >= 1) then
@@ -104,6 +127,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -170,6 +194,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -249,6 +274,7 @@ subroutine time_integral(flg_step_each_replica)
               dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -311,6 +337,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -343,6 +370,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
            enddo
            TIME_E( tm_update )
            

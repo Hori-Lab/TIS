@@ -6,7 +6,7 @@ subroutine allocate_simu()
   use var_io,     only : i_simulate_type
   use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
-  use var_simu,    only : velo_mp, accel_mp, force_mp, rcmass_mp, &
+  use var_simu,    only : dxyz_mp, velo_mp, accel_mp, force_mp, rcmass_mp, &
                           energy_unit_muca, rlan_const, nLAN_CONST, &
                           energy, energy_unit, qscore, qscore_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, &
@@ -25,6 +25,10 @@ subroutine allocate_simu()
   call check()
 
   error_message = 'failed in memory allocation at mloop_simulator, PROGRAM STOP'
+  ! dxyz_mp
+  allocate( dxyz_mp(SDIM, nmp_real, n_replica_mpi), stat=ier)
+  if(ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
+
   ! velo_mp
   allocate( velo_mp(SDIM, nmp_real, n_replica_mpi), stat=ier)
   if(ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
@@ -110,7 +114,8 @@ contains
 ! **********************************************************************
   subroutine check()
 
-    if (allocated(velo_mp) .OR.&
+    if ( allocated(dxyz_mp) .OR.& 
+         allocated(velo_mp) .OR.&
          allocated(accel_mp) .OR.&
          allocated(force_mp) .OR.&
          allocated(rcmass_mp) .OR.&
@@ -146,6 +151,7 @@ subroutine deallocate_simu()
   use var_simu
   implicit none
 
+  if (allocated(dxyz_mp)) deallocate(dxyz_mp)
   if (allocated(velo_mp)) deallocate(velo_mp)
   if (allocated(accel_mp)) deallocate(accel_mp)
   if (allocated(force_mp)) deallocate(force_mp)
