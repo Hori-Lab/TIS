@@ -2,19 +2,23 @@ subroutine mloop_dtrna()
 
   use const_maxsize
   use const_index
+  use var_io,      only : outfile
   use var_setp,    only : inmisc
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
-                          idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp
+                          idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
+                          dtrna_hb_longest, dtrna_hb_nat
   use var_replica, only : n_replica_mpi
   use var_simu,    only : hb_energy, hb_status, flg_hb_energy, st_status
 
   implicit none
   integer :: ier = 0
-  integer :: ist, itst, imp1, imp2, imp1_st, imp2_st
+  integer :: lunout
+  integer :: ist, itst, imp1, imp2, imp1_st, imp2_st, ihb
   logical :: flg_found
   character(CARRAY_MSG_ERROR) :: error_message
 ! **********************************************************************
 
+  lunout   = outfile%data
   error_message = 'failed in memory allocation at mloop_dtrna, PROGRAM STOP'
 
   if (allocated(st_status)) deallocate(st_status)
@@ -97,6 +101,16 @@ subroutine mloop_dtrna()
         endif
    
      enddo
+
+     ! Find the longest hydrogen-bond distance for neighbor list
+     dtrna_hb_longest = 0.0
+     do ihb = 1, ndtrna_hb
+        if (dtrna_hb_longest < dtrna_hb_nat(1, ihb)) then
+           dtrna_hb_longest = dtrna_hb_nat(1,ihb)
+        endif
+     enddo
+     write(lunout,*) 'mloop_dtrna: dtrna_hb_longest=',dtrna_hb_longest
+
   endif
 
 end subroutine mloop_dtrna

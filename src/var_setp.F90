@@ -242,6 +242,7 @@ module var_setp
      real(PREC) :: hb_dih_hbond
      real(PREC) :: hb_dih_chain
      real(PREC) :: hb_u0
+     real(PREC) :: hb_cutoff_dist
 
      integer    :: sz
   endtype input_dtrna_parameter

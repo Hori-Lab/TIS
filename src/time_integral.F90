@@ -19,9 +19,9 @@ subroutine time_integral(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type
-  use var_setp,    only : insimu, ifix_mp, inmmc
+  use var_setp,    only : insimu, ifix_mp, inmmc, inmisc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
-  use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step
+  use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
@@ -40,7 +40,7 @@ subroutine time_integral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   integer    :: i,k,imp, irep, grep
-  real(PREC) :: r_force(1:SDIM), dxyz(1:3)
+  real(PREC) :: r_force(1:SDIM), dxyz(1:3), d2, dmax2, dmax2_2nd
   real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI

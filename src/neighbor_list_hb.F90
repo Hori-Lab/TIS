@@ -5,10 +5,10 @@ subroutine neighbor_list_hb(irep)
   
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc
+  use var_setp,    only : inmisc, indtrna15, inpara
   use var_struct,  only : ndtrna_hb, idtrna_hb2mp, nhbneigh, ineigh2hb, nhbsite, & 
                           idtrna_hb2hbsite, list_hb_at_hbsite, num_hb_at_hbsite, &
-                          xyz_mp_rep, nmp_all
+                          xyz_mp_rep, nmp_all, dtrna_hb_longest
   use mpiconst
 
   implicit none
@@ -23,7 +23,7 @@ subroutine neighbor_list_hb(irep)
   integer :: klen, pos(npar_mpi)
 #endif
   real(PREC) :: v12(3), d1212
-  real(PREC), parameter :: dist_cut_sq = 20.0e0_PREC ** 2
+  real(PREC) :: dist_cut_sq
 
   ! -------------------------------------------------------------------
   if (inmisc%i_dtrna_model /= 2015) then
@@ -32,6 +32,7 @@ subroutine neighbor_list_hb(irep)
   end if
 
   ! --------------------------------------------------------------------
+  dist_cut_sq = (dtrna_hb_longest + indtrna15%hb_cutoff_dist + inpara%neigh_margin) ** 2
 
   ineigh = 0
   !ineigh2hb(:, irep) = 0

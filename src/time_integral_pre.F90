@@ -62,7 +62,7 @@ subroutine time_integral_pre(flg_step_each_replica)
      call neighbor(irep)
   enddo
 
-  dxyz_mp(:,:,:) = 0.0e0_RPEC
+  dxyz_mp(:,:,:) = 0.0e0_PREC
   neigh_margin2 = inpara%neigh_margin ** 2
   
 
