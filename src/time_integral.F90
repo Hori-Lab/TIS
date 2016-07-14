@@ -56,12 +56,12 @@ subroutine time_integral(flg_step_each_replica)
      enddo
   end if
   
-  if (inrep%i_loadbalance >= 1) then
-     if(istep == insimu%i_tstep_init) then  
-        call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
-        TIME_S( tm_lap )
-     endif
-  endif
+  !if (inrep%i_loadbalance >= 1) then
+  !   if(istep == insimu%i_tstep_init) then  
+  !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
+  !      TIME_S( tm_lap )
+  !   endif
+  !endif
 
   ! -------------------------------------
   ! prepare random numbers for Langevin
