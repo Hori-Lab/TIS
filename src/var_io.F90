@@ -41,6 +41,7 @@ module var_io
      integer :: fmat  = 56
      integer :: opt   = 57
      integer :: chp   = 58
+     integer :: neigh = 59
      integer :: rst(MXREPLICA)
      integer :: ts(MXREPLICA)
      integer :: movie(MXREPLICA)
@@ -90,6 +91,7 @@ module var_io
   integer, save :: ifile_out_rst
   integer, save :: ifile_out_opt
   integer, save :: ifile_out_chp
+  integer, save :: ifile_out_neigh
 
   integer, save :: i_run_mode
   integer, save :: i_simulate_type

@@ -208,8 +208,13 @@ subroutine setpara( xyz_mp_init )
   if(inmisc%i_energy_para == 1) call setp_energy_para()
 
   ! -----------------------------------------------------------------------
-  inmisc%rneighbordist2_unit(1:MXUNIT, 1:MXUNIT) = inpara%rneighbor_dist**2
-  if(inmisc%i_neigh_dist == 1) call setp_neigh_dist()
+  if (inmisc%i_neigh_dynamic == 0) then ! step-number based
+     inmisc%rneighbordist2_unit(1:MXUNIT, 1:MXUNIT) = inpara%rneighbor_dist**2
+     if (inmisc%i_neigh_dist == 1) call setp_neigh_dist()
+  else if (inmisc%i_neigh_dynamic == 1) then ! dynamic
+     !! mloop_neigh_dist will be called in main_loop
+     continue
+  endif
 
   ! -----------------------------------------------------------------------
   call setp_energy_unit()
