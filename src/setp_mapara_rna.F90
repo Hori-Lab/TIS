@@ -1496,6 +1496,12 @@ subroutine setp_mapara_rna(lunpara, lunout)
         itype = DT15EXV%C
      else if (ctype(1:1) == 'U') then
         itype = DT15EXV%U
+     else if (ctype(1:2) == 'X1') then
+        itype = DT15EXV%X1
+     else
+        itype = 0  ! to supress compiler warning
+        error_message = 'Error: invalid line in DT15_exv_param in rna.para'
+        call util_error(ERROR%STOP_ALL, error_message)
      endif
      indtrna15%exv_rad(itype) = param1   ! R
      indtrna15%exv_eps(itype) = param2   ! epsilon

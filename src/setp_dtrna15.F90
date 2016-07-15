@@ -139,6 +139,13 @@ subroutine setp_dtrna15()
            exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%U)
         endif
 
+     else if (iclass_mp(imp) == CLASS%LIG) then
+
+        if (cmp2atom(imp) == ' X1 ') then
+           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%X1))
+           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%X1)
+        endif
+
      else
         cycle
      endif
