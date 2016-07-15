@@ -18,11 +18,11 @@ subroutine time_integral(flg_step_each_replica)
   use if_mloop
   use if_write
   use if_energy
-  use var_io,     only : i_run_mode, i_simulate_type
+  use var_io,     only : i_run_mode, i_simulate_type, outfile, ifile_out_neigh
   use var_setp,    only : insimu, ifix_mp, inmmc, inmisc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
-  use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
+  use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, & !  n_exchange
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           energy_muca, energy_unit_muca, rlan_const, &
@@ -52,8 +52,8 @@ subroutine time_integral(flg_step_each_replica)
      TIME_S( tm_neighbor )
 
      do irep = 1, n_replica_mpi
-        dmax2 = 0.0
-        dmax2_2nd = 0.0
+        dmax2 = 0.0e0_PREC
+        dmax2_2nd = 0.0e0_PREC
         do imp = 1, nmp_real
            d2 = dot_product(dxyz_mp(1:3,imp,irep), dxyz_mp(1:3,imp,irep))
            if (d2 > dmax2) then
@@ -61,10 +61,17 @@ subroutine time_integral(flg_step_each_replica)
               dmax2 = d2
            else if (d2 > dmax2_2nd) then
               dmax2_2nd = d2
+           else
+              cycle
            endif
 
            if (dmax2 + dmax2_2nd > neigh_margin2) then
+              if (ifile_out_neigh == 1) then
+                 write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+                                      istep, irep, dmax2, dmax2_2nd, dmax2+dmax2_2nd
+              endif
               call neighbor(irep)
+              dxyz_mp(:,:,irep) = 0.0e0_PREC
               exit
            endif
         enddo
@@ -74,6 +81,9 @@ subroutine time_integral(flg_step_each_replica)
   else if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
      TIME_S( tm_neighbor )
      do irep = 1, n_replica_mpi
+        if (ifile_out_neigh == 1) then
+           write(outfile%neigh, '(i10,1x,i5)',advance='no') istep, irep
+        endif
         call neighbor(irep)
      enddo
      TIME_E( tm_neighbor )
@@ -127,7 +137,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -194,7 +204,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -274,7 +284,7 @@ subroutine time_integral(flg_step_each_replica)
               dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -337,7 +347,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -370,7 +380,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            

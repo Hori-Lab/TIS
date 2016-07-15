@@ -32,7 +32,11 @@ subroutine neighbor_list_hb(irep)
   end if
 
   ! --------------------------------------------------------------------
-  dist_cut_sq = (dtrna_hb_longest + indtrna15%hb_cutoff_dist + inpara%neigh_margin) ** 2
+  if (inmisc%i_neigh_dynamic == 1) then
+     dist_cut_sq = (dtrna_hb_longest + indtrna15%hb_cutoff_dist + inpara%neigh_margin) ** 2
+  else
+     dist_cut_sq = 20.0e0_PREC ** 2
+  endif
 
   ineigh = 0
   !ineigh2hb(:, irep) = 0
