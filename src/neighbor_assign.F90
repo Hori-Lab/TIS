@@ -291,6 +291,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = inrna%n_sep_nlocal_B
                  case default 
+                    isep_nlocal_rna = -1 ! to supress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
@@ -337,6 +338,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = inrna%n_sep_nlocal_B
                  case default 
+                    isep_nlocal_rna = -1 ! to supress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
@@ -385,6 +387,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = indtrna13%n_sep_nlocal_B
                  case default 
+                    isep_nlocal_rna = -1 ! to supress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
@@ -425,6 +428,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = indtrna15%n_sep_nlocal_B
                  case default 
+                    isep_nlocal_rna = -1 ! to supress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect
@@ -434,6 +438,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  end if
 
               else if (iclass_unit(iunit) == CLASS%ION) then
+                 continue
+
+              else if (iclass_unit(iunit) == CLASS%LIG) then
                  continue
 
               else
@@ -446,6 +453,11 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
            elseif ((iclass_unit(iunit) == CLASS%RNA .and. iclass_unit(junit) == CLASS%ION) .OR. &
                    (iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%RNA)) then
+
+              i_exv_dt15 = 1 
+
+           elseif ((iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%LIG) .OR. &
+                   (iclass_unit(iunit) == CLASS%LIG .and. iclass_unit(junit) == CLASS%ION)) then
 
               i_exv_dt15 = 1 
 
