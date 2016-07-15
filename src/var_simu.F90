@@ -18,6 +18,10 @@ module var_simu
   integer       :: n_exchange, max_exchange
   integer       :: iopt_stage
 
+  ! Neighbor list
+  real(PREC), save :: neigh_margin2
+  real(PREC), allocatable,save  :: dxyz_mp(:,:,:)  ! (SDIM, nmp_real, n_replica_mpi)
+
   ! physical variables
   real(PREC), save :: tempk
   real(PREC), save :: tstep, tsteph, tstep2

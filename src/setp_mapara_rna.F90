@@ -177,6 +177,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
   indtrna15%hb_dih_hbond = INVALID_VALUE
   indtrna15%hb_dih_chain = INVALID_VALUE
   indtrna15%hb_u0 = INVALID_VALUE
+  indtrna15%hb_cutoff_dist = INVALID_VALUE
 
   inarna%bond_SP = INVALID_VALUE
   inarna%bond_PS = INVALID_VALUE
@@ -1275,6 +1276,10 @@ subroutine setp_mapara_rna(lunpara, lunout)
         cvalue = 'hb_u0'
         call ukoto_rvalue2(lunout, csides(1, iequat), &
              indtrna15%hb_u0, cvalue)
+
+        cvalue = 'hb_cutoff_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna15%hb_cutoff_dist, cvalue)
      end do
   end do
 
@@ -1385,6 +1390,10 @@ subroutine setp_mapara_rna(lunpara, lunout)
 
   elseif (indtrna15%hb_u0 > INVALID_JUDGE) then
      error_message = 'Error: invalid value for indtrna15%hb_u0'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna15%hb_cutoff_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna15%hb_cutoff_dist'
      call util_error(ERROR%STOP_ALL, error_message)
 
   endif

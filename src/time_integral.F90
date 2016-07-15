@@ -18,16 +18,16 @@ subroutine time_integral(flg_step_each_replica)
   use if_mloop
   use if_write
   use if_energy
-  use var_io,     only : i_run_mode, i_simulate_type
-  use var_setp,    only : insimu, ifix_mp, inmmc
+  use var_io,     only : i_run_mode, i_simulate_type, outfile, ifile_out_neigh
+  use var_setp,    only : insimu, ifix_mp, inmmc, inmisc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
-  use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step
-  use var_simu,    only : istep, n_exchange, tstep, tstep2, tsteph, tempk, accelaf, &
+  use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
+  use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, & !  n_exchange
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           energy_muca, energy_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
-                          diffuse_tensor, random_tensor
+                          diffuse_tensor, random_tensor, dxyz_mp, neigh_margin2
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
                    time_s, time_e
@@ -40,7 +40,7 @@ subroutine time_integral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   integer    :: i,k,imp, irep, grep
-  real(PREC) :: r_force(1:SDIM), dxyz(1:3)
+  real(PREC) :: r_force(1:SDIM), dxyz(1:3), d2, dmax2, dmax2_2nd
   real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
@@ -48,20 +48,53 @@ subroutine time_integral(flg_step_each_replica)
   ! --------------------------------------------------------------
   ! calc neighbour list
   ! --------------------------------------------------------------
-  if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
-     do irep=1, n_replica_mpi
-        TIME_S( tm_neighbor )
-        call neighbor(irep)
-        TIME_E( tm_neighbor )
+  if (inmisc%i_neigh_dynamic == 1) then
+     TIME_S( tm_neighbor )
+
+     do irep = 1, n_replica_mpi
+        dmax2 = 0.0e0_PREC
+        dmax2_2nd = 0.0e0_PREC
+        do imp = 1, nmp_real
+           d2 = dot_product(dxyz_mp(1:3,imp,irep), dxyz_mp(1:3,imp,irep))
+           if (d2 > dmax2) then
+              dmax2_2nd = dmax2
+              dmax2 = d2
+           else if (d2 > dmax2_2nd) then
+              dmax2_2nd = d2
+           else
+              cycle
+           endif
+
+           if (dmax2 + dmax2_2nd > neigh_margin2) then
+              if (ifile_out_neigh == 1) then
+                 write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+                                      istep, irep, dmax2, dmax2_2nd, dmax2+dmax2_2nd
+              endif
+              call neighbor(irep)
+              dxyz_mp(:,:,irep) = 0.0e0_PREC
+              exit
+           endif
+        enddo
      enddo
+
+     TIME_E( tm_neighbor )
+  else if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
+     TIME_S( tm_neighbor )
+     do irep = 1, n_replica_mpi
+        if (ifile_out_neigh == 1) then
+           write(outfile%neigh, '(i10,1x,i5)',advance='no') istep, irep
+        endif
+        call neighbor(irep)
+     enddo
+     TIME_E( tm_neighbor )
   end if
   
-  if (inrep%i_loadbalance >= 1) then
-     if(istep == insimu%i_tstep_init) then  
-        call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
-        TIME_S( tm_lap )
-     endif
-  endif
+  !if (inrep%i_loadbalance >= 1) then
+  !   if(istep == insimu%i_tstep_init) then  
+  !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
+  !      TIME_S( tm_lap )
+  !   endif
+  !endif
 
   ! -------------------------------------
   ! prepare random numbers for Langevin
@@ -80,7 +113,7 @@ subroutine time_integral(flg_step_each_replica)
 
      if (.not. flg_step_each_replica(irep)) then
         
-!        grep = irep2grep(irep)
+        grep = irep2grep(irep)
         
         if (flg_rep(REPTYPE%TEMP)) then
            tempk = rep2val(grep, REPTYPE%TEMP)
@@ -104,6 +137,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -170,6 +204,7 @@ subroutine time_integral(flg_step_each_replica)
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -249,6 +284,7 @@ subroutine time_integral(flg_step_each_replica)
               dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            end do
            TIME_E( tm_update )
            
@@ -311,6 +347,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            
@@ -343,6 +380,7 @@ subroutine time_integral(flg_step_each_replica)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
               pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
            enddo
            TIME_E( tm_update )
            

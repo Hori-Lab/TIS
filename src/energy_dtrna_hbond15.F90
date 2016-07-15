@@ -50,7 +50,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   use const_physical
   use const_index
   use var_io,     only : outfile
-  use var_setp,    only : inmisc, mts
+  use var_setp,    only : inmisc, mts, indtrna15
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
@@ -174,7 +174,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
         !===== Distance =====
         d = a12 - dtrna_hb_nat(1,ihb)
-        if (abs(d) > 2.0) then
+        if (abs(d) > indtrna15%hb_cutoff_dist) then  ! 2.0 Angstrom
            cycle
         else
            hb_status_l(ihb) = .True.

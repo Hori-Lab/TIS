@@ -14,6 +14,7 @@ module var_setp
      real(PREC) :: velo_adjst !< the coupling parameter of Berendsen thermostat
      real(PREC) :: csmass_per !< mass of thermal particle for Nose-Hoover thermostat
      real(PREC) :: rneighbor_dist !< the cutoff distance to define a neighbor
+     real(PREC) :: neigh_margin
      real(PREC) :: cmass(0:CHEMICALTYPE%MAX) !< particle mass (cmass(0) is the default value.)
      real(PREC) :: fric_const !< friction constant for Langevin dynamics simulation
      real(PREC) :: radius(0:CHEMICALTYPE%MAX)
@@ -241,6 +242,7 @@ module var_setp
      real(PREC) :: hb_dih_hbond
      real(PREC) :: hb_dih_chain
      real(PREC) :: hb_u0
+     real(PREC) :: hb_cutoff_dist
 
      integer    :: sz
   endtype input_dtrna_parameter
@@ -459,6 +461,7 @@ module var_setp
 
      ! neighbordist
      integer    :: i_neigh_dist
+     integer    :: i_neigh_dynamic
      real(PREC) :: rneighbordist2_unit(MXUNIT, MXUNIT)
 
      ! bridge

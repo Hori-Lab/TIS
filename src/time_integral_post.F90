@@ -274,18 +274,18 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
         end if
         
-        if (inrep%i_loadbalance >= 1) then
-           if (mod(n_exchange, inrep%n_adjust_interval) == 0) then
-              TIME_E( tm_lap )
-              
-              TIME_S(tm_step_adj)
-              call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
-              TIME_E(tm_step_adj)
-
-              total_time(tm_lap)  = 0.0_8
-              TIME_S( tm_lap )
-           end if
-        endif
+        !if (inrep%i_loadbalance >= 1) then
+        !   if (mod(n_exchange, inrep%n_adjust_interval) == 0) then
+        !      TIME_E( tm_lap )
+        !      
+        !      TIME_S(tm_step_adj)
+        !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
+        !      TIME_E(tm_step_adj)
+        !
+        !      total_time(tm_lap)  = 0.0_8
+        !      TIME_S( tm_lap )
+        !   end if
+        !endif
         
         do irep = 1, n_replica_mpi
            grep = irep2grep(irep)
@@ -355,14 +355,14 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   TIME_E( tm_output )
   TIME_S( tm_others )
-  if (i_run_mode == RUN%REPLICA) then
-     if (inrep%i_loadbalance >= 1) then
-        if (n_exchange == max_exchange) then
-           flg_exit_loop_mstep = .TRUE.
-           return
-        endif
-     endif
-  endif
+  !if (i_run_mode == RUN%REPLICA) then
+  !   if (inrep%i_loadbalance >= 1) then
+  !      if (n_exchange == max_exchange) then
+  !         flg_exit_loop_mstep = .TRUE.
+  !         return
+  !      endif
+  !   endif
+  !endif
 
   if (inmisc%nbrid_ppr > 0) then
      call simu_ppr()

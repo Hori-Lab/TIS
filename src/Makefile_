@@ -217,7 +217,7 @@ FOBJ1 = \
 	step_adjustment.o setp_fmat_para.o\
 	main_loop.o\
 	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
-	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
+	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o mloop_neigh_dist.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o mloop_simulator.o\
 	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o\
 	mloop_fmat_homo.o mloop_fmat_hetero.o mloop_ewld.o\

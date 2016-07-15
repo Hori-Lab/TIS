@@ -99,6 +99,10 @@ subroutine main_loop()
         call mloop_widom()
      end if
 
+     if (inmisc%i_neigh_dynamic == 1) then
+        call mloop_neigh_dist()
+     endif
+
      ! -------------------------------------------------------------------
      ! writing the native structure
      ! -------------------------------------------------------------------

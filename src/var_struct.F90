@@ -226,6 +226,7 @@ module var_struct
   integer, allocatable, save :: nhbneigh(:)         ! (REPLICA)
   integer, allocatable, save :: ineigh2hb(:,:)      ! (1:MXMPHBNEIGH*nmp_all/2, REPLICA)
   logical, allocatable, save :: flg_hb_tertiary(:)  ! (1:MXDTRNHB)
+  real(PREC), save :: dtrna_hb_longest
 
   !> parameters for tertiary-base-stack potential of DT-RNA model (2015)
   integer,    save :: ndtrna_tst = 0

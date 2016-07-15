@@ -14,7 +14,7 @@ subroutine neighbor_list_ele(jrep)
 
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inele, inperi
+  use var_setp,    only : inmisc, inele, inperi, inpara
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
                           imp2unit, ncharge, icharge2mp, coef_charge, &
                           lele, iele2mp, coef_ele, ncharge
@@ -68,12 +68,22 @@ subroutine neighbor_list_ele(jrep)
 ! do irep = 1, n_replica_mpi
 
   grep = irep2grep(irep)
-  if (inele%i_function_form == 0) then       ! Debye-Huckel
-     rneighbor2_ele = (1.2 * inele%cutoff_ele * inele%cdist(grep))**2
-  else if (inele%i_function_form == 1) then  ! Coulomb 
-     rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
-  else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
-     rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
+  if (inmisc%i_neigh_dynamic == 1) then 
+     if (inele%i_function_form == 0) then       ! Debye-Huckel
+        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele * inele%cdist(grep))**2
+     else if (inele%i_function_form == 1) then  ! Coulomb 
+        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
+     else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
+        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
+     endif
+  else ! Step based
+     if (inele%i_function_form == 0) then       ! Debye-Huckel
+        rneighbor2_ele = (1.2 * inele%cutoff_ele * inele%cdist(grep))**2
+     else if (inele%i_function_form == 1) then  ! Coulomb 
+        rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
+     else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
+        rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
+     endif
   endif
 
   iele = 0

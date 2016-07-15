@@ -16,7 +16,7 @@ filename = md
 **    psf: Protein Structure File can be used by VMD to visualize DCD data.
 ** 
 ** If you want above format file, write the extension name following 'OUTPUT'.
-**OUTPUT pdb crd velo dcd vdcd movie psf rst
+**OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh
 
 ** define the directory where the native (reference) structures are prepared
 path_pdb = ./pdb
@@ -616,6 +616,10 @@ i_modified_muca = 0
 **    = 3: Ermak-McCammon's modified RPY (overlap allowed)
 **    = 4: Zuk et al's modified RPY (overlap and different radii allowed)
 i_hydro_tensor = 4
+
+** i_neigh_diynamic = 0 : step based
+**                  = 1 : dynamic
+i_neigh_dynamic = 1
 >>>>
 
 

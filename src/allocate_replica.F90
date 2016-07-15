@@ -63,11 +63,13 @@ subroutine allocate_replica(xyz_mp_init)
    enddo
 
    if(inele%i_calc_method == 1 .or. inele%i_calc_method == 2) then
-      allocate( xyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      
-      allocate( pxyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      !allocate( xyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
+      !if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+     ! 
+     ! allocate( pxyz_ele_rep(SDIM, ncharge, n_replica_mpi),    stat=ier) 
+     ! if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      error_message = 'allocate_replica: inele%i_calc_method is invalid, PROGRAM STOP'
+      call util_error(ERROR%STOP_ALL, error_message)
    end if
 
    !---------------------

@@ -85,16 +85,16 @@ subroutine simu_para()
         endif
      endif
 
-     if (inrep%i_loadbalance >= 1) then
-        max_exchange = 0
-        do irep = 1, n_replica_all
-          max_exchange = max(max_exchange, ntstep / lab2step(irep))
-        enddo
-        ntstep_max = max_exchange * maxval(lab2step) * step_ratio
-        ntstep = ntstep_max
-        write(6,*) ' - maxval(lab2step) - ', maxval(lab2step)
-        write(6,*) ' - ntstep, max_exchange, ntstep_max - ', ntstep, max_exchange, ntstep_max
-     endif
+     !if (inrep%i_loadbalance >= 1) then
+     !   max_exchange = 0
+     !   do irep = 1, n_replica_all
+     !     max_exchange = max(max_exchange, ntstep / lab2step(irep))
+     !   enddo
+     !   ntstep_max = max_exchange * maxval(lab2step) * step_ratio
+     !   ntstep = ntstep_max
+     !   write(6,*) ' - maxval(lab2step) - ', maxval(lab2step)
+     !   write(6,*) ' - ntstep, max_exchange, ntstep_max - ', ntstep, max_exchange, ntstep_max
+     !endif
 
      n_exchange = 0
 
