@@ -19,7 +19,7 @@ subroutine time_integral(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, outfile, ifile_out_neigh
-  use var_setp,    only : insimu, ifix_mp, inmmc, inmisc
+  use var_setp,    only : insimu, ifix_mp, inmmc, inmisc, inpara
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, & !  n_exchange
@@ -27,7 +27,7 @@ subroutine time_integral(flg_step_each_replica)
                           e_md, fac_mmc, em_mid, em_depth, em_sigma, &
                           energy_muca, energy_unit_muca, rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
-                          diffuse_tensor, random_tensor, dxyz_mp, neigh_margin2
+                          diffuse_tensor, random_tensor, dxyz_mp
   use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
                    tm_neighbor, tm_update, tm_copyxyz, tm_force, &
                    time_s, time_e
@@ -40,7 +40,7 @@ subroutine time_integral(flg_step_each_replica)
 
   ! -----------------------------------------------------------------
   integer    :: i,k,imp, irep, grep
-  real(PREC) :: r_force(1:SDIM), dxyz(1:3), d2, dmax2, dmax2_2nd
+  real(PREC) :: r_force(1:SDIM), dxyz(1:3), d2, d2max, d2max_2nd
   real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
@@ -52,29 +52,28 @@ subroutine time_integral(flg_step_each_replica)
      TIME_S( tm_neighbor )
 
      do irep = 1, n_replica_mpi
-        dmax2 = 0.0e0_PREC
-        dmax2_2nd = 0.0e0_PREC
+        d2max = 0.0e0_PREC
+        d2max_2nd = 0.0e0_PREC
         do imp = 1, nmp_real
            d2 = dot_product(dxyz_mp(1:3,imp,irep), dxyz_mp(1:3,imp,irep))
-           if (d2 > dmax2) then
-              dmax2_2nd = dmax2
-              dmax2 = d2
-           else if (d2 > dmax2_2nd) then
-              dmax2_2nd = d2
+           if (d2 > d2max) then
+              d2max_2nd = d2max
+              d2max = d2
+           else if (d2 > d2max_2nd) then
+              d2max_2nd = d2
            else
               cycle
            endif
-
-           if (dmax2 + dmax2_2nd > neigh_margin2) then
-              if (ifile_out_neigh == 1) then
-                 write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
-                                      istep, irep, dmax2, dmax2_2nd, dmax2+dmax2_2nd
-              endif
-              call neighbor(irep)
-              dxyz_mp(:,:,irep) = 0.0e0_PREC
-              exit
-           endif
         enddo
+
+        if (sqrt(d2max) + sqrt(d2max_2nd) > inpara%neigh_margin) then
+           if (ifile_out_neigh == 1) then
+              write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+                                   istep, irep, d2max, d2max_2nd, d2max+d2max_2nd
+           endif
+           call neighbor(irep)
+           dxyz_mp(:,:,irep) = 0.0e0_PREC
+        endif
      enddo
 
      TIME_E( tm_neighbor )

@@ -19,7 +19,7 @@ subroutine min_steep_desc(flg_converge)
    use var_io,    only : outfile
    use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep
    use var_setp,   only : insimu
-   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, energy, energy_unit
+   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, energy, energy_unit, dxyz_mp
    use var_emin,   only : inemin, lambda, norm_max,  lunout, func_check_lambda, func_check_norm
    use time, only : time_s, time_e, tm_energy, tm_force
    use mpiconst
@@ -30,6 +30,7 @@ subroutine min_steep_desc(flg_converge)
 
    real(PREC) :: xyz(SDIM, nmp_all)
    real(PREC) :: pxyz(SDIM,nmp_all)
+   real(PREC) :: dxyz(SDIM,nmp_all)
    real(PREC),save :: e_total
    real(PREC) :: e_total_new
 
@@ -80,9 +81,11 @@ subroutine min_steep_desc(flg_converge)
    ! Save the current structure
    xyz(:,:) = xyz_mp_rep(:,:,IREP)
    pxyz(:,:) = pxyz_mp_rep(:,:,IREP)
+   dxyz(:,:) = dxyz_mp(:,:,IREP)
 
    xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:) / norm_max
    pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:) / norm_max
+   dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:) / norm_max
 
    ! Calc energy
    TIME_S( tm_energy )
@@ -100,6 +103,7 @@ subroutine min_steep_desc(flg_converge)
          flg_converge = .TRUE.
          xyz_mp_rep(:,:,IREP) = xyz(:,:)
          pxyz_mp_rep(:,:,IREP) = pxyz(:,:)
+         dxyz_mp(:,:,IREP) = dxyz(:,:)
       endif
 
       ! Update to a candidate structure: 
@@ -107,6 +111,7 @@ subroutine min_steep_desc(flg_converge)
       !         where norm_max ||F(n)|| is max(|F(n)|)
       xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:) / norm_max
       pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:) / norm_max
+      dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:) / norm_max
 
       ! Calc energy
       TIME_S( tm_energy )

@@ -19,7 +19,6 @@ module var_simu
   integer       :: iopt_stage
 
   ! Neighbor list
-  real(PREC), save :: neigh_margin2
   real(PREC), allocatable,save  :: dxyz_mp(:,:,:)  ! (SDIM, nmp_real, n_replica_mpi)
 
   ! physical variables
