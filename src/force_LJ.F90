@@ -9,9 +9,9 @@ subroutine force_LJ(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inrna, inpro, inmisc, inperi
+  use var_setp,   only : inpro, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         nLJ, iLJ2mp, coef_LJ, LJ_nat, LJ_nat2, iclass_mp, nmp_all
+                         nLJ, iLJ2mp, coef_LJ, LJ_nat2, nmp_all
   use mpiconst
 
   implicit none
@@ -23,9 +23,8 @@ subroutine force_LJ(irep, force_mp)
   integer :: iLJ, imirror
   integer :: ksta, kend
   real(PREC) :: rcut_off2
-  real(PREC) :: rcut_off2_pro, rcut_off2_rna
-  real(PREC) :: dist2, roverdist2, roverdist4, roverdist8
-  real(PREC) :: roverdist12, roverdist14
+  !!!!!!!!!real(PREC) :: rcut_off2_pro, rcut_off2_rna
+  real(PREC) :: dist2, roverdist2, roverdist8, roverdist14
   real(PREC) :: dLJ_dr
   real(PREC) :: v21(3), for(3)
 #ifdef MPI_PAR
@@ -51,8 +50,8 @@ subroutine force_LJ(irep, force_mp)
   ksta = 1
   kend = nLJ
 #endif
-!$omp do private(imp1,imp2,rcut_off2,v21,dist2,roverdist2,roverdist4, &
-!$omp&           roverdist8,roverdist12,roverdist14,dLJ_dr,for,imirror)
+!$omp do private(imp1,imp2,rcut_off2,v21,dist2,roverdist2, &
+!$omp&           roverdist8,roverdist14,dLJ_dr,for,imirror)
   do iLJ=ksta,kend
 
      imp1 = iLJ2mp(1, iLJ)
@@ -75,10 +74,8 @@ subroutine force_LJ(irep, force_mp)
      roverdist2 = LJ_nat2(iLJ) / dist2
      if(roverdist2 < rcut_off2) cycle
      
-     roverdist4 = roverdist2 * roverdist2
-     roverdist8 = roverdist4 * roverdist4
-     roverdist12 = roverdist4 * roverdist8
-     roverdist14 = roverdist12 * roverdist2
+     roverdist14 = roverdist2 ** 7
+     roverdist8 = roverdist2 ** 4
             
      dLJ_dr = 12.0e0_PREC * coef_LJ(iLJ) / LJ_nat2(iLJ) * (roverdist14 - roverdist8)
      
