@@ -1,0 +1,134 @@
+<<<< filenames
+path = ./data
+filename = rod51_50A_Mg5_KCl150
+OUTPUT pdb dcd psf rst opt neigh
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 2
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 1
+>>>>
+
+<<<< periodic_bound
+psizex = 150.0
+psizey = 150.0
+psizez = 150.0
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 3
+1   ligand  rod51_50A.pdb
+2    ion    BOX150_Mg5_KCl_0150mM_rod51.pdb
+>>>>
+
+<<<< initial_struct
+1     rod51_50A.pdb
+2     BOX150_Mg5_KCl_0150mM_rod51.pdb
+>>>>
+
+<<<< initial_ion
+num_na_ion =  10
+num_k_ion  = 304
+num_cl_ion = 313
+num_mg_ion =   0
+>>>>
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 50000
+tstep_size = 0.05
+n_step_save = 100
+n_step_neighbor = 10
+n_step_rst = 10000
+i_com_zeroing = 0
+i_no_trans_rot = 0
+tempk = 310.0
+n_seed = 5
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+i_neigh_dynamic = 1
+i_fix = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      NOTHING
+LOCAL(2)      NOTHING
+NLOCAL(1/1)   NOTHING
+NLOCAL(1/2)   ELE EXV_DT15
+NLOCAL(2/2)   ELE EXV_DT15
+
+i_dtrna_model = 2015
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< fix_para
+FIX_MP(1-51)
+>>>>
+
+<<<< electrostatic
+cutoff_ele = 50.0
+
+ionic_strength = 0.1
+diele_water = 99999.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 0
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+**           = 2 Coulomb (Ewald)
+i_function_form = 2
+
+i_calc_method = 0
+
+CHARGE_ADD 1   u  1
+CHARGE_ADD 1   u  6
+CHARGE_ADD 1   u 11 
+CHARGE_ADD 1   u 16
+CHARGE_ADD 1   u 21
+CHARGE_ADD 1   u 26
+CHARGE_ADD 1   u 31
+CHARGE_ADD 1   u 36
+CHARGE_ADD 1   u 41
+CHARGE_ADD 1   u 46
+CHARGE_ADD 1   u 51
+CHARGE_CHANGE   1  -1.0
+CHARGE_CHANGE   6  -1.0
+CHARGE_CHANGE  11  -1.0
+CHARGE_CHANGE  16  -1.0
+CHARGE_CHANGE  21  -1.0
+CHARGE_CHANGE  26  -1.0
+CHARGE_CHANGE  31  -1.0
+CHARGE_CHANGE  36  -1.0
+CHARGE_CHANGE  41  -1.0
+CHARGE_CHANGE  46  -1.0
+CHARGE_CHANGE  51  -1.0
+
+ewld_alpha = 0.07
+ewld_hmax  = 10.
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000015
+>>>>
