@@ -221,11 +221,12 @@ subroutine write_tseries(ibefore_time, istep, &
      ! writing energy and tag for t_series, esystem_mgo(isys)
      if(inmgo%i_multi_mgo == 0) then
    
-        chead = ''
-        chead2 = ''
-        call sum_energy_term(0, 0, chead, chead2, IW_SGO)
+        !chead = ''
+        !chead2 = ''
+        !call sum_energy_term(0, 0, chead, chead2, IW_SGO)
    
-        chead = '#all'
+        !chead = '#all'
+        chead = '   '
         chead2 = ''
         call sum_energy_term(0, 0, chead, chead2, IW_UNIT)
 
