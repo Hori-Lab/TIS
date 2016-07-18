@@ -32,7 +32,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
-  real(PREC) :: dist, dij, a
+  real(PREC) :: dist, dij, a, d_inf
   real(PREC) :: coef
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
@@ -44,6 +44,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   ! ------------------------------------------------------------------------
 
   a = indtrna15%exv_adjust
+  d_inf = indtrna15%exv_inf
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
@@ -81,18 +82,23 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
      
      dist = sqrt(dot_product(v21,v21))
 
-     if(dist > dij) cycle
+     if (dist > dij) cycle
 
-     coef = exv_epsilon_mp(imp1) * exv_epsilon_mp(imp2)
      dist = dist + a - dij
 
-     ! --------------------------------------------------------------------
-     roverdist  = a / dist
-     roverdist2 = roverdist * roverdist
-     roverdist4 = roverdist2 * roverdist2
-     roverdist6 = roverdist2 * roverdist4
-     roverdist12 = roverdist6 * roverdist6
-     ene = coef * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+     if (dist > d_inf) then  ! normal
+        roverdist  = a / dist
+        roverdist2 = roverdist * roverdist
+        roverdist4 = roverdist2 * roverdist2
+        roverdist6 = roverdist2 * roverdist4
+        roverdist12 = roverdist6 * roverdist6
+
+        coef = exv_epsilon_mp(imp1) * exv_epsilon_mp(imp2)
+        ene = coef * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+
+     else   ! Exception
+        ene = HIGH_ENERGY
+     endif
 
      ! --------------------------------------------------------------------
      ! sum of the energy
@@ -114,9 +120,9 @@ subroutine energy_exv_dt15_tp(irep, energy)
   use const_physical
   use const_index
   use var_setp,    only : indtrna15, inperi
-  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
+  use var_struct,  only : nmp_real, pxyz_mp_rep, &
                           exv_radius_mp, exv_epsilon_mp, &
-                          ntp, xyz_tp, iclass_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
+                          ntp, xyz_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
   use var_simu,    only : widom_flg_exv_inf
   use mpiconst
 
@@ -128,7 +134,6 @@ subroutine energy_exv_dt15_tp(irep, energy)
   integer :: itp1, itp2, imp2
   integer :: imirror
   real(PREC) :: dist, dij, a, d_inf
-  real(PREC) :: coef
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: ene 
   real(PREC) :: v21(SDIM), vx(SDIM)

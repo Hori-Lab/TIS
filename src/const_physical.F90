@@ -26,6 +26,8 @@ module const_physical
   real(PREC), parameter :: INVALID_VALUE = 1.0e31_PREC
   real(PREC), parameter :: ZERO_JUDGE    = 1.0e-6_PREC
   real(PREC), parameter :: CUTOFF_UNDER_EXP = -50.0_PREC
+  real(PREC), parameter :: HIGH_ENERGY = 1.0e10_PREC
+  real(PREC), parameter :: HIGH_ENERGY_JUDGE = 1.0e9_PREC
 
   ! judgement for warning
   ! Output warning if bond angle is larger than WARN_ANGLE.
