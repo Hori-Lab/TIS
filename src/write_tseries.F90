@@ -57,7 +57,7 @@ subroutine write_tseries(ibefore_time, istep, &
   integer, parameter :: IW_UNIT_SHADOW = 5
   character(5) :: chead, chead2
   real(PREC) :: tempk
-  real(PREC), parameter :: HIGH_ENERGY_OUT = 9999999.99
+  real(PREC), parameter :: HIGH_ENERGY_OUT = 99999.99
   integer :: isite
   logical :: flg_header_write
 
@@ -512,7 +512,11 @@ contains
              write (lunout, _FMT_TS_MORSE_,    ADVANCE = "NO") 0.0e0_PREC
           endif
        end if
-       write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") erepul
+       if (erepul > HIGH_ENERGY_JUDGE) then
+          write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") HIGH_ENERGY_OUT
+       else
+          write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") erepul
+       endif
 
        if (inmisc%class_flag(CLASS%RNA)) then
           if (inmisc%i_dtrna_model == 2015) then

@@ -57,6 +57,8 @@ subroutine write_psf()
          else if (imp2type(imp) == MPTYPE%RNA_SUGAR) then
             write(lunout,'(1xa4)', ADVANCE='NO') _STR_PSF_ATOM_RNA_S_
          endif
+      else if (iclass_unit(imp2unit(imp)) == CLASS%ION) then
+         write(lunout,'(1xa4)', ADVANCE='NO') cmp2atom(imp)
       else 
          write(lunout,'(1xa4)', ADVANCE='NO') _STR_PSF_ATOM_PRO_
       endif
