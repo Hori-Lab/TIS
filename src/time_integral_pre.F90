@@ -27,7 +27,7 @@ subroutine time_integral_pre(flg_step_each_replica)
                           energy_muca, energy_unit_muca, rlan_const, &
                           ics, ncs, velo_yojou, xyz_cs, velo_cs, &
                           rg, rg_unit, rmsd, rmsd_unit, &
-                          energy, energy_unit, replica_energy, dxyz_mp, neigh_margin2
+                          energy, energy_unit, replica_energy, dxyz_mp
   use time, only : tm_random, tm_muca, time_s, time_e
 
 #ifdef MPI_PAR
@@ -63,8 +63,6 @@ subroutine time_integral_pre(flg_step_each_replica)
   enddo
 
   dxyz_mp(:,:,:) = 0.0e0_PREC
-  neigh_margin2 = inpara%neigh_margin ** 2
-  
 
 
   ! -------------------------------------

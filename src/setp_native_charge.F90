@@ -102,6 +102,27 @@ subroutine setp_native_charge()
            end if
         enddo
     
+     else if (iclass_unit(iunit) == CLASS%LIG) then
+        do_imp_lig: do imp1 = lunit2mp(1, iunit), lunit2mp(2, iunit)
+           if(inele%flag_ele(imp1)) then
+              do i_charge_change = 1, inele%n_charge_change
+                 if (inele%charge_change_imp(i_charge_change) == imp1) then
+                    icharge = icharge + 1   
+                    icharge2mp(icharge) = imp1
+                    lmp2charge(imp1) = icharge
+                    coef_charge(icharge,:) = inele%charge_change_value(i_charge_change)
+                    cycle do_imp_lig
+                 endif
+              enddo
+
+              icharge = icharge + 1
+              icharge2mp(icharge) = imp1
+              lmp2charge(imp1) = icharge
+              aaid = ifunc_seq2id(cmp2seq(imp1))
+              coef_charge(icharge,:) = inele%coef_charge_type(aaid)
+           end if
+        enddo do_imp_lig
+    
      end if
 
   end do

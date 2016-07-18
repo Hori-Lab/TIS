@@ -6,7 +6,7 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
   use const_maxsize
   use const_index
   use var_io,      only : i_simulate_type
-  use var_setp,    only : ifix_mp
+  use var_setp,    only : fix_mp
   use var_struct,  only : nmp_real, cmass_mp, imp2unit
   use mpiconst
 
@@ -44,7 +44,7 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
 !$omp do private(ev,iunit)
   do imp = ksta, kend
    
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
 
      ev = 0.5e0_PREC * cmass_mp(imp) * dot_product(velo_mp(:,imp), velo_mp(:,imp))
 

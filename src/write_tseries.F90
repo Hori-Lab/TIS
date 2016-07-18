@@ -12,6 +12,7 @@ subroutine write_tseries(ibefore_time, istep, &
 
   use const_maxsize
   use const_index
+  use const_physical
   use var_io,     only : outfile, iunit2us, i_run_mode
   use var_setp,    only : inmisc
   use var_struct,  only : nunit_real, nunit_all
@@ -56,6 +57,7 @@ subroutine write_tseries(ibefore_time, istep, &
   integer, parameter :: IW_UNIT_SHADOW = 5
   character(5) :: chead, chead2
   real(PREC) :: tempk
+  real(PREC), parameter :: HIGH_ENERGY_OUT = 9999999.99
   integer :: isite
   logical :: flg_header_write
 
@@ -221,11 +223,12 @@ subroutine write_tseries(ibefore_time, istep, &
      ! writing energy and tag for t_series, esystem_mgo(isys)
      if(inmgo%i_multi_mgo == 0) then
    
-        chead = ''
-        chead2 = ''
-        call sum_energy_term(0, 0, chead, chead2, IW_SGO)
+        !chead = ''
+        !chead2 = ''
+        !call sum_energy_term(0, 0, chead, chead2, IW_SGO)
    
-        chead = '#all'
+        !chead = '#all'
+        chead = '   '
         chead2 = ''
         call sum_energy_term(0, 0, chead, chead2, IW_UNIT)
 
@@ -408,30 +411,51 @@ contains
     end if
 
     erg     = terg
+    if (erg > HIGH_ENERGY_JUDGE) erg = HIGH_ENERGY_OUT
     ermsd   = termsd
     eqscore = teqscore
     etotal  = tenergy(E_TYPE%TOTAL)
+    if (etotal > HIGH_ENERGY_JUDGE) etotal = HIGH_ENERGY_OUT
     evelo   = tenergy(E_TYPE%VELO)
+    if (evelo > HIGH_ENERGY_JUDGE) evelo = HIGH_ENERGY_OUT
     elocal  = tenergy(E_TYPE%BOND) + tenergy(E_TYPE%BANGLE) + tenergy(E_TYPE%DIHE) + &
               tenergy(E_TYPE%DIHE_HARMONIC)
+    if (elocal > HIGH_ENERGY_JUDGE) elocal = HIGH_ENERGY_OUT
     ego     = tenergy(E_TYPE%GO)
+    if (ego > HIGH_ENERGY_JUDGE) ego = HIGH_ENERGY_OUT
     emorse  = tenergy(E_TYPE%MORSE)
+    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
     erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_ION) &
             + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
+    if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
     estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
+    if (estack_rna > HIGH_ENERGY_JUDGE) estack_rna = HIGH_ENERGY_OUT
     ehbond_rna = tenergy(E_TYPE%PAIR_RNA)  + tenergy(E_TYPE%HBOND_DTRNA)
+    if (ehbond_rna > HIGH_ENERGY_JUDGE) ehbond_rna = HIGH_ENERGY_OUT
     eelect  = tenergy(E_TYPE%ELE)
+    if (eelect > HIGH_ENERGY_JUDGE) eelect = HIGH_ENERGY_OUT
     ehyd_ion  = tenergy(E_TYPE%HYD_ION)
+    if (ehyd_ion > HIGH_ENERGY_JUDGE) ehyd_ion = HIGH_ENERGY_OUT
     ehp       = tenergy(E_TYPE%HPENE)
+    if (ehp > HIGH_ENERGY_JUDGE) ehp = HIGH_ENERGY_OUT
     ebox      = tenergy(E_TYPE%BOX)
+    if (ebox > HIGH_ENERGY_JUDGE) ebox = HIGH_ENERGY_OUT
     ecap      = tenergy(E_TYPE%CAP)
+    if (ecap > HIGH_ENERGY_JUDGE) ecap = HIGH_ENERGY_OUT
     ebridge   = tenergy(E_TYPE%BRIDGE)
+    if (ebridge > HIGH_ENERGY_JUDGE) ebridge = HIGH_ENERGY_OUT
     epulling  = tenergy(E_TYPE%PULLING)
+    if (epulling > HIGH_ENERGY_JUDGE) epulling = HIGH_ENERGY_OUT
     eanchor   = tenergy(E_TYPE%ANCHOR)
+    if (eanchor > HIGH_ENERGY_JUDGE) eanchor = HIGH_ENERGY_OUT
     erest1d   = tenergy(E_TYPE%REST1D)
+    if (erest1d > HIGH_ENERGY_JUDGE) erest1d = HIGH_ENERGY_OUT
     eimplig   = tenergy(E_TYPE%IMPLIG)
+    if (eimplig > HIGH_ENERGY_JUDGE) eimplig = HIGH_ENERGY_OUT
     ewindow   = tenergy(E_TYPE%WINDOW)
+    if (ewindow > HIGH_ENERGY_JUDGE) ewindow = HIGH_ENERGY_OUT
     ecylinder = tenergy(E_TYPE%CYLINDER)
+    if (ecylinder > HIGH_ENERGY_JUDGE) ecylinder = HIGH_ENERGY_OUT
 
     if(inmisc%i_output_energy_style == 0) then
        write (lunout, "(a5)",         ADVANCE = "NO") chead3

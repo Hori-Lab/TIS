@@ -204,6 +204,10 @@ contains
          i_type  = MPTYPE%ION_CL
          c_res = 'Cl '
 
+      ! Ligands
+      elseif (c_atom == ' X1 ') then
+         i_class = CLASS%LIG
+         i_type =  MPTYPE%LIG_X1
       endif
 
       ! Error

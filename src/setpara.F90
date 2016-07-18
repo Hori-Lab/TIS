@@ -10,8 +10,8 @@ subroutine setpara( xyz_mp_init )
   use const_physical
   use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
                          i_run_mode, i_seq_read_style, i_aicg, i_go_native_read_style
-  use var_setp,   only : inpara, inmisc, ifix_mp, inmmc, inflp, inperi
-  use var_struct, only : xyz_ref_mp, iontype_mp
+  use var_setp,   only : inpara, inmisc, fix_mp, inmmc, inflp, inperi
+  use var_struct, only : xyz_ref_mp, iontype_mp, nmp_all
   use var_mgo,    only : inmgo
   use var_implig, only : inimplig
 
@@ -233,7 +233,8 @@ subroutine setpara( xyz_mp_init )
   if(inmisc%i_rest1d == 1) call setp_rest1d_para()
 
   ! fix
-  ifix_mp(1:MXMP) = 0
+  allocate(fix_mp(nmp_all))
+  fix_mp(:) = .False.
   if(inmisc%i_fix == 1) call setp_fix_para()
 
   ! cylinder

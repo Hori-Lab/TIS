@@ -7,7 +7,7 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
   use const_maxsize
   use const_index
   use var_setp,   only : inmisc, inperi
-  use var_struct, only : nunit_all, lunit2mp
+  use var_struct, only : nunit_all, lunit2mp, iclass_unit
 
   implicit none
 
@@ -29,6 +29,9 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
   ! -------------------------------------------------------------------
   ! calc maxdist
   do iunit = 1, nunit_all
+
+     if (iclass_unit(iunit) == CLASS%ION) cycle
+
      sx = 0.0e0_PREC
      sy = 0.0e0_PREC
      sz = 0.0e0_PREC
@@ -81,6 +84,11 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING)) then
            cycle
         end if
+
+        if (iclass_unit(iunit) == CLASS%ION .or. iclass_unit(junit) == CLASS%ION) then
+           ineigh_unit(iunit,junit) = 1
+           cycle
+        endif
 
         if(iunit == junit) then
            ineigh_unit(iunit, junit) = 1

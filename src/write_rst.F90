@@ -14,7 +14,7 @@ subroutine write_rst()
 
    implicit none
 
-   integer :: i, imp, j
+   integer :: i, imp !, j
    integer :: grep
    integer :: lunout
    integer :: iopen_status 

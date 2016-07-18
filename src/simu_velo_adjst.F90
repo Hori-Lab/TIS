@@ -4,7 +4,7 @@
 subroutine simu_velo_adjst(velo_mp, irep)
 
   use const_maxsize
-  use var_setp,   only : ifix_mp
+  use var_setp,   only : fix_mp
   use var_struct, only : nmp_real, xyz_mp_rep, cmass_mp
 
   implicit none
@@ -34,7 +34,7 @@ subroutine simu_velo_adjst(velo_mp, irep)
 
   kmp = 0
   do imp = 1, nmp_real
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
      sumx = velo_mp(1, imp, irep) + sumx
      sumy = velo_mp(2, imp, irep) + sumy
      sumz = velo_mp(3, imp, irep) + sumz
@@ -46,7 +46,7 @@ subroutine simu_velo_adjst(velo_mp, irep)
   hz = sumz / real(kmp, PREC)
 
   do imp = 1, nmp_real
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
      velo_mp(1, imp, irep) = velo_mp(1, imp, irep) - hx
      velo_mp(2, imp, irep) = velo_mp(2, imp, irep) - hy
      velo_mp(3, imp, irep) = velo_mp(3, imp, irep) - hz
@@ -60,7 +60,7 @@ subroutine simu_velo_adjst(velo_mp, irep)
 
   ! calc total angl moment
   do imp = 1, nmp_real
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
      anglmt(1) = anglmt(1) + cmass_mp(imp)                                  &
          * (  xyz_mp_rep(2, imp, irep) * velo_mp(3, imp, irep)      &
             - xyz_mp_rep(3, imp, irep) * velo_mp(2, imp, irep)    )
@@ -80,7 +80,7 @@ subroutine simu_velo_adjst(velo_mp, irep)
   tzz = 0.0e0_PREC
       
   do imp = 1, nmp_real
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
      txx = txx + cmass_mp(imp) * xyz_mp_rep(1, imp, irep) * xyz_mp_rep(1, imp, irep)
      txy = txy + cmass_mp(imp) * xyz_mp_rep(1, imp, irep) * xyz_mp_rep(2, imp, irep)
      txz = txz + cmass_mp(imp) * xyz_mp_rep(1, imp, irep) * xyz_mp_rep(3, imp, irep)
@@ -120,7 +120,7 @@ subroutine simu_velo_adjst(velo_mp, irep)
        etator(3, 3) * anglmt(3)
       
   do imp = 1, nmp_real
-     if(ifix_mp(imp) == 1) cycle
+     if(fix_mp(imp)) cycle
      velo_mp(1, imp, irep) = velo_mp(1, imp, irep) + &
           cz * xyz_mp_rep(2, imp, irep) - cy * xyz_mp_rep(3, imp, irep)
      velo_mp(2, imp, irep) = velo_mp(2, imp, irep) + &

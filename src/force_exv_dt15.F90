@@ -80,9 +80,12 @@ subroutine force_exv_dt15(irep, force_mp)
      roverdist8 = roverdist4 * roverdist4
      roverdist14 = roverdist2 * roverdist4 * roverdist8
 
-     dv_dr = 12.0e0_PREC * coef * (roverdist14 - roverdist8) * dr / a2 / dist
+     dv_dr = abs(12.0e0_PREC * coef * (roverdist14 - roverdist8) * dr / a2 / dist)
 
-     if(dv_dr > DE_MAX) then
+     !if (dv_dr < 0) then
+     !   dv_dr = DE_MAX
+     !else if (dv_dr > DE_MAX) then
+     if (dv_dr > DE_MAX) then
         dv_dr = DE_MAX
      end if
 

@@ -224,8 +224,9 @@ module const_index
      integer :: ION_NA     !<  6
      integer :: ION_K      !<  7
      integer :: ION_CL     !<  8
+     integer :: LIG_X1     !<  9
   endtype mp_type
-  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8)
+  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9)
 
   type chemical_type
      integer :: UNKNOWN !<  0: Default value is stored here
@@ -259,11 +260,12 @@ module const_index
      integer :: K       !< 28: ion
      integer :: NA      !< 29: ion
      integer :: CL      !< 30: ion
-     integer :: MAX     !< 30
+     integer :: X1      !< 31: ligand (for rod)
+     integer :: MAX     !< 31
   endtype chemical_type
   type(chemical_type), parameter :: CHEMICALTYPE = &
        chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,&
-                     20,21,22,23,24,25,26,27,28,29,30,30)
+                     20,21,22,23,24,25,26,27,28,29,30,31,31)
 
   type ion_type
      integer :: VOID      !< 0
@@ -473,9 +475,10 @@ module const_index
      integer :: CL   !<  9
      integer :: K    !< 10 
      integer :: NA   !< 11
+     integer :: X1   !< 12
      integer :: MAX
   endtype dtrna15_exv
-  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,11)
+  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,12,12)
 
   type seq2id
      integer :: ALA  !< 1

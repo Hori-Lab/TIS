@@ -23,7 +23,7 @@ subroutine min_conj_grad(flg_converge)
    use var_io,    only : outfile
    use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep
    use var_setp,   only : insimu
-   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, energy, energy_unit
+   use var_simu,   only : istep,istep_sim, force_mp, velo_mp, energy, energy_unit, dxyz_mp
    use var_emin,   only : inemin, lambda, norm_max, lunout, pvec, func_check_lambda, func_check_norm
    use time, only : time_s, time_e, tm_neighbor, tm_energy, tm_force
    use mpiconst
@@ -36,6 +36,7 @@ subroutine min_conj_grad(flg_converge)
    real(PREC) :: dotp1, dotp2
    real(PREC) :: xyz(SDIM, nmp_all)
    real(PREC) :: pxyz(SDIM,nmp_all)
+   real(PREC) :: dxyz(SDIM,nmp_all)
    real(PREC) :: force_new(SDIM,nmp_all)
    real(PREC) :: e_total_new
    real(PREC), save :: e_total
@@ -84,10 +85,12 @@ subroutine min_conj_grad(flg_converge)
    ! Save the current structure
    xyz(:,:) = xyz_mp_rep(:,:,IREP)
    pxyz(:,:) = pxyz_mp_rep(:,:,IREP)
+   dxyz(:,:) = dxyz_mp(:,:,IREP)
 
    ! Update to a candidate structure: 
    xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * pvec(:,:)
    pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * pvec(:,:)
+   dxyz_mp(:,:,IREP) = dxyz(:,:) + lambda * pvec(:,:)
 
    ! Calc energy
    TIME_S( tm_energy )
@@ -114,11 +117,13 @@ subroutine min_conj_grad(flg_converge)
          flg_converge = .TRUE.
          xyz_mp_rep(:,:,IREP) = xyz(:,:)
          pxyz_mp_rep(:,:,IREP) = pxyz(:,:)
+         dxyz_mp(:,:,IREP) = dxyz(:,:)
          return
       endif
       ! Update to a candidate structure: 
       xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * pvec(:,:)
       pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * pvec(:,:)
+      dxyz_mp(:,:,IREP) = dxyz(:,:) + lambda * pvec(:,:)
    
       ! Calc energy
       TIME_S( tm_energy )

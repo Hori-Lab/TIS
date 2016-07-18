@@ -223,6 +223,9 @@ contains
          char2ichem = CHEMICALTYPE%NA
       else if (c(1:1) == 'K') then
          char2ichem = CHEMICALTYPE%K
+      ! ------ ligands ------
+      else if (c(1:2) == 'X1') then
+         char2ichem = CHEMICALTYPE%X1
       else
          write(error_message,*) 'Error: unknown chemical type in "chemical_property"',&
                                 'field in para/general.para;', c

@@ -91,6 +91,9 @@ subroutine setp_mass_fric()
      write(lunout,*) '   viscosity: ', inpara%viscosity,' [(Pa)(s)]'
      write(lunout,*) '            = ', visc, ' [(Da)(A^-1)(tau^-1)]'
      do imp = 1, nmp_all
+        ichemical = imp2chemicaltype(imp)
+        radius(imp) = inpara%radius(ichemical)
+        mass = inpara%cmass(ichemical)
         write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp) * mass
      enddo
 #ifdef MPI_PAR
@@ -267,6 +270,9 @@ contains
          imp2chemicaltype = CHEMICALTYPE%NA
       else if (cmp2seq(imp) == 'Cl ') then
          imp2chemicaltype = CHEMICALTYPE%CL
+      ! ------ ligand ------
+      else if (cmp2atom(imp) == ' X1 ') then
+         imp2chemicaltype = CHEMICALTYPE%X1
       ! ------ protein ------
       else if (cmp2seq(imp) == 'ALA') then
          imp2chemicaltype = CHEMICALTYPE%ALA

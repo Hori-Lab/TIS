@@ -8,9 +8,8 @@ subroutine simu_radiusg(rg_unit, rg)
   use const_index
   use var_struct,  only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep, iclass_unit
   use var_replica, only : n_replica_mpi
-#ifdef MPI_PAR
   use mpiconst
-#endif
+
   implicit none
   
   ! -------------------------------------------------------------------
@@ -24,8 +23,11 @@ subroutine simu_radiusg(rg_unit, rg)
   real(PREC) :: ssdist2, sdist2
   real(PREC) :: cm_all_x, cm_all_y, cm_all_z
   real(PREC) :: cm_x(MXUNIT), cm_y(MXUNIT), cm_z(MXUNIT)
+  logical :: flg_all
 
   ! -------------------------------------------------------------------
+
+  flg_all = .True.
 
   do irep = 1, n_replica_mpi
 
@@ -65,6 +67,7 @@ subroutine simu_radiusg(rg_unit, rg)
      do iunit = 1, nunit_real
         if (iclass_unit(iunit) == CLASS%ION) then
            rg_unit(iunit,irep) = 0.0
+           flg_all = .False.
            cycle
         endif
         sumx = 0.0e0_PREC
@@ -91,7 +94,12 @@ subroutine simu_radiusg(rg_unit, rg)
         rg_unit(iunit,irep) = sqrt(sdist2 / real(lunit2mp(2, iunit) - istart + 1, PREC))
      end do
 !     rg(irep) = ssdist / real(nmp_real, PREC)
-     rg(irep) = sqrt(ssdist2 / real(nmp_real, PREC))
+
+     if (flg_all) then
+        rg(irep) = sqrt(ssdist2 / real(nmp_real, PREC))
+     else 
+        rg(irep) = 0.0e0_PREC
+     endif
    
   enddo
 
