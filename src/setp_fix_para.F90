@@ -8,7 +8,7 @@ subroutine setp_fix_para()
   use const_maxsize
   use const_index
   use var_io, only : infile, outfile
-  use var_setp, only : ifix_mp
+  use var_setp, only : fix_mp
   use var_struct, only : lunit2mp
 
 #ifdef MPI_PAR
@@ -36,7 +36,7 @@ subroutine setp_fix_para()
   luninp = infile%inp
   lunout = outfile%data
 
-  ifix_mp(1:MXMP) = 0
+  fix_mp(:) = .False.
 
 #ifdef MPI_PAR
   if (myrank == 0) then
@@ -65,7 +65,7 @@ subroutine setp_fix_para()
 
         do iunit = inunit(1), inunit(2)
            do imp = lunit2mp(1, iunit), lunit2mp(2, iunit)
-              ifix_mp(imp) = 1
+              fix_mp(imp) = .True.
            end do
         end do
 
@@ -79,7 +79,7 @@ subroutine setp_fix_para()
         call util_unitstate(char12, inunit, instate)
 
         do imp = inunit(1), inunit(2)
-           ifix_mp(imp) = 1
+           fix_mp(imp) = .True.
         end do
 
      end if
@@ -89,7 +89,7 @@ subroutine setp_fix_para()
 #ifdef MPI_PAR
   end if
 
-  call MPI_Bcast(ifix_mp, MXMP, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(fix_mp, nmp_all, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
 #endif
 
 end subroutine setp_fix_para

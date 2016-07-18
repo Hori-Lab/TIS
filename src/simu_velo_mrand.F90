@@ -10,7 +10,7 @@ subroutine simu_velo_mrand(tempk_in)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : ifix_mp
+  use var_setp,    only : fix_mp
   use var_struct,  only : nmp_real, cmass_mp
   use var_replica, only : flg_rep, rep2val, irep2grep, &
                           n_replica_all, n_replica_mpi
@@ -56,7 +56,7 @@ subroutine simu_velo_mrand(tempk_in)
      endif 
 
      do imp = 1, nmp_real
-        if(ifix_mp(imp) == 1) then
+        if(fix_mp(imp)) then
            velo_mp(1:3, imp, irep) = 0.0
         else
            coef = sqrt(tempk * BOLTZ_KCAL_MOL / cmass_mp(imp))

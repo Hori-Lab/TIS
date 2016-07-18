@@ -187,7 +187,7 @@ FSUB2 = read_xyz.o read_xyz_cg.o read_pdb_pro.o\
 	util_uintra2xyz.o ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
 	ukoto_uichec2.o ukoto_uiunpk2.o
 
-FSUB3 = cafe_read_dcd.o cafe_write_dcd.o
+#FSUB3 = cafe_read_dcd.o cafe_write_dcd.o
 
 # programs
 
@@ -275,7 +275,7 @@ FOBJ1 = \
 	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 
 
-OBJS = $(MTOBJ) $(FMOD1) $(FMOD2) $(FMOD3) $(FMOD4) $(FSUB1) $(FSUB2) $(FSUB3) $(FOBJ1)
+OBJS = $(MTOBJ) $(FMOD1) $(FMOD2) $(FMOD3) $(FMOD4) $(FSUB1) $(FSUB2) $(FOBJ1)
 
 SUB1    = crd2pdb.o
 SUB2    = pdb2crd.o

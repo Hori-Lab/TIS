@@ -704,7 +704,7 @@ module var_setp
 !  type(mt_state), save :: mts(0:MXREPLICA)
   type(mt_state), allocatable, save :: mts(:,:)
 
-  integer, save :: ifix_mp(MXMP) !< 
+  logical, allocatable, save :: fix_mp(:) !< 
 
   ! periodic boundary  
   type periodic_boundary

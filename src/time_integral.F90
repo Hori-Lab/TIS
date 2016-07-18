@@ -19,7 +19,7 @@ subroutine time_integral(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, outfile, ifile_out_neigh
-  use var_setp,    only : insimu, ifix_mp, inmmc, inmisc, inpara
+  use var_setp,    only : insimu, fix_mp, inmmc, inmisc, inpara
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, & !  n_exchange
@@ -129,7 +129,7 @@ subroutine time_integral(flg_step_each_replica)
            
            TIME_S( tm_update )
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               
               ! xyz(t+h) update coordinates
               dxyz(1:3) = rlan_const(4, imp, irep) * velo_mp(1:3, imp, irep) &
@@ -171,7 +171,7 @@ subroutine time_integral(flg_step_each_replica)
 #endif
            TIME_S( tm_update ) 
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               
               ! R(t+h)
               r_force(1:3) = rlan_const(1, imp, irep) *  r_boxmuller(1:3, imp, irep)
@@ -198,7 +198,7 @@ subroutine time_integral(flg_step_each_replica)
            TIME_S( tm_update )
            ! xyz(t+h) update coordinates
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)    &
                    + tstep2 * accel_mp(1:3, imp, irep)
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
@@ -233,7 +233,7 @@ subroutine time_integral(flg_step_each_replica)
            
            TIME_S( tm_update )
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               
               ! a(t+h) temporary
               accelaf(1:3) = force_mp(1:3, imp) * rcmass_mp(imp)
@@ -277,7 +277,7 @@ subroutine time_integral(flg_step_each_replica)
            end do
            
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               velo_mp(1:3, imp, irep) = evcs(1) * velo_mp(1:3, imp, irep) &
                    + tsteph * accel_mp(1:3, imp, irep)
               dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
@@ -313,7 +313,7 @@ subroutine time_integral(flg_step_each_replica)
            
            TIME_S( tm_update )
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               accel_mp(1:3, imp, irep) = force_mp(1:3, imp) * rcmass_mp(imp)
               velo_mp(1:3, imp, irep) = evcs(1) &
                    * (  velo_mp(1:3, imp, irep) &
@@ -339,7 +339,7 @@ subroutine time_integral(flg_step_each_replica)
            
            TIME_S( tm_update )
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
               
               dxyz(1:3) =  rlan_const(1, imp, irep) * force_mp(1:3, imp)  &
                          + rlan_const(2, imp, irep) * r_boxmuller(1:3, imp, irep)
@@ -367,7 +367,7 @@ subroutine time_integral(flg_step_each_replica)
 
            TIME_S( tm_update )
            do imp = 1, nmp_real
-              if(ifix_mp(imp) == 1) cycle
+              if(fix_mp(imp)) cycle
 
               do i=1,3
                  k = 3*(imp-1) + i
