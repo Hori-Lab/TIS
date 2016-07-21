@@ -142,6 +142,7 @@ subroutine read_dcd()
         !title(1:40)  = "==================== Developped by Kyoto"
         !title(41:80) = " University ============================"
         read (ifile(grep)) title
+        read (ifile(grep)) title
 
         ! temperature and lunit2mp is needed
         ! when you transfer dcd file to movie file.
