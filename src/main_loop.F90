@@ -87,7 +87,7 @@ subroutine main_loop()
      ! setting up for Ewald method
      ! -------------------------------------------------------------------
      if (inmisc%force_flag(INTERACT%ELE)) then
-        if (inele%i_function_form == 2) then
+        if (inele%i_function_form == 2 .or. inele%i_function_form == 3) then
            call mloop_ewld()
         endif
      end if

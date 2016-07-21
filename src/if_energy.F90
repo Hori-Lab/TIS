@@ -295,6 +295,14 @@ interface
       real(PREC), intent(out)   :: energy(:)
       real(PREC), intent(out)   :: energy_unit(:,:,:)
    endsubroutine energy_ele_coulomb_ewld
+
+   subroutine energy_ele_coulomb_brute(irep, energy, energy_unit)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(out)   :: energy(:)
+      real(PREC), intent(out)   :: energy_unit(:,:,:)
+   endsubroutine energy_ele_coulomb_brute
    
    subroutine energy_hp (irep, energy, energy_unit)
       use const_maxsize

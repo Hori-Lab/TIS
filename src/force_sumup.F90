@@ -203,6 +203,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
      elseif (inele%i_function_form == 2) then ! Coulomb potential (Ewald)
         call force_ele_coulomb_ewld(irep, force_mp_l(1,1,tn))
+
+     elseif (inele%i_function_form == 3) then ! Coulomb potential (Brute-force to check Ewald results)
+        call util_error(ERROR%STOP_ALL, 'Error: i_function_form=3 for force calculation is not available.')
      endif
   endif
 

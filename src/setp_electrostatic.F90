@@ -326,7 +326,10 @@ subroutine setp_electrostatic()
      !write (lunout, *) "Coulomb potential is enabled."
   else if (inele%i_function_form == 2) then
      continue
-     !write (lunout, *) "Coulomb potential is enabled."
+     !write (lunout, *) "Coulomb potential is enabled. (Ewald method)"
+  else if (inele%i_function_form == 3) then
+     continue
+     !write (lunout, *) "Coulomb potential is enabled. (Brute-force)"
   else
      error_message = 'Error: invalid value for inele%i_function_form'
      call util_error(ERROR%STOP_ALL, error_message)
