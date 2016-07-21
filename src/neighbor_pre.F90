@@ -64,6 +64,8 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
      pmin(1:3) = -0.5*pwide(1:3)
   
      do iunit = 1, nunit_all
+        if (iclass_unit(iunit) == CLASS%ION) cycle
+
         do ix = 1, 3
            tx = cm_x(ix, iunit)
            if(tx > pmax(ix)) then

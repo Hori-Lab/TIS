@@ -408,6 +408,7 @@ i_charge = 1
 **           = 0 Debye-Huckel (default)
 **           = 1 Coulomb
 **           = 2 Coulomb (Ewald)
+**           = 3 Coulomb (Brute-force to check Ewald results)
 i_function_form = 0 
 
 ** calculation method for electrostatic interaction in K computer (optional)

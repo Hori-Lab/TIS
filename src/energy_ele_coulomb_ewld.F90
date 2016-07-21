@@ -71,6 +71,9 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      dist1 = sqrt(dist2)
      
      ene = ene +  coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
+     if (iele < 20) then
+         write(*,*) 'real',iele,dist1,coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
+     endif
 
      !iunit = imp2unit(imp1)
      !junit = imp2unit(imp2)
@@ -131,7 +134,9 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      end do
       
      ene = ene + ewld_f_coef(ig) * (scos * scos + ssin * ssin)
-     !write(*,*) 'ewld_f_coef:', ig, ewld_f_coef(ig), ene
+     if (ig <= 10 .or. ig > ewld_f_n - 10) then
+        write(*,*) 'ewld_f_coef:', ig, ewld_f_coef(ig), ewld_f_coef(ig) * (scos * scos + ssin * ssin)
+     endif
   end do
   !write(*,*) 'Fourier:',ene
 
@@ -152,7 +157,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   !ene = - inele%coef(grep) * ewld_s_coef * ene
   !ene = - inele%coef(grep) * ewld_s_sum
 
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) - inele%coef(grep) * ewld_s_sum
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_s_sum
   !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
 
 end subroutine energy_ele_coulomb_ewld
@@ -256,7 +261,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
      q1 = charge_tp(itp1)
      ene = ene + q1**2
   end do
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) - ewld_s_coef * ene
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ewld_s_coef * ene
 
   ! Multiply coef to the total
   energy(E_TYPE%ELE) = inele%coef(grep) * energy(E_TYPE%ELE)

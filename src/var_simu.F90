@@ -84,7 +84,8 @@ module var_simu
 
   ! Ewald
   integer, save :: ewld_f_n
-  real(PREC), allocatable, save :: ewld_f_rlv(:,:)  ! Reciplocal lattice vector
+  real(PREC), allocatable, save :: ewld_h(:,:)      ! Reciplocal lattice vector
+  real(PREC), allocatable, save :: ewld_f_rlv(:,:)  ! Reciplocal lattice vector (*coef)
   real(PREC), allocatable, save :: ewld_f_coef(:)
   real(PREC), save :: ewld_s_coef    ! Self interaction
   real(PREC), save :: ewld_s_sum     ! Self interaction
