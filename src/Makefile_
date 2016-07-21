@@ -109,7 +109,7 @@ FC = gfortran
 FC_UTIL = gfortran
 CPP = -cpp -DTIME
 INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
 LIB =
@@ -255,12 +255,12 @@ FOBJ1 = \
 	energy_ele.o energy_ele2.o energy_ele3.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
 	energy_ele_coulomb_brute.o\
 	energy_window.o energy_winz.o energy_fbangle.o energy_fdih.o\
-	energy_aicg13_gauss.o energy_aicg14_gauss.o\
+	energy_aicg13_gauss.o\
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
 	force_sumup.o\
-	force_bond.o force_fene.o force_bangle.o force_dih.o force_dih_gauss.o\
-	force_fbangle.o force_fdih.o force_aicg13_gauss.o force_aicg14_gauss.o\
+	force_bond.o force_fene.o force_bangle.o force_dih.o\
+	force_fbangle.o force_fdih.o force_aicg13_gauss.o\
 	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_LJ.o force_nlocal_morse.o \
 	force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o force_enm.o\
 	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
