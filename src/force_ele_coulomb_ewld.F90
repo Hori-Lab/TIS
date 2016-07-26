@@ -82,23 +82,21 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
   !================================================
   !================= Fourier space ================
   !================================================
+!$omp do private(qcosgr,qsingr,ich1,imp1,q1,dp,scos,ssin,dv_dr)
   do ig = 1, ewld_f_n
     
-     !scos = 0.0
-     !ssin = 0.0
      qcosgr(:) = 0.0
      qsingr(:) = 0.0
 
      do ich1 = 1, ncharge
         imp1 = icharge2mp(ich1)
-        q1 = coef_charge(ich1, irep)
-
         dp = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp1, irep))
+
+        q1 = coef_charge(ich1, irep)
         qcosgr(ich1) = q1 * cos(dp)
         qsingr(ich1) = q1 * sin(dp)
-        !scos = scos + qcosgr(ich1)
-        !ssin = ssin + qsingr(ich1)
      end do
+
      scos = sum(qcosgr)
      ssin = sum(qsingr)
 
@@ -108,5 +106,6 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
         force_mp(1:SDIM, imp1) = force_mp(1:SDIM, imp1) + dv_dr * ewld_f_rlv(:,ig)
      end do
   end do
+!$omp end do nowait
 
 end subroutine force_ele_coulomb_ewld

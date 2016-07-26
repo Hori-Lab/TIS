@@ -23,7 +23,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   ! ------------------------------------------------------------------------
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, iele, imirror, ich1, ig, grep
-  real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp
+  real(PREC) :: dist1, dist2, ssin, scos, cutoff2, q1, dp
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -54,8 +54,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   ksta = 1
   kend = lele(irep)
 #endif
-  ene = 0.0
-!$omp do private(imp1,imp2,v21,dist2,dist1,ene,iunit,junit,imirror)
+!$omp do private(imp1,imp2,imirror,v21,dist2,dist1)
   do iele=ksta, kend
 
      imp1 = iele2mp(1, iele, irep)
@@ -70,18 +69,11 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     ene = ene +  coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
-     if (iele < 20) then
-         write(*,*) 'real',iele,dist1,coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
-     endif
-
-     !iunit = imp2unit(imp1)
-     !junit = imp2unit(imp2)
-     !energy_unit(iunit, junit, E_TYPE%ELE) = energy_unit(iunit, junit, E_TYPE%ELE) + ene
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
+     !if (iele < 20) then
+     !    write(*,*) 'real',iele,dist1,coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
+     !endif
   end do
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
-  !write(*,*) 'Real:',energy(E_TYPE%ELE)
-  !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
 !$omp end do nowait
 
 !! In case no neighbor list used
@@ -118,7 +110,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   !================= Fourier space ================
   !================================================
 
-  ene = 0.0
+!$omp do private(scos,ssin,ich1,imp1,q1,dp)
   do ig = 1, ewld_f_n
     
      scos = 0.0
@@ -133,15 +125,12 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
         ssin = ssin + q1 * sin(dp)
      end do
       
-     ene = ene + ewld_f_coef(ig) * (scos * scos + ssin * ssin)
-     if (ig <= 10 .or. ig > ewld_f_n - 10) then
-        write(*,*) 'ewld_f_coef:', ig, ewld_f_coef(ig), ewld_f_coef(ig) * (scos * scos + ssin * ssin)
-     endif
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_f_coef(ig) * (scos * scos + ssin * ssin)
+     !if (ig <= 10 .or. ig > ewld_f_n - 10) then
+     !   write(*,*) 'ewld_f_coef:', ig, ewld_f_coef(ig), ewld_f_coef(ig) * (scos * scos + ssin * ssin)
+     !endiF
   end do
-  !write(*,*) 'Fourier:',ene
-
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ene
-  !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
+!$omp end do nowait
 
 
   !================================================
@@ -157,7 +146,10 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   !ene = - inele%coef(grep) * ewld_s_coef * ene
   !ene = - inele%coef(grep) * ewld_s_sum
 
+!$omp master
   energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_s_sum
+!$omp end master
+
   !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
 
 end subroutine energy_ele_coulomb_ewld
