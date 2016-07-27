@@ -6,8 +6,7 @@
 subroutine force_fene(irep, force_mp, ene_unit)
 
   use const_maxsize
-  use var_struct, only : xyz_mp_rep, imp2unit, &
-                         nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
+  use var_struct, only : xyz_mp_rep, nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
                          nunit_all, nmp_all
   !use var_mgo,    only : inmgo, ifene2sysmbr_mgo
   use mpiconst
@@ -22,10 +21,9 @@ subroutine force_fene(irep, force_mp, ene_unit)
   !                                           inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
 
   integer :: ifene, imp1, imp2
-  integer :: iunit, junit, isys, istat
   integer :: ksta, kend
   real(PREC) :: dist, ddist, ddist2
-  real(PREC) :: efull, for
+  real(PREC) :: for
   real(PREC) :: force(3), v21(3)
 #ifdef MPI_PAR
   integer :: klen
@@ -43,9 +41,7 @@ subroutine force_fene(irep, force_mp, ene_unit)
   ksta = 1
   kend = nfene
 #endif
-!$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for, &
-!$omp&           force,efull,iunit,junit)
-!!!$omp&           force,efull,iunit,junit,isys,istat)
+!$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for,force)
   do ifene = ksta, kend
 
      imp1 = ifene2mp(1, ifene)

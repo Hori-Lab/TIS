@@ -9,8 +9,8 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inpro, inrna, inmisc, inperi
-  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, iclass_mp, &
+  use var_setp,    only : inpro, inperi
+  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           nLJ, iLJ2mp, coef_LJ, LJ_nat2
   use mpiconst
 
@@ -24,7 +24,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
   integer :: iLJ, imirror
-  real(PREC) :: rcut_off2, rcut_off2_pro, rcut_off2_rna
+  real(PREC) :: rcut_off2 !, rcut_off2_pro, rcut_off2_rna
   real(PREC) :: rjudge_contact, rjudge
   real(PREC) :: roverdist2, roverdist6, roverdist12
   real(PREC) :: dist2, efull

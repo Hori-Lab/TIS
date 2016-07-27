@@ -6,8 +6,8 @@ subroutine force_exv_rep6(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inrna, inligand, inmisc, inperi
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp
+  use var_setp,   only : inpro, inperi
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
   use mpiconst
 
   implicit none
@@ -19,11 +19,12 @@ subroutine force_exv_rep6(irep, force_mp)
   integer :: imp1, imp2
   integer :: iexv, imirror
   real(PREC) :: dist2
-  real(PREC) :: coef, coef_pro!, coef_rna, coef_rna_pro, coef_llig, coef_lpro
-  real(PREC) :: cdist2, cdist2_pro!, cdist2_rna, cdist2_rna_pro, &
+  real(PREC) :: coef_pro!, coef_rna, coef_rna_pro, coef_llig, coef_lpro
+  real(PREC) :: cdist2_pro!, cdist2_rna, cdist2_rna_pro, &
                 !cdist2_llig, cdist2_lpro
-  real(PREC) :: cutoff2, cutoff2_pro!, cutoff2_rna, cutoff2_rna_pro, &
+  !real(PREC) :: cutoff2, cutoff2_pro, cutoff2_rna, cutoff2_rna_pro, &
                 !cutoff2_llig, cutoff2_lpro
+  real(PREC) :: cutoff2_pro
   real(PREC) :: roverdist2, roverdist4, roverdist8
   real(PREC) :: dvdw_dr
   real(PREC) :: v21(SDIM), for(SDIM)

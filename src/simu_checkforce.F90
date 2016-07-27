@@ -13,7 +13,6 @@ subroutine simu_checkforce()
   use var_io,     only : outfile
   use var_setp,    only : inele, insimu
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, nunit_all
-  use var_mgo,     only : inmgo
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : flg_hb_energy
 #ifdef MPI_PAR

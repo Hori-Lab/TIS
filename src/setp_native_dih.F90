@@ -38,6 +38,9 @@ subroutine setp_native_dih(xyz_mp_init)
 
   ! ----------------------------------------------------------------------
   ! calc native dih angle
+  impmod_P = 0
+  impmod_S = 0
+  impmod_B = 0
   idih = 0
   irna_st = 0
   isumdih(1:10) = 0

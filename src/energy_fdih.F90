@@ -83,77 +83,77 @@ contains
   ! ----------------------------------------------------------------------
   ! Subroutine for caluculation of phi
   ! ----------------------------------------------------------------------
-  subroutine calc_theta(theta, irep, imp1, imp2, imp3)
-    use const_maxsize
-    use var_struct, only : xyz_mp_rep
-    !use var_flp
-    
-    implicit none
-    
-    ! ----------------------------------------------------------------------
-    ! Arguments
-    real(PREC), intent(inout) :: theta
-    integer, intent(in) :: irep, imp1, imp2, imp3
-    
-    ! ----------------------------------------------------------------------
-    ! Local variables
-    real(PREC) :: v21(3), v32(3)
-    real(PREC) :: c11, c22, c21
-    real(PREC) :: co_theta
-    
-    ! ----------------------------------------------------------------------
-    ! Calculate bond angle
-    
-    v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-    v32(1:3) = xyz_mp_rep(1:3, imp3, irep) - xyz_mp_rep(1:3, imp2, irep)
-    
-    c11 = v21(1) * v21(1) + v21(2) * v21(2) + v21(3) * v21(3)
-    c22 = v32(1) * v32(1) + v32(2) * v32(2) + v32(3) * v32(3)
-    c21 = v32(1) * v21(1) + v32(2) * v21(2) + v32(3) * v21(3)
-    
-    co_theta = - c21 / sqrt(c11 * c22)
-    
-    if(co_theta > 1.0e0_PREC) then
-       co_theta = 1.0e0_PREC
-    else if(co_theta < -1.0e0_PREC) then
-       co_theta = -1.0e0_PREC
-    end if
-    
-    theta = acos(co_theta)
-    
-  end subroutine calc_theta
+!  subroutine calc_theta(theta, irep, imp1, imp2, imp3)
+!    use const_maxsize
+!    use var_struct, only : xyz_mp_rep
+!    !use var_flp
+!    
+!    implicit none
+!    
+!    ! ----------------------------------------------------------------------
+!    ! Arguments
+!    real(PREC), intent(inout) :: theta
+!    integer, intent(in) :: irep, imp1, imp2, imp3
+!    
+!    ! ----------------------------------------------------------------------
+!    ! Local variables
+!    real(PREC) :: v21(3), v32(3)
+!    real(PREC) :: c11, c22, c21
+!    real(PREC) :: co_theta
+!    
+!    ! ----------------------------------------------------------------------
+!    ! Calculate bond angle
+!    
+!    v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+!    v32(1:3) = xyz_mp_rep(1:3, imp3, irep) - xyz_mp_rep(1:3, imp2, irep)
+!    
+!    c11 = v21(1) * v21(1) + v21(2) * v21(2) + v21(3) * v21(3)
+!    c22 = v32(1) * v32(1) + v32(2) * v32(2) + v32(3) * v32(3)
+!    c21 = v32(1) * v21(1) + v32(2) * v21(2) + v32(3) * v21(3)
+!    
+!    co_theta = - c21 / sqrt(c11 * c22)
+!    
+!    if(co_theta > 1.0e0_PREC) then
+!       co_theta = 1.0e0_PREC
+!    else if(co_theta < -1.0e0_PREC) then
+!       co_theta = -1.0e0_PREC
+!    end if
+!    
+!    theta = acos(co_theta)
+!    
+!  end subroutine calc_theta
 
-  subroutine calc_u(u, theta)
-    use const_maxsize
-    use const_physical
-
-    implicit none
-
-    ! ----------------------------------------------------------------------
-    ! Arguments
-    real(PREC), intent(inout) :: u
-    real(PREC), intent(in) :: theta
-
-    ! ----------------------------------------------------------------------
-    ! Local variables
-    real(PREC) :: a, b
-    
-    ! ----------------------------------------------------------------------
-    ! Calculate bond angle
-    a = 1.0e0_PREC / (FDIH_DEL_MAX_ANG - FDIH_DEL_MIN_ANG)
-    b = a * FDIH_DEL_MAX_ANG
-
-    if (theta <= FDIH_DEL_MIN_ANG) then
-       u = 1.0e0_PREC
-    else if ( theta > FDIH_DEL_MIN_ANG .and. theta <= FDIH_DEL_MAX_ANG ) then
-       u = -a * theta + b
-       write (*, *) "Warning: u: ", u
-    else if ( theta > FDIH_DEL_MAX_ANG ) then
-       u = 0.0
-       write (*, *) "Warning: u: ", u
-    end if
-       
-  end subroutine calc_u
+!  subroutine calc_u(u, theta)
+!    use const_maxsize
+!    use const_physical
+!
+!    implicit none
+!
+!    ! ----------------------------------------------------------------------
+!    ! Arguments
+!    real(PREC), intent(inout) :: u
+!    real(PREC), intent(in) :: theta
+!
+!    ! ----------------------------------------------------------------------
+!    ! Local variables
+!    real(PREC) :: a, b
+!    
+!    ! ----------------------------------------------------------------------
+!    ! Calculate bond angle
+!    a = 1.0e0_PREC / (FDIH_DEL_MAX_ANG - FDIH_DEL_MIN_ANG)
+!    b = a * FDIH_DEL_MAX_ANG
+!
+!    if (theta <= FDIH_DEL_MIN_ANG) then
+!       u = 1.0e0_PREC
+!    else if ( theta > FDIH_DEL_MIN_ANG .and. theta <= FDIH_DEL_MAX_ANG ) then
+!       u = -a * theta + b
+!       write (*, *) "Warning: u: ", u
+!    else if ( theta > FDIH_DEL_MAX_ANG ) then
+!       u = 0.0
+!       write (*, *) "Warning: u: ", u
+!    end if
+!       
+!  end subroutine calc_u
 
   subroutine calc_phi(phi_related, irep, imp)
     use const_maxsize

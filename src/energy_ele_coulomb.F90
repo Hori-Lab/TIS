@@ -80,7 +80,7 @@ subroutine energy_ele_coulomb_tp(irep, energy)
   use const_physical
   use const_index
   use var_setp,    only : inele, inperi
-  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_real, lmp2charge, coef_charge, &
+  use var_struct,  only : pxyz_mp_rep, nmp_real, lmp2charge, coef_charge, &
                           ntp, xyz_tp, charge_tp
   use var_replica, only : irep2grep
   use mpiconst
