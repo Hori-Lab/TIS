@@ -42,7 +42,6 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   ksta = 1
   kend = lele(irep)
 #endif
-  ene = 0.0e0_PREC
 !$omp do private(imp1,imp2,v21,dist2,dist1,ene,iunit,junit,imirror)
   do iele=ksta, kend
 
@@ -62,14 +61,14 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     ene = ene + coef_ele(iele,irep)/dist1
+     ene = coef_ele(iele,irep)/dist1
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
      energy_unit(iunit, junit, E_TYPE%ELE) = energy_unit(iunit, junit, E_TYPE%ELE) + ene
   end do
 !$omp end do nowait
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
 
 end subroutine energy_ele_coulomb
 
