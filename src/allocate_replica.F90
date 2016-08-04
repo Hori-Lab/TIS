@@ -10,7 +10,7 @@ subroutine allocate_replica(xyz_mp_init)
    use var_io,     only : i_run_mode
    use var_setp,    only : inele
    use var_struct,  only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
-                           xyz_ele_rep, pxyz_ele_rep, ncharge
+                           xyz_ele_rep, pxyz_ele_rep
    use var_replica, only : hist_combination,    &
                            hist_exchange, hist_attempt,&
                            rate_exchange, &

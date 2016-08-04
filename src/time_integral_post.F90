@@ -40,11 +40,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                           n_replica_all, n_replica_mpi, irep2grep, exchange_step
   use var_implig,  only : inimplig  ! implicit ligand
   use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
-                          n_exchange, max_exchange, iopt_stage, &
+                          n_exchange, iopt_stage, &
                           tstep, tempk, velo_mp, rlan_const, &
                           energy, energy_unit, qscore, rg, rg_unit, rmsd, rmsd_unit, &
                           replica_energy
-  use time, only : total_time, tm_lap, tm_energy, tm_radiusg_rmsd, &
+  use time, only : tm_lap, tm_energy, tm_radiusg_rmsd, &
                    tm_output, tm_implig, tm_replica, tm_step_adj, &
                    time_s, time_e, tm_others
   use var_fmat,    only : infmat

@@ -5,22 +5,16 @@ subroutine simu_para()
   use const_index
   use var_io,     only : i_run_mode
   use var_setp,    only : insimu, inmmc
-  use var_replica, only : inrep, n_replica_all, lab2step, step_ratio
+  use var_replica, only : inrep, n_replica_all
   use var_struct,  only : nmp_real, cmass_mp
   use var_simu,    only : istep_sim, istep, mstep, ntstep, tstep, &
-                          tempk, nstep_opt_temp, ntstep_max, &
-                          rcmass_mp, tstep2, tsteph, &
-                          qscore, n_exchange, max_exchange, &
-                          em_mid, em_depth, em_sigma
+                          tempk, nstep_opt_temp, rcmass_mp, tstep2, tsteph, &
+                          qscore, n_exchange, em_mid, em_depth, em_sigma
   use var_fmat,    only : infmat, fmat_clear
 
   implicit none
 
-  ! -----------------------------------------------------------------
-  ! local variables
-  integer :: irep
   character(CARRAY_MSG_ERROR)   :: error_message
-
 
   ! -----------------------------------------------------------------
   ! setting parameters

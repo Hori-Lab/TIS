@@ -26,7 +26,7 @@ module var_replica
      !real(PREC) :: interval(REPTYPE%MAX) !< interval value of replica variable
      real(PREC) :: var(MXREPLICA,REPTYPE%MAX)  !< replica variables defined explicitly
      real(PREC) :: window_property(MXREPLICA,WINDTYPE%MAX)  !< window property
-     real(PREC) :: window_mp_id(MXREPLICA,2)  !< ids of mass point for window
+     integer    :: window_mp_id(MXREPLICA,2)  !< ids of mass point for window
      integer    :: winz_igrp(MXREPLICA)
      real(PREC) :: winz_z(MXREPLICA)
      real(PREC) :: winz_kxy(MXREPLICA)

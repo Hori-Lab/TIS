@@ -7,15 +7,15 @@ subroutine input()
 
   use const_maxsize
   use const_index
+#ifdef _DEBUG
   use var_io,     only : outfile, infile, i_run_mode, flg_rst
-#ifdef MPI_PAR
-  use mpiconst
+#else
+  use var_io,     only : infile, i_run_mode, flg_rst
 #endif
+  use mpiconst
 
   implicit none
 
-  !----------------------------------------------------------------------
-  ! local variables
   integer :: n
   integer :: iopen_status
   character(CARRAY_MSG_ERROR) :: error_message

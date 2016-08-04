@@ -42,6 +42,7 @@ subroutine read_pdb_ligand(lun, nunit, lunit2mp, nmp, nres, ires_mp, &
   ires = nres
   line = 0 
   iok = 0
+  oldires = 0
 
   ! ---------------------------------------------------------------------
   rewind(lun)

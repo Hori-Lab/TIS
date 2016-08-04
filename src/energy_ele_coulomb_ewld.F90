@@ -7,7 +7,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   use const_physical
   use const_index
   use var_setp,    only : inele, inperi
-  use var_struct,  only : imp2unit, pxyz_mp_rep, lele, iele2mp, coef_ele, &
+  use var_struct,  only : pxyz_mp_rep, lele, iele2mp, coef_ele, &
                           ncharge, coef_charge, icharge2mp
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_sum
   use var_replica, only : irep2grep
@@ -22,7 +22,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 
   ! ------------------------------------------------------------------------
   integer :: ksta, kend
-  integer :: imp1, imp2, iunit, junit, iele, imirror, ich1, ig, grep
+  integer :: imp1, imp2, iele, imirror, ich1, ig, grep
   real(PREC) :: dist1, dist2, ssin, scos, cutoff2, q1, dp
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3

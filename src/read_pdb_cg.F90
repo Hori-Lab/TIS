@@ -53,6 +53,8 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
    imp   = nmp
    iunit = nunit - 1
    ires  = nres
+   iresnum_save = -1
+   iclass_save = -1
 #ifdef _DEBUG
    line = 0
    write(*,*) 'imp = ',imp

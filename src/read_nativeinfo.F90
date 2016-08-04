@@ -1121,6 +1121,7 @@ contains
       else if (c2 == 'SU' .OR. c2 == 'SC' .OR. c2 == 'SY') then
          str2bondtype = BDTYPE%RNA_SY
       else
+         str2bondtype = BDTYPE%VOID
          error_message = 'Error: in read_nativeinfo, unknown bondtype'//c2
          call util_error(ERROR%STOP_ALL, error_message)
       endif
@@ -1145,6 +1146,7 @@ contains
       else if (c3 == 'PSU' .OR. c3 == 'PSC' .OR. c3 == 'PSY') then
          str2angletype = BATYPE%RNA_PSY
       else
+         str2angletype = BATYPE%VOID
          error_message = 'Error: in read_nativeinfo, unknown angletype'//c3
          call util_error(ERROR%STOP_ALL, error_message)
       endif
@@ -1183,6 +1185,7 @@ contains
          ! These are "stack dihedral" supported in previous version.
          str2dihtype = DIHTYPE%VOID
       else
+         str2dihtype = DIHTYPE%VOID
          error_message = 'Error: in read_nativeinfo, unknown dihtype'//c4
          call util_error(ERROR%STOP_ALL, error_message)
       endif

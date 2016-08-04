@@ -12,10 +12,13 @@ subroutine write_version( lunout )
 #ifdef VERGIT
    character(14), parameter :: VERSION_DATE = VERDATE
    character(7),  parameter :: VERSION_BUILD = VERBUILD
+   character(30), parameter :: VERSION_BRANCH= VERBRANCH
 
    write(lunout, '(13a)', ADVANCE='no') '# Git commit '
    write(lunout, '(7a)' , ADVANCE='no') VERSION_BUILD
-   write(lunout, '(13a)', ADVANCE='no') ' compiled on '
+   write(lunout, '(9a)', ADVANCE='no') ' (branch:'
+   write(lunout, '(30a)' , ADVANCE='no') trim(VERSION_BRANCH)
+   write(lunout, '(14a)', ADVANCE='no') ') compiled on '
    write(lunout, '(14a)', ADVANCE='no') VERSION_DATE
    write(lunout, '(6a)'               ) ' (UTC)'
 

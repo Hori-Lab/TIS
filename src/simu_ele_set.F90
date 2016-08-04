@@ -26,6 +26,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
   ! -----------------------------------------------------------------------
   ! Dielectric constant
+  ek = 0.0
   if(inele%i_diele == 0) then
      ek = inele%diele_water
 
@@ -41,6 +42,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         ek =  MM_A + MM_B*Tc + MM_C*Tc*Tc + MM_D*Tc*Tc*Tc
         inele%diele_dTcoef = 1.0e0_PREC + insimu%tempk_ref / ek   & 
                              * (MM_B + 2.0e0_PREC*MM_C*Tc + 3.0e0_PREC*MM_D*Tc*Tc)
+     else
+        error_message = 'Error: invalid i_temp_independent in simu_ele_set'
+        call util_error(ERROR%STOP_ALL, error_message)
      endif
 
   else
@@ -58,6 +62,10 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * tempk) * 1.0e10_PREC
      elseif (inmisc%i_temp_independent == 2) then
         lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * insimu%tempk_ref) * 1.0e10_PREC
+     else
+        lb = 0.0
+        error_message = 'Error: invalid i_temp_independent in simu_ele_set'
+        call util_error(ERROR%STOP_ALL, error_message)
      endif
 
      loop_charge:&

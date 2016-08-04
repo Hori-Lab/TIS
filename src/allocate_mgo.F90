@@ -2,7 +2,7 @@ subroutine allocate_mgo()
 
    use const_maxsize
    use const_index
-   use var_struct, only : nunit_all, nmp_all, nbd, nba, ndih, nrna_bp, nrna_st, ncon
+   use var_struct, only : nunit_all, nmp_all, nbd, nba, ndih
    use var_mgo,    only : inmgo, &
                           ibd2sysmbr_mgo, iba2sysmbr_mgo, idih2sysmbr_mgo, &
                           enegap_mgo, offset_mgo, offset_unit,             &

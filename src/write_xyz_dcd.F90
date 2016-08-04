@@ -12,9 +12,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   use var_struct, only : nunit_real, nmp_real, lunit2mp, pxyz_mp_rep
   use var_replica, only : flg_rep, &
                           rep2val, n_replica_mpi, irep2grep
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
@@ -27,7 +25,6 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   real(PREC), intent(in) :: velo_mp(:,:,:)
 
   ! ---------------------------------------------------------------------
-  ! variables
   integer :: I
   integer :: irep, grep, ioutfile(MXREPLICA)
   real(PREC) :: tempk_l
@@ -45,6 +42,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
 #ifdef VERGIT
   character(14), parameter :: VERSION_DATE = VERDATE
   character(7),  parameter :: VERSION_BUILD = VERBUILD
+  character(30),  parameter :: VERSION_BRANCH = VERBRANCH
 
 ! Subversion
 #else
@@ -164,13 +162,12 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
         ! title text
 ! Git
 #ifdef VERGIT
-        title(1:2) = "= "
-        write(title(3:21), '(a12,a7)')     'Git commit: ',VERSION_BUILD
-        write(title(22:55), '(a13,a14,a7)') ' compiled on ',VERSION_DATE, ' (UTC),'
-        title(56:80) = " written by Naoto Hori =="
+        write(title(1:19), '(a12,a7)') 'Git commit: ',VERSION_BUILD
+        write(title(20:59),'(a9,a30,a1)') ' (branch:',VERSION_BRANCH,')'
+        write(title(60:80), '(a2,a14,a5)') ' @',VERSION_DATE, '(UTC)'
         write (ioutfile(grep)) title
-        title(1:40)  = "==== modified from CafeMol 2.1 developed"
-        title(41:80) = " by Takada Lab at Kyoto University ====="
+        title(1:40)  = "Coded by Naoto Hori (modified from CafeM"
+        title(41:80) = "ol 2.1 developed by Takada Lab, Kyoto U)"
         write (ioutfile(grep)) title
 ! Subversion
 #else

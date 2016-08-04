@@ -28,6 +28,9 @@ subroutine setp_native_bond(xyz_mp_init)
   character(4) :: cmp
 
   ! -----------------------------------------------------------------------
+  impmod_P = 0
+  impmod_S = 0
+  impmod_B = 0
   ibd = 0
   isumbd(1:6) = 0
 !  sumbd(1:6) = 0.0

@@ -50,6 +50,9 @@ subroutine setp_native_bangle(xyz_mp_init)
   ! -----------------------------------------------------------------
   ! calc native bond angle
   iba = 0
+  impmod_P = 0 ! to prevent compiler complaining
+  impmod_S = 0
+  impmod_B = 0
 !  isumba(1:10) = 0
 !  sumba(1:10) = 0.0
   do iunit = 1, nunit_all

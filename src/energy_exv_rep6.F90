@@ -5,9 +5,9 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inpro, inrna, inligand, inperi
+  use var_setp,    only : inpro, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lexv, iexv2mp, iclass_mp
+                          lexv, iexv2mp
   use mpiconst
 
   implicit none
@@ -20,14 +20,9 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
-  real(PREC) :: dist2
-  real(PREC) :: coef, coef_pro!, coef_rna, coef_rna_pro, coef_lig
-  real(PREC) :: cdist2, cdist2_pro!, cdist2_rna, cdist2_rna_pro, &
-                !cdist2_llig, cdist2_lpro
-  real(PREC) :: cutoff2, cutoff2_pro!, cutoff2_rna, cutoff2_rna_pro, &
-                !cutoff2_llig, cutoff2_lpro 
+  real(PREC) :: dist2, ene
+  real(PREC) :: coef_pro, cdist2_pro, cutoff2_pro
   real(PREC) :: roverdist2
-  real(PREC) :: ene
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -60,8 +55,7 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   ksta = lexv(1, E_TYPE%EXV6, irep)
   kend = lexv(2, E_TYPE%EXV6, irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist2,cutoff2,cdist2,coef, &
-!$omp&           roverdist2,ene,iunit,junit,imirror)
+!$omp do private(imp1,imp2,v21,dist2,roverdist2,ene,iunit,junit,imirror)
   do iexv=ksta, kend
 
      imp1 = iexv2mp(1, iexv, irep)

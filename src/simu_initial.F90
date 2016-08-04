@@ -8,7 +8,7 @@ subroutine simu_initial()
   use var_setp, only : insimu, inmisc
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp
   use var_replica, only : n_replica_mpi
-  use var_simu, only : istep_sim, velo_mp, tempk
+  use var_simu, only : istep_sim, tempk
   use mt_stream
   use mpiconst
 
