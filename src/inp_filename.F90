@@ -12,7 +12,7 @@ subroutine inp_filename()
                           ifile_out_dcd, ifile_out_vdcd, ifile_out_pdb,   &
                           ifile_out_rep, ifile_out_psf, ifile_out_rst,&
                           fullpath, iopen_lunnum, ifile_out_opt, ifile_out_chp, &
-                          ifile_out_neigh
+                          ifile_out_neigh, ifile_out_ee
   use var_replica, only :  n_replica_all
 #ifdef MPI_PAR
   use mpiconst
@@ -31,7 +31,7 @@ subroutine inp_filename()
   integer :: irep       ! index for replica
   ! -------------------------------------------------------------------- mod
   integer :: iline, nlines, iequa, nequat
-  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh
+  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -47,6 +47,7 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: filename_opt
   character(CARRAY_MXFILE) :: filename_chp
   character(CARRAY_MXFILE) :: filename_neigh
+  character(CARRAY_MXFILE) :: filename_ee
   ! -------------------------------------------------------------------- mod
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
@@ -91,6 +92,7 @@ subroutine inp_filename()
   filename_opt      = "./md.opt"
   filename_chp      = "./md.chp"
   filename_neigh    = "./md.neigh"
+  filename_ee       = "./md.ee"
 
   imovie = 0
   ivelo  = 0
@@ -102,6 +104,7 @@ subroutine inp_filename()
   iopt   = 0
   ichp   = 0
   ineigh = 0
+  iee    = 0
 
   ! -----------------------------------------------------------------------
   ! read input file
@@ -196,6 +199,10 @@ subroutine inp_filename()
                  filename_neigh = filename_header
                  filename_neigh(n:n+5) = '.neigh'  
                  ineigh = 1
+              else if (char7 == 'ee') then
+                 filename_ee = filename_header
+                 filename_ee(n:n+2) = '.ee'  
+                 iee = 1
               end if
 
               isw = 0
@@ -228,6 +235,7 @@ subroutine inp_filename()
   call MPI_Bcast(filename_opt,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_chp,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_neigh, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_ee,    CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
 ! --------------------------------------------------------------------------
   call MPI_Bcast(ipdb,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ipsf,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
@@ -239,6 +247,7 @@ subroutine inp_filename()
   call MPI_Bcast(iopt,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ichp,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ineigh, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(iee,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
 #endif
   
   ! -----------------------------------------------------------------------
@@ -832,7 +841,7 @@ subroutine inp_filename()
         filename = filename_neigh
      end if
   
-     write (*, '(a14,i3,a3,a)') "open neigh file(",outfile%neigh,"): ", trim(filename)
+     write (*, '(a16,i3,a3,a)') "open neigh file(",outfile%neigh,"): ", trim(filename)
      open(outfile%neigh, file = filename, status = FILE_STATUS, &
                          action = 'write', iostat = iopen_status)
      if(iopen_status > 0) then
@@ -844,6 +853,37 @@ subroutine inp_filename()
 #endif
   else
      ifile_out_neigh = 0
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open ee file 
+  ! -----------------------------------------------------------------------
+  if(iee == 1) then
+     ifile_out_ee = 1
+#ifdef MPI_PAR
+     if (myrank == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_ee, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_ee(1:m-1)
+     else
+        filename = filename_ee
+     end if
+  
+     write (*, '(a13,i3,a3,a)') "open ee file(",outfile%ee,"): ", trim(filename)
+     open(outfile%ee, file = filename, status = FILE_STATUS, &
+                         action = 'write', iostat = iopen_status)
+     if(iopen_status > 0) then
+        error_message = 'Error: cannot open the file: ' // filename
+        call util_error(ERROR%STOP_STD, error_message)
+     end if
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     ifile_out_ee = 0
   end if
 
   ! -----------------------------------------------------------------------

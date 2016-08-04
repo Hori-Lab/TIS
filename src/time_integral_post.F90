@@ -33,9 +33,9 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, ifile_out_rep, &
-                          ifile_out_rst, outfile, ifile_out_opt
-  use var_setp,    only : insimu, inann, inmisc, inele, inwidom
-  use var_struct,  only : nmp_real, cmass_mp, fric_mp
+                          ifile_out_rst, outfile, ifile_out_opt, ifile_out_ee
+  use var_setp,    only : insimu, inann, inmisc, inele, inwidom, inperi
+  use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
                           n_replica_all, n_replica_mpi, irep2grep, exchange_step
   use var_implig,  only : inimplig  ! implicit ligand
@@ -62,7 +62,9 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   logical :: flg_step_save, flg_step_rep_exc
   logical :: flg_step_implig, flg_step_rep_save, flg_step_rep_opt
   logical :: flg_step_rst, flg_step_widom
+  integer :: imp1, imp2, imirror
   integer :: imp, irep, grep
+  real(PREC) :: v21(3), dee
 #ifdef _DUMP_COMMON
   integer :: lundump = outfile%dump
 #endif
@@ -151,6 +153,21 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
      if (ifile_out_opt == 1) then
         ! something to write to opt file
+     endif
+     if (ifile_out_ee == 1) then
+        irep = 1
+        !imp1 = 1
+        !imp2 = nmp_real
+        imp1 = 1
+        imp2 = 118
+        if(inperi%i_periodic == 0) then
+           v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+        else
+           v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
+           call util_pbneighbor(v21, imirror)
+        end if
+        dee = sqrt(dot_product(v21,v21))
+        write(outfile%ee, *) istep, dee
      endif
 
 #ifdef MPI_PAR
