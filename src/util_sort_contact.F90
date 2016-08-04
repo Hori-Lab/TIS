@@ -13,7 +13,7 @@ subroutine util_sort_contact(ipost2pre_con)
 
   ! -----------------------------------------------------------------------
   ! native contact 
-  integer, intent(out) :: ipost2pre_con(nmp_all*MXMPCON)
+  integer, intent(out), optional :: ipost2pre_con(nmp_all*MXMPCON)
   ! intent(inout) :: icon2mp, icon2unit, go_nat, factor_go
   ! intent(out) :: lmp2con, ncon_unit
 
@@ -24,9 +24,11 @@ subroutine util_sort_contact(ipost2pre_con)
   integer :: id, itest, istart, iend
 
   ! -----------------------------------------------------------------------
-  do icon = 1, ncon
-     ipost2pre_con(icon) = icon
-  end do
+  if (present(ipost2pre_con)) then
+     do icon = 1, ncon
+        ipost2pre_con(icon) = icon
+     end do
+  endif
 
   ! -----------------------------------------------------------------------
   ! sort icon2mp
@@ -36,7 +38,9 @@ subroutine util_sort_contact(ipost2pre_con)
         jcon1 = ncon - jcon
         jcon2 = ncon - jcon + 1
         if(icon2mp(1, jcon2) < icon2mp(1, jcon1)) then
-           call iswapvar(ipost2pre_con(jcon1), ipost2pre_con(jcon2))
+           if (present(ipost2pre_con)) then
+              call iswapvar(ipost2pre_con(jcon1), ipost2pre_con(jcon2))
+           endif
            call iswapvar(icon2mp(1, jcon1), icon2mp(1, jcon2))
            call iswapvar(icon2mp(2, jcon1), icon2mp(2, jcon2))
            call iswapvar(icon2unit(1, jcon1), icon2unit(1, jcon2))
@@ -92,7 +96,9 @@ subroutine util_sort_contact(ipost2pre_con)
            jcon1 = iend - jcon
            jcon2 = iend - jcon + 1
            if(icon2mp(2, jcon2) < icon2mp(2, jcon1)) then
-              call iswapvar(ipost2pre_con(jcon1), ipost2pre_con(jcon2))
+              if (present(ipost2pre_con)) then
+                 call iswapvar(ipost2pre_con(jcon1), ipost2pre_con(jcon2))
+              endif
               call iswapvar(icon2mp(1, jcon1), icon2mp(1, jcon2))
               call iswapvar(icon2mp(2, jcon1), icon2mp(2, jcon2))
               call iswapvar(icon2unit(1, jcon1), icon2unit(1, jcon2))

@@ -58,9 +58,6 @@ subroutine mloop_nativeinfo(istep_sim)
   integer :: iopen_status
   integer :: nld, inat, i_ninfo_type
   integer :: inat_unit(MXUNIT, MXUNIT)
-  integer :: ipost2pre_con(nmp_all*MXMPCON)
-  integer :: ipost2pre_rna_bp(nmp_all*MXMPRNABP)
-  integer :: ipost2pre_rna_st(nmp_all*MXMPRNABP)
   real(PREC) :: cgo_pro
   character(CARRAY_MXFILE) :: cnat_fname(MXUNIT*MXUNIT)
   character(CARRAY_MSG_ERROR) :: error_message
@@ -283,10 +280,10 @@ subroutine mloop_nativeinfo(istep_sim)
 
   
   ! ------------------------------------------------------------
-  call util_sort_contact(ipost2pre_con)
+  call util_sort_contact()
   if (inmisc%class_flag(CLASS%RNA)) then
-     call util_sort_rna_bp(ipost2pre_rna_bp)
-     call util_sort_rna_st(ipost2pre_rna_st)
+     call util_sort_rna_bp()
+     call util_sort_rna_st()
   endif
      
   ! ------------------------------------------------------------

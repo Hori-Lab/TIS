@@ -15,7 +15,7 @@ subroutine util_sort_rna_st(ipost2pre_rna_st)
 
   ! -----------------------------------------------------------------------
   ! native contact 
-  integer, intent(out) :: ipost2pre_rna_st(nmp_all*MXMPRNABP)
+  integer, intent(out), optional :: ipost2pre_rna_st(nmp_all*MXMPRNABP)
 
   ! -----------------------------------------------------------------------
   ! local variables
@@ -24,9 +24,11 @@ subroutine util_sort_rna_st(ipost2pre_rna_st)
   integer :: id, itest, istart, iend
 
   ! -----------------------------------------------------------------------
-  do icon = 1, nrna_st
-     ipost2pre_rna_st(icon) = icon
-  end do
+  if (present(ipost2pre_rna_st)) then
+     do icon = 1, nrna_st
+        ipost2pre_rna_st(icon) = icon
+     end do
+  endif
 
   ! -----------------------------------------------------------------------
   ! sort irna_st2mp
@@ -36,7 +38,9 @@ subroutine util_sort_rna_st(ipost2pre_rna_st)
         jcon1 = nrna_st - jcon
         jcon2 = nrna_st - jcon + 1
         if(irna_st2mp(1, jcon2) < irna_st2mp(1, jcon1)) then
-           call iswapvar(ipost2pre_rna_st(jcon1), ipost2pre_rna_st(jcon2))
+           if (present(ipost2pre_rna_st)) then
+              call iswapvar(ipost2pre_rna_st(jcon1), ipost2pre_rna_st(jcon2))
+           endif
            call iswapvar(irna_st2mp(1, jcon1), irna_st2mp(1, jcon2))
            call iswapvar(irna_st2mp(2, jcon1), irna_st2mp(2, jcon2))
            call iswapvar(irna_st2unit(1, jcon1), irna_st2unit(1, jcon2))
@@ -93,7 +97,9 @@ subroutine util_sort_rna_st(ipost2pre_rna_st)
            jcon1 = iend - jcon
            jcon2 = iend - jcon + 1
            if(irna_st2mp(2, jcon2) < irna_st2mp(2, jcon1)) then
-              call iswapvar(ipost2pre_rna_st(jcon1), ipost2pre_rna_st(jcon2))
+              if (present(ipost2pre_rna_st)) then
+                 call iswapvar(ipost2pre_rna_st(jcon1), ipost2pre_rna_st(jcon2))
+              endif
               call iswapvar(irna_st2mp(1, jcon1), irna_st2mp(1, jcon2))
               call iswapvar(irna_st2mp(2, jcon1), irna_st2mp(2, jcon2))
               call iswapvar(irna_st2unit(1, jcon1), irna_st2unit(1, jcon2))
