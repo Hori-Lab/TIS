@@ -49,8 +49,6 @@ subroutine mloop_nativeinfo(istep_sim)
   ! ---------------------------------------------------------------------
   integer, intent(in) :: istep_sim
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: ier
   integer :: iunit, junit, icon, ibd, iba, idih
   integer :: ibp, ist
@@ -68,6 +66,9 @@ subroutine mloop_nativeinfo(istep_sim)
   character(CARRAY_MSG_ERROR) :: error_message
   logical :: flg_enm
 
+#ifdef _DEBUG
+  write(6,*) '#### start mloop_nativeinfo'
+#endif
   ! ---------------------------------------------------------------------
   ! read native information from nativeinfo in input file
   ! ---------------------------------------------------------------------
@@ -569,5 +570,8 @@ subroutine mloop_nativeinfo(istep_sim)
      iallcon2unit(1:2, ncon+nmorse+nrna_bp+1:ncon+nmorse+nrna_bp+nLJ) = iLJ2unit(1:2, 1:nLJ)
   endif
 
+#ifdef _DEBUG
+  write(*,*) '#### end mloop_nativeinfo'
+#endif
 
 end subroutine mloop_nativeinfo

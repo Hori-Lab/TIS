@@ -49,7 +49,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
   endif
 
 #ifdef _DEBUG
-  write(6,*) 'simu_force: START'
+  write(6,*) 'force_sumup: START'
 #endif
 
 #ifdef MPI_PAR
@@ -331,7 +331,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
 
 #ifdef _DEBUG
-  write(*,*) 'simu_force: END'
+  write(*,*) 'force_sumup: END'
 #endif
 
 !---------------------------------------------------------------------------

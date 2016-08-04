@@ -52,7 +52,7 @@ subroutine mloop_simulator()
 
   ! -----------------------------------------------------------------
 #ifdef _DEBUG
-  write(6,*) 'mloop_simulator: START'
+  write(6,*) '##### start mloop_simulator'
 #endif
 #ifdef MPI_PAR
   call mpi_barrier(MPI_COMM_WORLD,ierr)
@@ -166,7 +166,7 @@ subroutine mloop_simulator()
 #endif
 
 #ifdef _DEBUG
-  write(6,*) 'mloop_simulator: END'
+  write(6,*) '##### end mloop_simulator'
 #endif
 
 end subroutine mloop_simulator

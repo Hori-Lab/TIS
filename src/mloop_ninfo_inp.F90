@@ -38,6 +38,9 @@ subroutine mloop_ninfo_inp(istep_sim, i_ninfo_type, inat_unit, cnat_fname)
   character(CARRAY_MXCOLM) :: ctmp02
   character(CARRAY_MSG_ERROR) :: error_message
 
+#ifdef _DEBUG
+  write(*,*) '##### start mloop_ninfo_inp'
+#endif
   ! --------------------------------------------------------------------
   luninp = infile%inp
   lunout = outfile%data
@@ -175,4 +178,7 @@ subroutine mloop_ninfo_inp(istep_sim, i_ninfo_type, inat_unit, cnat_fname)
   call MPI_Bcast (cnat_fname,MXUNIT*MXUNIT*CARRAY_MXFILE,MPI_CHARACTER ,0,MPI_COMM_WORLD,ierr)
 #endif
 
+#ifdef _DEBUG
+  write(*,*) '##### end mloop_ninfo_inp'
+#endif
 end subroutine mloop_ninfo_inp

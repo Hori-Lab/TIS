@@ -29,10 +29,7 @@ subroutine time_integral_pre(flg_step_each_replica)
                           rg, rg_unit, rmsd, rmsd_unit, &
                           energy, energy_unit, replica_energy, dxyz_mp
   use time, only : tm_random, tm_muca, time_s, time_e
-
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
@@ -54,6 +51,10 @@ subroutine time_integral_pre(flg_step_each_replica)
   character(CARRAY_MSG_ERROR) error_message
 
   integer :: ianc, igrp
+
+#ifdef _DEBUG
+  write(6,*) '###### start time_integral_pre'
+#endif
 
   ! -----------------------------------------------------------------
   ! calc neighbour list
@@ -164,11 +165,11 @@ subroutine time_integral_pre(flg_step_each_replica)
            end do
         endif
         
-#ifdef _DEBUG
-        do imp=1, nmp_real
-           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
-        enddo
-#endif
+!#ifdef _DEBUG
+!        do imp=1, nmp_real
+!           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
+!        enddo
+!#endif
      ! Berendsen or Constant Energy
      else if(i_simulate_type == SIM%BERENDSEN .OR. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
         if (flg_rst) then
@@ -277,5 +278,9 @@ subroutine time_integral_pre(flg_step_each_replica)
         end do
      end do
   endif
+
+#ifdef _DEBUG
+  write(6,*) '###### end time_integral_pre'
+#endif
 
 end subroutine time_integral_pre

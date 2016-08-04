@@ -50,7 +50,7 @@ module const_maxsize
 
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
-  integer, parameter :: MXUNIT = 200       !< maximum # of interaction units
+  integer, parameter :: MXUNIT = 20        !< maximum # of interaction units
   integer, parameter :: MXMP = 10000       !< maximum # of mass points
   integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 

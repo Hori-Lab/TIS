@@ -45,6 +45,10 @@ subroutine time_integral(flg_step_each_replica)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
 
+#ifdef _DEBUG
+  write(6,*) '###### start time_integral'
+#endif
+
   ! --------------------------------------------------------------
   ! calc neighbour list
   ! --------------------------------------------------------------
@@ -164,11 +168,11 @@ subroutine time_integral(flg_step_each_replica)
            TIME_E( tm_muca )
            !----------------------------------------------
            
-#ifdef _DEBUG
-           do imp=1, nmp_real
-              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
-           enddo
-#endif
+!#ifdef _DEBUG
+!           do imp=1, nmp_real
+!              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
+!           enddo
+!#endif
            TIME_S( tm_update ) 
            do imp = 1, nmp_real
               if(fix_mp(imp)) cycle
@@ -257,11 +261,11 @@ subroutine time_integral(flg_step_each_replica)
            end if
            TIME_E( tm_update )
            
-#ifdef _DEBUG
-           do imp=1, nmp_real
-              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
-           enddo
-#endif
+!#ifdef _DEBUG
+!           do imp=1, nmp_real
+!              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
+!           enddo
+!#endif
    
         ! Nose-Hoover
         else if(i_simulate_type == SIM%NOSEHOOVER) then
@@ -391,11 +395,11 @@ subroutine time_integral(flg_step_each_replica)
            call force_sumup(force_mp, irep)
            TIME_E( tm_force )
            !----------------------------------------------
-#ifdef _DEBUG
-           do imp=1, nmp_real
-              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
-           enddo
-#endif
+!#ifdef _DEBUG
+!           do imp=1, nmp_real
+!              write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
+!           enddo
+!#endif
         end if
         
         if (i_run_mode == RUN%REPLICA .and. inrep%flg_exchange) then
@@ -409,6 +413,9 @@ subroutine time_integral(flg_step_each_replica)
   enddo
   ! irep --------------------------------------------------------- 
 
+#ifdef _DEBUG
+  write(6,*) '###### end time_integral'
+#endif
 
 contains
 

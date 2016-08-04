@@ -60,6 +60,18 @@ DATESEQ = $(shell date -u +%Y%m%d%H%M)  # Date
 VERSION += -DVERDATE="\"$(DATESEQ)\""
 # --------------------------------------------------------------------
 
+#------ gfortran
+FC = gfortran
+FC_UTIL = gfortran
+CPP = -cpp -DTIME 
+#CPP = -cpp -DTIME -D_DEBUG
+INC =
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
+LIB =
 
 #------ intel (single)
 #FC = ifort
@@ -104,17 +116,6 @@ VERSION += -DVERDATE="\"$(DATESEQ)\""
 ##OPT = -fast
 #OPT = -C -Mbounds -Mdclchk -Minform=inform -Ktrap=fp -traceback
 #LIB =
-
-#------ gfortran
-FC = gfortran
-FC_UTIL = gfortran
-CPP = -cpp -DTIME
-INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
-LIB =
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # To gfortran users:

@@ -45,6 +45,11 @@ subroutine main_loop()
      mstep_sim = insimu%n_step_sim
   endif
 
+#ifdef _DEBUG
+  write(*,*) '#### Enter the istep_sim loop'
+  write(*,*) 'insimu%i_step_sim_init=',insimu%i_step_sim_init
+  write(*,*) 'mstep_sim=',mstep_sim
+#endif
   do istep_sim = insimu%i_step_sim_init, mstep_sim
 
      ! -------------------------------------------------------------------
@@ -53,6 +58,7 @@ subroutine main_loop()
      if (i_go_native_read_style == NATIVEREAD%INFO) then
         call mloop_nativeinfo(istep_sim)
      endif
+
 
      ! -------------------------------------------------------------------
      ! setting up for multiple Go
@@ -141,6 +147,9 @@ subroutine main_loop()
         call deallocate_mgo()
      endif
   end do
+#ifdef _DEBUG
+  write(*,*) '#### Exit the istep_sim loop'
+#endif
 
   if (i_run_mode == RUN%FMAT) then
      if (infmat%i_type == FMATTYPE%HETERO) then

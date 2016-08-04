@@ -64,6 +64,9 @@ subroutine energy_sumup(irep,          &
   real(PREC), allocatable :: energy_unit_l(:,:,:,:) !(nunit_all,nunit_all,E_TYPE%MAX,0:nthreads-1)
   integer, allocatable :: now_allcon_l(:, :)      !(2, ncon+nmorse+nrna_bp+nLJ)
 
+#ifdef _DEBUG
+  write(6,*) '######## start energy_sumup'
+#endif
 
 ! ------------------------------------------------------------------------
 ! zero clear
@@ -405,6 +408,10 @@ subroutine energy_sumup(irep,          &
   deallocate( now_morse )
   deallocate( now_rna_bp )
   deallocate( now_allcon )
+#endif
+
+#ifdef _DEBUG
+  write(6,*) '######## end energy_sumup'
 #endif
 
 end subroutine energy_sumup

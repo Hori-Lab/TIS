@@ -21,6 +21,9 @@ subroutine allocate_simu()
   integer :: ier = 0
   character(CARRAY_MSG_ERROR) :: error_message
 ! **********************************************************************
+#ifdef _DEBUG
+  write(*,*) '##### start allocate_simu'
+#endif
   
   call check()
 
@@ -106,6 +109,10 @@ subroutine allocate_simu()
      allocate(random_tensor(1:3*nmp_real, 1:3*nmp_real), stat=ier)
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
   endif
+
+#ifdef _DEBUG
+  write(*,*) '##### end allocate_simu'
+#endif
 
 ! **********************************************************************
 contains

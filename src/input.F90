@@ -9,6 +9,7 @@ subroutine input()
   use const_index
 #ifdef _DEBUG
   use var_io,     only : outfile, infile, i_run_mode, flg_rst
+  use var_replica, only :  n_replica_all
 #else
   use var_io,     only : infile, i_run_mode, flg_rst
 #endif
@@ -135,25 +136,22 @@ subroutine input()
   write(6,*) 'input : infile%inp = ',infile%inp
   write(6,*) 'input : outfile%data = ',outfile%data
   write(6,*) 'input : outfile%ninfo = ',outfile%ninfo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%ts(',i_debug,') = ',outfile%ts(i_debug)
   enddo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%movie(',i_debug,') = ',outfile%movie(i_debug)
   enddo
-  do i_debug = 1, MXREPLICA
-     write(6,*) 'input : outfile%crd(',i_debug,') = ',outfile%crd(i_debug)
-  enddo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%velo(',i_debug,') = ',outfile%velo(i_debug)
   enddo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%dcd(',i_debug,') = ',outfile%dcd(i_debug)
   enddo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%vdcd(',i_debug,') = ',outfile%vdcd(i_debug)
   enddo
-  do i_debug = 1, MXREPLICA
+  do i_debug = 1, n_replica_all
      write(6,*) 'input : outfile%pdb(',i_debug,') = ',outfile%pdb(i_debug)
   enddo
   write(6,*) 'input : outfile%rep = ',outfile%rep

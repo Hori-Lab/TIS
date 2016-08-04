@@ -19,6 +19,9 @@ subroutine mloop_neigh_dist()
   integer :: lunout
   real(PREC) :: cut, max_cut
 
+#ifdef _DEBUG
+  write(*,*) '##### start mloop_neigh_dist'
+#endif
   ! ----------------------------------------------------------------------
 
   do iunit = 1, nunit_all
@@ -123,6 +126,10 @@ subroutine mloop_neigh_dist()
 #ifdef MPI_PAR
   end if
   !call MPI_Bcast(inmisc%rneighbordist2_unit, MXUNIT*MXUNIT, PREC_MPI, 0, MPI_COMM_WORLD, ierr)
+#endif
+
+#ifdef _DEBUG
+  write(*,*) '##### end mloop_neigh_dist'
 #endif
 
 end subroutine mloop_neigh_dist

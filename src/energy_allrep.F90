@@ -93,6 +93,10 @@ subroutine energy_allrep(energy_unit,     &
   endsubroutine energy_sumup
   endinterface
 
+#ifdef _DEBUG
+  write(6,*) '####### start energy_allrep'
+#endif
+
 ! ------------------------------------------------------------------------
 ! zero clear
   energy(:,:)         = 0.0e0_PREC
@@ -108,9 +112,12 @@ subroutine energy_allrep(energy_unit,     &
 #ifdef _DEBUG
   if (     (size(velo_mp,3) /= n_replica_mpi) &
       .OR. (size(energy ,2)  /= n_replica_mpi) .OR. (size(energy_unit, 4)  /= n_replica_mpi)  &
-      .OR. (size(qscore,1)  /= n_replica_mpi) .OR. (size(qscore_unit,3) /= n_replica_mpi) )&
-      error_message = 'defect at energy_allrep'
+      .OR. (size(qscore,1)  /= n_replica_mpi) .OR. (size(qscore_unit,3) /= n_replica_mpi) ) then
+      write(error_message,*) 'defect at energy_allrep: size(velo_mp,3)=',size(velo_mp,3), &
+      'size(energy,2)=',size(energy,2), 'size(energy_unit,4)=',size(energy_unit,4),&
+      'size(qscore,1)=',size(qscore,1), 'size(qscore_unit,3)=',size(qscore_unit,3)
       call util_error(ERROR%STOP_ALL, error_message)
+  endif
 #endif
 
 
@@ -255,5 +262,9 @@ subroutine energy_allrep(energy_unit,     &
 
   enddo  ! irep
   TIME_E( tm_energy_replica)
+
+#ifdef _DEBUG
+  write(6,*) '####### end energy_allrep'
+#endif
 
 end subroutine energy_allrep

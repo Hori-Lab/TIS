@@ -71,8 +71,7 @@ subroutine force_exv_rep6(irep, force_mp)
   ksta = lexv(1, E_TYPE%EXV6, irep)
   kend = lexv(2, E_TYPE%EXV6, irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist2,cutoff2,cdist2,coef,&
-!$omp&           roverdist2,roverdist4,roverdist8,dvdw_dr,for,imirror)
+!$omp do private(imp1,imp2,v21,dist2,roverdist2,roverdist4,roverdist8,dvdw_dr,for,imirror)
   do iexv=ksta, kend
 
      imp1 = iexv2mp(1, iexv, irep)
