@@ -160,12 +160,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
         !imp2 = nmp_real
         imp1 = 1
         imp2 = 118
-        if(inperi%i_periodic == 0) then
-           v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-        else
-           v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
-           call util_pbneighbor(v21, imirror)
-        end if
+        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
         dee = sqrt(dot_product(v21,v21))
         write(outfile%ee, *) istep, dee
      endif
