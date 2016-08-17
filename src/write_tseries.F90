@@ -165,10 +165,6 @@ subroutine write_tseries(ibefore_time, istep, &
            write (lunout, _FMT_TS_ELECT_T_,   ADVANCE = "NO") 'elect'
         end if
    
-        if(inmisc%force_flag(INTERACT%ION_HYD)) then
-           write (lunout, _FMT_TS_HYDION_T_, ADVANCE = "NO") 'hyd_ion'
-        end if
-
         if(inmisc%force_flag(INTERACT%HP)) then
            write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
         end if
@@ -374,7 +370,7 @@ contains
     real(PREC) :: tenergy(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
     real(PREC) :: elocal, ego, erepul
-    real(PREC) :: eelect, ehp, ehyd_ion
+    real(PREC) :: eelect, ehp
     real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
     real(PREC) :: ebox, ecap, ebridge, epulling, eanchor, erest1d
@@ -425,8 +421,7 @@ contains
     if (ego > HIGH_ENERGY_JUDGE) ego = HIGH_ENERGY_OUT
     emorse  = tenergy(E_TYPE%MORSE)
     if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
-    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_ION) &
-            + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
+    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
     if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
     estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
     if (estack_rna > HIGH_ENERGY_JUDGE) estack_rna = HIGH_ENERGY_OUT
@@ -434,8 +429,6 @@ contains
     if (ehbond_rna > HIGH_ENERGY_JUDGE) ehbond_rna = HIGH_ENERGY_OUT
     eelect  = tenergy(E_TYPE%ELE)
     if (eelect > HIGH_ENERGY_JUDGE) eelect = HIGH_ENERGY_OUT
-    ehyd_ion  = tenergy(E_TYPE%HYD_ION)
-    if (ehyd_ion > HIGH_ENERGY_JUDGE) ehyd_ion = HIGH_ENERGY_OUT
     ehp       = tenergy(E_TYPE%HPENE)
     if (ehp > HIGH_ENERGY_JUDGE) ehp = HIGH_ENERGY_OUT
     ebox      = tenergy(E_TYPE%BOX)
@@ -532,10 +525,6 @@ contains
 
        if (inmisc%force_flag(INTERACT%ELE)) then
           write (lunout, _FMT_TS_ELECT_,   ADVANCE = "NO") eelect
-       end if
-
-       if(inmisc%force_flag(INTERACT%ION_HYD)) then
-          write (lunout, _FMT_TS_HYDION_, ADVANCE = "NO") ehyd_ion
        end if
 
        if(inmisc%force_flag(INTERACT%HP)) then

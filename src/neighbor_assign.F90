@@ -17,7 +17,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_index
   use const_physical
   use var_setp,   only : inpro, inmisc, inrna, indtrna13, indtrna15, inperi
-  use var_struct, only : nunit_real, iontype_mp, pxyz_mp_rep, &
+  use var_struct, only : nunit_real, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
                          lmp2LJ, iLJ2mp, coef_LJ, &
                          iclass_unit, ires_mp, nmp_all, &
@@ -49,7 +49,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: icon, iLJ, iexv, nexv
   integer :: istart, isearch, isearch_LJ, isearch_morse
   integer :: isearch_rna_bp, isearch_rna_st
-  integer :: i_exvol, i_ion_hyd, i_ion_exv
+  integer :: i_exvol
   integer :: i_sasa, i_exv_wca, i_exv_dt15 !sasa
   integer :: iexv2mp_l  (3, MXMPNEIGHBOR*nmp_all)
   integer :: iexv2mp_pre(3, MXMPNEIGHBOR*nmp_all)
@@ -65,8 +65,6 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: EXV6
      integer :: PAIR_RNA
      integer :: STACK_RNA
-     integer :: ION_HYD
-     integer :: ION_EXV
      integer :: AICG1
      integer :: AICG2
      integer :: SASA   !sasa
@@ -74,7 +72,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: EXV_DT15
      integer :: MAX
   endtype calc_type
-  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,14)
+  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,12)
   integer :: icalc(CALC%MAX, nunit_real, nunit_real)
 
   character(CARRAY_MSG_ERROR) :: error_message
@@ -123,12 +121,6 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
         endif
         if ((iunit == junit) .AND. (iclass_unit(iunit) == CLASS%RNA)) then
            icalc(CALC%STACK_RNA, iunit, junit) = 1
-        endif
-        if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ION_HYD)) then
-           icalc(CALC%ION_HYD, iunit, junit) = 1
-        endif
-        if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ION_EXV)) then
-           icalc(CALC%ION_EXV, iunit, junit) = 1
         endif
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%AICG1)) then  !AICG
            icalc(CALC%AICG1, iunit, junit) = 1
@@ -475,40 +467,6 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if
         end if
         
-        ! -----------------------------------------------------------------
-        ! Ion
-        if(icalc(CALC%ION_HYD, iunit, junit) == 1 .or. icalc(CALC%ION_EXV, iunit, junit) == 1) then
-
-           i_ion_hyd = 0
-           i_ion_exv = 0
-
-           if(iontype_mp(imp) /= 0 .and. iontype_mp(jmp) /= 0 .and. icalc(CALC%ION_HYD, iunit, junit) == 1) then
-              i_ion_hyd = 1
-
-           else if(iontype_mp(imp) /= 0 .or. iontype_mp(jmp) /= 0) then
-
-              if((iontype_mp(imp) == 0 .and. iontype_mp(jmp) == IONTYPE%P) .or. (iontype_mp(imp) == IONTYPE%P .and. iontype_mp(jmp) == 0)) then
-                 ! skip interaction between phosphate and non-ion molecules
-              else
-                 i_ion_exv = 1
-              end if
-
-           end if
-
-           if(i_ion_hyd == 1) then
-              iexv = iexv + 1 
-              iexv2mp_l(1, iexv) = imp 
-              iexv2mp_l(2, iexv) = jmp
-              iexv2mp_l(3, iexv) = E_TYPE%HYD_ION
-           else if(i_ion_exv == 1) then
-              iexv = iexv + 1 
-              iexv2mp_l(1, iexv) = imp 
-              iexv2mp_l(2, iexv) = jmp
-              iexv2mp_l(3, iexv) = E_TYPE%EXV_ION
-           end if
-           
-        end if
-!sasa
         ! -----------------------------------------------------------------
         ! SASA
         if(icalc(CALC%SASA, iunit, junit) == 1) then

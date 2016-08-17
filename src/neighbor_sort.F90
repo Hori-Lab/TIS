@@ -72,17 +72,6 @@ subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
      call sort( E_TYPE%EXV_DT15 )
   end if
 
-  ! ------------------------------------------------------------
-  !ion
-  if(inmisc%force_flag(INTERACT%ION_HYD) .or. inmisc%force_flag(INTERACT%ION_EXV)) then
-     
-     if(inmisc%force_flag(INTERACT%ION_HYD)) then
-        call sort( E_TYPE%HYD_ION )
-     end if
-
-     call sort( E_TYPE%EXV_ION )
-  end if
-
   !-------------------------------------------------------------
   !sasa
   if(inmisc%force_flag(INTERACT%SASA)) then

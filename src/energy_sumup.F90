@@ -217,13 +217,14 @@ subroutine energy_sumup(irep,          &
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        if(inele%i_calc_method == 0) then         ! neighboring list (default)
-           call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
-           call energy_ele2(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        else                                      ! direct calculation for K computer
-           call energy_ele3(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        end if
+        call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        !if(inele%i_calc_method == 0) then         ! neighboring list (default)
+        !   call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
+        !   call energy_ele2(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        !else                                      ! direct calculation for K computer
+        !   call energy_ele3(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        !end if
 
      elseif (inele%i_function_form == 1) then ! Coulomb potential
         call energy_ele_coulomb(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
@@ -236,12 +237,6 @@ subroutine energy_sumup(irep,          &
      endif
   endif
   TIME_E( tm_energy_ele)
-
-  if (inmisc%class_flag(CLASS%ION)) then
-     TIME_S( tm_energy_exv) 
-     call energy_ion(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     TIME_E( tm_energy_exv) 
-  endif
 
   if (inmisc%force_flag(INTERACT%HP)) then
      TIME_S( tm_energy_hp) 

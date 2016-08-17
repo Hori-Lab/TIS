@@ -196,7 +196,7 @@ FOBJ1 = \
 	setpara.o\
 	setp_mapara.o setp_mapara_pro.o\
 	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
-	setp_mapara_ion.o setp_redef_para.o setp_mapara_rna.o\
+	setp_redef_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_group.o setp_anneal_para.o setp_searchingtf_para.o setp_minimize_para.o\
 	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
 	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o setp_para_enm.o setp_para_mgo.o\
@@ -228,8 +228,7 @@ FOBJ1 = \
 	simu_minimize.o simu_mc_implig.o simu_calc_energy_dcd.o\
 	neighbor.o neighbor_pre.o neighbor_list.o\
 	neighbor_assign.o neighbor_sort.o\
-	neighbor_list_ele.o neighbor_list_ele2.o\
-	neighbor_list_hp.o neighbor_list_hb.o\
+	neighbor_list_ele.o neighbor_list_hp.o neighbor_list_hb.o\
 	simu_copyxyz.o simu_copyxyz_ele.o\
 	simu_copyxyz_mgo.o simu_copyxyz_replica.o simu_copyxyz_ref.o\
 	simu_xyz_adjst.o simu_velo_mrand.o simu_velo_mrand_old.o\
@@ -243,10 +242,10 @@ FOBJ1 = \
 	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o energy_LJ.o\
 	energy_nlocal_morse.o energy_nlocal_rna_bp.o energy_orderpara.o\
 	energy_exv_rep12.o energy_exv_rep6.o energy_exv_restype.o energy_exv_wca.o energy_exv_dt15.o\
-	energy_hp.o energy_sasa.o energy_ion.o energy_box.o energy_cap.o\
+	energy_hp.o energy_sasa.o energy_box.o energy_cap.o\
 	energy_cylinder.o energy_anchor.o energy_rest1d.o energy_bridge.o\
 	energy_pulling.o energy_implig.o\
-	energy_ele.o energy_ele2.o energy_ele3.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
+	energy_ele.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
 	energy_ele_coulomb_brute.o\
 	energy_window.o energy_winz.o energy_fbangle.o energy_fdih.o\
 	energy_aicg13_gauss.o\
@@ -258,9 +257,9 @@ FOBJ1 = \
 	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_LJ.o force_nlocal_morse.o \
 	force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o force_enm.o\
 	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
-	force_hp.o force_ion.o force_sasa.o force_bridge.o force_pulling.o\
+	force_hp.o force_sasa.o force_bridge.o force_pulling.o\
 	force_anchor.o force_rest1d.o force_box.o force_cap.o force_cylinder.o\
-	force_implig.o force_ele.o force_ele2.o force_ele3.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
+	force_implig.o force_ele.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
 	force_dtrna_stack.o force_dtrna_stack_nlocal.o\
 	force_dtrna_hbond13.o force_dtrna_hbond15.o force_window.o force_winz.o\
 	write_rep_traject.o write_rep_result.o write_rep_table.o write_rep_adjust.o \

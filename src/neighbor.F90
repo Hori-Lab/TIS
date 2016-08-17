@@ -45,8 +45,7 @@ subroutine neighbor(irep)
       inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%GO) .OR.&
       inmisc%force_flag(INTERACT%PAIR_RNA) .OR.&! inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       inmisc%force_flag(INTERACT%LJ) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
-      inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2) .OR.&
-      inmisc%force_flag(INTERACT%ION_HYD) .OR. inmisc%force_flag(INTERACT%ION_EXV)) then
+      inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
      ! make neighborlist
      call neighbor_list(irep, ineigh2mp, lmp2neigh)
 
@@ -62,12 +61,12 @@ subroutine neighbor(irep)
   TIME_S( tm_neighbor_ele )
   if (inmisc%force_flag(INTERACT%ELE)) then
      ! make neighborlist for electrostatic interaction
-     if(inele%i_calc_method == 0) then
-        call neighbor_list_ele(irep)
-!     if(inele%i_calc_method == 0) then
-     else if(inele%i_calc_method == 1) then
-        call neighbor_list_ele2(irep)
-     end if
+     call neighbor_list_ele(irep)
+     !if(inele%i_calc_method == 0) then
+     !   call neighbor_list_ele(irep)
+     !else if(inele%i_calc_method == 1) then
+     !   call neighbor_list_ele2(irep)
+     !end if
   endif
   TIME_E( tm_neighbor_ele )
 

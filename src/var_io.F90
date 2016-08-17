@@ -17,14 +17,13 @@ module var_io
      integer :: para_lig      = 19
      integer :: para_hp       = 20
      integer :: para_ele      = 21
-     integer :: para_ion      = 22
-     integer :: para_flp      = 23
-     integer :: para_aicg_gen = 24 ! aicg_gen
-     integer :: para_aicg     = 25 ! aicg
-     integer :: para_aicg2    = 26 ! aicg2
-     integer :: msf           = 27 ! fmat
-     integer :: para_fsasa    = 28 ! sasa
-     integer :: para_exv      = 30 ! excluded volume
+     integer :: para_flp      = 22
+     integer :: para_aicg_gen = 23 ! aicg_gen
+     integer :: para_aicg     = 24 ! aicg
+     integer :: para_aicg2    = 25 ! aicg2
+     integer :: msf           = 26 ! fmat
+     integer :: para_fsasa    = 27 ! sasa
+     integer :: para_exv      = 28 ! excluded volume
      integer :: dcd(MXREPLICA)
      integer :: velo(MXREPLICA)
      integer :: sz

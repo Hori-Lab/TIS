@@ -114,25 +114,23 @@ module const_index
      integer :: STACK_RNA     !< 17: RNA base stacking (distance)
      integer :: PAIR_RNA      !< 18: RNA base pairing
      integer :: LJ_ION        !< 19: Ion LJ
-     integer :: HYD_ION       !< 20: Ion hydration
-     integer :: EXV_ION       !< 21: Ion excluded volume
-     integer :: REST1D        !< 22: 1D-restraint
-     integer :: CAP           !< 23: Cap boundary
-     integer :: WINDOW        !< 24: Window potential
-     integer :: SASA          !< 25: SASA potential !sasa
-     integer :: EXV_WCA       !< 26: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: STACK_DTRNA   !< 27: Denesyuk-Thirumalai RNA base stacking
-     integer :: HBOND_DTRNA   !< 28: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: CYLINDER      !< 29: Cylindrical boundary
-     integer :: EXV_DT15      !< 30: excluded volume of DTRNA2015 model
-     integer :: TSTACK_DTRNA  !< 31: Denesyuk-Thirumalai RNA base stacking
-     integer :: THBOND_DTRNA  !< 32: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: EXV6          !< 33: Excluded volume
+     integer :: REST1D        !< 20: 1D-restraint
+     integer :: CAP           !< 21: Cap boundary
+     integer :: WINDOW        !< 22: Window potential
+     integer :: SASA          !< 23: SASA potential !sasa
+     integer :: EXV_WCA       !< 24: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: STACK_DTRNA   !< 25: Denesyuk-Thirumalai RNA base stacking
+     integer :: HBOND_DTRNA   !< 26: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: CYLINDER      !< 27: Cylindrical boundary
+     integer :: EXV_DT15      !< 28: excluded volume of DTRNA2015 model
+     integer :: TSTACK_DTRNA  !< 29: Denesyuk-Thirumalai RNA base stacking
+     integer :: THBOND_DTRNA  !< 30: Denesyuk-Thirumalai RNA hydrogen bond
+     integer :: EXV6          !< 31: Excluded volume
      integer :: MAX           !< Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
-                   21,22,23,24,25,26,27,28,29,30,31,32,33,33)
+                   21,22,23,24,25,26,27,28,29,30,31,31)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -162,19 +160,17 @@ module const_index
      integer :: HP        !<  7: hydrophobic interaction
      integer :: MORSE     !<  8: Morse Go potential (not yet released)
      integer :: PAIR_RNA  !<  9: RNA-RNA base pair (not yet released)
-     integer :: ION_HYD   !< 10: hydration interaction (ion-ion, ion-phosphate) (not yet released)
-     integer :: ION_EXV   !< 11: repulsive interaction (ion-ion) (not yet released)
-     integer :: AICG1     !< 12: AICG1(protein)
-     integer :: AICG2     !< 13: AICG2(protein)
-     integer :: SASA      !< 14: SASA(protein) !sasa
-     integer :: DTRNA     !< 15: Denesyuk-Thirumalai RNA model
-     integer :: EXV_WCA   !< 16: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: EXV_DT15  !< 17: Excluded volume with Weeks-Chandler-Andersen potential
-     integer :: LJ        !< 18: Lenard-Jones
+     integer :: AICG1     !< 10: AICG1(protein)
+     integer :: AICG2     !< 11: AICG2(protein)
+     integer :: SASA      !< 12: SASA(protein) !sasa
+     integer :: DTRNA     !< 13: Denesyuk-Thirumalai RNA model
+     integer :: EXV_WCA   !< 14: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: EXV_DT15  !< 15: Excluded volume with Weeks-Chandler-Andersen potential
+     integer :: LJ        !< 16: Lenard-Jones
      integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,18)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
 
 
   type error_handling

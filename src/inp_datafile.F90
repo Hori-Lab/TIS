@@ -489,21 +489,6 @@ subroutine inp_datafile()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-  ! parameter for ion interaction 
-  if(path_para /= '') then
-     filename_para(9) = path_para(1:l-1)//'/'//'ion.para'
-  else
-     filename_para(9) = './para/ion.para'
-  end if
-  write (*, '(a34,i3,a3,a)') "open electrostatic parameter file(",infile%para_ion,&
-                               "): ", trim(filename_para(9))
-  open(infile%para_ion, file = filename_para(9), status = 'old', action = 'read', &
-  iostat = iopen_status)
-  if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(9)
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
   ! parameter for flexible local potential
   if(path_para /= '') then
      filename_para(10) = path_para(1:l-1)//'/'//'flexible_local.para'

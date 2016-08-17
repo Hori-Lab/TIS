@@ -176,10 +176,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_exv_wca (irep, force_mp_l(1,1,tn))
   endif
 
-  if (inmisc%class_flag(CLASS%ION)) then
-     call force_ion(irep, force_mp_l(1,1,tn))
-  endif
-
 !$omp master
   TIME_E( tm_force_exv )
 
@@ -190,13 +186,14 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        if(inele%i_calc_method == 0) then         ! neighboring list (default)
-           call force_ele(irep, force_mp_l(1,1,tn))
-        else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
-           call force_ele2(irep, force_mp_l(1,1,tn))
-        else if(inele%i_calc_method == 2) then    ! direct calculation for K computer
-           call force_ele3(irep, force_mp_l(1,1,tn))
-        end if
+        call force_ele(irep, force_mp_l(1,1,tn))
+        !if(inele%i_calc_method == 0) then         ! neighboring list (default)
+        !   call force_ele(irep, force_mp_l(1,1,tn))
+        !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
+        !   call force_ele2(irep, force_mp_l(1,1,tn))
+        !else if(inele%i_calc_method == 2) then    ! direct calculation for K computer
+        !   call force_ele3(irep, force_mp_l(1,1,tn))
+        !end if
 
      elseif (inele%i_function_form == 1) then ! Coulomb potential
         call force_ele_coulomb(irep, force_mp_l(1,1,tn))

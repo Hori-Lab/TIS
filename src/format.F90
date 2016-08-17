@@ -70,8 +70,6 @@
 #define _FMT_TS_HBOND_T_       '(1xa10)'
 #define _FMT_TS_ELECT_         '(1xf10.2)'
 #define _FMT_TS_ELECT_T_       '(1xa10)'
-#define _FMT_TS_HYDION_        '(1xf10.2)'
-#define _FMT_TS_HYDION_T_      '(1xa10)'
 #define _FMT_TS_HPENE_         '(1xf10.2)'
 #define _FMT_TS_HPENE_T_       '(1xa10)'
 #define _FMT_TS_INT_           '(1xf10.2)'

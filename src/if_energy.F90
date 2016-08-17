@@ -248,14 +248,6 @@ interface
       real(PREC), intent(inout) :: energy(:)
    endsubroutine energy_exv3
 
-   subroutine energy_ion (irep, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-      real(PREC), intent(inout) :: energy(:)
-   endsubroutine energy_ion
-
    subroutine energy_ele(irep, energy, energy_unit)
       use const_maxsize
       implicit none
@@ -264,21 +256,21 @@ interface
       real(PREC), intent(out)   :: energy_unit(:,:,:)
    endsubroutine energy_ele
    
-   subroutine energy_ele2(irep, energy, energy_unit)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(out)   :: energy(:)
-      real(PREC), intent(out)   :: energy_unit(:,:,:)
-   endsubroutine energy_ele2
-   
-   subroutine energy_ele3(irep, energy, energy_unit)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(out)   :: energy(:)
-      real(PREC), intent(out)   :: energy_unit(:,:,:)
-   endsubroutine energy_ele3
+!   subroutine energy_ele2(irep, energy, energy_unit)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      real(PREC), intent(out)   :: energy(:)
+!      real(PREC), intent(out)   :: energy_unit(:,:,:)
+!   endsubroutine energy_ele2
+!   
+!   subroutine energy_ele3(irep, energy, energy_unit)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      real(PREC), intent(out)   :: energy(:)
+!      real(PREC), intent(out)   :: energy_unit(:,:,:)
+!   endsubroutine energy_ele3
 
    subroutine energy_ele_coulomb(irep, energy, energy_unit)
       use const_maxsize

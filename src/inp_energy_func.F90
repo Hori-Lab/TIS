@@ -703,12 +703,6 @@ contains
     else if(char00(i1:i2) == 'PAIR_RNA') then
        itype = INTERACT%PAIR_RNA
 
-    else if(char00(i1:i2) == 'ION_HYD') then
-       itype = INTERACT%ION_HYD
-
-    else if(char00(i1:i2) == 'ION_EXV') then
-       itype = INTERACT%ION_EXV
-
     else if(char00(i1:i2) == 'AICG1') then
        itype = INTERACT%AICG1
 

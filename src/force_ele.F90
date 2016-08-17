@@ -6,8 +6,8 @@ subroutine force_ele(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inmisc, inele, inion, inperi
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all, iontype_mp
+  use var_setp,   only : inele, inperi
+  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use var_replica,only : irep2grep
   use mpiconst
 
@@ -18,9 +18,9 @@ subroutine force_ele(irep, force_mp)
 
   integer :: imp1, imp2
   integer :: ksta, kend
-  integer :: grep, iele1, itype1, itype2
+  integer :: grep, iele1
   integer :: imirror
-  real(PREC) :: dist1, dist2, rdist1, xtanh, rsig, rek_corr
+  real(PREC) :: dist1, dist2, rdist1
   real(PREC) :: dvdw_dr, rcdist, cutoff2
   real(PREC) :: ek, ek_simu
   real(PREC) :: v21(3), for(3)
@@ -66,8 +66,7 @@ subroutine force_ele(irep, force_mp)
   kend = lele(irep)
 #endif
 
-!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,itype1,itype2,&
-!$omp&           rsig,xtanh,rek_corr,dvdw_dr,for,imirror)
+!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,dvdw_dr,for,imirror)
   do iele1=ksta, kend
      imp1 = iele2mp(1, iele1, irep)
      imp2 = iele2mp(2, iele1, irep)
@@ -88,23 +87,9 @@ subroutine force_ele(irep, force_mp)
      dist1 = sqrt(dist2)
      rdist1 = 1.0 / dist1
      
-     itype1 = iontype_mp(imp1)
-     itype2 = iontype_mp(imp2)
-     
-     if((.not. inmisc%class_flag(CLASS%ION)) .or. itype1 <= 0 .or. itype1 > IONTYPE%MAX_ALL .or. itype2 <= 0 .or. itype2 > IONTYPE%MAX_ALL) then
-        dvdw_dr = coef_ele(iele1, irep) * rdist1 * rdist1 * &
-             (rdist1 + rcdist) * &
-             exp(-dist1 * rcdist)
-     else
-        rsig = 1.0/inion%csigmame(itype1, itype2)
-        xtanh = tanh((dist1-inion%cdistme(itype1, itype2))*rsig)
-        rek_corr = 1.0/(0.5*(ek + 5.2) + 0.5*(ek - 5.2)*xtanh)
-        
-        dvdw_dr = ek_simu*rek_corr*coef_ele(iele1, irep)*rdist1*rdist1 &
-             *(rdist1 + rcdist &
-             + rek_corr*rsig*0.5*(ek - 5.2)*(1.0 - xtanh**2)) * &
-             exp(-dist1 * rcdist)
-     end if
+     dvdw_dr = coef_ele(iele1, irep) * rdist1 * rdist1 * &
+          (rdist1 + rcdist) * &
+          exp(-dist1 * rcdist)
      
      if(dvdw_dr > DE_MAX) then
         ! write (*, *) "electrostatic interaction", istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
