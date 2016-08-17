@@ -40,11 +40,23 @@ subroutine neighbor(irep)
   end if
 
   TIME_S( tm_neighbor_exv )
-  ! make neighborlist
-  call neighbor_list(irep, ineigh2mp, lmp2neigh)
+  if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
+      inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
+      inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%GO) .OR.&
+      inmisc%force_flag(INTERACT%PAIR_RNA) .OR.&! inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
+      inmisc%force_flag(INTERACT%LJ) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
+      inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2) .OR.&
+      inmisc%force_flag(INTERACT%ION_HYD) .OR. inmisc%force_flag(INTERACT%ION_EXV)) then
+     ! make neighborlist
+     call neighbor_list(irep, ineigh2mp, lmp2neigh)
 
-  ! assign iconcal2con and iexv2mp
-  call neighbor_assign(irep, ineigh2mp, lmp2neigh)
+     ! assign iconcal2con and iexv2mp
+     call neighbor_assign(irep, ineigh2mp, lmp2neigh)
+
+  else
+     lexv(1, 1:E_TYPE%MAX,:) = 1
+     lexv(2, 1:E_TYPE%MAX,:) = 0
+  endif
   TIME_E( tm_neighbor_exv )
   
   TIME_S( tm_neighbor_ele )
