@@ -1,5 +1,5 @@
 .SUFFIXES: .F90 .o
-TARGET = ../cfml
+TARGET = ../md
 
 # .. utilites
 UTIL1 = ../crd2pdb

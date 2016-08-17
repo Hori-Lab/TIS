@@ -35,7 +35,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use var_io,     only : i_run_mode, i_simulate_type, ifile_out_rep, &
                           ifile_out_rst, outfile, ifile_out_opt, ifile_out_ee
   use var_setp,    only : insimu, inann, inmisc, inele, inwidom, inperi
-  use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep, pxyz_mp_rep
+  use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
                           n_replica_all, n_replica_mpi, irep2grep, exchange_step
   use var_implig,  only : inimplig  ! implicit ligand
@@ -219,7 +219,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                 / (tstep * cmass_mp(imp) )        )   
            !NOTE: SA should be only 1 replica.
         end do
-     elseif (i_simulate_type == SIM%BROWNIAN) then
+     elseif (i_simulate_type == SIM%BROWNIAN .or. i_simulate_type == SIM%PS_BROWNIAN) then
         do imp = 1, nmp_real
            rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZ_KCAL_MOL * tempk * tstep / fric_mp(imp))
            !NOTE: SA should be only 1 replica.

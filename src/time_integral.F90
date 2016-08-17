@@ -104,7 +104,8 @@ subroutine time_integral(flg_step_each_replica)
   ! -------------------------------------
   r_boxmuller(:,:,:) = 0.0
   if (i_simulate_type == SIM%LANGEVIN .OR. &
-      i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI) then
+      i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
+      i_simulate_type == SIM%PS_BROWNIAN ) then
      !call get_random_number(r_boxmuller)
      call get_random_number()
   end if
@@ -339,7 +340,7 @@ subroutine time_integral(flg_step_each_replica)
            
            TIME_E( tm_update )
            
-        else if(i_simulate_type == SIM%BROWNIAN) then
+        else if(i_simulate_type == SIM%BROWNIAN .or. i_simulate_type == SIM%PS_BROWNIAN) then
            
            TIME_S( tm_update )
            do imp = 1, nmp_real

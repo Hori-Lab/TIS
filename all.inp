@@ -67,6 +67,7 @@ i_run_mode = 2
 **           = 4 : MPC dynamics 
 **           = 5 : Brownian dynamics without hydrodynamic interaction
 **           = 6 : Brownian dynamics with hydrodynamic interaction
+**           = 7 : Brownian dynamics without hydrodynamic interaction (ps time scale)
 i_simulate_type = 1
 
 ** i_initial_state: define initial configuration 

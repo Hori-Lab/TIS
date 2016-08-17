@@ -29,8 +29,9 @@ module const_index
      integer :: MPC          !< 4: MPC dynamics
      integer :: BROWNIAN     !< 5: Brownian dynamics without hydrodynamic interaction
      integer :: BROWNIAN_HI  !< 6: Brownian dynamics with hydrodynamic interaction
+     integer :: PS_BROWNIAN  !< 7: Brownian dynamics without hydrodynamic interaction
   endtype simu_type
-  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6)
+  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6,7)
 
   ! i_hydro_tensor: define tensor type of hydrodynamic interaction (only when SIM%BROWNIAN_HI)
   type tensor_type
@@ -257,15 +258,16 @@ module const_index
      integer :: U       !< 25: Uracyl
      integer :: C       !< 26: Cytosine
      integer :: MG      !< 27: ion
-     integer :: K       !< 28: ion
-     integer :: NA      !< 29: ion
-     integer :: CL      !< 30: ion
-     integer :: X1      !< 31: ligand (for rod)
-     integer :: MAX     !< 31
+     integer :: CA2     !< 28: ion
+     integer :: K       !< 29: ion
+     integer :: NA      !< 30: ion
+     integer :: CL      !< 31: ion
+     integer :: X1      !< 32: ligand (for rod)
+     integer :: MAX     !< 32
   endtype chemical_type
   type(chemical_type), parameter :: CHEMICALTYPE = &
        chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,&
-                     20,21,22,23,24,25,26,27,28,29,30,31,31)
+                     20,21,22,23,24,25,26,27,28,29,30,31,32,32)
 
   type ion_type
      integer :: VOID      !< 0

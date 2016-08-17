@@ -202,7 +202,7 @@ subroutine time_integral_pre(flg_step_each_replica)
            velo_yojou(ics) = cmass_cs(ics-1) * velo_cs(ics-1)**2 - BOLTZ_KCAL_MOL * tempk
         end do
 
-     else if(i_simulate_type == SIM%BROWNIAN) then
+     else if(i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%PS_BROWNIAN) then
         velo_mp(:,:,:) = 0.0e0_PREC
         rlan_const(:,:,:) = 0.0e0_PREC
         do imp = 1, nmp_real
@@ -215,6 +215,7 @@ subroutine time_integral_pre(flg_step_each_replica)
         rlan_const(:,:,:) = 0.0e0_PREC
         rlan_const(1, :, irep) = tstep / (BOLTZ_KCAL_MOL * tempk)
         rlan_const(2, :, irep) = sqrt( 2.0e0_PREC * tstep )
+
      endif
      
   enddo ! irep -----------------------------------------------

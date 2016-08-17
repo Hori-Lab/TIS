@@ -137,6 +137,8 @@ subroutine inp_job()
      write (lunout, *) 'Brownian dynamics'
   else if(i_simulate_type == SIM%BROWNIAN_HI) then
      write (lunout, *) 'Brownian dynamics with hydrodynamic interaction'
+  else if(i_simulate_type == SIM%PS_BROWNIAN) then
+     write (lunout, *) 'Brownian dynamics (time scale: ps)'
   else
      error_message = 'Error: invalid value about i_simulate_type'
      call util_error(ERROR%STOP_ALL, error_message)

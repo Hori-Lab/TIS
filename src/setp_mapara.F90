@@ -217,6 +217,8 @@ contains
       ! ------ ions ------
       else if (c(1:2) == 'MG') then
          char2ichem = CHEMICALTYPE%MG
+      else if (c(1:3) == 'CA2') then
+         char2ichem = CHEMICALTYPE%CA2
       else if (c(1:2) == 'CL') then
          char2ichem = CHEMICALTYPE%CL
       else if (c(1:2) == 'NA') then

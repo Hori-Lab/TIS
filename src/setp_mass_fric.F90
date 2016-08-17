@@ -57,8 +57,23 @@ subroutine setp_mass_fric()
   ! Friction coefficients by Stokes' law
   if (inmisc%i_fric == 1) then
 
-     ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)   (tau: cafemol time unit)
-     visc = inpara%viscosity * sqrt(1.0e3_PREC * JOUL2KCAL) * N_AVO * 1.0e-20_PREC
+     if (i_simulate_type == SIM%LANGEVIN .OR. &
+         i_simulate_type == SIM%BROWNIAN .OR. &
+         i_simulate_type == SIM%BROWNIAN_HI) then
+
+        ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)   (tau: cafemol time unit)
+        visc = inpara%viscosity * sqrt(1.0e3_PREC * JOUL2KCAL) * N_AVO * 1.0e-20_PREC
+
+     else if(i_simulate_type == SIM%PS_BROWNIAN) then
+
+        !visc = 1.0e-18_PREC * N_AVO / KCAL2JOUL * inpara%viscosity
+        visc = 1.0e-18_PREC * JOUL2KCAL_MOL * inpara%viscosity
+
+     else
+        visc = -INVALID_VALUE
+        error_message = 'Error: invalid i_simulate_type in setp_mass_fric'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
 
      do imp = 1, nmp_all
         ichemical = imp2chemicaltype(imp)
@@ -80,6 +95,9 @@ subroutine setp_mass_fric()
         else if(i_simulate_type == SIM%BROWNIAN_HI) then
            !fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius
            !radius(imp) = radius
+
+        else if(i_simulate_type == SIM%PS_BROWNIAN) then
+           fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
 
         endif
      enddo
