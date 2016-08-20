@@ -16,7 +16,7 @@ subroutine neighbor(irep)
   use const_index
   use var_setp,   only : inmisc, inele, inperi
   use var_struct, only : lexv, nmp_all, nhbneigh, lele
-  use var_io,     only : ifile_out_neigh, outfile
+  use var_io,     only : flg_file_out, outfile
 
   use time
   use mpiconst
@@ -81,7 +81,7 @@ subroutine neighbor(irep)
      call neighbor_list_hb(irep)
   endif
 
-  if (ifile_out_neigh == 1) then
+  if (flg_file_out%neigh) then
      if (inmisc%force_flag(INTERACT%EXV12)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
      if (inmisc%force_flag(INTERACT%EXV6)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
      if (inmisc%force_flag(INTERACT%EXV_WCA)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1

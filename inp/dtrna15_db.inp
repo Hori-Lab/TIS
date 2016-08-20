@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./
 filename = azo_db
-OUTPUT pdb dcd psf rst opt
+OUTPUT pdb psf
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo

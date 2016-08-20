@@ -58,7 +58,7 @@ endinterface
       widom_flg_exv_inf = .False.
       call energy_exv_dt15_tp(irep, energy_test)
       if (widom_flg_exv_inf) then
-         write(outfile%chp,'(i15,1x, f10.4,1x, i10,1x, i5,1x,a9,1x,a9,1x,a9)') &
+         write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,a9,1x,a9,1x,a9)') &
                   widom_iw, -kT*log(widom_chp/real(widom_iw)), istep, iw, 'inf', 'inf', 'NaN'
          cycle
       endif
@@ -78,7 +78,7 @@ endinterface
       widom_chp =  widom_chp + chp
 
       ! Output
-      write(outfile%chp,'(i15,1x, f10.4,1x, i10,1x, i5,1x,g10.4,1x,g10.4,1x,g10.4)') &
+      write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,g10.4,1x,g10.4,1x,g10.4)') &
                   widom_iw, -kT*log(widom_chp/real(widom_iw)), istep, iw, &
                   test_total, energy_test(E_TYPE%EXV_DT15), energy_test(E_TYPE%ELE)
    enddo

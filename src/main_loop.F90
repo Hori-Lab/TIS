@@ -8,7 +8,7 @@ subroutine main_loop()
   use const_physical
   use const_index
   use var_io,     only : i_go_native_read_style, i_run_mode, &
-                          ifile_out_psf, outfile
+                          flg_file_out, outfile
   use var_setp,    only : insimu, inmisc, inflp, inele
   use var_mgo,     only : inmgo
   use var_fmat,    only : infmat, i_num_sum
@@ -115,7 +115,7 @@ subroutine main_loop()
      if(istep_sim == insimu%i_step_sim_init) then
         call write_seq()
         call write_nativeinfo(outfile%ninfo)
-        if (ifile_out_psf == 1) then
+        if (flg_file_out%psf) then
            call write_psf()
         endif
         if (i_run_mode == RUN%FMAT) call write_fmat(istep_sim)

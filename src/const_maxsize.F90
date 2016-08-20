@@ -39,7 +39,6 @@ module const_maxsize
   integer, parameter :: MXPDB = 200    !< maximum # of input PDB files
   integer, parameter :: MXINI = MXPDB  !< maximum # of input structure files
   integer, parameter :: MXPARA = 15     !< maximum # of parameter files !changed for exv
-  integer, parameter :: I_RECORD = 1  !< # of restart files
   integer, parameter :: FILENAME_DIGIT_REPLICA = 4  !< # of digits added to .ts filename in REM
 
   ! MD-control
@@ -103,7 +102,7 @@ module const_maxsize
   integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
 
   ! Replica exchange method
-  integer, parameter :: MXREPLICA = 1024     !< maximum # of replicas
+  integer, parameter :: MXREPLICA = 24     !< maximum # of replicas
   integer, parameter :: MXREPDIM = 3       !< maximum # of dimensions in REM
 
   ! Optional interaction

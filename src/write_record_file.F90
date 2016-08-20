@@ -1,23 +1,17 @@
 !write_record_file
 !> @brief This is wrapper subroutine to call "write_xyz_pdb"
 
-subroutine write_record_file(istep, velo_mp)
+subroutine write_record_file(istep)
 
   use if_write
   use const_maxsize
   use const_index
-  use var_io, only : ifile_out_pdb
-
-#ifdef MPI_PAR
+  use var_io, only : flg_file_out
   use mpiconst
-#endif
 
-  ! -----------------------------------------------------------------
   implicit none
 
-  ! -----------------------------------------------------------------
   integer(L_INT), intent(in) :: istep
-  real(PREC), intent(in) :: velo_mp(:,:,:)
 
   ! -----------------------------------------------------------------
 #ifdef MPI_PAR
@@ -27,7 +21,7 @@ subroutine write_record_file(istep, velo_mp)
   ! -----------------------------------------------------------------
   ! write PDB at the beginning step.
   ! -----------------------------------------------------------------
-  if (ifile_out_pdb == 1 ) then
+  if (flg_file_out%pdb) then
      call write_xyz_pdb(istep)
   end if
 

@@ -256,7 +256,7 @@ subroutine time_integral_pre(flg_step_each_replica)
      call write_traject_file(ibefore_time, istep_dummy, tempk, velo_mp)
   endif
   
-  call write_record_file(istep_dummy, velo_mp)
+  call write_record_file(istep_dummy)
   
   flg_step_each_replica(1:n_replica_mpi)  = .false. 
 

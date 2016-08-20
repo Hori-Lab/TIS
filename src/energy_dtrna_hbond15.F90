@@ -49,7 +49,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,     only : outfile
+  use var_io,      only : flg_file_out, outfile
   use var_setp,    only : inmisc, mts, indtrna15
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -398,14 +398,26 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
            energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
                      energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
         endif
-
-        if (hb_energy(ihb,irep) < -(tempk * BOLTZ_KCAL_MOL)) then
-            write(outfile%opt, '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
-        endif
      end do
 !$omp end do nowait
-     write(outfile%opt, *)
-
   endif
+
+#ifdef MPI_PAR3
+  if( myrank == 0 ) then
+#endif
+!$omp master
+  if (flg_file_out%hb) then
+     do ineigh=1, nhbneigh(irep)
+        ihb = ineigh2hb(ineigh, irep)
+        if (hb_energy(ihb,irep) < -(tempk * BOLTZ_KCAL_MOL)) then
+            write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
+        endif
+     enddo
+     write(outfile%hb(irep),*) ''
+  endif
+!$omp end master
+#ifdef MPI_PAR3
+  endif
+#endif
 
 end subroutine energy_dtrna_hbond15

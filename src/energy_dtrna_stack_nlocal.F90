@@ -48,11 +48,12 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
+  use var_io,      only : flg_file_out, outfile
   use var_setp,    only : inmisc
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                           idtrna_tst2st, flg_tst_exclusive, ndtrna_st
-  use var_simu,    only : st_status
+  use var_simu,    only : st_status, tempk
   use mpiconst
 
   implicit none
@@ -61,7 +62,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   real(PREC), intent(inout) :: energy(:)
   real(PREC), intent(inout) :: energy_unit(:,:,:)
 
-  integer :: iunit1, iunit2
+  integer :: imp1, imp2, iunit1, iunit2
   integer :: ist, ist_2nd
   real(PREC) :: dih, cos_theta
   real(PREC) :: d, efull, ediv
@@ -71,6 +72,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
   integer :: ksta, kend
+  real(PREC) :: ene_st(1:ndtrna_tst), ene_st_l(1:ndtrna_tst) ! for stack energy output
   logical :: st_status_l(1:ndtrna_st)
 #ifdef MPI_PAR3
   integer :: klen
@@ -96,16 +98,18 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
 
 !$omp master
   st_status_l(:) = .True.
+  ene_st(:) = 999999.9  ! stacking energy < 0
+  ene_st_l(:) = 999999.9
 
-!!$omp do private(iunit1,iunit2,ist_2nd,&
+!!$omp do private(imp1,imp2,iunit1,iunit2,ist_2nd,&
 !!$omp&           d, dih, cos_theta, efull, ediv, &
 !!$omp&           v12,v13,v53,v42,v46,d1212,&
-!!$omp&           m,n,&
-!!$omp&           c4212,c1213)
+!!$omp&           m,n,c4212,c1213)
   do ist=ksta,kend
 
-     v12 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+     imp1 = idtrna_tst2mp(1,ist)
+     imp2 = idtrna_tst2mp(2,ist)
+     v12 = xyz_mp_rep(1:3, imp1, irep) - xyz_mp_rep(1:3, imp2, irep)
 
      !===== Distance =====
      d1212 = dot_product(v12,v12)
@@ -121,19 +125,16 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
            st_status_l(ist_2nd) = .False.
         endif
      endif
-     
-     iunit1 = imp2unit(idtrna_tst2mp(1,ist))
-     iunit2 = imp2unit(idtrna_tst2mp(2,ist))
 
      ediv = 1.0e0_PREC
 
      !===== calc vectors =====
-     v13 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
+     v13 = xyz_mp_rep(1:3, imp1,                 irep) &
           -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
      v53 = xyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
           -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
      v42 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+          -xyz_mp_rep(1:3, imp2,                 irep)
      v46 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
           -xyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
 
@@ -202,19 +203,36 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
      efull = coef_dtrna_tst(0,ist) / ediv
 
      energy(E_TYPE%TSTACK_DTRNA) = energy(E_TYPE%TSTACK_DTRNA) + efull
-
+     
+     iunit1 = imp2unit(imp1)
+     iunit2 = imp2unit(imp2)
      energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) = &
                energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) + efull
 
+     ene_st_l(ist) = efull  ! for stack energy output
   end do
 !!$omp end do nowait
 
 #ifdef MPI_PAR3
   call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
                      MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
+  if (flg_file_out(st)) then
+     call mpi_allreduce(ene_st_l, ene_st, ndtrna_tst, &
+                     PREC_MPI, MPI_LAND, mpi_comm_local, ierr)
+  endif
 #else
   st_status(:,irep) = st_status_l(:)
+  ene_st(:) = ene_st_l(:)
 #endif
+
+  if (flg_file_out%st) then
+     do ist = 1, ndtrna_tst
+        if (ene_st(ist) < -(tempk * BOLTZ_KCAL_MOL)) then
+           write(outfile%st(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
+        endif
+     enddo
+     write(outfile%st(irep),*) ''
+  endif
 
 !$omp end master
 !$omp barrier

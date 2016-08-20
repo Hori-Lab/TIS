@@ -6,12 +6,10 @@ subroutine setp_minimize_para()
    use const_maxsize
    use const_index
    use const_physical
-   use var_io, only : infile, outfile, ifile_out_opt
+   use var_io, only : infile, outfile, flg_file_out
    use var_setp, only : insimu
    use var_emin, only : inemin
-#ifdef MPI_PAR
    use mpiconst
-#endif
 
    implicit none
    logical       :: flg_sd, flg_cg
@@ -129,7 +127,7 @@ subroutine setp_minimize_para()
       ! Output to .data file
    else if (inemin%i_out == 2) then
       ! Output to .opt file
-      if (ifile_out_opt /= 1) then
+      if (.not. flg_file_out%opt) then
          error_message = 'Error: invalid value for i_out in <<<<energy_minimize. '//&
                          '"opt" is needed in the OUTPUT line.'
          call util_error(ERROR%STOP_ALL, error_message)

@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./data
 filename = azo_dcd
-OUTPUT  opt
+OUTPUT  st hb
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -28,12 +28,12 @@ psizez = 350.0
 <<<< unit_and_state
 i_seq_read_style = 4
 i_go_native_read_style = 2
-1    rna    azo_00_00.cg.min.pdb
+1    rna    azo.rna.min.pdb
 2    ion    azo_05_12.ion.min.pdb
 >>>>
 
 <<<< initial_struct
-1           azo_00_00.cg.min.pdb
+1           azo.rna.min.pdb
 2           azo_05_12.ion.min.pdb
 >>>>
 

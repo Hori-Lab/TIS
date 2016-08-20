@@ -41,11 +41,10 @@ interface
       real(PREC), intent(in) :: velo_mp(:,:,:)
    endsubroutine write_traject_file
 
-   subroutine write_record_file(istep, velo_mp)
+   subroutine write_record_file(istep)
       use const_maxsize
       implicit none
       integer(L_INT), intent(in) :: istep
-      real(PREC), intent(in) :: velo_mp(:,:,:)
    endsubroutine write_record_file
 
    subroutine simu_radiusg(rg_unit, rg)

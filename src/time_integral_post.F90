@@ -32,8 +32,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_mloop
   use if_write
   use if_energy
-  use var_io,     only : i_run_mode, i_simulate_type, ifile_out_rep, &
-                          ifile_out_rst, outfile, ifile_out_opt, ifile_out_ee
+  use var_io,     only : i_run_mode, i_simulate_type, flg_file_out, outfile
   use var_setp,    only : insimu, inann, inmisc, inele, inwidom, inperi
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
@@ -93,7 +92,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
             mod(istep, inimplig%istep_un_implig) == 0   ) flg_step_implig = .true.
      endif
   endif
-  if (ifile_out_rst == 1) then
+  if (flg_file_out%rst) then
      if (mod(istep, insimu%n_step_rst) == 0) then
         flg_step_rst = .true.
      endif
@@ -151,10 +150,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                         rmsd_unit, rmsd,              &
                         energy_unit, energy, tempk)
 
-     if (ifile_out_opt == 1) then
+     if (flg_file_out%opt) then
         ! something to write to opt file
      endif
-     if (ifile_out_ee == 1) then
+     if (flg_file_out%ee) then
         irep = 1
         !imp1 = 1
         !imp2 = nmp_real
@@ -195,14 +194,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! --------------------------------------------------------------
   ! write RECORD file
   ! --------------------------------------------------------------
-  if(mod(istep, ntstep/I_RECORD) == 0 .OR. istep == ntstep) then
-#ifdef _DEBUG
-     write (6,*) 'record file: ',istep, I_RECORD
-#endif
+  if(istep == 0 .OR. istep == ntstep) then
      if(insimu%i_com_zeroing == 1 .OR. insimu%i_com_zeroing == 2) then
         call simu_xyz_adjst()
      end if
-     call write_record_file(istep, velo_mp)
+     call write_record_file(istep)
   end if
   
   ! --------------------------------------------------------------
@@ -235,7 +231,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   if (i_run_mode == RUN%REPLICA) then
      
      ! write trajectory
-     if ((ifile_out_rep == 1) .AND. (istep == insimu%i_tstep_init .OR. flg_step_rep_save)) then
+     if (flg_file_out%rep .AND. (istep == insimu%i_tstep_init .OR. flg_step_rep_save)) then
         call write_rep_traject(istep)
      endif
      

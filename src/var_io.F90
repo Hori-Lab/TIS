@@ -39,9 +39,11 @@ module var_io
      integer :: psf   = 55
      integer :: fmat  = 56
      integer :: opt   = 57
-     integer :: chp   = 58
      integer :: neigh = 59
      integer :: ee    = 60
+     integer :: chp(MXREPLICA)
+     integer :: st(MXREPLICA)
+     integer :: hb(MXREPLICA)
      integer :: rst(MXREPLICA)
      integer :: ts(MXREPLICA)
      integer :: movie(MXREPLICA)
@@ -81,18 +83,25 @@ module var_io
                            ! 5: 1:PDB 2:generate 3:sequence
   integer, save :: ifile_ini(4, MXINI)
   integer, save :: ifile_dssp(MXPDB) ! aicg
-  integer, save :: ifile_out_pdb
-  integer, save :: ifile_out_velo
-  integer, save :: ifile_out_movie
-  integer, save :: ifile_out_dcd
-  integer, save :: ifile_out_vdcd
-  integer, save :: ifile_out_rep
-  integer, save :: ifile_out_psf
-  integer, save :: ifile_out_rst
-  integer, save :: ifile_out_opt
-  integer, save :: ifile_out_chp
-  integer, save :: ifile_out_neigh
-  integer, save :: ifile_out_ee
+
+  !> file handler for output files (50 <= num <= 100)
+  type fileout
+     logical :: pdb
+     logical :: velo
+     logical :: movie
+     logical :: dcd
+     logical :: vdcd
+     logical :: rep
+     logical :: psf
+     logical :: rst
+     logical :: opt
+     logical :: chp
+     logical :: neigh
+     logical :: ee
+     logical :: st
+     logical :: hb
+  end type fileout
+  type(fileout), save :: flg_file_out
 
   integer, save :: i_run_mode
   integer, save :: i_simulate_type

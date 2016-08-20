@@ -1,27 +1,14 @@
-! inp_filename
-!> @brief Opens files for program outputs, including .data, .ninfo, .ts, &
-!>        .movie, .dcd, and so on
-
-! open  velo and dcd files   Added Feb 2009
 subroutine inp_filename()
 
   use const_maxsize
   use const_index
-  use var_io,     only : infile, outfile, i_run_mode,  &
-                          ifile_out_movie, ifile_out_velo, &
-                          ifile_out_dcd, ifile_out_vdcd, ifile_out_pdb,   &
-                          ifile_out_rep, ifile_out_psf, ifile_out_rst,&
-                          fullpath, iopen_lunnum, ifile_out_opt, ifile_out_chp, &
-                          ifile_out_neigh, ifile_out_ee
-  use var_replica, only :  n_replica_all
-#ifdef MPI_PAR
+  use var_io,     only : infile, outfile, i_run_mode, flg_file_out, &
+                         fullpath, iopen_lunnum
+  use var_replica,only : n_replica_all
   use mpiconst
-#endif
 
   implicit none
 
-  ! -----------------------------------------------------------------------
-  ! local variables
   logical :: flg_replica    ! TRUE=ReplicaExchange or FALSE=NotReplica
   integer :: k, m, n = 0
   integer :: i1, i2, isw
@@ -29,9 +16,8 @@ subroutine inp_filename()
   integer :: lunnum
   integer :: iopen_status 
   integer :: irep       ! index for replica
-  ! -------------------------------------------------------------------- mod
   integer :: iline, nlines, iequa, nequat
-  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee
+  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee, ist, ihb
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -48,7 +34,8 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: filename_chp
   character(CARRAY_MXFILE) :: filename_neigh
   character(CARRAY_MXFILE) :: filename_ee
-  ! -------------------------------------------------------------------- mod
+  character(CARRAY_MXFILE) :: filename_st
+  character(CARRAY_MXFILE) :: filename_hb
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: ctmp00
@@ -105,6 +92,8 @@ subroutine inp_filename()
   ichp   = 0
   ineigh = 0
   iee    = 0
+  ihb    = 0
+  ist    = 0
 
   ! -----------------------------------------------------------------------
   ! read input file
@@ -201,8 +190,16 @@ subroutine inp_filename()
                  ineigh = 1
               else if (char7 == 'ee') then
                  filename_ee = filename_header
-                 filename_ee(n:n+2) = '.ee'  
+                 filename_ee(n:n+2) = '.ee'
                  iee = 1
+              else if (char7 == 'st') then
+                 filename_st = filename_header
+                 filename_st(n:n+2) = '.st'
+                 ist = 1
+              else if (char7 == 'hb') then
+                 filename_hb = filename_header
+                 filename_hb(n:n+2) = '.hb'
+                 ihb = 1
               end if
 
               isw = 0
@@ -248,6 +245,8 @@ subroutine inp_filename()
   call MPI_Bcast(ichp,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ineigh, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iee,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ist,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ihb,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
 #endif
   
   ! -----------------------------------------------------------------------
@@ -370,7 +369,7 @@ subroutine inp_filename()
   ! open velo file 
   ! -----------------------------------------------------------------------
   if(ivelo == 1) then
-     ifile_out_velo = 1
+     flg_file_out%velo = .True.
 
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
@@ -419,7 +418,7 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_velo = 0
+     flg_file_out%velo = .False.
   end if
   
   ! -----------------------------------------------------------------------
@@ -427,17 +426,16 @@ subroutine inp_filename()
   !
   ! Attention: Opening a DCD file with form='unformatted', access='stream'
   !            can be used in Fortran 2003 (GCC 4.2). If you have a problem
-  !            for compilation, you might can use another statement instead
-  !            of this.  
+  !            for compilation, you might want to use another statement
+  !            instead of this.  
   !
   !            open( ... , form='unformatted', access='stream', ...)
   !            open( ... , form='binary', ... )
   !            open( ... , form='unformatted', access='transparent', ... ) 
   !
-  !
   ! -----------------------------------------------------------------------
   if(idcd == 1) then
-     ifile_out_dcd = 1
+     flg_file_out%dcd = .True.
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
 #endif
@@ -491,14 +489,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_dcd = 0
+     flg_file_out%dcd = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open VDCD file 
   ! -----------------------------------------------------------------------
   if(ivdcd == 1) then
-     ifile_out_vdcd = 1
+     flg_file_out%vdcd = .True.
 
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
@@ -552,14 +550,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_vdcd = 0
+     flg_file_out%vdcd = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open PDB file 
   ! -----------------------------------------------------------------------
   if(ipdb == 1) then
-     ifile_out_pdb = 1
+     flg_file_out%pdb = .True.
 
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
@@ -607,14 +605,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_pdb = 0
+     flg_file_out%pdb = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open movie file 
   ! -----------------------------------------------------------------------
   if(imovie == 1) then
-     ifile_out_movie = 1
+     flg_file_out%movie = .True.
 
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
@@ -662,14 +660,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_movie = 0
+     flg_file_out%movie = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open Replica-Exchange information (.rep) file 
   ! -----------------------------------------------------------------------
   if (i_run_mode == RUN%REPLICA) then
-     ifile_out_rep = 1
+     flg_file_out%rep = .True.
 #ifdef MPI_PAR 
      if (myrank == 0) then
 #endif
@@ -697,7 +695,7 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_rep = 0
+     flg_file_out%rep = .False.
 
   end if
 
@@ -735,7 +733,7 @@ subroutine inp_filename()
   ! open psf file 
   ! -----------------------------------------------------------------------
   if(ipsf == 1) then
-     ifile_out_psf = 1
+     flg_file_out%psf = .True.
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
@@ -759,14 +757,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_psf = 0
+     flg_file_out%psf = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open opt file 
   ! -----------------------------------------------------------------------
   if(iopt == 1) then
-     ifile_out_opt = 1
+     flg_file_out%opt = .True.
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
@@ -790,16 +788,16 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_opt = 0
+     flg_file_out%opt = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open chp file 
   ! -----------------------------------------------------------------------
   if(ichp == 1) then
-     ifile_out_chp = 1
+     flg_file_out%chp = .True.
 #ifdef MPI_PAR
-     if (myrank == 0) then
+     if (local_rank_mpi == 0) then
 #endif
      n = index(path, ' ')
      m = index(filename_chp, ' ')
@@ -810,25 +808,46 @@ subroutine inp_filename()
         filename = filename_chp
      end if
   
-     write (*, '(a14,i3,a3,a)') "open chp file(",outfile%chp,"): ", trim(filename)
-     open(outfile%chp, file = filename, status = FILE_STATUS, &
-                         action = 'write', iostat = iopen_status)
-     if(iopen_status > 0) then
-        error_message = 'Error: cannot open the file: ' // filename
-        call util_error(ERROR%STOP_STD, error_message)
-     end if
+     filename_chp = filename
+     i_cend_save     = index(filename_chp, '.chp') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%chp(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.chp'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open chp file(",outfile%chp(irep),"): ", trim(filename)
+        open(outfile%chp(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
 #ifdef MPI_PAR
      end if
 #endif
   else
-     ifile_out_chp = 0
+     flg_file_out%chp = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open neigh file 
   ! -----------------------------------------------------------------------
   if(ineigh == 1) then
-     ifile_out_neigh = 1
+     flg_file_out%neigh = .True.
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
@@ -852,14 +871,14 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_neigh = 0
+     flg_file_out%neigh = .False.
   end if
 
   ! -----------------------------------------------------------------------
   ! open ee file 
   ! -----------------------------------------------------------------------
   if(iee == 1) then
-     ifile_out_ee = 1
+     flg_file_out%ee = .True.
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
@@ -883,7 +902,111 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_ee = 0
+     flg_file_out%ee = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open st file 
+  ! -----------------------------------------------------------------------
+  if(ist == 1) then
+     flg_file_out%st = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_st, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_st(1:m-1)
+     else
+        filename = filename_st
+     end if
+  
+     filename_st = filename
+     i_cend_save     = index(filename_st, '.st') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%st(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.st'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open st file(",outfile%st(irep),"): ", trim(filename)
+        open(outfile%st(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%st = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open hb file 
+  ! -----------------------------------------------------------------------
+  if(ihb == 1) then
+     flg_file_out%hb = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_hb, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_hb(1:m-1)
+     else
+        filename = filename_hb
+     end if
+  
+     filename_hb = filename
+     i_cend_save     = index(filename_hb, '.hb') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%hb(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.hb'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open hb file(",outfile%hb(irep),"): ", trim(filename)
+        open(outfile%hb(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%hb = .False.
   end if
 
   ! -----------------------------------------------------------------------
@@ -902,7 +1025,7 @@ subroutine inp_filename()
   ! restart file 
   ! -----------------------------------------------------------------------
   if(irst == 1) then
-     ifile_out_rst = 1
+     flg_file_out%rst = .True.
 #ifdef MPI_PAR
      if (local_rank_mpi == 0) then
 #endif
@@ -955,7 +1078,7 @@ subroutine inp_filename()
      end if
 #endif
   else
-     ifile_out_rst = 0
+     flg_file_out%rst = .False.
   end if
 
 end subroutine inp_filename

@@ -4,7 +4,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   use const_index
   use if_mloop
   use if_write
-  use var_io,     only : ifile_out_opt
+  use var_io,     only : flg_file_out
   use var_replica, only : n_replica_mpi
   use var_simu,    only : ibefore_time, tempk, velo_mp, energy, energy_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, replica_energy
@@ -46,7 +46,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   call write_tseries(ibefore_time, istep_write, &
                      rg_unit, rg, rmsd_unit, rmsd, &
                      energy_unit, energy, tempk, flg_header)
-  if (ifile_out_opt == 1) then
+  if (flg_file_out%opt) then
      ! something to write to opt file
 
      !write(outfile%opt,'(a1,1x,i10,1x,f15.6,1x,f15.6,1x,f15.6)') &
