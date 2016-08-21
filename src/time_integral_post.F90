@@ -33,7 +33,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, flg_file_out, outfile
-  use var_setp,    only : insimu, inann, inmisc, inele, inwidom, inperi
+  use var_setp,    only : insimu, inann, inmisc, inele, inwidom
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
                           n_replica_all, n_replica_mpi, irep2grep, exchange_step
