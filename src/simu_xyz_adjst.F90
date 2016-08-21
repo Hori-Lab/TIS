@@ -4,15 +4,16 @@
 subroutine simu_xyz_adjst()
 
   use const_maxsize
+  use const_index
   use const_physical
   use var_setp,    only : insimu, inperi
-  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
+  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, imp2type
   use var_replica, only : n_replica_mpi
   use mpiconst
 
   implicit none
 
-  integer :: imp, irep, n_mp
+  integer :: i, imp, irep, n_mp
   real(PREC) :: xyzg(SDIM), sumxyz(SDIM)
   real(PREC) :: pxyzg(SDIM), psumxyz(SDIM)
   real(PREC) :: theta
