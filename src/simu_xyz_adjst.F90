@@ -7,7 +7,7 @@ subroutine simu_xyz_adjst()
   use const_index
   use const_physical
   use var_setp,    only : insimu, inperi
-  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, imp2type
+  use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, iclass_mp
   use var_replica, only : n_replica_mpi
   use mpiconst
 
@@ -28,8 +28,7 @@ subroutine simu_xyz_adjst()
         s_sin(1:3) = 0.0e0_PREC
         n_mp = 0
         do imp = 1, nmp_real
-           if (imp2type(imp) == MPTYPE%ION_MG .or. imp2type(imp) == MPTYPE%ION_NA .or.&
-               imp2type(imp) == MPTYPE%ION_K  .or. imp2type(imp) == MPTYPE%ION_CL) then
+           if (iclass_mp(imp) == CLASS%ION) then
                cycle
            endif
            do i = 1, SDIM
