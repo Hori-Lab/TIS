@@ -21,32 +21,30 @@ subroutine force_sumup(force_mp, &  ! [ o]
   use const_index
   use var_setp,   only : inmisc, inele !, inflp
   use var_struct, only : nunit_all, nmp_all
-  use var_mgo,    only : inmgo
+  !use var_mgo,    only : inmgo
   use time
   use mpiconst
 
   implicit none
 
-  ! ---------------------------------------------------------------------
   real(PREC), intent(out) :: force_mp(SDIM, nmp_all)
   integer,    intent(in)  :: irep
 
-  ! ---------------------------------------------------------------------
-  ! local variables
-  integer    :: isys, istat
-  real(PREC) :: ene_unit(nunit_all, nunit_all)
+  !integer    :: isys, istat
+  integer    :: tn, n
+  !real(PREC) :: ene_unit(nunit_all, nunit_all)
   real(PREC) :: force_mp_l(SDIM, nmp_all, 0:nthreads-1)
-  real(PREC) :: ene_unit_l(nunit_all, nunit_all, 0:nthreads-1)
-  integer :: tn, n
-  real(PREC),allocatable :: force_mp_mgo(:,:,:,:,:)
+  !real(PREC) :: ene_unit_l(nunit_all, nunit_all, 0:nthreads-1)
+  !real(PREC),allocatable :: force_mp_mgo(:,:,:,:,:)
 
+  ! ---------------------------------------------------------------------
 
-  if(inmgo%i_multi_mgo >= 1) then
-    allocate(force_mp_mgo(SDIM, nmp_all, &
-                          inmgo%nstate_max_mgo, inmgo%nsystem_mgo, 0:nthreads-1))
-  else
-    allocate(force_mp_mgo(SDIM,nmp_all,1,1,0:nthreads-1))
-  endif
+  !if(inmgo%i_multi_mgo >= 1) then
+  !  allocate(force_mp_mgo(SDIM, nmp_all, &
+  !                        inmgo%nstate_max_mgo, inmgo%nsystem_mgo, 0:nthreads-1))
+  !else
+  !  allocate(force_mp_mgo(SDIM,nmp_all,1,1,0:nthreads-1))
+  !endif
 
 #ifdef _DEBUG
   write(6,*) 'force_sumup: START'
@@ -68,29 +66,29 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
   force_mp_l(1:SDIM,1:nmp_all  ,tn) = 0.0_PREC
 
-  if(inmgo%i_multi_mgo >= 1) then
-     ene_unit_l(1:nunit_all,1:nunit_all,tn) = 0.0_PREC
-
-     do isys = 1, inmgo%nsystem_mgo
-        do istat = 1, inmgo%nstate_mgo(isys)
-           force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,tn) = 0.0_PREC
-        end do
-     end do
-  end if
+!  if(inmgo%i_multi_mgo >= 1) then
+!     ene_unit_l(1:nunit_all,1:nunit_all,tn) = 0.0_PREC
+!
+!     do isys = 1, inmgo%nsystem_mgo
+!        do istat = 1, inmgo%nstate_mgo(isys)
+!           force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,tn) = 0.0_PREC
+!        end do
+!     end do
+!  end if
   
-  call force_bond  (irep, force_mp_l(1,1,tn), &
-                         force_mp_mgo(1,1,1,1,tn), &
-                         ene_unit_l(1,1,tn))
+  call force_bond  (irep, force_mp_l(1,1,tn))
+                         !force_mp_mgo(1,1,1,1,tn), &
+                         !ene_unit_l(1,1,tn))
 
-  call force_fene  (irep, force_mp_l(1,1,tn), ene_unit_l(1,1,tn))
+  call force_fene  (irep, force_mp_l(1,1,tn)) !, ene_unit_l(1,1,tn))
 
-  call force_bangle(irep, force_mp_l(1,1,tn), &
-                         force_mp_mgo(1,1,1,1,tn), &
-                         ene_unit_l(1,1,tn))
+  call force_bangle(irep, force_mp_l(1,1,tn))
+                         !force_mp_mgo(1,1,1,1,tn), &
+                         !ene_unit_l(1,1,tn))
 
-  call force_dih   (irep, force_mp_l(1,1,tn), &
-                         force_mp_mgo(1,1,1,1,tn), &
-                         ene_unit_l(1,1,tn))
+!  call force_dih   (irep, force_mp_l(1,1,tn)
+!                         force_mp_mgo(1,1,1,1,tn), &
+!                         ene_unit_l(1,1,tn))
     
 !  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
 !      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
@@ -111,27 +109,12 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !                               ene_unit_l(1,1,tn))
 !  end if
 
-  call force_dih_harmonic(irep, force_mp_l(1,1,tn), &
-                         force_mp_mgo(1,1,1,1,tn), &
-                         ene_unit_l(1,1,tn))
+!  call force_dih_harmonic(irep, force_mp_l(1,1,tn), &
+!                         force_mp_mgo(1,1,1,1,tn), &
+!                         ene_unit_l(1,1,tn))
   
-  call force_rna_stack(irep, force_mp_l(1,1,tn))
+!  call force_rna_stack(irep, force_mp_l(1,1,tn))
 
-  if (inmisc%class_flag(CLASS%RNA)) then
-     if (inmisc%i_dtrna_model == 2013) then
-        call force_dtrna_stack(irep, force_mp_l(1,1,tn))
-        call force_dtrna_hbond13(irep, force_mp_l(1,1,tn))
-     else if (inmisc%i_dtrna_model == 2015) then
-        call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn))
-        call force_dtrna_stack(irep, force_mp_l(1,1,tn))
-        call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
-     endif
-  endif
-
-  ! Also used in ion-only simulations
-  if (inmisc%force_flag(INTERACT%EXV_DT15)) then
-        call force_exv_dt15 (irep, force_mp_l(1,1,tn))
-  endif
   ! Calculate flexible local interactions
 
   !if (inmisc%i_add_int == 1) then
@@ -155,25 +138,47 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !     call force_enm(irep, force_mp_l(1,1,tn))
 !  else
      call force_LJ(irep, force_mp_l(1,1,tn))
-     call force_nlocal_go(irep, force_mp_l(1,1,tn))
-     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
-     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
+!     call force_nlocal_go(irep, force_mp_l(1,1,tn))
+!     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
+!     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
 !  end if
 
 !$omp master
   TIME_E( tm_force_go )
 
+  TIME_S( tm_force_dtrna ) 
+!$omp end master
+
+  if (inmisc%class_flag(CLASS%RNA)) then
+     if (inmisc%i_dtrna_model == 2013) then
+        call force_dtrna_stack(irep, force_mp_l(1,1,tn))
+        call force_dtrna_hbond13(irep, force_mp_l(1,1,tn))
+     else if (inmisc%i_dtrna_model == 2015) then
+        call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn))
+        call force_dtrna_stack(irep, force_mp_l(1,1,tn))
+        call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
+     endif
+  endif
+
+!$omp master
+  TIME_E( tm_force_dtrna )
+
   TIME_S( tm_force_exv ) 
 !$omp end master
 
-  if (inmisc%i_residuenergy_radii == 0) then
-     call force_exv_rep12 (irep, force_mp_l(1,1,tn))
-     call force_exv_rep6 (irep, force_mp_l(1,1,tn))
-  else if (inmisc%i_residuenergy_radii == 1) then
-     call force_exv_restype (irep, force_mp_l(1,1,tn))
-  endif
-  if (inmisc%force_flag(INTERACT%EXV_WCA)) then
-     call force_exv_wca (irep, force_mp_l(1,1,tn))
+  ! Also used in ion-only simulations
+  if (inmisc%force_flag(INTERACT%EXV_DT15)) then
+        call force_exv_dt15 (irep, force_mp_l(1,1,tn))
+  else
+     if (inmisc%i_residuenergy_radii == 0) then
+        call force_exv_rep12 (irep, force_mp_l(1,1,tn))
+        call force_exv_rep6 (irep, force_mp_l(1,1,tn))
+     else if (inmisc%i_residuenergy_radii == 1) then
+        call force_exv_restype (irep, force_mp_l(1,1,tn))
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_WCA)) then
+        call force_exv_wca (irep, force_mp_l(1,1,tn))
+     endif
   endif
 
 !$omp master
@@ -206,21 +211,21 @@ subroutine force_sumup(force_mp, &  ! [ o]
      endif
   endif
 
-
 !$omp master
   TIME_E( tm_force_ele )
-
-  TIME_S( tm_force_hp ) 
-!$omp end master
-
-  if (inmisc%force_flag(INTERACT%HP)) then
-     call force_hp  (irep, force_mp_l(1,1,tn))
-  endif
-!$omp master
-  TIME_E( tm_force_hp )
 !$omp end master
 
 !!$omp master
+!  TIME_S( tm_force_hp ) 
+!!$omp end master
+
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     call force_hp  (irep, force_mp_l(1,1,tn))
+!  endif
+
+!!$omp master
+!  TIME_E( tm_force_hp )
+!
 !  TIME_S( tm_force_sasa ) !sasa
 !!$omp end master
 !
@@ -240,45 +245,45 @@ subroutine force_sumup(force_mp, &  ! [ o]
     force_mp_l(1:SDIM,1:nmp_all,0) + &
     force_mp_l(1:SDIM,1:nmp_all,n)
   end do
-  TIME_E( tmc_force )
 
-  if(inmgo%i_multi_mgo >= 1) then
-     TIME_S( tmc_force )
-     do n = 1, nthreads-1
-        ene_unit_l(1:nunit_all,1:nunit_all,0) = &
-        ene_unit_l(1:nunit_all,1:nunit_all,0) + &
-        ene_unit_l(1:nunit_all,1:nunit_all,n)
+!  TIME_E( tmc_force )
+!
+!  if(inmgo%i_multi_mgo >= 1) then
+!     TIME_S( tmc_force )
+!     do n = 1, nthreads-1
+!        ene_unit_l(1:nunit_all,1:nunit_all,0) = &
+!        ene_unit_l(1:nunit_all,1:nunit_all,0) + &
+!        ene_unit_l(1:nunit_all,1:nunit_all,n)
+!
+!        do isys = 1, inmgo%nsystem_mgo
+!           do istat = 1, inmgo%nstate_mgo(isys)
+!              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) = &
+!              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) + & 
+!              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,n)
+!           end do
+!        end do
+!     end do
+!
+!#ifdef MPI_PAR
+!     write(*,*) 'try: mpi_allreduce ene_unit_l'
+!     call flush(6)
+!     call mpi_allreduce( ene_unit_l, ene_unit, nunit_all**2, PREC_MPI, &
+!                         MPI_SUM, mpi_comm_local, ierr)
+!#else
+!     ene_unit(1:nunit_all,1:nunit_all) = ene_unit_l(1:nunit_all,1:nunit_all,0)
+!#endif
+!     TIME_E( tmc_force )
+!
+!     TIME_S( tm_force_go )
+!     call force_mgo(force_mp_l, force_mp_mgo, ene_unit)
+!     TIME_E( tm_force_go )
+!  end if
+!
+!  TIME_S( tmc_force )
 
-        do isys = 1, inmgo%nsystem_mgo
-           do istat = 1, inmgo%nstate_mgo(isys)
-              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) = &
-              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,0) + & 
-              force_mp_mgo(1:SDIM,1:nmp_all,istat,isys,n)
-           end do
-        end do
-     end do
-
-#ifdef MPI_PAR
-     write(*,*) 'try: mpi_allreduce ene_unit_l'
-     call flush(6)
-     call mpi_allreduce( ene_unit_l, ene_unit, nunit_all**2, PREC_MPI, &
-                         MPI_SUM, mpi_comm_local, ierr)
-#else
-     ene_unit(1:nunit_all,1:nunit_all) = ene_unit_l(1:nunit_all,1:nunit_all,0)
-#endif
-     TIME_E( tmc_force )
-
-     TIME_S( tm_force_go )
-     call force_mgo(force_mp_l, force_mp_mgo, ene_unit)
-     TIME_E( tm_force_go )
-  end if
-
-  TIME_S( tmc_force )
 #ifdef MPI_PAR
 !!  call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
 !!                     MPI_SUM, mpi_comm_local, ierr)
-     write(*,*) 'try: call allreduce'
-     call flush(6)
   call allreduce(force_mp_l, force_mp)
 #else
   force_mp(1:SDIM,1:nmp_all) = force_mp_l(1:SDIM,1:nmp_all,0) 
@@ -301,17 +306,17 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_rest1d(irep, force_mp)
   end if
 
-  if(inmisc%i_in_box == 1) then
-     call force_box(irep, force_mp)
-  end if
+!  if(inmisc%i_in_box == 1) then
+!     call force_box(irep, force_mp)
+!  end if
 
-  if(inmisc%i_in_cap == 1) then
-     call force_cap(irep, force_mp)
-  end if
+!  if(inmisc%i_in_cap == 1) then
+!     call force_cap(irep, force_mp)
+!  end if
 
-  if(inmisc%i_cylinder == 1) then
-     call force_cylinder(irep, force_mp)
-  end if
+!  if(inmisc%i_cylinder == 1) then
+!     call force_cylinder(irep, force_mp)
+!  end if
 
   if(inmisc%i_window == 1) then
      call force_window(irep, force_mp)
@@ -321,10 +326,10 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_winz(irep, force_mp)
   end if
 
-!! implicit ligand model
-  if(inmisc%i_implig == 1) then
-     call force_implig(irep, force_mp)
-  end if
+!!! implicit ligand model
+!  if(inmisc%i_implig == 1) then
+!     call force_implig(irep, force_mp)
+!  end if
 
 
 #ifdef _DEBUG

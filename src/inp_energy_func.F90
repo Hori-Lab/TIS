@@ -15,18 +15,11 @@ subroutine inp_energy_func()
        
   use var_setp,   only : inmisc, inflp
   use var_struct, only : nunit_all
-  use var_mgo,    only : inmgo
-#ifdef MPI_PAR
+!  use var_mgo,    only : inmgo
   use mpiconst
-#endif
 
   implicit none
 
-  ! ---------------------------------------------------------------------
-  ! intent(out) :: factor_go_unit, itype_nlocal
-
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: k
   integer :: i1 = 1
   integer :: i2 = 1
@@ -254,87 +247,87 @@ subroutine inp_energy_func()
   end if
 
 
-  ! ----------------------------------------------------------------------
-  ! for Multi Go
-  if(inmgo%i_multi_mgo == 1) then
-
-#ifdef MPI_PAR
-     if (myrank == 0) then
-#endif
-
-     inmgo%nsystem_mgo = 0
-     inmgo%isysmbr_mgo(1:MXSYSTEM_MGO, 1:MXSTATE_MGO, 1:MXACT_MGO) = 0
-     inmgo%nstate_mgo(1:MXSYSTEM_MGO) = 0
-     inmgo%nactnum_mgo(1:MXSYSTEM_MGO) = 0
-     inmgo%iactmat_mgo(1:MXUNIT, 1:MXUNIT) = 0
-
-     iact = 0
-     do iline = 1, nlines
-        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-        char00 = cwkinp(iline)
-
-        if(char00(1:14) == 'MULTIGO_SYSTEM') then
-           do icol = 16, CARRAY_MXCOLM
-              if(char00(icol:icol) == ')') exit
-           end do
-           read (char00(16:icol-1), '(a)') char12
-           call util_unitstate(char12, inunit, instate)
-           isys = inunit(1)
-           istat = instate
-           if(inmgo%nsystem_mgo < isys) inmgo%nsystem_mgo = isys
-           if(inmgo%nstate_mgo(isys) < istat) inmgo%nstate_mgo(isys) = istat
-
-           iactnum = 0
-           isw = 0
-           i1 = 0
-           i2 = 0
-           do k = icol + 1, CARRAY_MXCOLM
-              if (cwkinp(iline)(k:k) /= ' ' .and. cwkinp(iline)(k:k) /= ',') then
-                 if(isw == 0) then
-                    i1 = k
-                    isw = 1
-                 end if
-                 i2 = k
-
-              else if (isw == 1) then
-                 isw2 = 0
-                 do jcol = i1, i2
-                    if(char00(jcol:jcol) == '/') isw2 = jcol
-                 end do
-
-                 read (char00(i1:isw2-1), '(a)') char12
-                 call util_unitstate(char12, inunit, instate)
-                 read (char00(isw2+1:i2), '(a)') char12
-                 call util_unitstate(char12, jnunit, instate2)
-
-                 do iu = inunit(1), inunit(2)
-                    do ju = jnunit(1), jnunit(2)
-                       iact = iact + 1
-                       iactnum = iactnum + 1
-                       iunit = ius2unit(iu, instate)
-                       junit = ius2unit(ju, instate2)
-                       inmgo%isysmbr_mgo(isys, istat, iactnum) = iact
-                       inmgo%iactmat_mgo(iunit, junit) = iact
-                    end do
-                 end do
-              
-                 i1 = 0
-                 isw = 0
-              end if
-           end do
-
-           inmgo%nactnum_mgo(isys) = iactnum
-        end if
-     end do
-
-     inmgo%nact_mgo = iact
-
-#ifdef MPI_PAR
-     end if
-     call MPI_Bcast (inmgo, inmgo%sz, MPI_BYTE, 0, MPI_COMM_WORLD, ierr)
-#endif
-
-  end if
+!  ! ----------------------------------------------------------------------
+!  ! for Multi Go
+!  if(inmgo%i_multi_mgo == 1) then
+!
+!#ifdef MPI_PAR
+!     if (myrank == 0) then
+!#endif
+!
+!     inmgo%nsystem_mgo = 0
+!     inmgo%isysmbr_mgo(1:MXSYSTEM_MGO, 1:MXSTATE_MGO, 1:MXACT_MGO) = 0
+!     inmgo%nstate_mgo(1:MXSYSTEM_MGO) = 0
+!     inmgo%nactnum_mgo(1:MXSYSTEM_MGO) = 0
+!     inmgo%iactmat_mgo(1:MXUNIT, 1:MXUNIT) = 0
+!
+!     iact = 0
+!     do iline = 1, nlines
+!        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+!        char00 = cwkinp(iline)
+!
+!        if(char00(1:14) == 'MULTIGO_SYSTEM') then
+!           do icol = 16, CARRAY_MXCOLM
+!              if(char00(icol:icol) == ')') exit
+!           end do
+!           read (char00(16:icol-1), '(a)') char12
+!           call util_unitstate(char12, inunit, instate)
+!           isys = inunit(1)
+!           istat = instate
+!           if(inmgo%nsystem_mgo < isys) inmgo%nsystem_mgo = isys
+!           if(inmgo%nstate_mgo(isys) < istat) inmgo%nstate_mgo(isys) = istat
+!
+!           iactnum = 0
+!           isw = 0
+!           i1 = 0
+!           i2 = 0
+!           do k = icol + 1, CARRAY_MXCOLM
+!              if (cwkinp(iline)(k:k) /= ' ' .and. cwkinp(iline)(k:k) /= ',') then
+!                 if(isw == 0) then
+!                    i1 = k
+!                    isw = 1
+!                 end if
+!                 i2 = k
+!
+!              else if (isw == 1) then
+!                 isw2 = 0
+!                 do jcol = i1, i2
+!                    if(char00(jcol:jcol) == '/') isw2 = jcol
+!                 end do
+!
+!                 read (char00(i1:isw2-1), '(a)') char12
+!                 call util_unitstate(char12, inunit, instate)
+!                 read (char00(isw2+1:i2), '(a)') char12
+!                 call util_unitstate(char12, jnunit, instate2)
+!
+!                 do iu = inunit(1), inunit(2)
+!                    do ju = jnunit(1), jnunit(2)
+!                       iact = iact + 1
+!                       iactnum = iactnum + 1
+!                       iunit = ius2unit(iu, instate)
+!                       junit = ius2unit(ju, instate2)
+!                       inmgo%isysmbr_mgo(isys, istat, iactnum) = iact
+!                       inmgo%iactmat_mgo(iunit, junit) = iact
+!                    end do
+!                 end do
+!              
+!                 i1 = 0
+!                 isw = 0
+!              end if
+!           end do
+!
+!           inmgo%nactnum_mgo(isys) = iactnum
+!        end if
+!     end do
+!
+!     inmgo%nact_mgo = iact
+!
+!#ifdef MPI_PAR
+!     end if
+!     call MPI_Bcast (inmgo, inmgo%sz, MPI_BYTE, 0, MPI_COMM_WORLD, ierr)
+!#endif
+!
+!  end if
 
 
   ! ----------------------------------------------------------------------

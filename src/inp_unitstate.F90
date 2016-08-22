@@ -13,16 +13,11 @@ subroutine inp_unitstate()
                          i_seq_read_style, i_go_native_read_style, &
                          ius2unit, iunit2us, flg_unit_generate_ion
   use var_struct, only : nunit_real, nunit_all, iclass_unit
-  use var_mgo,    only : inmgo
-
-#ifdef MPI_PAR
+!  use var_mgo,    only : inmgo
   use mpiconst
-#endif
 
   implicit none
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: i, n
   integer :: imgo, num_class(CLASS%MAX)
   integer :: iclass = 1
@@ -103,7 +98,7 @@ subroutine inp_unitstate()
 
   ! reading real chain
   imunit = 0
-  inmgo%nstate_max_mgo = 1
+!  inmgo%nstate_max_mgo = 1
   do iline = 1, nlines
      ctmp00 = cwkinp(iline)
      call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
@@ -122,7 +117,7 @@ subroutine inp_unitstate()
         read (ctmp00, *) char12, char7, name
         write (lunout, '(6a)') '---reading unit and state: ', trim(char12), ' ', trim(char7), ' ', trim(name)
         call util_unitstate(char12, inunit, instate)
-        inmgo%nstate_max_mgo = max( inmgo%nstate_max_mgo, instate )
+!        inmgo%nstate_max_mgo = max( inmgo%nstate_max_mgo, instate )
 
         if(instate <= 1) then
            if(char7(1:7) == 'protein') then
@@ -179,73 +174,73 @@ subroutine inp_unitstate()
   end do
   nunit_real = imunit
 
-  ! reading shadow chain
-  imgo = 0
-  do iline = 1, nlines
-     ctmp00 = cwkinp(iline)
-     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-
-     if(ctmp00(1:1) /= ' ' .and. ctmp00(1:1) /= 'i') then
-        read (ctmp00, *) char12, char7, name
-        write (lunout, '(6a)') '---reading unit and state: ', trim(char12), ' ', trim(char7), ' ', trim(name)
-        call util_unitstate(char12, inunit, instate)
-
-        if(instate >= 2) then
-           imgo = 1
-
-           if(char7(1:7) == 'protein') then
-              iclass = CLASS%PRO
-           else if(char7(1:3) == 'rna') then
-              iclass = CLASS%RNA
-           else if(char7(1:6) == 'ligand') then
-              iclass = CLASS%LIG
-           else if(char7(1:3) == 'ion') then
-              iclass = CLASS%ION
-           else
-              error_message = 'Error: invalid name of biological molecule in "unit_and_state"'
-              call util_error(ERROR%STOP_ALL, error_message)
-           end if
-           num_class(iclass) = num_class(iclass) + inunit(2) - inunit(1) + 1
-
-           if(name == 'sequence' .or. name == '') then
-!              ifile_pdb(5, ipdb) = 3
-           else
-              ipdb = ipdb + 1
-              if (ipdb > MXPDB) then
-                 error_message = 'Error: too many PDB for input. (> MXPDB)'
-                 call util_error(ERROR%STOP_ALL, error_message) 
-              endif
-
-              filename_pdb(ipdb) = name
-              ifile_pdb(2, ipdb) = iclass
-              ifile_pdb(3, ipdb) = imunit + 1
-              ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
-              
-              if(name == 'generate') then
-                 ifile_pdb(5, ipdb) = 2
-              else
-                 ifile_pdb(5, ipdb) = 1
-              end if
-           end if
-
-           do iunit = inunit(1), inunit(2)
-              imunit = imunit + 1
-              ius2unit(iunit, instate) = imunit
-              iunit2us(1, imunit) = iunit
-              iunit2us(2, imunit) = instate
-              iclass_unit(imunit) = iclass
-           end do
-        end if
-     end if
-  end do
+!  ! reading shadow chain
+!  imgo = 0
+!  do iline = 1, nlines
+!     ctmp00 = cwkinp(iline)
+!     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+!
+!     if(ctmp00(1:1) /= ' ' .and. ctmp00(1:1) /= 'i') then
+!        read (ctmp00, *) char12, char7, name
+!        write (lunout, '(6a)') '---reading unit and state: ', trim(char12), ' ', trim(char7), ' ', trim(name)
+!        call util_unitstate(char12, inunit, instate)
+!
+!        if(instate >= 2) then
+!           imgo = 1
+!
+!           if(char7(1:7) == 'protein') then
+!              iclass = CLASS%PRO
+!           else if(char7(1:3) == 'rna') then
+!              iclass = CLASS%RNA
+!           else if(char7(1:6) == 'ligand') then
+!              iclass = CLASS%LIG
+!           else if(char7(1:3) == 'ion') then
+!              iclass = CLASS%ION
+!           else
+!              error_message = 'Error: invalid name of biological molecule in "unit_and_state"'
+!              call util_error(ERROR%STOP_ALL, error_message)
+!           end if
+!           num_class(iclass) = num_class(iclass) + inunit(2) - inunit(1) + 1
+!
+!           if(name == 'sequence' .or. name == '') then
+!!              ifile_pdb(5, ipdb) = 3
+!           else
+!              ipdb = ipdb + 1
+!              if (ipdb > MXPDB) then
+!                 error_message = 'Error: too many PDB for input. (> MXPDB)'
+!                 call util_error(ERROR%STOP_ALL, error_message) 
+!              endif
+!
+!              filename_pdb(ipdb) = name
+!              ifile_pdb(2, ipdb) = iclass
+!              ifile_pdb(3, ipdb) = imunit + 1
+!              ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
+!              
+!              if(name == 'generate') then
+!                 ifile_pdb(5, ipdb) = 2
+!              else
+!                 ifile_pdb(5, ipdb) = 1
+!              end if
+!           end if
+!
+!           do iunit = inunit(1), inunit(2)
+!              imunit = imunit + 1
+!              ius2unit(iunit, instate) = imunit
+!              iunit2us(1, imunit) = iunit
+!              iunit2us(2, imunit) = instate
+!              iclass_unit(imunit) = iclass
+!           end do
+!        end if
+!     end if
+!  end do
  
   npdb = ipdb
   nunit_all = imunit
 
-  inmgo%i_multi_mgo = 0
-  if(imgo == 1) then
-     inmgo%i_multi_mgo = 1
-  end if
+!  inmgo%i_multi_mgo = 0
+!  if(imgo == 1) then
+!     inmgo%i_multi_mgo = 1
+!  end if
 
 
   if(i_seq_read_style == SEQREAD%PDB) then
@@ -320,7 +315,7 @@ subroutine inp_unitstate()
   call MPI_Bcast(nunit_real,     1,                  MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(nunit_all,      1,                  MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iclass_unit,    MXUNIT,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmgo,          inmgo%sz,           MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
+!  call MPI_Bcast(inmgo,          inmgo%sz,           MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc,         inmisc%sz,          MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
 #endif
 

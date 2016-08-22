@@ -9,22 +9,17 @@ subroutine setpara( xyz_mp_init )
   use const_index
   use const_physical
   use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
-                         i_run_mode, i_seq_read_style, i_aicg, i_go_native_read_style
+                         i_run_mode, i_seq_read_style !, i_aicg, i_go_native_read_style
   use var_setp,   only : inpara, inmisc, fix_mp, inmmc, inflp, inperi
   use var_struct, only : xyz_ref_mp, iontype_mp, nmp_all
-  use var_mgo,    only : inmgo
+!  use var_mgo,    only : inmgo
   use var_implig, only : inimplig
-
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
   real(PREC),intent(out) :: xyz_mp_init(SDIM, MXMP)
 
-  ! -----------------------------------------------------------------------
-  ! local variables
   integer :: ipdb
   integer :: lunout, lunpdb
   integer :: npdb, input_status
@@ -93,19 +88,19 @@ subroutine setpara( xyz_mp_init )
   endif
 
   ! -----------------------------------------------------------------------
-  ! reading parameters from parameter files
-  if (inmisc%force_flag(INTERACT%HP)) then
-     call setp_mapara_hp()
-  endif
+!  ! reading parameters from parameter files
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     call setp_mapara_hp()
+!  endif
 
   if (inmisc%force_flag(INTERACT%ELE)) then
      call setp_mapara_ele()
   endif
 
-  ! sasa
-  if (inmisc%force_flag(INTERACT%SASA)) then
-     call setp_mapara_sasa()
-  endif
+!  ! sasa
+!  if (inmisc%force_flag(INTERACT%SASA)) then
+!     call setp_mapara_sasa()
+!  endif
 
   ! excluded volume
   if (inmisc%force_flag(INTERACT%EXV12)) then
@@ -241,9 +236,9 @@ subroutine setpara( xyz_mp_init )
   ! parameter setting for elastic network model (enm)
   if (inmisc%force_flag(INTERACT%ENM))  call setp_para_enm()
  
-  ! -----------------------------------------------------------------------
-  ! parameter setting for multiple-Go model (mgo)
-  if(inmgo%i_multi_mgo == 1) call setp_para_mgo()
+!  ! -----------------------------------------------------------------------
+!  ! parameter setting for multiple-Go model (mgo)
+!  if(inmgo%i_multi_mgo == 1) call setp_para_mgo()
 
   ! =======================================================================
   ! constructing potential
@@ -254,27 +249,27 @@ subroutine setpara( xyz_mp_init )
   call setp_nativestruct(xyz_mp_init, iatomnum, xyz, cname_ha )
 
   ! Atomic interaction based coarse-grained model (AICG)
-  if(i_go_native_read_style == NATIVEREAD%PDB) then
-  if (inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag_local(LINTERACT%L_AICG1)) then
-      if(i_aicg == AICG%AUTO) then
-         call setp_mapara_aicg()
-         call read_dssp(dssp)
-         call setp_aicg(iatomnum, xyz, cname_ha, dssp)
-      else if(i_aicg == AICG%USER) then
-         call read_paraaicg()
-      end if
-  end if
-  if (inmisc%force_flag(INTERACT%AICG2) .OR. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-      if(i_aicg == AICG%AUTO) then
-         call setp_mapara_aicg()
-         call setp_aicg2(iatomnum, xyz, cname_ha)
-      else if(i_aicg == AICG%USER) then
-         call read_paraaicg2()
-      end if
-  end if
-  end if
+!  if(i_go_native_read_style == NATIVEREAD%PDB) then
+!  if (inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag_local(LINTERACT%L_AICG1)) then
+!      if(i_aicg == AICG%AUTO) then
+!         call setp_mapara_aicg()
+!         call read_dssp(dssp)
+!         call setp_aicg(iatomnum, xyz, cname_ha, dssp)
+!      else if(i_aicg == AICG%USER) then
+!         call read_paraaicg()
+!      end if
+!  end if
+!  if (inmisc%force_flag(INTERACT%AICG2) .OR. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!      if(i_aicg == AICG%AUTO) then
+!         call setp_mapara_aicg()
+!!         call setp_aicg2(iatomnum, xyz, cname_ha)
+!      else if(i_aicg == AICG%USER) then
+!         call read_paraaicg2()
+!      end if
+!  end if
+!  end if
   ! =======================================================================
   
 

@@ -16,8 +16,8 @@ subroutine write_tseries(ibefore_time, istep, &
   use var_io,     only : outfile, iunit2us, i_run_mode
   use var_setp,    only : inmisc
   use var_struct,  only : nunit_real, nunit_all
-  use var_mgo,     only : inmgo, ishadow2real_unit_mgo, coef_mgo, &
-                          estate_mgo, q_mgo, ekai_mgo
+!  use var_mgo,     only : inmgo, ishadow2real_unit_mgo, coef_mgo, &
+!                          estate_mgo, q_mgo, ekai_mgo
   use var_simu,    only : qscore, qscore_unit
   use var_replica, only : flg_rep, rep2val, rep2lab, &
                           n_replica_mpi, irep2grep
@@ -103,27 +103,27 @@ subroutine write_tseries(ibefore_time, istep, &
         write (lunout, _FMT_TS_TOTAL_T_, ADVANCE = "NO") 'etot'
         write (lunout, _FMT_TS_VELO_T_,  ADVANCE = "NO") 'velet'
    
-        if(inmgo%i_multi_mgo == 0) then
+!        if(inmgo%i_multi_mgo == 0) then
            write (lunout, _FMT_TS_QSCORE_T_, ADVANCE = "NO") 'qscore'
            write (lunout, _FMT_TS_RMSD_T_, ADVANCE = "NO") 'rmsd'
                 
-        else
-           do isys = 1, inmgo%nsystem_mgo
-              write (lunout, "((1xi3, a3))", ADVANCE = "NO") isys, 'sys'
-
-              do istat = 1, inmgo%nstate_mgo(isys)
-                 do jstat = istat + 1, inmgo%nstate_mgo(isys)
-                    write (lunout, _FMT_TS_MGO_KAI_T_, ADVANCE = "NO") 'ch_', cfunc_int2char(istat), &
-                                                                       '-',   cfunc_int2char(jstat)
-                 end do
-              end do
-              do istat = 1, inmgo%nstate_mgo(isys)
-                 write (lunout, _FMT_TS_MGO_COEF_T_,  ADVANCE = "NO") 'coef_',   cfunc_int2char(istat)
-                 write (lunout, _FMT_TS_MGO_Q_T_,     ADVANCE = "NO") 'qsco_',   cfunc_int2char(istat)
-                 write (lunout, _FMT_TS_MGO_STATE_T_, ADVANCE = "NO") 'estate_', cfunc_int2char(istat)
-              end do
-           end do
-        end if
+!        else
+!           do isys = 1, inmgo%nsystem_mgo
+!              write (lunout, "((1xi3, a3))", ADVANCE = "NO") isys, 'sys'
+!
+!              do istat = 1, inmgo%nstate_mgo(isys)
+!                 do jstat = istat + 1, inmgo%nstate_mgo(isys)
+!                    write (lunout, _FMT_TS_MGO_KAI_T_, ADVANCE = "NO") 'ch_', cfunc_int2char(istat), &
+!                                                                       '-',   cfunc_int2char(jstat)
+!                 end do
+!              end do
+!              do istat = 1, inmgo%nstate_mgo(isys)
+!                 write (lunout, _FMT_TS_MGO_COEF_T_,  ADVANCE = "NO") 'coef_',   cfunc_int2char(istat)
+!                 write (lunout, _FMT_TS_MGO_Q_T_,     ADVANCE = "NO") 'qsco_',   cfunc_int2char(istat)
+!                 write (lunout, _FMT_TS_MGO_STATE_T_, ADVANCE = "NO") 'estate_', cfunc_int2char(istat)
+!              end do
+!           end do
+!        end if
 
         write (lunout, '(a)') ''
    
@@ -217,7 +217,7 @@ subroutine write_tseries(ibefore_time, istep, &
    
      ! ---------------------------------------------------------------------
      ! writing energy and tag for t_series, esystem_mgo(isys)
-     if(inmgo%i_multi_mgo == 0) then
+!     if(inmgo%i_multi_mgo == 0) then
    
         !chead = ''
         !chead2 = ''
@@ -248,59 +248,59 @@ subroutine write_tseries(ibefore_time, istep, &
            end if
         end if
 
-     else
-   
-        chead = ''
-        chead2 = ''
-        call sum_energy_term(0, 0, chead, chead2, IW_MGO)
-   
-        chead = '#all'
-        chead2 = ''
-        call sum_energy_term(0, 0, chead, chead2, IW_UNIT_MGOALL)
-
-   
-        do iunit = 1, nunit_real
-           call make_header(chead, iunit, cfunc_int2char(iunit2us(2, iunit)))
-           chead2 = ''
-           junit = iunit
-           call sum_energy_term(iunit, junit, chead, chead2, IW_UNIT)
-
-           do iunit_s = nunit_real + 1, nunit_all
-   
-              if(ishadow2real_unit_mgo(iunit_s) == iunit) then
-   
-                 call make_header(chead, iunit_s, cfunc_int2char(iunit2us(2, iunit_s)))
-                 chead2 = ''
-                 junit_s = iunit_s
-                 call sum_energy_term(iunit_s, junit_s, chead, chead2, IW_UNIT_SHADOW)
-              end if
-           end do
-        end do
-
-        if(inmisc%i_output_energy_style == 1) then
-           do iunit = 1, nunit_real
-              do junit = iunit + 1, nunit_real
-                 call make_header(chead, iunit, ' ')
-                 call make_header2(chead2, junit, ' ')
-                 call sum_energy_term(iunit, junit, chead, chead2, IW_UNIT)
-              end do
-           end do
-        end if
-        
-        !!if(inimplig%iexe_implig == 1) then
-        if(inmisc%i_implig == 1) then
-           do isite =1, inimplig%nsite_implig
-              if(isite < 10) then
-                 write(lunout,'(a18, i1, a24, i10, a1, f10.3, a1, i1, a1)') '##implicit_ligand_',isite,'(step, energy, state) =(',&
-                      inumber,',', Etbind_implig(isite, irep),',',istate_implig(isite, irep),')'
-              else
-                 write(lunout,'(a18, i2, a23, i10, a1, f10.3, a1, i1, a1)') '##implicit_ligand_',isite,'(step, energy, state)=(',&
-                      inumber,',', Etbind_implig(isite, irep),',',istate_implig(isite, irep),')'
-              endif
-           end do
-        end if
-
-     end if
+!     else
+!   
+!        chead = ''
+!        chead2 = ''
+!        call sum_energy_term(0, 0, chead, chead2, IW_MGO)
+!   
+!        chead = '#all'
+!        chead2 = ''
+!        call sum_energy_term(0, 0, chead, chead2, IW_UNIT_MGOALL)
+!
+!   
+!        do iunit = 1, nunit_real
+!           call make_header(chead, iunit, cfunc_int2char(iunit2us(2, iunit)))
+!           chead2 = ''
+!           junit = iunit
+!           call sum_energy_term(iunit, junit, chead, chead2, IW_UNIT)
+!
+!           do iunit_s = nunit_real + 1, nunit_all
+!   
+!              if(ishadow2real_unit_mgo(iunit_s) == iunit) then
+!   
+!                 call make_header(chead, iunit_s, cfunc_int2char(iunit2us(2, iunit_s)))
+!                 chead2 = ''
+!                 junit_s = iunit_s
+!                 call sum_energy_term(iunit_s, junit_s, chead, chead2, IW_UNIT_SHADOW)
+!              end if
+!           end do
+!        end do
+!
+!        if(inmisc%i_output_energy_style == 1) then
+!           do iunit = 1, nunit_real
+!              do junit = iunit + 1, nunit_real
+!                 call make_header(chead, iunit, ' ')
+!                 call make_header2(chead2, junit, ' ')
+!                 call sum_energy_term(iunit, junit, chead, chead2, IW_UNIT)
+!              end do
+!           end do
+!        end if
+!        
+!        !!if(inimplig%iexe_implig == 1) then
+!        if(inmisc%i_implig == 1) then
+!           do isite =1, inimplig%nsite_implig
+!              if(isite < 10) then
+!                 write(lunout,'(a18, i1, a24, i10, a1, f10.3, a1, i1, a1)') '##implicit_ligand_',isite,'(step, energy, state) =(',&
+!                      inumber,',', Etbind_implig(isite, irep),',',istate_implig(isite, irep),')'
+!              else
+!                 write(lunout,'(a18, i2, a23, i10, a1, f10.3, a1, i1, a1)') '##implicit_ligand_',isite,'(step, energy, state)=(',&
+!                      inumber,',', Etbind_implig(isite, irep),',',istate_implig(isite, irep),')'
+!              endif
+!           end do
+!        end if
+!
+!     end if
 
 !     write (lunout, '(a)') ''
 
@@ -383,8 +383,10 @@ contains
        teqscore = qscore(irep)
        tenergy(1:E_TYPE%MAX) = energy(1:E_TYPE%MAX, irep)
     else
-       iunit_real = ishadow2real_unit_mgo(iunit)
-       junit_real = ishadow2real_unit_mgo(junit)
+       !iunit_real = ishadow2real_unit_mgo(iunit)
+       !junit_real = ishadow2real_unit_mgo(junit)
+       iunit_real = iunit
+       junit_real = junit
 
        teqscore = qscore_unit(iunit, junit, irep)
        if(iflag_format == IW_UNIT) then
@@ -471,19 +473,19 @@ contains
 
     else if(iflag_format == IW_MGO) then
 
-       do isys = 1, inmgo%nsystem_mgo
-          write (lunout, "((1xi3, a3))", ADVANCE = "NO") isys, 'sys'
-          do istat = 1, inmgo%nstate_mgo(isys)
-             do jstat = istat + 1, inmgo%nstate_mgo(isys)
-                write (lunout, _FMT_TS_MGO_KAI_, ADVANCE = "NO") ekai_mgo(isys)
-             end do
-          end do
-          do istat = 1, inmgo%nstate_mgo(isys)
-             write (lunout, _FMT_TS_MGO_COEF_,  ADVANCE = "NO") coef_mgo(isys, istat)
-             write (lunout, _FMT_TS_MGO_Q_,     ADVANCE = "NO") q_mgo(isys, istat)
-             write (lunout, _FMT_TS_MGO_STATE_, ADVANCE = "NO") estate_mgo(isys, istat)
-          end do
-       end do
+!       do isys = 1, inmgo%nsystem_mgo
+!          write (lunout, "((1xi3, a3))", ADVANCE = "NO") isys, 'sys'
+!          do istat = 1, inmgo%nstate_mgo(isys)
+!             do jstat = istat + 1, inmgo%nstate_mgo(isys)
+!                write (lunout, _FMT_TS_MGO_KAI_, ADVANCE = "NO") ekai_mgo(isys)
+!             end do
+!          end do
+!          do istat = 1, inmgo%nstate_mgo(isys)
+!             write (lunout, _FMT_TS_MGO_COEF_,  ADVANCE = "NO") coef_mgo(isys, istat)
+!             write (lunout, _FMT_TS_MGO_Q_,     ADVANCE = "NO") q_mgo(isys, istat)
+!             write (lunout, _FMT_TS_MGO_STATE_, ADVANCE = "NO") estate_mgo(isys, istat)
+!          end do
+!       end do
 
     else if(iflag_format == IW_UNIT .or. iflag_format == IW_UNIT_MGOALL &
          .or. iflag_format == IW_UNIT_SHADOW) then

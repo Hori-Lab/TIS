@@ -9,8 +9,8 @@ subroutine main_loop()
   use const_index
   use var_io,     only : i_go_native_read_style, i_run_mode, &
                           flg_file_out, outfile
-  use var_setp,    only : insimu, inmisc, inflp, inele
-  use var_mgo,     only : inmgo
+  use var_setp,    only : insimu, inmisc, inele !, inflp
+  !use var_mgo,     only : inmgo
   use var_fmat,    only : infmat, i_num_sum
   use var_simu,    only : istep_sim, mstep_sim
   use mpiconst
@@ -37,10 +37,10 @@ subroutine main_loop()
         write(error_message, *) 'native-info is not available in fmat mode'
         call util_error(ERROR%STOP_ALL, error_message)
      endif
-     if(inmgo%i_multi_mgo >= 1) then
-        write(error_message, *) 'multi-go is not available in fmat mode'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
+     !if(inmgo%i_multi_mgo >= 1) then
+     !   write(error_message, *) 'multi-go is not available in fmat mode'
+     !   call util_error(ERROR%STOP_ALL, error_message)
+     !endif
   else
      mstep_sim = insimu%n_step_sim
   endif
@@ -60,20 +60,20 @@ subroutine main_loop()
      endif
 
 
-     ! -------------------------------------------------------------------
-     ! setting up for multiple Go
-     ! -------------------------------------------------------------------
-     if(inmgo%i_multi_mgo >= 1) then
-        call allocate_mgo()
-        call mloop_setup_mgo(istep_sim)
-     end if
+!     ! -------------------------------------------------------------------
+!     ! setting up for multiple Go
+!     ! -------------------------------------------------------------------
+!     if(inmgo%i_multi_mgo >= 1) then
+!        call allocate_mgo()
+!        call mloop_setup_mgo(istep_sim)
+!     end if
 
-     ! -------------------------------------------------------------------
-     ! setting up for flexible local potential
-     ! -------------------------------------------------------------------
-     if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-        call mloop_flexible_local()
-     end if
+!     ! -------------------------------------------------------------------
+!     ! setting up for flexible local potential
+!     ! -------------------------------------------------------------------
+!     if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
+!        call mloop_flexible_local()
+!     end if
 
      ! -------------------------------------------------------------------
      ! delete interaction
@@ -143,9 +143,9 @@ subroutine main_loop()
         call write_rep_result()
      endif
 
-     if(inmgo%i_multi_mgo >= 1) then
-        call deallocate_mgo()
-     endif
+!     if(inmgo%i_multi_mgo >= 1) then
+!        call deallocate_mgo()
+!     endif
   end do
 #ifdef _DEBUG
   write(*,*) '#### Exit the istep_sim loop'

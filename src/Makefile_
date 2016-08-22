@@ -153,8 +153,9 @@ MTOBJ = $(MTMOD) $(MTSUB)
 FMOD1 = const_maxsize.o const_index.o const_physical.o
 
 # variable
-FMOD2 = var_io.o var_struct.o var_setp.o var_mgo.o var_replica.o\
+FMOD2 = var_io.o var_struct.o var_setp.o var_replica.o\
 	  var_implig.o var_simu.o var_flp.o var_fmat.o var_cafe.o
+	  #var_mgo.o
 
 # MPI parameter
 FMOD3 = mpiconst.o time.o
@@ -188,33 +189,31 @@ FSUB2 = read_xyz.o read_xyz_cg.o read_pdb_pro.o\
 
 FOBJ1 = \
 	allocate_neighbor.o allocate_replica.o allocate_nativestruct.o\
-	allocate_fmat.o allocate_mgo.o allocate_simu.o\
+	allocate_fmat.o allocate_simu.o\
 	calc_size_structures.o\
 	input.o\
 	inp_runmode.o inp_split_mpi.o inp_replica_para.o inp_replica_tables.o\
 	inp_filename.o inp_job.o inp_unitstate.o inp_energy_func.o inp_datafile.o\
 	setpara.o\
 	setp_mapara.o setp_mapara_pro.o\
-	setp_mapara_ligand.o setp_mapara_hp.o setp_mapara_ele.o\
+	setp_mapara_ligand.o setp_mapara_ele.o\
 	setp_redef_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_group.o setp_anneal_para.o setp_searchingtf_para.o setp_minimize_para.o\
 	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
-	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o setp_para_enm.o setp_para_mgo.o\
+	setp_del_int.o setp_periodic.o setp_box.o setp_cap.o setp_para_enm.o\
 	setp_energy_unit.o setp_bridge_para.o setp_pulling_para.o setp_cylinder_para.o\
 	setp_anchor_para.o setp_rest1d_para.o setp_fix_para.o setp_hydrophobic.o\
 	setp_para_ion.o setp_nativestruct.o setp_native_secstruct.o\
 	setp_native_bond.o setp_native_bangle.o setp_native_dih.o setp_native_charge.o\
 	setp_native_hp.o setp_native_neighbor_list.o setp_native_go.o\
 	setp_native_sasa.o setp_para_implig.o setp_con_implig.o setp_bindsite_implig.o\
-	setp_mapara_aicg.o setp_aicg.o setp_aicg2.o\
-	setp_mapara_flp.o setp_mapara_sasa.o setp_mapara_exv.o\
+	setp_mapara_flp.o setp_mapara_exv.o\
 	setp_modified_muca.o setp_electrostatic.o setp_dtrna15.o\
 	step_adjustment.o setp_fmat_para.o\
 	main_loop.o\
-	mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
-	mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o mloop_neigh_dist.o\
+	mloop_neigh_dist.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o mloop_simulator.o\
-	mloop_flexible_local.o mloop_del_int.o mloop_dtrna.o mloop_widom.o\
+	mloop_del_int.o mloop_dtrna.o mloop_widom.o\
 	mloop_fmat_homo.o mloop_fmat_hetero.o mloop_ewld.o\
 	simu_checkforce.o\
 	simu_para.o\
@@ -228,44 +227,57 @@ FOBJ1 = \
 	simu_minimize.o simu_mc_implig.o simu_calc_energy_dcd.o\
 	neighbor.o neighbor_pre.o neighbor_list.o\
 	neighbor_assign.o neighbor_sort.o\
-	neighbor_list_ele.o neighbor_list_hp.o neighbor_list_hb.o\
+	neighbor_list_ele.o neighbor_list_hb.o\
 	simu_copyxyz.o simu_copyxyz_ele.o\
-	simu_copyxyz_mgo.o simu_copyxyz_replica.o simu_copyxyz_ref.o\
+	simu_copyxyz_replica.o simu_copyxyz_ref.o\
 	simu_xyz_adjst.o simu_velo_mrand.o simu_velo_mrand_old.o\
 	simu_velo_adjst.o simu_velo_settemp.o simu_velo_nosehoover.o\
 	simu_anneal.o simu_searchingtf.o simu_radiusg.o simu_rmsd.o\
 	time_integral_pre.o time_integral.o time_integral_post.o\
 	min_steep_desc.o min_conj_grad.o\
 	energy_sumup.o\
-	energy_allrep.o energy_velo.o energy_bond.o energy_fene.o energy_dih_gauss.o\
-	energy_bangle.o energy_dih.o energy_dih_harmonic.o energy_rna_stack.o \
-	energy_nlocal_mgo.o energy_mgo.o energy_enm.o energy_nlocal_go.o energy_LJ.o\
-	energy_nlocal_morse.o energy_nlocal_rna_bp.o energy_orderpara.o\
+	energy_allrep.o energy_velo.o energy_bond.o energy_fene.o\
+	energy_bangle.o energy_enm.o energy_LJ.o energy_orderpara.o\
 	energy_exv_rep12.o energy_exv_rep6.o energy_exv_restype.o energy_exv_wca.o energy_exv_dt15.o\
-	energy_hp.o energy_sasa.o energy_box.o energy_cap.o\
-	energy_cylinder.o energy_anchor.o energy_rest1d.o energy_bridge.o\
-	energy_pulling.o energy_implig.o\
-	energy_ele.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o\
-	energy_ele_coulomb_brute.o\
-	energy_window.o energy_winz.o energy_fbangle.o energy_fdih.o\
-	energy_aicg13_gauss.o\
+	energy_anchor.o energy_rest1d.o energy_bridge.o energy_pulling.o\
+	energy_ele.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o energy_ele_coulomb_brute.o\
+	energy_window.o energy_winz.o\
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
 	force_sumup.o\
-	force_bond.o force_fene.o force_bangle.o force_dih.o\
-	force_fbangle.o force_fdih.o force_aicg13_gauss.o\
-	force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_LJ.o force_nlocal_morse.o \
-	force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o force_enm.o\
+	force_bond.o force_fene.o force_bangle.o force_LJ.o force_enm.o\
 	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o force_exv_wca.o force_exv_dt15.o\
-	force_hp.o force_sasa.o force_bridge.o force_pulling.o\
-	force_anchor.o force_rest1d.o force_box.o force_cap.o force_cylinder.o\
-	force_implig.o force_ele.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
+	force_bridge.o force_pulling.o force_anchor.o force_rest1d.o\
+	force_ele.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
 	force_dtrna_stack.o force_dtrna_stack_nlocal.o\
 	force_dtrna_hbond13.o force_dtrna_hbond15.o force_window.o force_winz.o\
 	write_rep_traject.o write_rep_result.o write_rep_table.o write_rep_adjust.o \
 	read_pull.o read_pdb_rna.o\
 	read_dssp.o read_dssp_pro.o read_paraaicg.o read_paraaicg2.o\
 	write_fmat.o mloop_recalc_coef.o widom.o
+	#allocate_mgo.o\
+	#setp_para_mgo.o\
+	#mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
+	#simu_copyxyz_mgo.o\
+	#mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
+	#mloop_flexible_local.o\
+	#setp_mapara_aicg.o setp_aicg.o setp_aicg2.o\
+	#setp_mapara_sasa.o setp_mapara_hp.o\
+	#neighbor_list_hp.o\
+	#energy_aicg13_gauss.o\
+	#energy_implig.o\
+	#energy_nlocal_morse.o energy_nlocal_rna_bp.o\
+	#energy_dih_gauss.o\
+	#energy_fbangle.o energy_fdih.o\
+	#energy_dih.o energy_dih_harmonic.o energy_rna_stack.o \
+	#energy_nlocal_mgo.o energy_mgo.o energy_nlocal_go.o\
+	#energy_cylinder.o energy_hp.o energy_sasa.o energy_box.o energy_cap.o\
+	#force_dih.o\
+	#force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_nlocal_morse.o \
+	#force_fbangle.o force_fdih.o force_aicg13_gauss.o\
+	#force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o\
+	#force_hp.o force_sasa.o force_implig.o\
+	#force_box.o force_cap.o force_cylinder.o\
 	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
 
 FOBJ2 = \

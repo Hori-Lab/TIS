@@ -4,13 +4,13 @@
 module if_energy
 interface
 
-   subroutine energy_implig(irep, energy_unit, energy, iflag_for_mc)   
-     use const_maxsize
-     integer,    intent(in)    :: irep
-     real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
-     real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
-     integer,    intent(in)    :: iflag_for_mc 
-   endsubroutine energy_implig
+!   subroutine energy_implig(irep, energy_unit, energy, iflag_for_mc)   
+!     use const_maxsize
+!     integer,    intent(in)    :: irep
+!     real(PREC), intent(inout) :: energy_unit(:,:,:) ! (unit, unit, E_TYPE%MAX)
+!     real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+!     integer,    intent(in)    :: iflag_for_mc 
+!   endsubroutine energy_implig
 
    subroutine energy_anchor(irep, energy_unit, energy)
      use const_maxsize
@@ -52,13 +52,13 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_fene
    
-   subroutine energy_box(irep, energy_unit, energy)
-     use const_maxsize
-     implicit none
-     integer,    intent(in)    :: irep
-     real(PREC), intent(inout) :: energy(:)
-     real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_box
+!   subroutine energy_box(irep, energy_unit, energy)
+!     use const_maxsize
+!     implicit none
+!     integer,    intent(in)    :: irep
+!     real(PREC), intent(inout) :: energy(:)
+!     real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_box
    
    subroutine energy_bridge(irep, energy_unit, energy)
      use const_maxsize
@@ -68,29 +68,29 @@ interface
      real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX, replica)
    endsubroutine energy_bridge
    
-   subroutine energy_dih   (irep, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_dih
+!   subroutine energy_dih   (irep, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_dih
   
-   subroutine energy_dih_harmonic (irep, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_dih_harmonic
+!   subroutine energy_dih_harmonic (irep, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_dih_harmonic
 
-   subroutine energy_rna_stack(irep, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_rna_stack
+!   subroutine energy_rna_stack(irep, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_rna_stack
 
    subroutine energy_dtrna_stack(irep, energy_unit, energy)
       use const_maxsize
@@ -149,21 +149,21 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_enm
    
-   subroutine energy_mgo(energy_unit, energy)
-      use const_maxsize
-      implicit none
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_mgo
+!   subroutine energy_mgo(energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_mgo
    
-   subroutine energy_nlocal_go(irep, now_con, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      integer,    intent(out)   :: now_con(:,:)
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_nlocal_go
+!   subroutine energy_nlocal_go(irep, now_con, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      integer,    intent(out)   :: now_con(:,:)
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_nlocal_go
    
    subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
       use const_maxsize
@@ -174,32 +174,32 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_LJ
    
-   subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      integer,    intent(out)   :: now_morse(:,:)
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_nlocal_morse
+!   subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      integer,    intent(out)   :: now_morse(:,:)
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_nlocal_morse
    
-   subroutine energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      integer,    intent(out)   :: now_rna_bp(:,:)
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_nlocal_rna_bp
+!   subroutine energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!      integer,    intent(out)   :: now_rna_bp(:,:)
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_nlocal_rna_bp
    
-   subroutine energy_nlocal_mgo(irep, now_con, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)  :: irep
-      integer,    intent(out) :: now_con(:,:)
-      real(PREC), intent(inout) :: energy(:)
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_nlocal_mgo
+!   subroutine energy_nlocal_mgo(irep, now_con, energy_unit, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)  :: irep
+!      integer,    intent(out) :: now_con(:,:)
+!      real(PREC), intent(inout) :: energy(:)
+!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!   endsubroutine energy_nlocal_mgo
    
    subroutine energy_orderpara(irep, now_allcon)
       use const_maxsize
@@ -296,22 +296,21 @@ interface
       real(PREC), intent(out)   :: energy_unit(:,:,:)
    endsubroutine energy_ele_coulomb_brute
    
-   subroutine energy_hp (irep, energy, energy_unit)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-      real(PREC), intent(inout) :: energy(:)
-   endsubroutine energy_hp
-
-!sasa
-   subroutine energy_sasa (irep, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
+!   subroutine energy_hp (irep, energy, energy_unit)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
 !      real(PREC), intent(inout) :: energy_unit(:,:,:)
-      real(PREC), intent(inout) :: energy(:)
-   endsubroutine energy_sasa
+!      real(PREC), intent(inout) :: energy(:)
+!   endsubroutine energy_hp
+
+!   subroutine energy_sasa (irep, energy)
+!      use const_maxsize
+!      implicit none
+!      integer,    intent(in)    :: irep
+!!      real(PREC), intent(inout) :: energy_unit(:,:,:)
+!!      real(PREC), intent(inout) :: energy(:)
+!   endsubroutine energy_sasa
    
    subroutine energy_pulling(irep, energy_unit, energy)
      use const_maxsize

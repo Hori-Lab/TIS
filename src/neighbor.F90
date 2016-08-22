@@ -14,7 +14,7 @@ subroutine neighbor(irep)
   
   use const_maxsize
   use const_index
-  use var_setp,   only : inmisc, inele, inperi
+  use var_setp,   only : inmisc, inperi
   use var_struct, only : lexv, nmp_all, nhbneigh, lele
   use var_io,     only : flg_file_out, outfile
 
@@ -70,15 +70,17 @@ subroutine neighbor(irep)
   endif
   TIME_E( tm_neighbor_ele )
 
-  TIME_S( tm_neighbor_hp )
-  if (inmisc%force_flag(INTERACT%HP)) then
-     ! make neighborlist for hydrophobic interaction
-     call neighbor_list_hp(irep)
-  endif
-  TIME_E( tm_neighbor_hp )
+!  TIME_S( tm_neighbor_hp )
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     ! make neighborlist for hydrophobic interaction
+!     call neighbor_list_hp(irep)
+!  endif
+!  TIME_E( tm_neighbor_hp )
 
   if (inmisc%i_dtrna_model == 2015) then
+     TIME_S( tm_neighbor_hb )
      call neighbor_list_hb(irep)
+     TIME_E( tm_neighbor_hb )
   endif
 
   if (flg_file_out%neigh) then

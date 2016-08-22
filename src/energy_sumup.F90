@@ -24,20 +24,17 @@ subroutine energy_sumup(irep,          &
   use const_index
   use var_setp,    only : inmisc, inele !,inflp
   use var_struct,  only : nunit_all, ncon, nLJ, nmorse, nrna_bp
-  use var_mgo,     only : inmgo
+!  use var_mgo,     only : inmgo
   use time
   use mpiconst
 
   implicit none
 
-! --------------------------------------------------------------------
   integer,    intent(in)  :: irep
   real(PREC), intent(in)  :: velo_mp(:,:)      ! (SDIM, nmp_real)
   real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
   real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
 
-  ! --------------------------------------------------------------------
-  ! local variables
   integer :: ier
   integer :: i, iunit, junit
   real(PREC) :: sume
@@ -120,19 +117,19 @@ subroutine energy_sumup(irep,          &
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   TIME_E( tm_energy_bangle)
 
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     call energy_aicg13_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  end if
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     call energy_aicg13_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  end if
 
 !  !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
 !     call energy_fbangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  endif
 
-  TIME_S( tm_energy_dih)
-  call energy_dih   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  TIME_E( tm_energy_dih)
+!  TIME_S( tm_energy_dih)
+!  call energy_dih   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  TIME_E( tm_energy_dih)
 
 !  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
 !     call energy_aicg14_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -145,11 +142,11 @@ subroutine energy_sumup(irep,          &
 !     call energy_fdih(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  endif
 
-  TIME_S( tm_energy_dih_harmonic) 
-  call energy_dih_harmonic   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  TIME_E( tm_energy_dih_harmonic) 
+!  TIME_S( tm_energy_dih_harmonic) 
+!  call energy_dih_harmonic   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  TIME_E( tm_energy_dih_harmonic) 
 
-  call energy_rna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  call energy_rna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   if (inmisc%i_dtrna_model == 2013) then
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -173,9 +170,9 @@ subroutine energy_sumup(irep,          &
 !  else
      TIME_S( tm_energy_nlocal_go) 
      call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      TIME_E( tm_energy_nlocal_go) 
 !  end if
 
@@ -238,11 +235,11 @@ subroutine energy_sumup(irep,          &
   endif
   TIME_E( tm_energy_ele)
 
-  if (inmisc%force_flag(INTERACT%HP)) then
-     TIME_S( tm_energy_hp) 
-     call energy_hp(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-     TIME_E( tm_energy_hp) 
-  endif
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     TIME_S( tm_energy_hp) 
+!     call energy_hp(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!     TIME_E( tm_energy_hp) 
+!  endif
 
 !sasa
 !  if (inmisc%force_flag(INTERACT%SASA)) then
@@ -279,11 +276,11 @@ subroutine energy_sumup(irep,          &
 #endif
   TIME_E( tmc_energy )
  
-  if(inmgo%i_multi_mgo >= 1) then
-     TIME_S( tm_energy_mgo)
-     call energy_mgo(energy_unit, energy)
-     TIME_E( tm_energy_mgo)
-  end if
+!  if(inmgo%i_multi_mgo >= 1) then
+!     TIME_S( tm_energy_mgo)
+!     call energy_mgo(energy_unit, energy)
+!     TIME_E( tm_energy_mgo)
+!  end if
 
   deallocate( energy_l,     stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
@@ -293,17 +290,17 @@ subroutine energy_sumup(irep,          &
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
 
 
-  if(inmisc%i_in_box == 1) then
-     call energy_box(irep, energy_unit, energy)
-  end if
+!  if(inmisc%i_in_box == 1) then
+!     call energy_box(irep, energy_unit, energy)
+!  end if
 
-  if(inmisc%i_in_cap == 1) then
-     call energy_cap(irep, energy_unit, energy)
-  end if
+!  if(inmisc%i_in_cap == 1) then
+!     call energy_cap(irep, energy_unit, energy)
+!  end if
 
-  if(inmisc%i_cylinder == 1) then
-     call energy_cylinder(irep, energy_unit, energy)
-  end if
+!  if(inmisc%i_cylinder == 1) then
+!     call energy_cylinder(irep, energy_unit, energy)
+!  end if
 
   if(inmisc%i_bridge == 1) then
      call energy_bridge(irep, energy_unit, energy)
@@ -329,11 +326,11 @@ subroutine energy_sumup(irep,          &
      call energy_winz(irep, energy_unit, energy)
   end if
 
-  ! implicit ligand model
-  if(inmisc%i_implig == 1) then
-     call energy_implig(irep, energy_unit, energy, IMPLIGENERGY_TYPE%FOR_NON_MC)
-     ! calculate implicit_ligand binding energy based on [state of implicit-ligand &  structure].
-  end if
+!  ! implicit ligand model
+!  if(inmisc%i_implig == 1) then
+!     call energy_implig(irep, energy_unit, energy, IMPLIGENERGY_TYPE%FOR_NON_MC)
+!     ! calculate implicit_ligand binding energy based on [state of implicit-ligand &  structure].
+!  end if
   
 !  energy_unit(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX) = energy_unit_l(1:nunit_all, 1:nunit_all, 1:E_TYPE%MAX, 1)
 !  energy(1:E_TYPE%MAX) = energy_l(1:E_TYPE%MAX, 1)
@@ -382,19 +379,19 @@ subroutine energy_sumup(irep,          &
   ! calc total energy
   ! --------------------------------------------------------------------
   TIME_S( tm_energy_total)
-  if(inmgo%i_multi_mgo >= 1) then
-     do i = 1, E_TYPE%MAX
-        if(i == E_TYPE%TOTAL  .or. i == E_TYPE%VELO    .or. i == E_TYPE%BOND .or. &
-           i == E_TYPE%BANGLE .or. i == E_TYPE%DIHE    .or. i == E_TYPE%GO   .or. &
-           i == E_TYPE%MORSE  .or. i == E_TYPE%DIHE_HARMONIC) cycle
-        energy(E_TYPE%TOTAL) = energy(E_TYPE%TOTAL) + energy(i)
-     end do
-  else
+!  if(inmgo%i_multi_mgo >= 1) then
+!     do i = 1, E_TYPE%MAX
+!        if(i == E_TYPE%TOTAL  .or. i == E_TYPE%VELO    .or. i == E_TYPE%BOND .or. &
+!           i == E_TYPE%BANGLE .or. i == E_TYPE%DIHE    .or. i == E_TYPE%GO   .or. &
+!           i == E_TYPE%MORSE  .or. i == E_TYPE%DIHE_HARMONIC) cycle
+!        energy(E_TYPE%TOTAL) = energy(E_TYPE%TOTAL) + energy(i)
+!     end do
+!  else
      do i = 1, E_TYPE%MAX
         if(i == E_TYPE%TOTAL .or. i == E_TYPE%VELO) cycle
         energy(E_TYPE%TOTAL) = energy(E_TYPE%TOTAL) + energy(i)
      end do
-  end if
+!  end if
   TIME_E( tm_energy_total)
 
 #ifdef MEM_ALLOC

@@ -41,6 +41,7 @@ integer,parameter :: tm_force_exv         =  33
 integer,parameter :: tm_force_ele         =  34
 integer,parameter :: tm_force_hp          =  35
 integer,parameter :: tm_force_sasa        =  36 !sasa
+integer,parameter :: tm_force_dtrna       =  37
 
 ! for MPI or openMP
 integer,parameter :: tmc_neighbor         =  41
@@ -55,6 +56,7 @@ integer,parameter :: tmc_random           =  46
 integer,parameter :: tm_neighbor          =  51
 integer,parameter :: tm_neighbor_exv      =  52
 integer,parameter :: tm_neighbor_ele      =  53
+integer,parameter :: tm_neighbor_hb       =  54
 integer,parameter :: tm_neighbor_hp       =  56
 integer,parameter :: tm_neighbor_sasa     =  57  !sasa
 
@@ -125,6 +127,9 @@ subroutine time_write( lunout )
      write(lunout, fmt=fmt1) '_force(hp)     ', total_time(tm_force_hp), trate*total_time(tm_force_hp)
   end if
 
+  if (inmisc%class_flag(CLASS%RNA)) then
+     write(lunout, fmt=fmt1) '_force(dtrna)  ', total_time(tm_force_dtrna), trate*total_time(tm_force_dtrna)
+  end if
   if (inmisc%force_flag(INTERACT%SASA)) then
      write(lunout, fmt=fmt1) '_force(sasa)   ', total_time(tm_force_sasa), trate*total_time(tm_force_sasa)
   end if
@@ -142,6 +147,10 @@ subroutine time_write( lunout )
 
   if (inmisc%force_flag(INTERACT%HP)) then
      write(lunout, fmt=fmt1) '_neighbor(hp)  ', total_time(tm_neighbor_hp), trate*total_time(tm_neighbor_hp)
+  end if
+
+  if (inmisc%i_dtrna_model == 2015) then
+     write(lunout, fmt=fmt1) '_neighbor(hb)  ', total_time(tm_neighbor_hb), trate*total_time(tm_neighbor_hb)
   end if
 
   if (inmisc%force_flag(INTERACT%SASA)) then

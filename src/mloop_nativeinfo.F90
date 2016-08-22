@@ -8,7 +8,7 @@ subroutine mloop_nativeinfo(istep_sim)
   use const_index
   use var_io,    only : iopen_lunnum
   use var_setp,   only : inpro, inrna, inligand, inmisc, inenm
-  use var_struct, only : nmp_all, nunit_all, imp2unit, iclass_unit, &
+  use var_struct, only : nunit_all, imp2unit, iclass_unit, &
                          nbd, ibd2mp, factor_bd, coef_bd, &
                          nfene, &
                          nba, iba2mp, factor_ba, coef_ba, &
@@ -22,7 +22,7 @@ subroutine mloop_nativeinfo(istep_sim)
   use mpiconst
 #ifdef MPI_PAR
   use var_replica,only : n_replica_all
-  use var_struct, only : imorse2mp, imorse_dummy_mgo, &
+  use var_struct, only : nmp_all,imorse2mp, imorse_dummy_mgo, &
                          dih_nat, dih_sin_nat, dih_cos_nat, &
                          bd_nat, ba_nat, &
                          ifene2mp, fene_nat, coef_fene, dist2_fene, &

@@ -36,7 +36,7 @@ module const_maxsize
   integer, parameter :: L_INT = 8 !< byte size of larger integer ("long long int" in C)
 
   ! Files
-  integer, parameter :: MXPDB = 200    !< maximum # of input PDB files
+  integer, parameter :: MXPDB = 20    !< maximum # of input PDB files
   integer, parameter :: MXINI = MXPDB  !< maximum # of input structure files
   integer, parameter :: MXPARA = 15     !< maximum # of parameter files !changed for exv
   integer, parameter :: FILENAME_DIGIT_REPLICA = 4  !< # of digits added to .ts filename in REM
@@ -83,23 +83,20 @@ module const_maxsize
   integer, parameter :: MXCHARGECHANGE = 100 !< maximum # number of CHARGE_CHANGE lines in input file
   integer, parameter :: MXMPELE = 7000     !< maximum # of electrostatic interactions per residue
 !  integer, parameter :: MXMPELE = 1000     !< maximum # of electrostatic interactions per residue
-  integer, parameter :: MXMPSOLV = 200      !< maximum # of solvation interaction
-  integer, parameter :: MXMPTAIL = 1000      !< maximum # of tail interaction
   integer, parameter :: MXMPNEIGHBOR = 500 !< maximum # of neighboring residues per residue
   !integer, parameter :: MXELE = MXMPELE * MXMP
-  !integer, parameter :: MXSOLV = MXMPSOLV * MXMP 
   !integer, parameter :: MXNEIGHBOR = MXMPNEIGHBOR * MXMP
 
   integer, parameter :: MXMPHBNEIGHBOR = 50
 
-  ! MPC
-  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis
-  integer, parameter :: MXGRID_NY_MPC = MXGRID_NX_MPC ! the max grid number y-axis
-  integer, parameter :: MXGRID_NZ_MPC = MXGRID_NX_MPC ! the max grid number z-axis
-
-  integer, parameter :: MXGRID_N_MPC = MXGRID_NX_MPC * MXGRID_NY_MPC * MXGRID_NZ_MPC   !the max grid number z-axis
-  integer, parameter :: MX_AV_SOLV_GRID_MPC = 20 ! the max average solvent particle in one grid
-  integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
+!  ! MPC
+!  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis
+!  integer, parameter :: MXGRID_NY_MPC = MXGRID_NX_MPC ! the max grid number y-axis
+!  integer, parameter :: MXGRID_NZ_MPC = MXGRID_NX_MPC ! the max grid number z-axis
+!
+!  integer, parameter :: MXGRID_N_MPC = MXGRID_NX_MPC * MXGRID_NY_MPC * MXGRID_NZ_MPC   !the max grid number z-axis
+!  integer, parameter :: MX_AV_SOLV_GRID_MPC = 20 ! the max average solvent particle in one grid
+!  integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
 
   ! Replica exchange method
   integer, parameter :: MXREPLICA = 24     !< maximum # of replicas

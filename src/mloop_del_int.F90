@@ -13,16 +13,11 @@ subroutine mloop_del_int()
                          factor_aicg13, coef_aicg13_gauss, &
                          factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
                          ncon, icon2mp, coef_go
-  use var_mgo, only : inmgo, ishadow2real_mp_mgo
-
-#ifdef MPI_PAR
+!  use var_mgo, only : inmgo, ishadow2real_mp_mgo
   use mpiconst
-#endif
 
   implicit none
 
-  !------------------------------------------------------------------
-  ! Local variables
   integer :: idel, ini, las, ini2, las2
   integer :: iba, idih, icon !,irna_bp, imorse
   integer :: imp1, imp2, imp3, imp4
@@ -43,19 +38,19 @@ subroutine mloop_del_int()
         do imp = ini, las
            idel_mp(imp) = 1
 
-           if(inmgo%i_multi_mgo >= 1) then
-              iunit_real = imp2unit(imp)
-              do instate = 2, MXSTATE_MGO
-                 iunit_shadow = ius2unit(iunit_real, instate)
-                 if(iunit_shadow <= 1) then
-                    exit
-                 else
-                    imp_shadow = imp + lunit2mp(1, iunit_shadow) - lunit2mp(1, iunit_real)
-
-                    idel_mp(imp_shadow) = 1
-                 end if
-              end do
-           end if
+!           if(inmgo%i_multi_mgo >= 1) then
+!              iunit_real = imp2unit(imp)
+!              do instate = 2, MXSTATE_MGO
+!                 iunit_shadow = ius2unit(iunit_real, instate)
+!                 if(iunit_shadow <= 1) then
+!                    exit
+!                 else
+!                    imp_shadow = imp + lunit2mp(1, iunit_shadow) - lunit2mp(1, iunit_real)
+!
+!                    idel_mp(imp_shadow) = 1
+!                 end if
+!              end do
+!           end if
 
         end do
      end do
@@ -117,16 +112,16 @@ subroutine mloop_del_int()
               coef_go(icon) = 0.0
            end if
 
-           if(inmgo%i_multi_mgo >= 1) then
-              imp_real1 = ishadow2real_mp_mgo(imp1)
-              imp_real2 = ishadow2real_mp_mgo(imp2)
-              if((imp_real1 >= ini  .and. imp_real1 <= las .and. &
-                   imp_real2 >= ini2 .and. imp_real2 <= las2) .or. &
-                   (imp_real1 >= ini2 .and. imp_real1 <= las2 .and. &
-                   imp_real2 >= ini  .and. imp_real2 <= las)) then
-                 coef_go(icon) = 0.0
-              end if
-           end if
+!           if(inmgo%i_multi_mgo >= 1) then
+!              imp_real1 = ishadow2real_mp_mgo(imp1)
+!              imp_real2 = ishadow2real_mp_mgo(imp2)
+!              if((imp_real1 >= ini  .and. imp_real1 <= las .and. &
+!                   imp_real2 >= ini2 .and. imp_real2 <= las2) .or. &
+!                   (imp_real1 >= ini2 .and. imp_real1 <= las2 .and. &
+!                   imp_real2 >= ini  .and. imp_real2 <= las)) then
+!                 coef_go(icon) = 0.0
+!              end if
+!           end if
         end do
 
 !        do irna_bp = 1, nrna_bp

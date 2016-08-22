@@ -37,7 +37,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
                           n_replica_all, n_replica_mpi, irep2grep, exchange_step
-  use var_implig,  only : inimplig  ! implicit ligand
+!  use var_implig,  only : inimplig  ! implicit ligand
   use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
                           n_exchange, iopt_stage, &
                           tstep, tempk, velo_mp, rlan_const, &
@@ -58,9 +58,8 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
   logical, intent(inout) :: flg_exit_loop_mstep
 
-  logical :: flg_step_save, flg_step_rep_exc
-  logical :: flg_step_implig, flg_step_rep_save, flg_step_rep_opt
-  logical :: flg_step_rst, flg_step_widom
+  logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
+  logical :: flg_step_rst, flg_step_widom !,flg_step_implig
   integer :: imp1, imp2, imirror
   integer :: imp, irep, grep
   real(PREC) :: v21(3), dee
@@ -74,7 +73,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   flg_step_rep_exc  = .false.
   flg_step_rep_save = .false.
   flg_step_rep_opt  = .false.
-  flg_step_implig   = .false.
+!  flg_step_implig   = .false.
   flg_step_rst      = .false.
   flg_step_widom    = .false.
 
@@ -86,12 +85,12 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      if (inrep%flg_opt_temp .and. istep == nstep_opt_temp) flg_step_rep_opt  = .true.
   endif
   
-  if (inmisc%i_implig==1) then
-     if (inimplig%iexe_implig==1) then
-        if (mod(istep, inimplig%istep_implig) == 0 .OR. &
-            mod(istep, inimplig%istep_un_implig) == 0   ) flg_step_implig = .true.
-     endif
-  endif
+!  if (inmisc%i_implig==1) then
+!     if (inimplig%iexe_implig==1) then
+!        if (mod(istep, inimplig%istep_implig) == 0 .OR. &
+!            mod(istep, inimplig%istep_un_implig) == 0   ) flg_step_implig = .true.
+!     endif
+!  endif
   if (flg_file_out%rst) then
      if (mod(istep, insimu%n_step_rst) == 0) then
         flg_step_rst = .true.
@@ -175,20 +174,20 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   end if
   TIME_E( tm_output )
   
-  ! --------------------------------------------------------------
-  ! implicit-ligand model
-  ! --------------------------------------------------------------
-  TIME_S( tm_implig )
-  if (flg_step_implig) then
-     do irep = 1, n_replica_mpi
-        call energy_implig(irep, energy_unit(:,:,:,irep), energy(:,irep), IMPLIGENERGY_TYPE%FOR_MC)
-        ! calculate implicit-ligand binding energy based on strucutre (not ligand-state).
-        
-        call simu_mc_implig(irep, istep, tempk)
-        ! change istate_implig(MXSITE_IMPLIG, MXREPLICA) by MC (Monte Calro).
-     end do
-  endif
-  TIME_E( tm_implig )
+!  ! --------------------------------------------------------------
+!  ! implicit-ligand model
+!  ! --------------------------------------------------------------
+!  TIME_S( tm_implig )
+!  if (flg_step_implig) then
+!     do irep = 1, n_replica_mpi
+!        call energy_implig(irep, energy_unit(:,:,:,irep), energy(:,irep), IMPLIGENERGY_TYPE%FOR_MC)
+!        ! calculate implicit-ligand binding energy based on strucutre (not ligand-state).
+!        
+!        call simu_mc_implig(irep, istep, tempk)
+!        ! change istate_implig(MXSITE_IMPLIG, MXREPLICA) by MC (Monte Calro).
+!     end do
+!  endif
+!  TIME_E( tm_implig )
   TIME_S( tm_others )
 
   ! --------------------------------------------------------------
