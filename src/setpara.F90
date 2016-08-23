@@ -10,10 +10,10 @@ subroutine setpara( xyz_mp_init )
   use const_physical
   use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
                          i_run_mode, i_seq_read_style !, i_aicg, i_go_native_read_style
-  use var_setp,   only : inpara, inmisc, fix_mp, inmmc, inflp, inperi
+  use var_setp,   only : inpara, inmisc, fix_mp, inperi !, inflp, inmmc
   use var_struct, only : xyz_ref_mp, iontype_mp, nmp_all
 !  use var_mgo,    only : inmgo
-  use var_implig, only : inimplig
+!  use var_implig, only : inimplig
   use mpiconst
 
   implicit none
@@ -26,7 +26,7 @@ subroutine setpara( xyz_mp_init )
   integer,    allocatable :: iatomnum(:)
   real(PREC), allocatable :: xyz(:, :, :)
   character(4), allocatable :: cname_ha(:, :)  ! aicg
-  character(1), allocatable :: dssp(:)  ! aicg
+!  character(1), allocatable :: dssp(:)  ! aicg
   character(72) :: char72
   character(CARRAY_MSG_ERROR) :: error_message
 
@@ -116,11 +116,11 @@ subroutine setpara( xyz_mp_init )
   ! Widom method
   if (i_run_mode == RUN%WIDOM    ) call setp_widom_para()
 
-  ! annealing
-  if (i_run_mode == RUN%SA       ) call setp_anneal_para()
+!  ! annealing
+!  if (i_run_mode == RUN%SA       ) call setp_anneal_para()
 
-  ! searching Tf
-  if (i_run_mode == RUN%SEARCH_TF) call setp_searchingtf_para()
+!  ! searching Tf
+!  if (i_run_mode == RUN%SEARCH_TF) call setp_searchingtf_para()
 
   ! re-define parameters
   if (inmisc%i_redef_para == 1) call setp_redef_para()
@@ -129,11 +129,11 @@ subroutine setpara( xyz_mp_init )
   ! Next two substitutions must be after both setp_mapara() and setp_redef_para().
   ! -----------------------------------------------------------------------
 
-  ! flexible local potential parameter  
-  !if (inmisc%i_add_int == 1) call setp_mapara_flp()
-  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
-     call setp_mapara_flp()
-  end if
+!  ! flexible local potential parameter  
+!  !if (inmisc%i_add_int == 1) call setp_mapara_flp()
+!  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
+!     call setp_mapara_flp()
+!  end if
 
   if (inmisc%class_flag(CLASS%ION)) call setp_para_ion()
 
@@ -142,7 +142,7 @@ subroutine setpara( xyz_mp_init )
   allocate( iatomnum(MXMP)                       )
   allocate( xyz(SDIM, MXATOM_MP, MXMP)      )
   allocate( cname_ha(MXATOM_MP, MXMP)            )    ! aicg
-  allocate( dssp(MXMP)                           )    ! aicg
+!  allocate( dssp(MXMP)                           )    ! aicg
 
   iontype_mp(1:MXMP) = 0
   if(i_seq_read_style == SEQREAD%PDB) then
@@ -174,22 +174,22 @@ subroutine setpara( xyz_mp_init )
 
   ! ----------------------------------------------------------------------
   ! box
-  if(inmisc%i_in_box     == 1) call setp_box()
+!  if(inmisc%i_in_box     == 1) call setp_box()
 
   ! ----------------------------------------------------------------------
   ! cap
-  if(inmisc%i_in_cap     == 1) call setp_cap()
+!  if(inmisc%i_in_cap     == 1) call setp_cap()
 
   ! delete some interactions
   if(inmisc%i_del_int    == 1) call setp_del_int()
 
   ! modified multi-canonical
-  if(inmmc%i_modified_muca == 1) call setp_modified_muca()
+!  if(inmmc%i_modified_muca == 1) call setp_modified_muca()
 
   ! try to read <<<< hydrophobic
-  if(inmisc%force_flag(INTERACT%HP)) then
-     call setp_hydrophobic()
-  endif 
+!  if(inmisc%force_flag(INTERACT%HP)) then
+!     call setp_hydrophobic()
+!  endif 
 
   if(inmisc%force_flag(INTERACT%ELE)) call setp_electrostatic()
 
@@ -229,8 +229,8 @@ subroutine setpara( xyz_mp_init )
   fix_mp(:) = .False.
   if(inmisc%i_fix == 1) call setp_fix_para()
 
-  ! cylinder
-  if(inmisc%i_cylinder == 1) call setp_cylinder_para()
+!  ! cylinder
+!  if(inmisc%i_cylinder == 1) call setp_cylinder_para()
   
   ! -----------------------------------------------------------------------
   ! parameter setting for elastic network model (enm)
@@ -246,7 +246,8 @@ subroutine setpara( xyz_mp_init )
   call allocate_nativestruct()
 
   ! constructing native(reference) structures
-  call setp_nativestruct(xyz_mp_init, iatomnum, xyz, cname_ha )
+  !call setp_nativestruct(xyz_mp_init, iatomnum, xyz, cname_ha )
+  call setp_nativestruct()
 
   ! Atomic interaction based coarse-grained model (AICG)
 !  if(i_go_native_read_style == NATIVEREAD%PDB) then
@@ -273,19 +274,17 @@ subroutine setpara( xyz_mp_init )
   ! =======================================================================
   
 
-  !------------------------------------------------------------------------
-  ! implicit ligand
-  if(inmisc%i_implig == 1) then
-     call setp_para_implig() !! read parameter from input_file (<<<< implicit_ligand )
-                             !! parameter setting for implicit ligand model 
-                             !! set initial state (BOUND, UN_BOUND) for implicit ligand
-     if(inimplig%iexe_implig == 1) then
-        call setp_bindsite_implig() !! read binding site information from input_file 
-                                 !! (<<<< binding_site) [IMPLIGSITE]
-        call setp_con_implig(xyz_mp_init, iatomnum, xyz) ! fix the ligand mediated contact pair
-     endif
-  endif
-  !-----------------------------------------------------------------------
+!  ! implicit ligand
+!  if(inmisc%i_implig == 1) then
+!     call setp_para_implig() !! read parameter from input_file (<<<< implicit_ligand )
+!                             !! parameter setting for implicit ligand model 
+!                             !! set initial state (BOUND, UN_BOUND) for implicit ligand
+!     if(inimplig%iexe_implig == 1) then
+!        call setp_bindsite_implig() !! read binding site information from input_file 
+!                                 !! (<<<< binding_site) [IMPLIGSITE]
+!        call setp_con_implig(xyz_mp_init, iatomnum, xyz) ! fix the ligand mediated contact pair
+!     endif
+!  endif
 
   !-----------------------------------------------------------------------
   ! flexible local potential
@@ -297,11 +296,11 @@ subroutine setpara( xyz_mp_init )
 
   deallocate(iatomnum)
   deallocate(xyz)
-  deallocate(dssp)  ! aicg
+!  deallocate(dssp)  ! aicg
   deallocate(cname_ha)  ! aicg
 
-  ! fluctuation matching
-  if (i_run_mode == RUN%FMAT     ) call setp_fmat_para()
+!  ! fluctuation matching
+!  if (i_run_mode == RUN%FMAT     ) call setp_fmat_para()
 
   ! Energy minimization
   if (i_run_mode == RUN%EMIN     ) call setp_minimize_para()

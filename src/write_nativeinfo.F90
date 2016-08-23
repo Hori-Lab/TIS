@@ -5,24 +5,24 @@ subroutine write_nativeinfo(lunout)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inrna, inmisc, inenm
+  use var_setp,   only : inpro, inenm
   use var_struct, only : nunit_all, imp2unit, lunit2mp, &
-                         nbd, ibd2mp, bd_nat,   &
+                         nbd, ibd2mp, bd_nat, cmp2atom, &
                          factor_bd, coef_bd, correct_bd_mgo,  &
                          nfene, ifene2mp, fene_nat, coef_fene, dist2_fene,  &
-                         nba, iba2mp, ba_nat, factor_ba, coef_ba,   &
-                         correct_ba_mgo, ndih, idih2mp, dih_nat,    &
-                         factor_dih, coef_dih, correct_dih_mgo, &
+                         nba, iba2mp, ba_nat, factor_ba, coef_ba, correct_ba_mgo,&
+!                         ndih, idih2mp, dih_nat,    &
+!                         factor_dih, coef_dih, correct_dih_mgo, &
                          ncon, icon2mp, factor_go,       &
                          coef_go, icon_dummy_mgo, go_nat, ncon_unit, &
                          nLJ, iLJ2mp, coef_LJ, LJ_nat,  &
                          iclass_unit, ibd2type, iba2type, idih2type, icon2type, &
-                         nrna_bp,nrna_bp_unit, nrna_st, cmp2atom, rna_bp_nat, &
-                         irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
-                         irna_st2mp, coef_rna_st, factor_rna_st, rna_st_nat, &
-                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
-                         coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
-                         coef_dih_gauss, wid_dih_gauss, & ! AICG2
+!                         nrna_bp,nrna_bp_unit, nrna_st, rna_bp_nat, &
+!                         irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
+!                         irna_st2mp, coef_rna_st, factor_rna_st, rna_st_nat, &
+!                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
+!                         coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
+!                         coef_dih_gauss, wid_dih_gauss, & ! AICG2
                          ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, &
                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb
   use mpiconst
@@ -34,7 +34,7 @@ subroutine write_nativeinfo(lunout)
   integer :: iunit, junit
   integer :: imp1, imp2, imp3, imp4, iunit1, iunit2
   integer :: imp1un, imp2un, imp3un, imp4un
-  integer :: ibd, iba, idih, icon, ibp
+  integer :: ibd, iba, idih, icon!, ibp
   real(PREC) :: dfcontact
   character(CARRAY_MSG_ERROR) :: error_message
   integer, parameter :: IREP = 1
@@ -133,157 +133,157 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a)') ''
   endif  ! nba > 0
 
-  ! -------------------------------------------------------------------
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-  ! write the aicg13
-  if (nba > 0) then
-     write (lunout, '(a)') '<<<< 1-3 contacts with L_AICG2 or L_AICG2_PLUS'
-     write (lunout, '(a)') '** coef_aicg13_gauss(kcal/mol) = factor_aicg13 * correct_ba_mgo * coef_aicg13_gauss * energy_unit_protein'
-     write (lunout, '(a)', ADVANCE='NO') '**      iba iunit1-iunit2   imp1 - imp2 - imp3'
-     write (lunout, '(a)')               ' imp1un-imp2un-imp3un  aicg13_nat  factor_aicg13  correct_mgo  coef_aicg13_gauss wid_aicg13_gauss'
-     do iba = 1, nba
-        imp1 = iba2mp(1, iba)
-        imp2 = iba2mp(2, iba)
-        imp3 = iba2mp(3, iba)
-        iunit1 = imp2unit(imp1)
-        iunit2 = iunit1
-        imp1un = imp1 - lunit2mp(1, iunit1) + 1
-        imp2un = imp2 - lunit2mp(1, iunit1) + 1
-        imp3un = imp3 - lunit2mp(1, iunit1) + 1
-        write (lunout, "(a6, 9(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-             'aicg13', iba, iunit1, iunit2, &
-             imp1, imp2, imp3, imp1un, imp2un, imp3un, &
-             aicg13_nat(iba), &
-             factor_aicg13(iba), correct_ba_mgo(iba), coef_aicg13_gauss(iba), wid_aicg13_gauss(iba)
-        if (iclass_unit(iunit1) == CLASS%PRO) then
-           write(lunout, '(a4)') ' ppp'
-        else if (iclass_unit(iunit1) == CLASS%RNA) then
-           write(lunout, '(a4)') angletype2str()
-        else
-           write(lunout, '(a)') ''
-        endif
-     end do
-     write (lunout, '(a4)') '>>>>'
-     write (lunout, '(a)') ''
-  endif  ! nba > 0
-  endif
+!  ! -------------------------------------------------------------------
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!  ! write the aicg13
+!  if (nba > 0) then
+!     write (lunout, '(a)') '<<<< 1-3 contacts with L_AICG2 or L_AICG2_PLUS'
+!     write (lunout, '(a)') '** coef_aicg13_gauss(kcal/mol) = factor_aicg13 * correct_ba_mgo * coef_aicg13_gauss * energy_unit_protein'
+!     write (lunout, '(a)', ADVANCE='NO') '**      iba iunit1-iunit2   imp1 - imp2 - imp3'
+!     write (lunout, '(a)')               ' imp1un-imp2un-imp3un  aicg13_nat  factor_aicg13  correct_mgo  coef_aicg13_gauss wid_aicg13_gauss'
+!     do iba = 1, nba
+!        imp1 = iba2mp(1, iba)
+!        imp2 = iba2mp(2, iba)
+!        imp3 = iba2mp(3, iba)
+!        iunit1 = imp2unit(imp1)
+!        iunit2 = iunit1
+!        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+!        imp3un = imp3 - lunit2mp(1, iunit1) + 1
+!        write (lunout, "(a6, 9(1xi6), 5(1xf12.4))", ADVANCE='NO') &
+!             'aicg13', iba, iunit1, iunit2, &
+!             imp1, imp2, imp3, imp1un, imp2un, imp3un, &
+!             aicg13_nat(iba), &
+!             factor_aicg13(iba), correct_ba_mgo(iba), coef_aicg13_gauss(iba), wid_aicg13_gauss(iba)
+!        if (iclass_unit(iunit1) == CLASS%PRO) then
+!           write(lunout, '(a4)') ' ppp'
+!        else if (iclass_unit(iunit1) == CLASS%RNA) then
+!           write(lunout, '(a4)') angletype2str()
+!        else
+!           write(lunout, '(a)') ''
+!        endif
+!     end do
+!     write (lunout, '(a4)') '>>>>'
+!     write (lunout, '(a)') ''
+!  endif  ! nba > 0
+!  endif
   
-  ! -------------------------------------------------------------------
-  ! write the dihedral angle
-  if (ndih > 0) then
-     write (lunout, '(a)') '<<<< native dihedral angles '
-     write (lunout, '(a)') '** coef_dih1(kcal/mol) = factor_dih * correct_dih_mgo * cdih_1 * energy_unit_protein'
-     write (lunout, '(a)') '** coef_dih3(kcal/mol) = factor_dih * correct_dih_mgo * cdih_3 * energy_unit_protein'
-     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
-     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un      dih_nat   factor_dih  correct_mgo   coef_dih_1   coef_dih_3'
-   
-     do idih = 1, ndih   
-        imp1 = idih2mp(1, idih)
-        imp2 = idih2mp(2, idih)
-        imp3 = idih2mp(3, idih)
-        imp4 = idih2mp(4, idih)
-        iunit1 = imp2unit(imp1)
-        iunit2 = iunit1
-        imp1un = imp1 - lunit2mp(1, iunit1) + 1
-        imp2un = imp2 - lunit2mp(1, iunit1) + 1
-        imp3un = imp3 - lunit2mp(1, iunit1) + 1
-        imp4un = imp4 - lunit2mp(1, iunit1) + 1
-        write (lunout, "(a4, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-             'dihd', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
-             imp1un, imp2un, imp3un, imp4un, &
-             dih_nat(idih) * 180.0e0_PREC / F_PI, &
-             factor_dih(idih), correct_dih_mgo(idih), &
-             coef_dih(1, idih), coef_dih(2, idih)
-        if (iclass_unit(iunit1) == CLASS%PRO) then
-           write(lunout, '(a5)') ' pppp'
-        else if (iclass_unit(iunit1) == CLASS%RNA) then
-           write(lunout, '(a5)') dihtype2str()
-        else
-           write(lunout, '(a)') ''
-        endif
-     end do
-     write (lunout, '(a4)') '>>>>'
-     write (lunout, '(a)') ''
-  endif  ! ndih > 0
+!  ! -------------------------------------------------------------------
+!  ! write the dihedral angle
+!  if (ndih > 0) then
+!     write (lunout, '(a)') '<<<< native dihedral angles '
+!     write (lunout, '(a)') '** coef_dih1(kcal/mol) = factor_dih * correct_dih_mgo * cdih_1 * energy_unit_protein'
+!     write (lunout, '(a)') '** coef_dih3(kcal/mol) = factor_dih * correct_dih_mgo * cdih_3 * energy_unit_protein'
+!     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
+!     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un      dih_nat   factor_dih  correct_mgo   coef_dih_1   coef_dih_3'
+!   
+!     do idih = 1, ndih   
+!        imp1 = idih2mp(1, idih)
+!        imp2 = idih2mp(2, idih)
+!        imp3 = idih2mp(3, idih)
+!        imp4 = idih2mp(4, idih)
+!        iunit1 = imp2unit(imp1)
+!        iunit2 = iunit1
+!        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+!        imp3un = imp3 - lunit2mp(1, iunit1) + 1
+!        imp4un = imp4 - lunit2mp(1, iunit1) + 1
+!        write (lunout, "(a4, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
+!             'dihd', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
+!             imp1un, imp2un, imp3un, imp4un, &
+!             dih_nat(idih) * 180.0e0_PREC / F_PI, &
+!             factor_dih(idih), correct_dih_mgo(idih), &
+!             coef_dih(1, idih), coef_dih(2, idih)
+!        if (iclass_unit(iunit1) == CLASS%PRO) then
+!           write(lunout, '(a5)') ' pppp'
+!        else if (iclass_unit(iunit1) == CLASS%RNA) then
+!           write(lunout, '(a5)') dihtype2str()
+!        else
+!           write(lunout, '(a)') ''
+!        endif
+!     end do
+!     write (lunout, '(a4)') '>>>>'
+!     write (lunout, '(a)') ''
+!  endif  ! ndih > 0
   
-  ! -------------------------------------------------------------------
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-  ! write the aicg14
-  if (ndih > 0) then
-     write (lunout, '(a)') '<<<< 1-4 contacts with L_AICG2 '
-     write (lunout, '(a)') '** coef_aicg14_gauss(kcal/mol) = factor_aicg14 * correct_dih_mgo * coef_aicg14(kcal/mol) * energy_unit_protein'
-     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
-     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un   aicg14_nat factor_aicg14  correct_mgo  coef_aicg14_gauss  wid_aicg14_gauss'
-
-     do idih = 1, ndih
-        imp1 = idih2mp(1, idih)
-        imp2 = idih2mp(2, idih)
-        imp3 = idih2mp(3, idih)
-        imp4 = idih2mp(4, idih)
-        iunit1 = imp2unit(imp1)
-        iunit2 = iunit1
-        imp1un = imp1 - lunit2mp(1, iunit1) + 1
-        imp2un = imp2 - lunit2mp(1, iunit1) + 1
-        imp3un = imp3 - lunit2mp(1, iunit1) + 1
-        imp4un = imp4 - lunit2mp(1, iunit1) + 1
-        write (lunout, "(a6, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-             'aicg14', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
-             imp1un, imp2un, imp3un, imp4un, &
-             aicg14_nat(idih), &
-             factor_aicg14(idih), correct_dih_mgo(idih), &
-             coef_aicg14_gauss(idih), wid_aicg14_gauss(idih)
-        if (iclass_unit(iunit1) == CLASS%PRO) then
-           write(lunout, '(a5)') ' pppp'
-        else if (iclass_unit(iunit1) == CLASS%RNA) then
-           write(lunout, '(a5)') dihtype2str()
-        else
-           write(lunout, '(a)') ''
-        endif
-     end do
-     write (lunout, '(a4)') '>>>>'
-     write (lunout, '(a)') ''
-  endif  ! ndih > 0
-  endif
-
-  ! -------------------------------------------------------------------
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-  ! write the aicg14
-  if (ndih > 0) then
-     write (lunout, '(a)') '<<<< <<<< 1-4 contacts with L_AICG2_PLUS'
-     write (lunout, '(a)') '** coef_dih_gauss(kcal/mol) = factor_aicg14 * correct_dih_mgo * coef_aicg14(kcal/mol) * energy_unit_protein'
-     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
-     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un   dih_nat factor_aicg14  correct_mgo  coef_dih_gauss  wid_dih_gauss'
-
-     do idih = 1, ndih
-        imp1 = idih2mp(1, idih)
-        imp2 = idih2mp(2, idih)
-        imp3 = idih2mp(3, idih)
-        imp4 = idih2mp(4, idih)
-        iunit1 = imp2unit(imp1)
-        iunit2 = iunit1
-        imp1un = imp1 - lunit2mp(1, iunit1) + 1
-        imp2un = imp2 - lunit2mp(1, iunit1) + 1
-        imp3un = imp3 - lunit2mp(1, iunit1) + 1
-        imp4un = imp4 - lunit2mp(1, iunit1) + 1
-        write (lunout, "(a7, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
-             'aicgdih', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
-             imp1un, imp2un, imp3un, imp4un, &
-             dih_nat(idih) * 180.0e0_PREC / F_PI, &
-             factor_aicg14(idih), correct_dih_mgo(idih), &
-             coef_dih_gauss(idih), wid_dih_gauss(idih)
-        if (iclass_unit(iunit1) == CLASS%PRO) then
-           write(lunout, '(a5)') ' pppp'
-        else if (iclass_unit(iunit1) == CLASS%RNA) then
-           write(lunout, '(a5)') dihtype2str()
-        else
-           write(lunout, '(a)') ''
-        endif
-     end do
-     write (lunout, '(a4)') '>>>>'
-     write (lunout, '(a)') ''
-  endif  ! ndih > 0
-  endif
+!  ! -------------------------------------------------------------------
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!  ! write the aicg14
+!  if (ndih > 0) then
+!     write (lunout, '(a)') '<<<< 1-4 contacts with L_AICG2 '
+!     write (lunout, '(a)') '** coef_aicg14_gauss(kcal/mol) = factor_aicg14 * correct_dih_mgo * coef_aicg14(kcal/mol) * energy_unit_protein'
+!     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
+!     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un   aicg14_nat factor_aicg14  correct_mgo  coef_aicg14_gauss  wid_aicg14_gauss'
+!
+!     do idih = 1, ndih
+!        imp1 = idih2mp(1, idih)
+!        imp2 = idih2mp(2, idih)
+!        imp3 = idih2mp(3, idih)
+!        imp4 = idih2mp(4, idih)
+!        iunit1 = imp2unit(imp1)
+!        iunit2 = iunit1
+!        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+!        imp3un = imp3 - lunit2mp(1, iunit1) + 1
+!        imp4un = imp4 - lunit2mp(1, iunit1) + 1
+!        write (lunout, "(a6, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
+!             'aicg14', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
+!             imp1un, imp2un, imp3un, imp4un, &
+!             aicg14_nat(idih), &
+!             factor_aicg14(idih), correct_dih_mgo(idih), &
+!             coef_aicg14_gauss(idih), wid_aicg14_gauss(idih)
+!        if (iclass_unit(iunit1) == CLASS%PRO) then
+!           write(lunout, '(a5)') ' pppp'
+!        else if (iclass_unit(iunit1) == CLASS%RNA) then
+!           write(lunout, '(a5)') dihtype2str()
+!        else
+!           write(lunout, '(a)') ''
+!        endif
+!     end do
+!     write (lunout, '(a4)') '>>>>'
+!     write (lunout, '(a)') ''
+!  endif  ! ndih > 0
+!  endif
+!
+!  ! -------------------------------------------------------------------
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!  ! write the aicg14
+!  if (ndih > 0) then
+!     write (lunout, '(a)') '<<<< <<<< 1-4 contacts with L_AICG2_PLUS'
+!     write (lunout, '(a)') '** coef_dih_gauss(kcal/mol) = factor_aicg14 * correct_dih_mgo * coef_aicg14(kcal/mol) * energy_unit_protein'
+!     write (lunout, '(a)', ADVANCE='NO') '**     idih iunit1-iunit2   imp1 - imp2 - imp3 - imp4'
+!     write (lunout, '(a)') ' imp1un-imp2un-imp3un-imp4un   dih_nat factor_aicg14  correct_mgo  coef_dih_gauss  wid_dih_gauss'
+!
+!     do idih = 1, ndih
+!        imp1 = idih2mp(1, idih)
+!        imp2 = idih2mp(2, idih)
+!        imp3 = idih2mp(3, idih)
+!        imp4 = idih2mp(4, idih)
+!        iunit1 = imp2unit(imp1)
+!        iunit2 = iunit1
+!        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+!        imp3un = imp3 - lunit2mp(1, iunit1) + 1
+!        imp4un = imp4 - lunit2mp(1, iunit1) + 1
+!        write (lunout, "(a7, 11(1xi6), 5(1xf12.4))", ADVANCE='NO') &
+!             'aicgdih', idih, iunit1, iunit2, imp1, imp2, imp3, imp4, &
+!             imp1un, imp2un, imp3un, imp4un, &
+!             dih_nat(idih) * 180.0e0_PREC / F_PI, &
+!             factor_aicg14(idih), correct_dih_mgo(idih), &
+!             coef_dih_gauss(idih), wid_dih_gauss(idih)
+!        if (iclass_unit(iunit1) == CLASS%PRO) then
+!           write(lunout, '(a5)') ' pppp'
+!        else if (iclass_unit(iunit1) == CLASS%RNA) then
+!           write(lunout, '(a5)') dihtype2str()
+!        else
+!           write(lunout, '(a)') ''
+!        endif
+!     end do
+!     write (lunout, '(a4)') '>>>>'
+!     write (lunout, '(a)') ''
+!  endif  ! ndih > 0
+!  endif
 
   ! ------------------------------------------------------------------
   ! write the go interaction
@@ -300,7 +300,8 @@ subroutine write_nativeinfo(lunout)
      do iunit = 1, nunit_all
         do junit = iunit, nunit_all
            write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
-           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) 
            write (lunout, '(a)', ADVANCE='NO') '**        icon iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
            write (lunout, '(a)') '      go_nat   factor_go  dummy     coef_go'
            do icon = 1, ncon
@@ -343,7 +344,8 @@ subroutine write_nativeinfo(lunout)
      do iunit = 1, nunit_all
         do junit = iunit, nunit_all
            write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
-           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) 
            write (lunout, '(a)', ADVANCE='NO') '**         iLJ iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
            write (lunout, '(a)') '    distance        coef'
            do icon = 1, nLJ
@@ -375,92 +377,92 @@ subroutine write_nativeinfo(lunout)
   endif  ! nLJ > 0
 
 
-  ! ------------------------------------------------------------------
-  ! write the base-pair(RNA) interaction
-  if (nrna_bp > 0) then
-     write (lunout, '(a)') '<<<< native basepair '
-     write (lunout, '(a, i6)') '** total_contact = ', nrna_bp
-     write (lunout, '(a, f10.2, a)') '** definition_of_contact = ', inrna%dfcontact_bp, ' A'
-     write (lunout, '(a)') '** coef_go(kcal/mol) = factor_go * icon_dummy_mgo * cbp1210 * energy_unit_protein'
-     write (lunout, '(a)') ''
-     
-     do iunit = 1, nunit_all
-        do junit = iunit, nunit_all
-           if (iclass_unit(iunit) /= CLASS%RNA .OR. iclass_unit(junit) /= CLASS%RNA) then
-              cycle
-           endif
-           write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
-           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit)
-           write (lunout, '(a)', ADVANCE='NO') '**        icon iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
-           write (lunout, '(a)') '      go_nat   factor_go  dummy     coef_go'
-           do ibp = 1, nrna_bp
-              imp1 = irna_bp2mp(1, ibp)
-              imp2 = irna_bp2mp(2, ibp)
-              iunit1 = imp2unit(imp1)
-              iunit2 = imp2unit(imp2)
-              if(iunit == iunit1 .and. junit == iunit2) then
-                 imp1un = imp1 - lunit2mp(1, iunit1) + 1
-                 imp2un = imp2 - lunit2mp(1, iunit2) + 1
-                 
-                 if (iclass_unit(iunit) /= CLASS%RNA .OR. iclass_unit(junit) /= CLASS%RNA) then
-                    error_message = 'Error: logical defect in write_native_info (RNA_ST, but class != RNA)'
-                    call util_error(ERROR%STOP_ALL, error_message)
-                 endif
-   
-                 write (lunout, "(a8, 7(1xi6), 2(f12.4), (1xi6), (f12.4))", ADVANCE='NO') &
-                       'basepair', ibp, iunit1, iunit2, imp1, imp2, &
-                       imp1un, imp2un, rna_bp_nat(ibp), factor_rna_bp(ibp), &
-                       icon_dummy_mgo(ibp), coef_rna_bp(ibp)
-                 write (lunout, '(1xa4)', ADVANCE='NO') bptype2str()
-                 write (lunout, '(1xi1)') nhb_bp(ibp)
-              end if
-           end do
-           write (lunout, '(a)') ''
-        end do
-     end do
-   
-     write (lunout, '(a4)') '>>>>'
-     write (lunout, '(a)') ''
-  endif  ! nrna_bp > 0
-
-
-  ! ------------------------------------------------------------------
-  ! write the base-stack(RNA) interaction
-  if (nrna_st > 0) then
-     write (lunout, '(a)') '<<<< native basestack '
-     write (lunout, '(a, i6)') '** total_contact = ', nrna_st
-     write (lunout, '(a, f10.2, a)') '** definition_of_contact = ', inrna%dfcontact_st, ' A'
-     write (lunout, '(a)') '** coef_go(kcal/mol) = factor_go * icon_dummy_mgo * cst1210 * energy_unit_protein'
-     write (lunout, '(a)') ''
-     
-     do icon = 1, nrna_st
-        imp1 = irna_st2mp(1, icon)
-        imp2 = irna_st2mp(2, icon)
-        iunit1 = imp2unit(imp1)
-        iunit2 = imp2unit(imp2)
-        imp1un = imp1 - lunit2mp(1, iunit1) + 1
-        imp2un = imp2 - lunit2mp(1, iunit2) + 1
-                 
-        if (iunit1 /= iunit2) then
-           error_message = 'Error: logical defect in write_native_info (iunit1 /= iunit2 in RNA_ST)'
-           call util_error(ERROR%STOP_ALL, error_message)
-        endif
-   
-        if (iclass_unit(iunit1) /= CLASS%RNA) then
-           error_message = 'Error: logical defect in write_native_info (class != RNA in RNA_ST)'
-           call util_error(ERROR%STOP_ALL, error_message)
-        endif
-   
-        write (lunout, "(a9, 7(1xi6), 2(f12.4), (1xi6), (f12.4))", ADVANCE='NO') &
-              'basestack', icon, iunit1, iunit2, imp1, imp2, &
-              imp1un, imp2un, &
-              rna_st_nat(icon), factor_rna_st(icon), &
-              icon_dummy_mgo(icon), coef_rna_st(icon)
-        write(lunout, '(a4)') bstype2str()
-     end do
-   
-     write (lunout, '(a4)') '>>>>'
-  endif  ! nrna_st > 0
+!  ! ------------------------------------------------------------------
+!  ! write the base-pair(RNA) interaction
+!  if (nrna_bp > 0) then
+!     write (lunout, '(a)') '<<<< native basepair '
+!     write (lunout, '(a, i6)') '** total_contact = ', nrna_bp
+!     write (lunout, '(a, f10.2, a)') '** definition_of_contact = ', inrna%dfcontact_bp, ' A'
+!     write (lunout, '(a)') '** coef_go(kcal/mol) = factor_go * icon_dummy_mgo * cbp1210 * energy_unit_protein'
+!     write (lunout, '(a)') ''
+!     
+!     do iunit = 1, nunit_all
+!        do junit = iunit, nunit_all
+!           if (iclass_unit(iunit) /= CLASS%RNA .OR. iclass_unit(junit) /= CLASS%RNA) then
+!              cycle
+!           endif
+!           write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
+!           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit)
+!           write (lunout, '(a)', ADVANCE='NO') '**        icon iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+!           write (lunout, '(a)') '      go_nat   factor_go  dummy     coef_go'
+!           do ibp = 1, nrna_bp
+!              imp1 = irna_bp2mp(1, ibp)
+!              imp2 = irna_bp2mp(2, ibp)
+!              iunit1 = imp2unit(imp1)
+!              iunit2 = imp2unit(imp2)
+!              if(iunit == iunit1 .and. junit == iunit2) then
+!                 imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!                 imp2un = imp2 - lunit2mp(1, iunit2) + 1
+!                 
+!                 if (iclass_unit(iunit) /= CLASS%RNA .OR. iclass_unit(junit) /= CLASS%RNA) then
+!                    error_message = 'Error: logical defect in write_native_info (RNA_ST, but class != RNA)'
+!                    call util_error(ERROR%STOP_ALL, error_message)
+!                 endif
+!   
+!                 write (lunout, "(a8, 7(1xi6), 2(f12.4), (1xi6), (f12.4))", ADVANCE='NO') &
+!                       'basepair', ibp, iunit1, iunit2, imp1, imp2, &
+!                       imp1un, imp2un, rna_bp_nat(ibp), factor_rna_bp(ibp), &
+!                       icon_dummy_mgo(ibp), coef_rna_bp(ibp)
+!                 write (lunout, '(1xa4)', ADVANCE='NO') bptype2str()
+!                 write (lunout, '(1xi1)') nhb_bp(ibp)
+!              end if
+!           end do
+!           write (lunout, '(a)') ''
+!        end do
+!     end do
+!   
+!     write (lunout, '(a4)') '>>>>'
+!     write (lunout, '(a)') ''
+!  endif  ! nrna_bp > 0
+!
+!
+!  ! ------------------------------------------------------------------
+!  ! write the base-stack(RNA) interaction
+!  if (nrna_st > 0) then
+!     write (lunout, '(a)') '<<<< native basestack '
+!     write (lunout, '(a, i6)') '** total_contact = ', nrna_st
+!     write (lunout, '(a, f10.2, a)') '** definition_of_contact = ', inrna%dfcontact_st, ' A'
+!     write (lunout, '(a)') '** coef_go(kcal/mol) = factor_go * icon_dummy_mgo * cst1210 * energy_unit_protein'
+!     write (lunout, '(a)') ''
+!     
+!     do icon = 1, nrna_st
+!        imp1 = irna_st2mp(1, icon)
+!        imp2 = irna_st2mp(2, icon)
+!        iunit1 = imp2unit(imp1)
+!        iunit2 = imp2unit(imp2)
+!        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+!        imp2un = imp2 - lunit2mp(1, iunit2) + 1
+!                 
+!        if (iunit1 /= iunit2) then
+!           error_message = 'Error: logical defect in write_native_info (iunit1 /= iunit2 in RNA_ST)'
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        endif
+!   
+!        if (iclass_unit(iunit1) /= CLASS%RNA) then
+!           error_message = 'Error: logical defect in write_native_info (class != RNA in RNA_ST)'
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        endif
+!   
+!        write (lunout, "(a9, 7(1xi6), 2(f12.4), (1xi6), (f12.4))", ADVANCE='NO') &
+!              'basestack', icon, iunit1, iunit2, imp1, imp2, &
+!              imp1un, imp2un, &
+!              rna_st_nat(icon), factor_rna_st(icon), &
+!              icon_dummy_mgo(icon), coef_rna_st(icon)
+!        write(lunout, '(a4)') bstype2str()
+!     end do
+!   
+!     write (lunout, '(a4)') '>>>>'
+!  endif  ! nrna_st > 0
 
   ! ------------------------------------------------------------------
   ! write the base-stack(DT-RNA) interaction

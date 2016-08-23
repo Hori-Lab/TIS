@@ -8,8 +8,7 @@ subroutine inp_replica_para()
   use const_physical
   use var_io,     only : infile, i_run_mode
   use var_replica, only : inrep, flg_rep, flg_npar_rep, &
-                          n_replica_all, n_dimension, &
-                          CHAR_REPTYPE
+                          n_replica_all, n_dimension
   use var_setp, only : inmisc
 
 #ifdef MPI_PAR
@@ -60,9 +59,9 @@ subroutine inp_replica_para()
   inrep%n_step_save    = -1
   inrep%n_replica(1:REPTYPE%MAX) = -1
   inrep%i_style(1:REPTYPE%MAX)  = REPVARSTYLE%VOID
-  inrep%i_loadbalance  = -1
-  inrep%n_step_adjust  = -1
-  inrep%n_adjust_interval  = -1
+!  inrep%i_loadbalance  = -1
+!  inrep%n_step_adjust  = -1
+!  inrep%n_adjust_interval  = -1
   inrep%lowest(1:REPTYPE%MAX)   = INVALID_VALUE
   inrep%highest(1:REPTYPE%MAX)  = INVALID_VALUE
   !inrep%interval(1:REPTYPE%MAX) = INVALID_VALUE
@@ -135,9 +134,9 @@ subroutine inp_replica_para()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inrep%n_replica(REPTYPE%WIND), cvalue)
 
-        cvalue = 'n_replica_winz'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inrep%n_replica(REPTYPE%WINZ), cvalue)
+!        cvalue = 'n_replica_winz'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inrep%n_replica(REPTYPE%WINZ), cvalue)
         
         cvalue = 'n_step_exchange'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -162,17 +161,17 @@ subroutine inp_replica_para()
      call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
      do iequa = 1, nequat
         
-        cvalue = 'i_loadbalance'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inrep%i_loadbalance, cvalue)
+!        cvalue = 'i_loadbalance'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inrep%i_loadbalance, cvalue)
         
-        cvalue = 'n_step_adjust'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inrep%n_step_adjust, cvalue)
-        
-        cvalue = 'n_adjust_interval'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inrep%n_adjust_interval, cvalue)
+!        cvalue = 'n_step_adjust'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inrep%n_step_adjust, cvalue)
+!        
+!        cvalue = 'n_adjust_interval'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inrep%n_adjust_interval, cvalue)
         
         cvalue = 'n_period_prob'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -181,14 +180,14 @@ subroutine inp_replica_para()
   end do
 #endif
   
-  ! checking input variables
-  if(inrep%i_loadbalance /= -1) then
-     if(inrep%npar_rep == 1) then
-        inrep%i_loadbalance = 0
-     end if
-  else
-     inrep%i_loadbalance = 0
-  end if
+!  ! checking input variables
+!  if(inrep%i_loadbalance /= -1) then
+!     if(inrep%npar_rep == 1) then
+!        inrep%i_loadbalance = 0
+!     end if
+!  else
+!     inrep%i_loadbalance = 0
+!  end if
   
   if (i_exchange == -1) then
      inrep%flg_exchange = .true.  ! default (i_exchange is not specified in the input)
@@ -227,12 +226,12 @@ subroutine inp_replica_para()
      inmisc%i_window = 0
   endif
 
-  ! set i_window flag which decide whether window force and energy will be calculated
-  if (inrep%n_replica(REPTYPE%WINZ) > 0) then
-     inmisc%i_winz = 1
-  else
-     inmisc%i_winz = 0
-  endif
+!  ! set i_window flag which decide whether window force and energy will be calculated
+!  if (inrep%n_replica(REPTYPE%WINZ) > 0) then
+!     inmisc%i_winz = 1
+!  else
+!     inmisc%i_winz = 0
+!  endif
   
   ! set flg_rep, n_dimension, and n_replica_all
   do ivar = 1, REPTYPE%MAX
@@ -241,8 +240,7 @@ subroutine inp_replica_para()
         cycle
         
      elseif (inrep%n_replica(ivar) > MXREPLICA) then
-        error_message = 'Error: invalid value for replica: n_replica_'//CHAR_REPTYPE(ivar)
-        error_message = error_message//', PROGRAM STOP'
+        write(error_message,*)'Error: invalid value for replica: n_replica_',CHAR_REPTYPE(ivar),', PROGRAM STOP'
         call util_error(ERROR%STOP_ALL, error_message)
         
      else
@@ -293,30 +291,30 @@ subroutine inp_replica_para()
      endif
   endif
   
-  if (inrep%i_loadbalance >= 1) then
-     if (inrep%n_adjust_interval == -1) then
-        inrep%n_adjust_interval = 10    !  this is default
-        error_message = 'Error: invalid value for n_adjust_interval, PROGRAM STOP'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-  endif
+!  if (inrep%i_loadbalance >= 1) then
+!     if (inrep%n_adjust_interval == -1) then
+!        inrep%n_adjust_interval = 10    !  this is default
+!        error_message = 'Error: invalid value for n_adjust_interval, PROGRAM STOP'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!  endif
   
   ! The explanation of replica parameter
-  write (lunout, *) 'i_loadbalance = ', inrep%i_loadbalance
-  if (inrep%i_loadbalance == 0) then
-     write (lunout, *) ' Without loadbalance(default) '
-  else if (inrep%i_loadbalance == 1) then
-     write (lunout, *) ' balanced by neighborlist_ele '
-  else if (inrep%i_loadbalance == 2) then
-     write (lunout, *) ' balanced by dynamic'
-  else
-     error_message = 'Error: invalid value about i_loadbalance'
-     call util_error(ERROR%STOP_ALL, error_message)
-  endif
-  if (inrep%i_loadbalance >=1) then
-     write (lunout, *) 'time step adjustment interval(x Replica exchange interval)  = ', &
-          inrep%n_adjust_interval
-  end if
+!  write (lunout, *) 'i_loadbalance = ', inrep%i_loadbalance
+!  if (inrep%i_loadbalance == 0) then
+!     write (lunout, *) ' Without loadbalance(default) '
+!  else if (inrep%i_loadbalance == 1) then
+!     write (lunout, *) ' balanced by neighborlist_ele '
+!  else if (inrep%i_loadbalance == 2) then
+!     write (lunout, *) ' balanced by dynamic'
+!  else
+!     error_message = 'Error: invalid value about i_loadbalance'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  endif
+!  if (inrep%i_loadbalance >=1) then
+!     write (lunout, *) 'time step adjustment interval(x Replica exchange interval)  = ', &
+!          inrep%n_adjust_interval
+!  end if
   
   !-----------------------------------------------
   ! Reading "replica_XXX" field
@@ -331,8 +329,7 @@ subroutine inp_replica_para()
      
      rewind(luninp)
      
-     char_query = 'replica_'//CHAR_REPTYPE(ivar)
-     char_query = char_query//'    '
+     write(char_query,'(a8,a4,a4)') 'replica_',CHAR_REPTYPE(ivar),'    '
      
      call ukoto_uiread2(luninp, lunout, char_query, kfind, &
           CARRAY_MXLINE, nlines, cwkinp)
@@ -402,10 +399,10 @@ subroutine inp_replica_para()
            
            read(ctmp00(icol+1:CARRAY_MXCOLM), *) igrp, z, kxy, kz
 
-           inrep%winz_igrp(irep) = igrp
-           inrep%winz_z(irep) = z
-           inrep%winz_kxy(irep) = kxy
-           inrep%winz_kz(irep) = kz
+!           inrep%winz_igrp(irep) = igrp
+!           inrep%winz_z(irep) = z
+!           inrep%winz_kxy(irep) = kxy
+!           inrep%winz_kz(irep) = kz
 
            inrep%var(irep, ivar) = irep
 
@@ -527,8 +524,8 @@ subroutine inp_replica_para()
   write(6,*) ' setp_replica : inrep%n_step_replica = ', inrep%n_step_replica
   write(6,*) ' setp_replica : inrep%n_step_save = '   , inrep%n_step_save
   write(6,*) ' setp_replica : inrep%npar_rep = '   , inrep%npar_rep
-  write(6,*) ' setp_replica : inrep%i_loadbalance = '   , inrep%i_loadbalance
-  write(6,*) ' setp_replica : inrep%n_step_adjust = '   , inrep%n_step_adjust
+!  write(6,*) ' setp_replica : inrep%i_loadbalance = '   , inrep%i_loadbalance
+!  write(6,*) ' setp_replica : inrep%n_step_adjust = '   , inrep%n_step_adjust
   do ivar = 1, REPTYPE%MAX
      write(6,*) ' setp_replica : DIMENSION',ivar
      write(6,*) ' setp_replica : inrep%i_style = '  , inrep%i_style(ivar)

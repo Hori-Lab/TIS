@@ -51,9 +51,9 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
         inwind%iwind(grep) = int(rep2val(grep, REPTYPE%WIND))
      endif
 
-     if (flg_rep(REPTYPE%WINZ)) then
-        inwind%iwinz(grep) = int(rep2val(grep, REPTYPE%WINZ))
-     endif
+!     if (flg_rep(REPTYPE%WINZ)) then
+!        inwind%iwinz(grep) = int(rep2val(grep, REPTYPE%WINZ))
+!     endif
 
      
      if (flg_rep(REPTYPE%PULL)) then

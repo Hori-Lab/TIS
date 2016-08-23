@@ -19,7 +19,8 @@ subroutine inp_unitstate()
   implicit none
 
   integer :: i, n
-  integer :: imgo, num_class(CLASS%MAX)
+!  integer :: imgo
+  integer :: num_class(CLASS%MAX)
   integer :: iclass = 1
   integer :: iunit, inunit(2), instate, imunit
   integer :: luninp, lunout, iopen_status

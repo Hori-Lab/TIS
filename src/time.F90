@@ -7,7 +7,7 @@ module time
 use mpiconst
 use const_index
 use var_io, only : i_run_mode, i_simulate_type
-use var_setp, only : inmisc, inmmc
+use var_setp, only : inmisc
 
 implicit none
 
@@ -19,14 +19,14 @@ integer,parameter :: tm_random            =   3
 integer,parameter :: tm_update            =   4
 integer,parameter :: tm_copyxyz           =   5
 integer,parameter :: tm_velocity          =   6
-integer,parameter :: tm_muca              =   7
+!integer,parameter :: tm_muca              =   7
 ! main items tintegral_post
 integer,parameter :: tm_energy            =  11
 integer,parameter :: tm_output            =  12
 integer,parameter :: tm_radiusg_rmsd      =  13
 integer,parameter :: tm_replica           =  14
 integer,parameter :: tm_implig            =  15
-integer,parameter :: tm_step_adj          =  16
+!integer,parameter :: tm_step_adj          =  16
 integer,parameter :: tm_others            =  17
 integer,parameter :: tm_end               =  20  ! use for aggreagte time
 
@@ -39,16 +39,17 @@ integer,parameter :: tm_force_local       =  31
 integer,parameter :: tm_force_go          =  32
 integer,parameter :: tm_force_exv         =  33
 integer,parameter :: tm_force_ele         =  34
-integer,parameter :: tm_force_hp          =  35
-integer,parameter :: tm_force_sasa        =  36 !sasa
-integer,parameter :: tm_force_dtrna       =  37
+!integer,parameter :: tm_force_hp          =  35
+!integer,parameter :: tm_force_sasa        =  36 !sasa
+integer,parameter :: tm_force_dtrna_hb    =  37
+integer,parameter :: tm_force_dtrna_st    =  38
 
 ! for MPI or openMP
 integer,parameter :: tmc_neighbor         =  41
 integer,parameter :: tmc_force            =  42
 integer,parameter :: tmc_energy           =  43 
 integer,parameter :: tmc_replica          =  44
-integer,parameter :: tmc_step_adj         =  45
+!integer,parameter :: tmc_step_adj         =  45
 integer,parameter :: tmc_random           =  46
 
 
@@ -57,32 +58,29 @@ integer,parameter :: tm_neighbor          =  51
 integer,parameter :: tm_neighbor_exv      =  52
 integer,parameter :: tm_neighbor_ele      =  53
 integer,parameter :: tm_neighbor_hb       =  54
-integer,parameter :: tm_neighbor_hp       =  56
-integer,parameter :: tm_neighbor_sasa     =  57  !sasa
+!integer,parameter :: tm_neighbor_hp       =  56
+!integer,parameter :: tm_neighbor_sasa     =  57  !sasa
 
 ! for energy
-integer,parameter :: tm_energy_sasa       = 100  !sasa
+!integer,parameter :: tm_energy_sasa       = 100  !sasa
 integer,parameter :: tm_energy_velo       = 101
 integer,parameter :: tm_energy_bond       = 102
 integer,parameter :: tm_energy_bangle     = 103
-integer,parameter :: tm_energy_dih        = 104
-integer,parameter :: tm_energy_nlocal_mgo = 105
+!integer,parameter :: tm_energy_dih        = 104
+!integer,parameter :: tm_energy_nlocal_mgo = 105
 integer,parameter :: tm_energy_nlocal_go  = 106
 integer,parameter :: tm_energy_enm        = 107
 integer,parameter :: tm_energy_orderpara  = 108
 integer,parameter :: tm_energy_exv        = 109
-integer,parameter :: tm_energy_mgo        = 112
+!integer,parameter :: tm_energy_mgo        = 112
 integer,parameter :: tm_energy_unit       = 113
 integer,parameter :: tm_energy_total      = 114
 integer,parameter :: tm_energy_replica    = 115
-integer,parameter :: tm_energy_dih_harmonic     = 116
-integer,parameter :: tm_energy_hp         = 117
+!integer,parameter :: tm_energy_dih_harmonic     = 116
+!integer,parameter :: tm_energy_hp         = 117
 integer,parameter :: tm_energy_ele        = 118
 
-! for loadbalance
-integer,parameter :: tm_lap               = 119
-
-integer,parameter :: NMAX         =  120
+integer,parameter :: NMAX         =  119
 
 real(8) :: total_time(NMAX)
 
@@ -123,16 +121,17 @@ subroutine time_write( lunout )
      write(lunout, fmt=fmt1) '_force(ele)    ', total_time(tm_force_ele), trate*total_time(tm_force_ele)
   end if
 
-  if (inmisc%force_flag(INTERACT%HP)) then
-     write(lunout, fmt=fmt1) '_force(hp)     ', total_time(tm_force_hp), trate*total_time(tm_force_hp)
-  end if
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     write(lunout, fmt=fmt1) '_force(hp)     ', total_time(tm_force_hp), trate*total_time(tm_force_hp)
+!  end if
 
   if (inmisc%class_flag(CLASS%RNA)) then
-     write(lunout, fmt=fmt1) '_force(dtrna)  ', total_time(tm_force_dtrna), trate*total_time(tm_force_dtrna)
+     write(lunout, fmt=fmt1) '_force(dtrna_hb)  ', total_time(tm_force_dtrna_hb), trate*total_time(tm_force_dtrna_hb)
+     write(lunout, fmt=fmt1) '_force(dtrna_st)  ', total_time(tm_force_dtrna_st), trate*total_time(tm_force_dtrna_st)
   end if
-  if (inmisc%force_flag(INTERACT%SASA)) then
-     write(lunout, fmt=fmt1) '_force(sasa)   ', total_time(tm_force_sasa), trate*total_time(tm_force_sasa)
-  end if
+!  if (inmisc%force_flag(INTERACT%SASA)) then
+!     write(lunout, fmt=fmt1) '_force(sasa)   ', total_time(tm_force_sasa), trate*total_time(tm_force_sasa)
+!  end if
 
   write(lunout, fmt=fmt1) 'random         ', total_time(tm_random), trate*total_time(tm_random)
   write(lunout, fmt=fmt1) '_random(comm)  ', total_time(tmc_random), trate*total_time(tmc_random)
@@ -145,17 +144,17 @@ subroutine time_write( lunout )
      write(lunout, fmt=fmt1) '_neighbor(ele) ', total_time(tm_neighbor_ele), trate*total_time(tm_neighbor_ele)
   end if
 
-  if (inmisc%force_flag(INTERACT%HP)) then
-     write(lunout, fmt=fmt1) '_neighbor(hp)  ', total_time(tm_neighbor_hp), trate*total_time(tm_neighbor_hp)
-  end if
+!  if (inmisc%force_flag(INTERACT%HP)) then
+!     write(lunout, fmt=fmt1) '_neighbor(hp)  ', total_time(tm_neighbor_hp), trate*total_time(tm_neighbor_hp)
+!  end if
 
   if (inmisc%i_dtrna_model == 2015) then
      write(lunout, fmt=fmt1) '_neighbor(hb)  ', total_time(tm_neighbor_hb), trate*total_time(tm_neighbor_hb)
   end if
 
-  if (inmisc%force_flag(INTERACT%SASA)) then
-     write(lunout, fmt=fmt1) '_neighbor(sasa)', total_time(tm_neighbor_sasa), trate*total_time(tm_neighbor_sasa)
-  end if
+!  if (inmisc%force_flag(INTERACT%SASA)) then
+!     write(lunout, fmt=fmt1) '_neighbor(sasa)', total_time(tm_neighbor_sasa), trate*total_time(tm_neighbor_sasa)
+!  end if
 
   write(lunout, fmt=fmt1) 'update         ', total_time(tm_update), trate*total_time(tm_update)
   write(lunout, fmt=fmt1) 'copyxyz        ', total_time(tm_copyxyz), trate*total_time(tm_copyxyz)
@@ -168,16 +167,16 @@ subroutine time_write( lunout )
      write(lunout, fmt=fmt1) 'replica        ', total_time(tm_replica), trate*total_time(tm_replica)
      write(lunout, fmt=fmt1) '_replica(comm) ', total_time(tmc_replica), trate*total_time(tmc_replica)
 
-     write(lunout, fmt=fmt1) 'stepadjust     ', total_time(tm_step_adj), trate*total_time(tm_step_adj)
-     write(lunout, fmt=fmt1) '_stepadj(comm) ', total_time(tmc_step_adj), trate*total_time(tmc_step_adj)
+!     write(lunout, fmt=fmt1) 'stepadjust     ', total_time(tm_step_adj), trate*total_time(tm_step_adj)
+!     write(lunout, fmt=fmt1) '_stepadj(comm) ', total_time(tmc_step_adj), trate*total_time(tmc_step_adj)
   end if
 
   write(lunout, fmt=fmt1) 'output         ', total_time(tm_output), trate*total_time(tm_output)
   write(lunout, fmt=fmt1) 'radiusg_rmsd   ', total_time(tm_radiusg_rmsd), trate*total_time(tm_radiusg_rmsd)
 
-  if(inmmc%i_modified_muca == 1)then
-     write(lunout, fmt=fmt1) 'muca           ', total_time(tm_muca), trate*total_time(tm_muca)
-  end if
+!  if(inmmc%i_modified_muca == 1)then
+!     write(lunout, fmt=fmt1) 'muca           ', total_time(tm_muca), trate*total_time(tm_muca)
+!  end if
 
   if (inmisc%i_implig==1) then
      write(lunout, fmt=fmt1) 'implig         ', total_time(tm_implig), trate*total_time(tm_implig)

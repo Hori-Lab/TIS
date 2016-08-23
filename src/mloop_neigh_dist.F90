@@ -7,7 +7,7 @@ subroutine mloop_neigh_dist()
   use const_maxsize
   use const_index
   use var_io,     only : outfile
-  use var_setp,   only : inpara, inmisc, indtrna13, indtrna15, inrna, &
+  use var_setp,   only : inpara, inmisc, indtrna13, indtrna15, &! inrna, &
                          inpro, inligand, inexv
   use var_struct, only : nunit_all, iclass_unit, exv_radius_mp, lunit2mp
                           
@@ -61,12 +61,13 @@ subroutine mloop_neigh_dist()
 
         if (inmisc%i_residuenergy_radii == 0) then
            if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV12)) then
-              if (iclass == CLASS%RNA .AND. jclass == CLASS%RNA) then
-                 cut = inrna%cutoff_exvol * inrna%cdist_rep12
-              else if ((iclass == CLASS%RNA .AND. jclass == CLASS%PRO) .OR. &
-                       (iclass == CLASS%PRO .AND. jclass == CLASS%RNA)) then
-                 cut = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12) / 2.0
-              else if (iclass == CLASS%LIG .OR. jclass == CLASS%LIG) then
+              !if (iclass == CLASS%RNA .AND. jclass == CLASS%RNA) then
+              !   cut = inrna%cutoff_exvol * inrna%cdist_rep12
+              !else if ((iclass == CLASS%RNA .AND. jclass == CLASS%PRO) .OR. &
+              !         (iclass == CLASS%PRO .AND. jclass == CLASS%RNA)) then
+              !   cut = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12) / 2.0
+              !else if (iclass == CLASS%LIG .OR. jclass == CLASS%LIG) then
+              if (iclass == CLASS%LIG .OR. jclass == CLASS%LIG) then
                  cut = inligand%cutoff_exvol * inligand%cdist_rep12_llig
                  if(iclass == CLASS%PRO .OR. jclass == CLASS%PRO) then
                     cut = inligand%cutoff_exvol * inligand%cdist_rep12_lpro

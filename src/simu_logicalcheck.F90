@@ -29,10 +29,12 @@ subroutine simu_logicalcheck()
 
   ! Simulated annealing
   case (RUN%SA)
+     error_code = 90
 !     if (i_type /= REPTYPE%VOID) error_code = 10 ! i_type should be VOID
 
   ! Auto-search of T_f
   case (RUN%SEARCH_TF)
+     error_code = 90
 !     if (i_type /= REPTYPE%VOID) error_code = 20  ! i_type should be VOID
 
   ! Energy calculation at single point
@@ -45,6 +47,7 @@ subroutine simu_logicalcheck()
   case (RUN%REPLICA)
     
   case (RUN%FMAT)
+     error_code = 90
 
   case (RUN%EMIN)
 

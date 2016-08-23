@@ -16,9 +16,9 @@ module var_replica
      integer :: npar_rep       !< parameter of parallelization
      integer :: n_replica(REPTYPE%MAX) !< # of replicas
      integer :: i_style(REPTYPE%MAX)   !< how to define replica variables
-     integer :: i_loadbalance          !< flag for load-balancing
-     integer :: n_step_adjust          !< (not used in current version)
-     integer :: n_adjust_interval      !< # of interval steps of load balancing
+!     integer :: i_loadbalance          !< flag for load-balancing
+!     integer :: n_step_adjust          !< (not used in current version)
+!     integer :: n_adjust_interval      !< # of interval steps of load balancing
      integer :: n_pull
      real(PREC) :: lowest(REPTYPE%MAX)   !< lowest value of replica variable
      real(PREC) :: highest(REPTYPE%MAX)  !< highest value of replica variable
@@ -27,10 +27,10 @@ module var_replica
      real(PREC) :: var(MXREPLICA,REPTYPE%MAX)  !< replica variables defined explicitly
      real(PREC) :: window_property(MXREPLICA,WINDTYPE%MAX)  !< window property
      integer    :: window_mp_id(MXREPLICA,2)  !< ids of mass point for window
-     integer    :: winz_igrp(MXREPLICA)
-     real(PREC) :: winz_z(MXREPLICA)
-     real(PREC) :: winz_kxy(MXREPLICA)
-     real(PREC) :: winz_kz(MXREPLICA) 
+!     integer    :: winz_igrp(MXREPLICA)
+!     real(PREC) :: winz_z(MXREPLICA)
+!     real(PREC) :: winz_kxy(MXREPLICA)
+!     real(PREC) :: winz_kz(MXREPLICA) 
      real(PREC) :: pull_direction(SDIM, MXPULLING)
      logical :: flg_exchange   !< flag for exchange
 

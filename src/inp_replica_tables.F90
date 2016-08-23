@@ -78,6 +78,7 @@ subroutine inp_replica_tables()
             rvalue = inrep%var(irep,ivar)
 
          else
+           rvalue = 0
            write(error_message, *) 'defect at replica_set_table, PROGRAM STOP'
            call util_error(ERROR%STOP_ALL, error_message)
          endif

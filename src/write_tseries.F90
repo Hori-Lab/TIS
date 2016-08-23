@@ -15,14 +15,14 @@ subroutine write_tseries(ibefore_time, istep, &
   use const_physical
   use var_io,     only : outfile, iunit2us, i_run_mode
   use var_setp,    only : inmisc
-  use var_struct,  only : nunit_real, nunit_all
+  use var_struct,  only : nunit_real!, nunit_all
 !  use var_mgo,     only : inmgo, ishadow2real_unit_mgo, coef_mgo, &
 !                          estate_mgo, q_mgo, ekai_mgo
   use var_simu,    only : qscore, qscore_unit
   use var_replica, only : flg_rep, rep2val, rep2lab, &
                           n_replica_mpi, irep2grep
 
-  use var_implig,  only : inimplig, Etbind_implig, istate_implig !! implicit_ligand model
+!  use var_implig,  only : inimplig, Etbind_implig, istate_implig !! implicit_ligand model
   ! Etbind_implig(MXSITE_IMPLIG, MXREPLICA)
   ! istate_implig(MXSITE_IMPLIG, MXREPLICA)
 
@@ -39,15 +39,13 @@ subroutine write_tseries(ibefore_time, istep, &
   real(PREC), intent(in) :: energy_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
   real(PREC), intent(in) :: energy(:,:)          ! (E_TYPE%MAX,replica)
   real(PREC), intent(in) :: temp_in
-  logical, intent(in), optional :: flg_header
-  
-  character(1) :: cfunc_int2char
+  logical,    intent(in), optional :: flg_header
+!  character(1) :: cfunc_int2char
 
-  ! ---------------------------------------------------------------------
-  ! local variables
   integer :: irep, grep
-  integer :: iunit, junit, iunit_s, junit_s
-  integer :: isys, istat, jstat
+  integer :: iunit, junit !, iunit_s, junit_s
+  !integer :: isys, istat, jstat
+  !integer :: isite
   integer :: lunout
   integer(L_INT) :: inumber
   integer, parameter :: IW_SGO  = 1
@@ -58,7 +56,6 @@ subroutine write_tseries(ibefore_time, istep, &
   character(5) :: chead, chead2
   real(PREC) :: tempk
   real(PREC), parameter :: HIGH_ENERGY_OUT = 99999.99
-  integer :: isite
   logical :: flg_header_write
 
   flg_header_write = .false.
@@ -144,9 +141,9 @@ subroutine write_tseries(ibefore_time, istep, &
         write (lunout, _FMT_TS_RMSD_T_,  ADVANCE = "NO") 'rmsd'
         write (lunout, _FMT_TS_LOCAL_T_, ADVANCE = "NO") 'local'
         write (lunout, _FMT_TS_GO_T_,    ADVANCE = "NO") 'go'
-        if (inmisc%force_flag(INTERACT%MORSE)) then
-           write (lunout, _FMT_TS_MORSE_T_,    ADVANCE = "NO") 'morse'
-        endif
+!        if (inmisc%force_flag(INTERACT%MORSE)) then
+!           write (lunout, _FMT_TS_MORSE_T_,    ADVANCE = "NO") 'morse'
+!        endif
         write (lunout, _FMT_TS_REPUL_T_, ADVANCE = "NO") 'repul'
    
         if (inmisc%class_flag(CLASS%RNA)) then
@@ -169,13 +166,13 @@ subroutine write_tseries(ibefore_time, istep, &
            write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
         end if
    
-        if(inmisc%i_in_box == 1) then
-           write (lunout, _FMT_TS_BOX_T_,     ADVANCE = "NO") 'box'
-        end if
+!        if(inmisc%i_in_box == 1) then
+!           write (lunout, _FMT_TS_BOX_T_,     ADVANCE = "NO") 'box'
+!        end if
 
-        if(inmisc%i_in_cap == 1) then
-           write (lunout, _FMT_TS_CAP_T_,     ADVANCE = "NO") 'cap'
-        end if
+!        if(inmisc%i_in_cap == 1) then
+!           write (lunout, _FMT_TS_CAP_T_,     ADVANCE = "NO") 'cap'
+!        end if
 
         if(inmisc%i_bridge == 1) then
            write (lunout, _FMT_TS_BRIDGE_T_,  ADVANCE = "NO") 'bridge'
@@ -193,18 +190,19 @@ subroutine write_tseries(ibefore_time, istep, &
            write (lunout, _FMT_TS_REST1D_T_,  ADVANCE = "NO") 'rest1d'
         end if
 
-        !!if(inimplig%iexe_implig == 1) then
-        if(inmisc%i_implig == 1) then
-           write (lunout, _FMT_TS_IMPLIG_T_,  ADVANCE = "NO") 'imp_lig'
-        end if
+!        !!if(inimplig%iexe_implig == 1) then
+!        if(inmisc%i_implig == 1) then
+!           write (lunout, _FMT_TS_IMPLIG_T_,  ADVANCE = "NO") 'imp_lig'
+!        end if
 
-        if(inmisc%i_window == 1 .or. inmisc%i_winz == 1) then
+        !if(inmisc%i_window == 1 .or. inmisc%i_winz == 1) then
+        if(inmisc%i_window == 1) then
            write (lunout, _FMT_TS_WINDOW_T_,  ADVANCE = "NO") 'window'
         end if
 
-        if(inmisc%i_cylinder == 1) then
-           write (lunout, _FMT_TS_CYLINDER_T_,  ADVANCE = "NO") 'cylinder'
-        end if
+!        if(inmisc%i_cylinder == 1) then
+!           write (lunout, _FMT_TS_CYLINDER_T_,  ADVANCE = "NO") 'cylinder'
+!        end if
 
         
 
@@ -370,11 +368,11 @@ contains
     real(PREC) :: tenergy(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
     real(PREC) :: elocal, ego, erepul
-    real(PREC) :: eelect, ehp
-    real(PREC) :: emorse
+    real(PREC) :: eelect
+!    real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
-    real(PREC) :: ebox, ecap, ebridge, epulling, eanchor, erest1d
-    real(PREC) :: eimplig, ewindow, ecylinder
+    real(PREC) :: ewindow, ebridge, epulling, eanchor, erest1d
+!    real(PREC) :: ehp, eimplig, ecap, ebox, ecylinder
 
     ! ---------------------------------------------------------------------
     if(iunit == 0) then
@@ -402,9 +400,9 @@ contains
           tenergy(E_TYPE%BANGLE) = energy_unit(iunit, junit, E_TYPE%BANGLE, irep)
           tenergy(E_TYPE%DIHE) = energy_unit(iunit, junit, E_TYPE%DIHE, irep)
           tenergy(E_TYPE%GO) = energy_unit(iunit, junit, E_TYPE%GO, irep)
-          tenergy(E_TYPE%MORSE) = energy_unit(iunit, junit, E_TYPE%MORSE, irep)
-          tenergy(E_TYPE%DIHE_HARMONIC) = energy_unit(iunit, junit, E_TYPE%DIHE_HARMONIC, irep)
-          tenergy(E_TYPE%IMPLIG) = energy_unit(iunit, junit, E_TYPE%IMPLIG, irep)
+!          tenergy(E_TYPE%MORSE) = energy_unit(iunit, junit, E_TYPE%MORSE, irep)
+!          tenergy(E_TYPE%DIHE_HARMONIC) = energy_unit(iunit, junit, E_TYPE%DIHE_HARMONIC, irep)
+!          tenergy(E_TYPE%IMPLIG) = energy_unit(iunit, junit, E_TYPE%IMPLIG, irep)
        end if
     end if
 
@@ -421,8 +419,8 @@ contains
     if (elocal > HIGH_ENERGY_JUDGE) elocal = HIGH_ENERGY_OUT
     ego     = tenergy(E_TYPE%GO)
     if (ego > HIGH_ENERGY_JUDGE) ego = HIGH_ENERGY_OUT
-    emorse  = tenergy(E_TYPE%MORSE)
-    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
+!    emorse  = tenergy(E_TYPE%MORSE)
+!    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
     erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
     if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
     estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
@@ -431,12 +429,12 @@ contains
     if (ehbond_rna > HIGH_ENERGY_JUDGE) ehbond_rna = HIGH_ENERGY_OUT
     eelect  = tenergy(E_TYPE%ELE)
     if (eelect > HIGH_ENERGY_JUDGE) eelect = HIGH_ENERGY_OUT
-    ehp       = tenergy(E_TYPE%HPENE)
-    if (ehp > HIGH_ENERGY_JUDGE) ehp = HIGH_ENERGY_OUT
-    ebox      = tenergy(E_TYPE%BOX)
-    if (ebox > HIGH_ENERGY_JUDGE) ebox = HIGH_ENERGY_OUT
-    ecap      = tenergy(E_TYPE%CAP)
-    if (ecap > HIGH_ENERGY_JUDGE) ecap = HIGH_ENERGY_OUT
+!    ehp       = tenergy(E_TYPE%HPENE)
+!    if (ehp > HIGH_ENERGY_JUDGE) ehp = HIGH_ENERGY_OUT
+!    ebox      = tenergy(E_TYPE%BOX)
+!    if (ebox > HIGH_ENERGY_JUDGE) ebox = HIGH_ENERGY_OUT
+!    ecap      = tenergy(E_TYPE%CAP)
+!    if (ecap > HIGH_ENERGY_JUDGE) ecap = HIGH_ENERGY_OUT
     ebridge   = tenergy(E_TYPE%BRIDGE)
     if (ebridge > HIGH_ENERGY_JUDGE) ebridge = HIGH_ENERGY_OUT
     epulling  = tenergy(E_TYPE%PULLING)
@@ -445,12 +443,12 @@ contains
     if (eanchor > HIGH_ENERGY_JUDGE) eanchor = HIGH_ENERGY_OUT
     erest1d   = tenergy(E_TYPE%REST1D)
     if (erest1d > HIGH_ENERGY_JUDGE) erest1d = HIGH_ENERGY_OUT
-    eimplig   = tenergy(E_TYPE%IMPLIG)
-    if (eimplig > HIGH_ENERGY_JUDGE) eimplig = HIGH_ENERGY_OUT
+!    eimplig   = tenergy(E_TYPE%IMPLIG)
+!    if (eimplig > HIGH_ENERGY_JUDGE) eimplig = HIGH_ENERGY_OUT
     ewindow   = tenergy(E_TYPE%WINDOW)
     if (ewindow > HIGH_ENERGY_JUDGE) ewindow = HIGH_ENERGY_OUT
-    ecylinder = tenergy(E_TYPE%CYLINDER)
-    if (ecylinder > HIGH_ENERGY_JUDGE) ecylinder = HIGH_ENERGY_OUT
+!    ecylinder = tenergy(E_TYPE%CYLINDER)
+!    if (ecylinder > HIGH_ENERGY_JUDGE) ecylinder = HIGH_ENERGY_OUT
 
     if(inmisc%i_output_energy_style == 0) then
        write (lunout, "(a5)",         ADVANCE = "NO") chead3
@@ -495,17 +493,17 @@ contains
           write (lunout, _FMT_TS_RMSD_,   ADVANCE = "NO") ermsd
           write (lunout, _FMT_TS_LOCAL_,  ADVANCE = "NO") elocal
           write (lunout, _FMT_TS_GO_,     ADVANCE = "NO") ego
-          if (inmisc%force_flag(INTERACT%MORSE)) then
-             write (lunout, _FMT_TS_MORSE_,    ADVANCE = "NO") emorse
-          endif
+!          if (inmisc%force_flag(INTERACT%MORSE)) then
+!             write (lunout, _FMT_TS_MORSE_,    ADVANCE = "NO") emorse
+!          endif
        else
           write (lunout, _FMT_TS_QSCORE_, ADVANCE = "NO") 0.0e0_PREC
           write (lunout, _FMT_TS_RMSD_,   ADVANCE = "NO") 0.0e0_PREC
           write (lunout, _FMT_TS_LOCAL_,  ADVANCE = "NO") 0.0e0_PREC
           write (lunout, _FMT_TS_GO_,     ADVANCE = "NO") 0.0e0_PREC
-          if (inmisc%force_flag(INTERACT%MORSE)) then
-             write (lunout, _FMT_TS_MORSE_,    ADVANCE = "NO") 0.0e0_PREC
-          endif
+!          if (inmisc%force_flag(INTERACT%MORSE)) then
+!             write (lunout, _FMT_TS_MORSE_,    ADVANCE = "NO") 0.0e0_PREC
+!          endif
        end if
        if (erepul > HIGH_ENERGY_JUDGE) then
           write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") HIGH_ENERGY_OUT
@@ -529,17 +527,17 @@ contains
           write (lunout, _FMT_TS_ELECT_,   ADVANCE = "NO") eelect
        end if
 
-       if(inmisc%force_flag(INTERACT%HP)) then
-          write (lunout, _FMT_TS_HPENE_, ADVANCE = "NO") ehp
-       end if
+!       if(inmisc%force_flag(INTERACT%HP)) then
+!          write (lunout, _FMT_TS_HPENE_, ADVANCE = "NO") ehp
+!       end if
 
-       if(inmisc%i_in_box == 1) then
-          write (lunout, _FMT_TS_BOX_, ADVANCE = "NO") ebox
-       end if
+!       if(inmisc%i_in_box == 1) then
+!          write (lunout, _FMT_TS_BOX_, ADVANCE = "NO") ebox
+!       end if
 
-       if(inmisc%i_in_cap == 1) then
-          write (lunout, _FMT_TS_CAP_, ADVANCE = "NO") ecap
-       end if
+!       if(inmisc%i_in_cap == 1) then
+!          write (lunout, _FMT_TS_CAP_, ADVANCE = "NO") ecap
+!       end if
        
        if(inmisc%i_bridge == 1) then
           write (lunout, _FMT_TS_BRIDGE_, ADVANCE = "NO") ebridge
@@ -557,18 +555,19 @@ contains
           write (lunout, _FMT_TS_REST1D_, ADVANCE = "NO") erest1d
        end if
 
-       if(inmisc%i_window == 1 .or. inmisc%i_winz == 1) then
+       !if(inmisc%i_window == 1 .or. inmisc%i_winz == 1) then
+       if(inmisc%i_window == 1) then
           write (lunout, _FMT_TS_WINDOW_, ADVANCE = "NO") ewindow
        end if
        
-       if(inmisc%i_cylinder == 1) then
-          write (lunout, _FMT_TS_CYLINDER_, ADVANCE = "NO") ecylinder
-       end if
+!       if(inmisc%i_cylinder == 1) then
+!          write (lunout, _FMT_TS_CYLINDER_, ADVANCE = "NO") ecylinder
+!       end if
 
        !!if(inimplig%iexe_implig == 1) then
-       if(inmisc%i_implig == 1) then
-          write (lunout, _FMT_TS_IMPLIG_, ADVANCE = "NO") eimplig
-       end if
+!       if(inmisc%i_implig == 1) then
+!          write (lunout, _FMT_TS_IMPLIG_, ADVANCE = "NO") eimplig
+!       end if
        
        
     end if

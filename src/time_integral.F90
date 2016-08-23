@@ -19,17 +19,18 @@ subroutine time_integral(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, outfile, flg_file_out
-  use var_setp,    only : insimu, fix_mp, inmmc, inmisc, inpara
+  use var_setp,    only : insimu, fix_mp, inmisc, inpara
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
-  use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, & !  n_exchange
+  use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
-                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          energy_muca, energy_unit_muca, rlan_const, &
+!                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
+!                          energy_muca, energy_unit_muca, &
+                          rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor, dxyz_mp
-  use time, only : tm_lap, tm_random, tmc_random, tm_muca, &
-                   tm_neighbor, tm_update, tm_copyxyz, tm_force, &
+  use time, only : tm_random, tmc_random, &!, tm_copyxyz, tm_muca, &
+                   tm_neighbor, tm_update, tm_force, &
                    time_s, time_e
   use mpiconst
 
@@ -94,8 +95,7 @@ subroutine time_integral(flg_step_each_replica)
   
   !if (inrep%i_loadbalance >= 1) then
   !   if(istep == insimu%i_tstep_init) then  
-  !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
-  !      TIME_S( tm_lap )
+  !      call step_adjustment(istep, inrep%i_loadbalance)
   !   endif
   !endif
 
@@ -145,9 +145,9 @@ subroutine time_integral(flg_step_each_replica)
            enddo
            TIME_E( tm_update )
            
-           TIME_S( tm_copyxyz )
-           call simu_copyxyz(irep)
-           TIME_E( tm_copyxyz )
+!           TIME_S( tm_copyxyz )
+!           call simu_copyxyz(irep)
+!           TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
            call force_sumup(force_mp, irep)
@@ -156,17 +156,17 @@ subroutine time_integral(flg_step_each_replica)
            !mcanonical
            ! multicanonical algorithm --------------------
            ! based on Gosavi et al. JMB,2006,357,986
-           TIME_S( tm_muca )
-           if(inmmc%i_modified_muca == 1)then
-              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
-              e_md = energy_muca(E_TYPE%TOTAL)
-              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
-                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
-              do imp = 1, nmp_real
-                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
-              end do
-           endif
-           TIME_E( tm_muca )
+!           TIME_S( tm_muca )
+!           if(inmmc%i_modified_muca == 1)then
+!              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
+!              e_md = energy_muca(E_TYPE%TOTAL)
+!              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
+!                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
+!              do imp = 1, nmp_real
+!                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
+!              end do
+!           endif
+!           TIME_E( tm_muca )
            !----------------------------------------------
            
 !#ifdef _DEBUG
@@ -212,9 +212,9 @@ subroutine time_integral(flg_step_each_replica)
            end do
            TIME_E( tm_update )
            
-           TIME_S( tm_copyxyz )
-           call simu_copyxyz(irep)
-           TIME_E( tm_copyxyz )
+!           TIME_S( tm_copyxyz )
+!           call simu_copyxyz(irep)
+!           TIME_E( tm_copyxyz )
            
            TIME_S( tm_force )
            call force_sumup(force_mp, irep)
@@ -223,17 +223,17 @@ subroutine time_integral(flg_step_each_replica)
            !mcanonical
            ! multicanonical algorithm --------------------
            ! based on Gosavi et al. JMB,2006,357,986
-           TIME_S( tm_muca )
-           if(inmmc%i_modified_muca == 1)then
-              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
-              e_md = energy_muca(E_TYPE%TOTAL)
-              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
-                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
-              do imp = 1, nmp_real
-                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
-              end do
-           endif
-           TIME_E( tm_muca )
+!           TIME_S( tm_muca )
+!           if(inmmc%i_modified_muca == 1)then
+!              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
+!              e_md = energy_muca(E_TYPE%TOTAL)
+!              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
+!                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
+!              do imp = 1, nmp_real
+!                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
+!              end do
+!           endif
+!           TIME_E( tm_muca )
            !----------------------------------------------
            
            TIME_S( tm_update )
@@ -292,9 +292,9 @@ subroutine time_integral(flg_step_each_replica)
            end do
            TIME_E( tm_update )
            
-           TIME_S( tm_copyxyz )
-           call simu_copyxyz(irep)
-           TIME_E( tm_copyxyz )
+!           TIME_S( tm_copyxyz )
+!           call simu_copyxyz(irep)
+!           TIME_E( tm_copyxyz )
            
            TIME_S( tm_force )
            call force_sumup(force_mp, irep)
@@ -303,17 +303,17 @@ subroutine time_integral(flg_step_each_replica)
            !mcanonical
            ! multicanonical algorithm --------------------
            ! based on Gosavi et al. JMB,2006,357,986
-           TIME_S( tm_muca )
-           if(inmmc%i_modified_muca == 1)then
-              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
-              e_md = energy_muca(E_TYPE%TOTAL)
-              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
-                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
-              do imp = 1, nmp_real
-                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
-              end do
-           endif
-           TIME_E( tm_muca )
+!           TIME_S( tm_muca )
+!           if(inmmc%i_modified_muca == 1)then
+!              call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
+!              e_md = energy_muca(E_TYPE%TOTAL)
+!              fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
+!                   exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
+!              do imp = 1, nmp_real
+!                 force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
+!              end do
+!           endif
+!           TIME_E( tm_muca )
            !----------------------------------------------
            
            TIME_S( tm_update )
@@ -355,9 +355,9 @@ subroutine time_integral(flg_step_each_replica)
            enddo
            TIME_E( tm_update )
            
-           TIME_S( tm_copyxyz )
-           call simu_copyxyz(irep)
-           TIME_E( tm_copyxyz )
+!           TIME_S( tm_copyxyz )
+!           call simu_copyxyz(irep)
+!           TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
            call force_sumup(force_mp, irep)
@@ -388,9 +388,9 @@ subroutine time_integral(flg_step_each_replica)
            enddo
            TIME_E( tm_update )
            
-           TIME_S( tm_copyxyz )
-           call simu_copyxyz(irep)
-           TIME_E( tm_copyxyz )
+!           TIME_S( tm_copyxyz )
+!           call simu_copyxyz(irep)
+!           TIME_E( tm_copyxyz )
    
            TIME_S( tm_force )
            call force_sumup(force_mp, irep)

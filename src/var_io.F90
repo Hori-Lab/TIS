@@ -115,7 +115,7 @@ module var_io
   integer, save :: iunit2us(2, MXUNIT)
 
   ! aicg
-  integer, save :: i_aicg
+!  integer, save :: i_aicg
 
   logical, save :: flg_rst ! To read
   logical, save :: flg_unit_generate_ion(MXUNIT)

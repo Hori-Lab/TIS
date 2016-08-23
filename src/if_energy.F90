@@ -232,22 +232,6 @@ interface
       real(PREC), intent(out) :: energy_unit(:,:,:)
    endsubroutine energy_exv_restype
    
-   subroutine energy_exv2(irep, energy, energy_unit)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(out)   :: energy(:)
-      real(PREC), intent(out)   :: energy_unit(:,:,:)
-   endsubroutine energy_exv2
-   
-   subroutine energy_exv3 (irep, energy_unit, energy)
-      use const_maxsize
-      implicit none
-      integer,    intent(in)    :: irep
-      real(PREC), intent(inout) :: energy_unit(:,:,:)
-      real(PREC), intent(inout) :: energy(:)
-   endsubroutine energy_exv3
-
    subroutine energy_ele(irep, energy, energy_unit)
       use const_maxsize
       implicit none

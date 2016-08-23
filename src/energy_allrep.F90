@@ -1,8 +1,6 @@
 ! energy_allrep
 !> @brief This subroutine is to calculate the replica energy.
 
-!#define MEM_ALLOC
-
 #ifdef TIME
 #define TIME_S(x) call time_s(x)
 #define TIME_E(x) call time_e(x)
@@ -168,9 +166,9 @@ subroutine energy_allrep(energy_unit,     &
            inwind%iwind(grep) = int(lab2val(label_opp, REPTYPE%WIND))
         endif
 
-        if (flg_rep(REPTYPE%WINZ)) then
-           inwind%iwinz(grep) = int(lab2val(label_opp, REPTYPE%WINZ))
-        endif
+!        if (flg_rep(REPTYPE%WINZ)) then
+!           inwind%iwinz(grep) = int(lab2val(label_opp, REPTYPE%WINZ))
+!        endif
 
         if (flg_rep(REPTYPE%PULL)) then
            pullforce = lab2val(label_opp, REPTYPE%PULL)
@@ -235,9 +233,9 @@ subroutine energy_allrep(energy_unit,     &
            inwind%iwind(grep) = int(lab2val(label_own, REPTYPE%WIND))
         endif
 
-        if (flg_rep(REPTYPE%WINZ)) then
-           inwind%iwinz(grep) = int(lab2val(label_own, REPTYPE%WINZ))
-        endif
+!        if (flg_rep(REPTYPE%WINZ)) then
+!           inwind%iwinz(grep) = int(lab2val(label_own, REPTYPE%WINZ))
+!        endif
 
         if (flg_rep(REPTYPE%PULL)) then
            pullforce = lab2val(label_own, REPTYPE%PULL)

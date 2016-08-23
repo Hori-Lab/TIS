@@ -5,13 +5,12 @@
 subroutine mloop_del_int()
 
   use const_maxsize
-  use var_io, only : ius2unit
+  !use var_io, only : ius2unit
   use var_setp, only : inmisc
-  use var_struct, only : lunit2mp, imp2unit, &
-                         nba, iba2mp, factor_ba, coef_ba, &
+  use var_struct, only : nba, iba2mp, factor_ba, coef_ba, &
                          ndih, idih2mp, factor_dih, coef_dih, &
-                         factor_aicg13, coef_aicg13_gauss, &
-                         factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
+!                         lunit2mp, factor_aicg13, coef_aicg13_gauss, &
+!                         factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
                          ncon, icon2mp, coef_go
 !  use var_mgo, only : inmgo, ishadow2real_mp_mgo
   use mpiconst
@@ -21,9 +20,9 @@ subroutine mloop_del_int()
   integer :: idel, ini, las, ini2, las2
   integer :: iba, idih, icon !,irna_bp, imorse
   integer :: imp1, imp2, imp3, imp4
-  integer :: imp_real1, imp_real2
+!  integer :: imp_real1, imp_real2
   integer :: imp
-  integer :: imp_shadow, iunit_real, iunit_shadow, instate
+!  integer :: imp_shadow, iunit_real, iunit_shadow, instate
   integer :: idel_mp(MXMP)
 
   ! -----------------------------------------------------------------
@@ -63,8 +62,8 @@ subroutine mloop_del_int()
         imp3 = iba2mp(3, iba)
 
         if(idel_mp(imp1) == 1 .or. idel_mp(imp2) == 1 .or. idel_mp(imp3) == 1) then
-           factor_aicg13(iba) = 0.0e0_PREC
-           coef_aicg13_gauss(iba) = 0.0e0_PREC
+!           factor_aicg13(iba) = 0.0e0_PREC
+!           coef_aicg13_gauss(iba) = 0.0e0_PREC
 
            factor_ba(iba) = 0.0e0_PREC
            coef_ba(1, iba) = 0.0e0_PREC
@@ -80,9 +79,9 @@ subroutine mloop_del_int()
         imp4 = idih2mp(4, idih)
 
         if(idel_mp(imp1) == 1 .or. idel_mp(imp2) == 1 .or. idel_mp(imp3) == 1 .or. idel_mp(imp4) == 1) then
-           factor_aicg14(idih) = 0.0e0_PREC
-           coef_aicg14_gauss(idih) = 0.0e0_PREC
-           coef_dih_gauss(idih) = 0.0e0_PREC
+!           factor_aicg14(idih) = 0.0e0_PREC
+!           coef_aicg14_gauss(idih) = 0.0e0_PREC
+!           coef_dih_gauss(idih) = 0.0e0_PREC
 
            factor_dih(idih) = 0.0e0_PREC
            coef_dih(1, idih) = 0.0e0_PREC

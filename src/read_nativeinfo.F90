@@ -15,17 +15,17 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
        nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
        nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
        nba, iba2mp, ba_nat, factor_ba, coef_ba, &
-       ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, &
+!       ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, idih2type, &
        ncon, icon2mp, icon2unit, go_nat, go_nat2, factor_go, icon_dummy_mgo, coef_go, &
        nLJ, iLJ2mp, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,&
-       nrna_bp, irna_bp2mp, irna_bp2unit, rna_bp_nat, rna_bp_nat2, &
-       factor_rna_bp, irna_bp_dummy_mgo, nhb_bp, coef_rna_bp, &
-       nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
-       factor_rna_st, irna_st_dummy_mgo, coef_rna_st, &
-       ibd2type, iba2type, idih2type, icon2type, &
-       coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
-       coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
-       coef_dih_gauss, wid_dih_gauss, & ! AICG2
+!       nrna_bp, irna_bp2mp, irna_bp2unit, rna_bp_nat, rna_bp_nat2, &
+!       factor_rna_bp, irna_bp_dummy_mgo, nhb_bp, coef_rna_bp, &
+!       nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
+!       factor_rna_st, irna_st_dummy_mgo, coef_rna_st, &
+       ibd2type, iba2type, icon2type, &
+!       coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
+!       coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, & ! AICG2
+!       coef_dih_gauss, wid_dih_gauss, & ! AICG2
        idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, ndtrna_st, idtrna_st2nn, &
        idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, ndtrna_hb, &
        idtrna_hb2hbsite, imp2hbsite, flg_hb_tertiary,&
@@ -46,20 +46,21 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: input_status
   integer :: ii, jj, imp1, imp2, imp3, imp4, iunit1, iunit2, imp_tmp
   integer :: imp1un, imp2un, imp3un, imp4un, kunit1
-  integer :: ibd, ifene, iba, idih, icon, iLJ
-  integer :: iba_aicg2, idih_aicg2, idih_aicg2p
+  integer :: ibd, ifene, iba, icon, iLJ
+!  integer :: idih
+!  integer :: iba_aicg2, idih_aicg2, idih_aicg2p
   integer :: ibd_read, iba_read, idih_read
   integer :: icon_read, idummy
-  integer :: ibp, ibp_read, nHB
-  integer :: ist, ist_read
+!  integer :: ibp, ibp_read, ist
+  integer :: nHB, ist_read
   integer :: ibsdist
   integer :: ihbdist, ihb_read
   integer :: itbsdist
-  integer :: itype
+!  integer :: itype
   integer :: offset1, offset2
   integer :: ist_type1, ist_type2, ist_type_tmp
-  real(PREC) :: bl, ba, dih, go, factor, correct, coef, coef3
-  real(PREC) :: aicg13, aicg14, wid ! AICG2
+  real(PREC) :: bl, ba, dih, go, factor, correct, coef !, coef3
+!  real(PREC) :: aicg13, aicg14, wid ! AICG2
   real(PREC) :: dist, energy0
   character(256) :: cline, cline_head
   character(CARRAY_MSG_ERROR) :: error_message
@@ -75,14 +76,14 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   ibd = nbd 
   ifene = nfene
   iba = nba 
-  idih = ndih
-  iba_aicg2 = nba
-  idih_aicg2 = ndih
-  idih_aicg2p = ndih
+!  idih = ndih
+!  iba_aicg2 = nba
+!  idih_aicg2 = ndih
+!  idih_aicg2p = ndih
   icon = ncon
   iLJ = nLJ
-  ibp = nrna_bp
-  ist = nrna_st
+!  ibp = nrna_bp
+!  ist = nrna_st
   ibsdist = ndtrna_st
   ihbdist = ndtrna_hb
   itbsdist = ndtrna_tst
@@ -202,136 +203,136 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            iba2type(iba) = str2angletype(ctype3)
         endif
      end if
-     ! ------------------------------------------------------------------
-     ! read the aicg13 with L_AICG2 or L_AICG2_PLUS
-     if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-         inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-           
-     if(cline(1:6) == 'aicg13') then 
-        ctype3 = '   '
-        read (cline, *, iostat = input_status) &
-            cline_head, iba_read, iunit1, iunit2,     &
-            imp1, imp2, imp3, imp1un, imp2un, imp3un, &
-            aicg13, factor, correct, coef, wid, ctype3
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-        iba_aicg2 = iba_aicg2 + 1
-        aicg13_nat(iba_aicg2) = aicg13
-        factor_aicg13(iba_aicg2) = factor
-        wid_aicg13_gauss(iba_aicg2) = wid
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_aicg13_gauss(iba_aicg2) = coef
-        endif
-     end if
-     end if     
-     ! ------------------------------------------------------------------
-     !  read the dihedral angle
-     if(cline(1:4) == 'dihd') then
-        ctype4 = '    '
-        read (cline, *, iostat = input_status) &
-             cline_head, idih_read, iunit1, iunit2,                  &
-             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
-             dih, factor, correct, coef, coef3, ctype4
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
+!     ! ------------------------------------------------------------------
+!     ! read the aicg13 with L_AICG2 or L_AICG2_PLUS
+!     if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
+!         inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!           
+!     if(cline(1:6) == 'aicg13') then 
+!        ctype3 = '   '
+!        read (cline, *, iostat = input_status) &
+!            cline_head, iba_read, iunit1, iunit2,     &
+!            imp1, imp2, imp3, imp1un, imp2un, imp3un, &
+!            aicg13, factor, correct, coef, wid, ctype3
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!        iba_aicg2 = iba_aicg2 + 1
+!        aicg13_nat(iba_aicg2) = aicg13
+!        factor_aicg13(iba_aicg2) = factor
+!        wid_aicg13_gauss(iba_aicg2) = wid
+!        if (inmisc%flg_coef_from_ninfo) then
+!           coef_aicg13_gauss(iba_aicg2) = coef
+!        endif
+!     end if
+!     end if     
+!     ! ------------------------------------------------------------------
+!     !  read the dihedral angle
+!     if(cline(1:4) == 'dihd') then
+!        ctype4 = '    '
+!        read (cline, *, iostat = input_status) &
+!             cline_head, idih_read, iunit1, iunit2,                  &
+!             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
+!             dih, factor, correct, coef, coef3, ctype4
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!
+!        idih = idih + 1 
+!        if (ctype4 /= '    ') then
+!           itype = str2dihtype(ctype4)
+!           if (itype == DIHTYPE%VOID) then
+!               write(error_message,*) 'Warning: Dihedral angle ', ctype4, &
+!                                      ' is not currently supported.'
+!               call util_error(ERROR%WARN_ALL, error_message)
+!               idih = idih - 1
+!               cycle
+!           endif
+!           idih2type(idih) = itype
+!        endif
+!
+!        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+!           idih2mp(1, idih) = imp1 + ii
+!           idih2mp(2, idih) = imp2 + ii
+!           idih2mp(3, idih) = imp3 + ii
+!           idih2mp(4, idih) = imp4 + ii
+!           kunit1 = iunit1
+!        else ! NATIVEINFO%ONE_BY_ONE
+!           idih2mp(1, idih) = imp1un + ii
+!           idih2mp(2, idih) = imp2un + ii
+!           idih2mp(3, idih) = imp3un + ii
+!           idih2mp(4, idih) = imp4un + ii
+!           kunit1 = iunit
+!        end if
+!        dih_nat(idih) = (dih / 180.0e0_PREC) * F_PI
+!        dih_sin_nat(idih) = sin(dih_nat(idih))
+!        dih_cos_nat(idih) = cos(dih_nat(idih))
+!        factor_dih(idih) = factor
+!        if (inmisc%flg_coef_from_ninfo) then
+!
+!           coef_dih(1, idih) = coef
+!           if (inmisc%i_triple_angle_term == 0) then
+!              coef_dih(2, idih) = 0.0e0_PREC
+!           elseif (inmisc%i_triple_angle_term == 1) then
+!              coef_dih(2, idih) = 0.5e0_PREC * coef
+!           elseif (inmisc%i_triple_angle_term == 2) then
+!              coef_dih(2, idih) = coef3
+!           else
+!              error_message = 'Error: invalid value for i_triple_angle_term in read_nativeinfo.F90'
+!              call util_error(ERROR%STOP_ALL, error_message)
+!           endif
+!        endif
+!     end if
 
-        idih = idih + 1 
-        if (ctype4 /= '    ') then
-           itype = str2dihtype(ctype4)
-           if (itype == DIHTYPE%VOID) then
-               write(error_message,*) 'Warning: Dihedral angle ', ctype4, &
-                                      ' is not currently supported.'
-               call util_error(ERROR%WARN_ALL, error_message)
-               idih = idih - 1
-               cycle
-           endif
-           idih2type(idih) = itype
-        endif
-
-        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
-           idih2mp(1, idih) = imp1 + ii
-           idih2mp(2, idih) = imp2 + ii
-           idih2mp(3, idih) = imp3 + ii
-           idih2mp(4, idih) = imp4 + ii
-           kunit1 = iunit1
-        else ! NATIVEINFO%ONE_BY_ONE
-           idih2mp(1, idih) = imp1un + ii
-           idih2mp(2, idih) = imp2un + ii
-           idih2mp(3, idih) = imp3un + ii
-           idih2mp(4, idih) = imp4un + ii
-           kunit1 = iunit
-        end if
-        dih_nat(idih) = (dih / 180.0e0_PREC) * F_PI
-        dih_sin_nat(idih) = sin(dih_nat(idih))
-        dih_cos_nat(idih) = cos(dih_nat(idih))
-        factor_dih(idih) = factor
-        if (inmisc%flg_coef_from_ninfo) then
-
-           coef_dih(1, idih) = coef
-           if (inmisc%i_triple_angle_term == 0) then
-              coef_dih(2, idih) = 0.0e0_PREC
-           elseif (inmisc%i_triple_angle_term == 1) then
-              coef_dih(2, idih) = 0.5e0_PREC * coef
-           elseif (inmisc%i_triple_angle_term == 2) then
-              coef_dih(2, idih) = coef3
-           else
-              error_message = 'Error: invalid value for i_triple_angle_term in read_nativeinfo.F90'
-              call util_error(ERROR%STOP_ALL, error_message)
-           endif
-        endif
-     end if
-
-     ! ------------------------------------------------------------------
-     !  read the aicg14 with L_AICG2
-     if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-     if(cline(1:6) == 'aicg14') then
-        ctype4 = '    '
-        read (cline, *, iostat = input_status) &
-             cline_head, idih_read, iunit1, iunit2,                  &
-             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
-             aicg14, factor, correct, coef, wid, ctype4
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-
-        idih_aicg2 = idih_aicg2 + 1
-        aicg14_nat(idih_aicg2) = aicg14
-        factor_aicg14(idih_aicg2) = factor
-        wid_aicg14_gauss(idih_aicg2) = wid
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_aicg14_gauss(idih_aicg2) = coef
-        endif
-     end if
-     end if
-
-     ! ------------------------------------------------------------------
-     !  read the aicg14 with L_AICG2_PLUS
-     if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     if(cline(1:7) == 'aicgdih') then
-        ctype4 = '    '
-        read (cline, *, iostat = input_status) &
-             cline_head, idih_read, iunit1, iunit2,                  &
-             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
-             dih, factor, correct, coef, wid, ctype4
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-
-        idih_aicg2p = idih_aicg2p + 1
-        dih_nat(idih_aicg2p) = (dih / 180.0e0_PREC) * F_PI
-        factor_aicg14(idih_aicg2p) = factor
-        wid_dih_gauss(idih_aicg2p) = wid
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_dih_gauss(idih_aicg2p) = coef
-        endif
-     end if
-     end if     
+!     ! ------------------------------------------------------------------
+!     !  read the aicg14 with L_AICG2
+!     if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!     if(cline(1:6) == 'aicg14') then
+!        ctype4 = '    '
+!        read (cline, *, iostat = input_status) &
+!             cline_head, idih_read, iunit1, iunit2,                  &
+!             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
+!             aicg14, factor, correct, coef, wid, ctype4
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!
+!        idih_aicg2 = idih_aicg2 + 1
+!        aicg14_nat(idih_aicg2) = aicg14
+!        factor_aicg14(idih_aicg2) = factor
+!        wid_aicg14_gauss(idih_aicg2) = wid
+!        if (inmisc%flg_coef_from_ninfo) then
+!           coef_aicg14_gauss(idih_aicg2) = coef
+!        endif
+!     end if
+!     end if
+!
+!     ! ------------------------------------------------------------------
+!     !  read the aicg14 with L_AICG2_PLUS
+!     if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     if(cline(1:7) == 'aicgdih') then
+!        ctype4 = '    '
+!        read (cline, *, iostat = input_status) &
+!             cline_head, idih_read, iunit1, iunit2,                  &
+!             imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
+!             dih, factor, correct, coef, wid, ctype4
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!
+!        idih_aicg2p = idih_aicg2p + 1
+!        dih_nat(idih_aicg2p) = (dih / 180.0e0_PREC) * F_PI
+!        factor_aicg14(idih_aicg2p) = factor
+!        wid_dih_gauss(idih_aicg2p) = wid
+!        if (inmisc%flg_coef_from_ninfo) then
+!           coef_dih_gauss(idih_aicg2p) = coef
+!        endif
+!     end if
+!     end if     
 
      ! ------------------------------------------------------------------
      ! read contact
@@ -402,84 +403,84 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         endif
      end if
 
-     ! ------------------------------------------------------------------
-     ! read basepair
-     if(cline(1:8) == 'basepair') then
-        ctype3 = '   '
-        nHB = 0
-        read (cline, *, iostat = input_status) &
-             cline_head, ibp_read, iunit1, iunit2,  &
-             imp1, imp2, imp1un, imp2un,             &
-             dist, factor, idummy, coef, ctype3, nHB
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-
-        ibp = ibp + 1
-        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
-           imp1 = imp1 + ii
-           imp2 = imp2 + jj
-        else ! NATIVEINFO%ONE_BY_ONE
-           imp1 = imp1un + ii
-           imp2 = imp2un + jj
-        end if
-        irna_bp2unit(1, ibp) = imp2unit(imp1)
-        irna_bp2unit(2, ibp) = imp2unit(imp2)
-        irna_bp2mp(1, ibp) = imp1
-        irna_bp2mp(2, ibp) = imp2
-        rna_bp_nat(ibp) = dist
-        rna_bp_nat2(ibp) = dist**2
-        factor_rna_bp(ibp) = factor
-        irna_bp_dummy_mgo(ibp) = idummy
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_rna_bp(ibp) = coef
-        endif
-
-        if (ctype3 /= '   ') then
-           if (nHB < 2) then
-              write(error_message,*) 'Error: in read_nativeinfo, invalid nHB',nHB
-              call util_error(ERROR%STOP_ALL, error_message)
-           else
-              nhb_bp(ibp) = nHB
-           endif
-        endif
-     end if
-     
-     ! ------------------------------------------------------------------
-     ! read basestack
-     if(cline(1:9) == 'basestack') then
-        ctype3 = '   '
-        read (cline, *, iostat = input_status) &
-             cline_head, ist_read, iunit1, iunit2,  &
-             imp1, imp2, imp1un, imp2un,             &
-             dist, factor, idummy, coef, ctype3
-        if(input_status > 0) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-
-        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
-           imp1 = imp1 + ii
-           imp2 = imp2 + jj
-        else ! NATIVEINFO%ONE_BY_ONE
-           imp1 = imp1un + ii
-           imp2 = imp2un + jj
-        end if
-
-        ist = ist + 1
-        irna_st2unit(1, ist) = imp2unit(imp1)
-        irna_st2unit(2, ist) = imp2unit(imp2)
-        irna_st2mp(1, ist) = imp1
-        irna_st2mp(2, ist) = imp2
-        rna_st_nat(ist) = dist
-        rna_st_nat2(ist) = dist**2
-        factor_rna_st(ist) = factor
-        irna_st_dummy_mgo(ist) = idummy
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_rna_st(ist) = coef
-        endif
-     end if
+!     ! ------------------------------------------------------------------
+!     ! read basepair
+!     if(cline(1:8) == 'basepair') then
+!        ctype3 = '   '
+!        nHB = 0
+!        read (cline, *, iostat = input_status) &
+!             cline_head, ibp_read, iunit1, iunit2,  &
+!             imp1, imp2, imp1un, imp2un,             &
+!             dist, factor, idummy, coef, ctype3, nHB
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!
+!        ibp = ibp + 1
+!        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+!           imp1 = imp1 + ii
+!           imp2 = imp2 + jj
+!        else ! NATIVEINFO%ONE_BY_ONE
+!           imp1 = imp1un + ii
+!           imp2 = imp2un + jj
+!        end if
+!        irna_bp2unit(1, ibp) = imp2unit(imp1)
+!        irna_bp2unit(2, ibp) = imp2unit(imp2)
+!        irna_bp2mp(1, ibp) = imp1
+!        irna_bp2mp(2, ibp) = imp2
+!        rna_bp_nat(ibp) = dist
+!        rna_bp_nat2(ibp) = dist**2
+!        factor_rna_bp(ibp) = factor
+!        irna_bp_dummy_mgo(ibp) = idummy
+!        if (inmisc%flg_coef_from_ninfo) then
+!           coef_rna_bp(ibp) = coef
+!        endif
+!
+!        if (ctype3 /= '   ') then
+!           if (nHB < 2) then
+!              write(error_message,*) 'Error: in read_nativeinfo, invalid nHB',nHB
+!              call util_error(ERROR%STOP_ALL, error_message)
+!           else
+!              nhb_bp(ibp) = nHB
+!           endif
+!        endif
+!     end if
+!     
+!     ! ------------------------------------------------------------------
+!     ! read basestack
+!     if(cline(1:9) == 'basestack') then
+!        ctype3 = '   '
+!        read (cline, *, iostat = input_status) &
+!             cline_head, ist_read, iunit1, iunit2,  &
+!             imp1, imp2, imp1un, imp2un,             &
+!             dist, factor, idummy, coef, ctype3
+!        if(input_status > 0) then
+!           error_message = 'read error =>' // cline
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!
+!        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+!           imp1 = imp1 + ii
+!           imp2 = imp2 + jj
+!        else ! NATIVEINFO%ONE_BY_ONE
+!           imp1 = imp1un + ii
+!           imp2 = imp2un + jj
+!        end if
+!
+!        ist = ist + 1
+!        irna_st2unit(1, ist) = imp2unit(imp1)
+!        irna_st2unit(2, ist) = imp2unit(imp2)
+!        irna_st2mp(1, ist) = imp1
+!        irna_st2mp(2, ist) = imp2
+!        rna_st_nat(ist) = dist
+!        rna_st_nat2(ist) = dist**2
+!        factor_rna_st(ist) = factor
+!        irna_st_dummy_mgo(ist) = idummy
+!        if (inmisc%flg_coef_from_ninfo) then
+!           coef_rna_st(ist) = coef
+!        endif
+!     end if
 
      ! ------------------------------------------------------------------
      ! read basestack of DT model
@@ -723,11 +724,11 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   nbd = ibd 
   nfene = ifene
   nba = iba 
-  ndih = idih
+!  ndih = idih
   ncon = icon
   nLJ  = iLJ
-  nrna_bp = ibp
-  nrna_st = ist
+!  nrna_bp = ibp
+!  nrna_st = ist
   ndtrna_st = ibsdist
   ndtrna_hb = ihbdist
   ndtrna_tst = itbsdist

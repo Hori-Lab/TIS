@@ -142,6 +142,7 @@ contains
     else if (c(1:3) =='VAL') then
        char2ichem = CHEMICALTYPE%VAL
     else
+       char2ichem = CHEMICALTYPE%UNKNOWN
        write(error_message,*) 'Error: unknown chemical type in "exv_sigma"',&
             'field in para/exv.para;', c
        call util_error(ERROR%STOP_ALL, error_message)

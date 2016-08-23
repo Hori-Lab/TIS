@@ -7,20 +7,14 @@ subroutine setp_mapara_rna(lunpara, lunout)
   use const_maxsize
   use const_index
   use const_physical
-  use var_setp, only : inrna, indtrna13, indtrna15, inarna
-#ifdef MPI_PAR
+  use var_setp, only : indtrna13, indtrna15, inarna !, inrna
   use mpiconst
-#endif
 
   implicit none
 
-  ! ----------------------------------------------------------------------
-  ! intent(out) :: inpara
   integer, intent(in) :: lunpara
   integer, intent(in) :: lunout
 
-  ! ----------------------------------------------------------------------
-  ! local variables
   integer :: inn
   integer :: iline, nlines, iequat, nequat
   integer :: itype
@@ -38,86 +32,86 @@ subroutine setp_mapara_rna(lunpara, lunout)
   integer :: ifunc_nn2id
 
   ! -------------------------------------------------------------------
-  inrna%energy_unit = INVALID_VALUE
-  inrna%i_use_atom_base  = -1
-  inrna%i_use_atom_sugar = -1
-  inrna%cbd_PS  = INVALID_VALUE
-  inrna%cbd_SR  = INVALID_VALUE
-  inrna%cbd_SY  = INVALID_VALUE
-  inrna%cbd_SP  = INVALID_VALUE
-  inrna%cba_PSR = INVALID_VALUE
-  inrna%cba_PSY = INVALID_VALUE
-  inrna%cba_PSP = INVALID_VALUE
-  inrna%cba_RSP = INVALID_VALUE
-  inrna%cba_YSP = INVALID_VALUE
-  inrna%cba_SPS = INVALID_VALUE
-  inrna%cdih_1_PSPS = INVALID_VALUE
-  inrna%cdih_1_SPSR = INVALID_VALUE
-  inrna%cdih_1_SPSY = INVALID_VALUE
-  inrna%cdih_1_SPSP = INVALID_VALUE
-  inrna%cdih_1_RSPS = INVALID_VALUE
-  inrna%cdih_1_YSPS = INVALID_VALUE
-  inrna%cdih_3_PSPS = INVALID_VALUE
-  inrna%cdih_3_SPSR = INVALID_VALUE
-  inrna%cdih_3_SPSR = INVALID_VALUE
-  inrna%cdih_3_SPSP = INVALID_VALUE
-  inrna%cdih_3_RSPS = INVALID_VALUE
-  inrna%cdih_3_YSPS = INVALID_VALUE
-  inrna%dfhelix_BSSB_lower = INVALID_VALUE 
-  inrna%dfhelix_BSSB_upper = INVALID_VALUE 
-  inrna%n_sep_nlocal_P  = -1
-  inrna%n_sep_nlocal_S  = -1
-  inrna%n_sep_nlocal_B  = -1
-  inrna%n_sep_contact_P = -1
-  inrna%n_sep_contact_S = -1
-  inrna%n_sep_contact_B = -1
-  inrna%n_sep_base_stack = -1
-  inrna%cutoff_go    = INVALID_VALUE
-  inrna%cutoff_bp    = INVALID_VALUE
-  inrna%cutoff_exvol = INVALID_VALUE
-  inrna%dfcontact    = INVALID_VALUE
-  inrna%dfcontact_pro= INVALID_VALUE
-  inrna%cgo1210_P_P  = INVALID_VALUE
-  inrna%cgo1210_P_B  = INVALID_VALUE
-  inrna%cgo1210_P_S  = INVALID_VALUE
-  inrna%cgo1210_S_S  = INVALID_VALUE
-  inrna%cgo1210_S_B  = INVALID_VALUE
-  inrna%cgo1210_B_B  = INVALID_VALUE
-  inrna%cgo1210_pro_P= INVALID_VALUE
-  inrna%cgo1210_pro_S= INVALID_VALUE
-  inrna%cgo1210_pro_B= INVALID_VALUE
-  inrna%cgomorse_D_P_P  = INVALID_VALUE
-  inrna%cgomorse_D_P_B  = INVALID_VALUE
-  inrna%cgomorse_D_P_S  = INVALID_VALUE
-  inrna%cgomorse_D_S_S  = INVALID_VALUE
-  inrna%cgomorse_D_S_B  = INVALID_VALUE
-  inrna%cgomorse_D_B_B  = INVALID_VALUE
-  inrna%cgomorse_D_pro_P= INVALID_VALUE
-  inrna%cgomorse_D_pro_S= INVALID_VALUE
-  inrna%cgomorse_D_pro_B= INVALID_VALUE
-  inrna%cgomorse_a_P_P  = INVALID_VALUE
-  inrna%cgomorse_a_P_B  = INVALID_VALUE
-  inrna%cgomorse_a_P_S  = INVALID_VALUE
-  inrna%cgomorse_a_S_S  = INVALID_VALUE
-  inrna%cgomorse_a_S_B  = INVALID_VALUE
-  inrna%cgomorse_a_B_B  = INVALID_VALUE
-  inrna%cgomorse_a_pro_P= INVALID_VALUE
-  inrna%cgomorse_a_pro_S= INVALID_VALUE
-  inrna%cgomorse_a_pro_B= INVALID_VALUE
-  inrna%cdist_rep12  = INVALID_VALUE
-  inrna%crep12       = INVALID_VALUE
-  inrna%dfcontact_bp = INVALID_VALUE
-  inrna%dfcontact_st = INVALID_VALUE
-  inrna%cbp1210_HB2  = INVALID_VALUE
-  inrna%cbp1210_HB3  = INVALID_VALUE
-  inrna%cbpmorse_D   = INVALID_VALUE
-  inrna%cbpmorse_a   = INVALID_VALUE
-  inrna%cst1210      = INVALID_VALUE
-  inrna%cstmorse_D   = INVALID_VALUE
-  inrna%cstmorse_a   = INVALID_VALUE
-  inrna%i_potential_go = -1
-  inrna%i_potential_st = -1
-  inrna%i_potential_bp = -1
+!  inrna%energy_unit = INVALID_VALUE
+!  inrna%i_use_atom_base  = -1
+!  inrna%i_use_atom_sugar = -1
+!  inrna%cbd_PS  = INVALID_VALUE
+!  inrna%cbd_SR  = INVALID_VALUE
+!  inrna%cbd_SY  = INVALID_VALUE
+!  inrna%cbd_SP  = INVALID_VALUE
+!  inrna%cba_PSR = INVALID_VALUE
+!  inrna%cba_PSY = INVALID_VALUE
+!  inrna%cba_PSP = INVALID_VALUE
+!  inrna%cba_RSP = INVALID_VALUE
+!  inrna%cba_YSP = INVALID_VALUE
+!  inrna%cba_SPS = INVALID_VALUE
+!  inrna%cdih_1_PSPS = INVALID_VALUE
+!  inrna%cdih_1_SPSR = INVALID_VALUE
+!  inrna%cdih_1_SPSY = INVALID_VALUE
+!  inrna%cdih_1_SPSP = INVALID_VALUE
+!  inrna%cdih_1_RSPS = INVALID_VALUE
+!  inrna%cdih_1_YSPS = INVALID_VALUE
+!  inrna%cdih_3_PSPS = INVALID_VALUE
+!  inrna%cdih_3_SPSR = INVALID_VALUE
+!  inrna%cdih_3_SPSR = INVALID_VALUE
+!  inrna%cdih_3_SPSP = INVALID_VALUE
+!  inrna%cdih_3_RSPS = INVALID_VALUE
+!  inrna%cdih_3_YSPS = INVALID_VALUE
+!  inrna%dfhelix_BSSB_lower = INVALID_VALUE 
+!  inrna%dfhelix_BSSB_upper = INVALID_VALUE 
+!  inrna%n_sep_nlocal_P  = -1
+!  inrna%n_sep_nlocal_S  = -1
+!  inrna%n_sep_nlocal_B  = -1
+!  inrna%n_sep_contact_P = -1
+!  inrna%n_sep_contact_S = -1
+!  inrna%n_sep_contact_B = -1
+!  inrna%n_sep_base_stack = -1
+!  inrna%cutoff_go    = INVALID_VALUE
+!  inrna%cutoff_bp    = INVALID_VALUE
+!  inrna%cutoff_exvol = INVALID_VALUE
+!  inrna%dfcontact    = INVALID_VALUE
+!  inrna%dfcontact_pro= INVALID_VALUE
+!  inrna%cgo1210_P_P  = INVALID_VALUE
+!  inrna%cgo1210_P_B  = INVALID_VALUE
+!  inrna%cgo1210_P_S  = INVALID_VALUE
+!  inrna%cgo1210_S_S  = INVALID_VALUE
+!  inrna%cgo1210_S_B  = INVALID_VALUE
+!  inrna%cgo1210_B_B  = INVALID_VALUE
+!  inrna%cgo1210_pro_P= INVALID_VALUE
+!  inrna%cgo1210_pro_S= INVALID_VALUE
+!  inrna%cgo1210_pro_B= INVALID_VALUE
+!  inrna%cgomorse_D_P_P  = INVALID_VALUE
+!  inrna%cgomorse_D_P_B  = INVALID_VALUE
+!  inrna%cgomorse_D_P_S  = INVALID_VALUE
+!  inrna%cgomorse_D_S_S  = INVALID_VALUE
+!  inrna%cgomorse_D_S_B  = INVALID_VALUE
+!  inrna%cgomorse_D_B_B  = INVALID_VALUE
+!  inrna%cgomorse_D_pro_P= INVALID_VALUE
+!  inrna%cgomorse_D_pro_S= INVALID_VALUE
+!  inrna%cgomorse_D_pro_B= INVALID_VALUE
+!  inrna%cgomorse_a_P_P  = INVALID_VALUE
+!  inrna%cgomorse_a_P_B  = INVALID_VALUE
+!  inrna%cgomorse_a_P_S  = INVALID_VALUE
+!  inrna%cgomorse_a_S_S  = INVALID_VALUE
+!  inrna%cgomorse_a_S_B  = INVALID_VALUE
+!  inrna%cgomorse_a_B_B  = INVALID_VALUE
+!  inrna%cgomorse_a_pro_P= INVALID_VALUE
+!  inrna%cgomorse_a_pro_S= INVALID_VALUE
+!  inrna%cgomorse_a_pro_B= INVALID_VALUE
+!  inrna%cdist_rep12  = INVALID_VALUE
+!  inrna%crep12       = INVALID_VALUE
+!  inrna%dfcontact_bp = INVALID_VALUE
+!  inrna%dfcontact_st = INVALID_VALUE
+!  inrna%cbp1210_HB2  = INVALID_VALUE
+!  inrna%cbp1210_HB3  = INVALID_VALUE
+!  inrna%cbpmorse_D   = INVALID_VALUE
+!  inrna%cbpmorse_a   = INVALID_VALUE
+!  inrna%cst1210      = INVALID_VALUE
+!  inrna%cstmorse_D   = INVALID_VALUE
+!  inrna%cstmorse_a   = INVALID_VALUE
+!  inrna%i_potential_go = -1
+!  inrna%i_potential_st = -1
+!  inrna%i_potential_bp = -1
 
   indtrna13%energy_unit = INVALID_VALUE
   indtrna13%i_use_atom_base  = -1
@@ -216,686 +210,686 @@ subroutine setp_mapara_rna(lunpara, lunout)
   if (myrank == 0) then
 #endif
 
-  rewind(lunpara)
-  call ukoto_uiread2(lunpara, lunout, 'para_cafemol_rna', kfind, &
-       CARRAY_MXLINE, nlines, cwkinp)
-  
-  if(kfind /= 'FIND') then
-     error_message = 'Error: cannot find "para_cafemol_rna" in the rna.para file'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-  
-  do iline = 1, nlines
-     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-     
-     do iequat = 1, nequat
-        cvalue = 'energy_unit_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%energy_unit, cvalue)
-
-        cvalue = 'i_use_atom_base'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%i_use_atom_base, cvalue)
-
-        cvalue = 'i_use_atom_sugar'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%i_use_atom_sugar, cvalue)
-
-        cvalue = 'cbd_PS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbd_PS, cvalue)
-
-        cvalue = 'cbd_SR'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbd_SR, cvalue)
-
-        cvalue = 'cbd_SY'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbd_SY, cvalue)
-
-        cvalue = 'cbd_SP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbd_SP, cvalue)
-        
-        cvalue = 'cba_PSR'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_PSR, cvalue )
-        
-        cvalue = 'cba_PSY'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_PSY, cvalue)
-        
-        cvalue = 'cba_PSP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_PSP, cvalue)
-        
-        cvalue = 'cba_RSP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_RSP, cvalue)
-        
-        cvalue = 'cba_YSP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_YSP, cvalue)
-        
-        cvalue = 'cba_SPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cba_SPS, cvalue)
-           
-        cvalue = 'cdih_1_PSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_PSPS, cvalue)
-        
-        cvalue = 'cdih_1_SPSR'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_SPSR, cvalue)
-
-        cvalue = 'cdih_1_SPSY'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_SPSY, cvalue)
-
-        cvalue = 'cdih_1_SPSP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_SPSP, cvalue)
-
-        cvalue = 'cdih_1_RSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_RSPS, cvalue)
-        
-        cvalue = 'cdih_1_YSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_1_YSPS, cvalue)
-        
-        cvalue = 'cdih_3_PSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_PSPS, cvalue)
-
-        cvalue = 'cdih_3_SPSR'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_SPSR, cvalue)
-
-        cvalue = 'cdih_3_SPSY'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_SPSY, cvalue)
-
-        cvalue = 'cdih_3_SPSP'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_SPSP, cvalue)
-
-        cvalue = 'cdih_3_RSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_RSPS, cvalue)
-
-        cvalue = 'cdih_3_YSPS'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdih_3_YSPS, cvalue)
-
-        cvalue = 'dfhelix_BSSB_lower'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfhelix_BSSB_lower, cvalue)
-
-        cvalue = 'dfhelix_BSSB_upper'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfhelix_BSSB_upper, cvalue)
-
-        cvalue = 'n_sep_nlocal_P'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_nlocal_P, cvalue)
-
-        cvalue = 'n_sep_nlocal_S'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_nlocal_S, cvalue)
-
-        cvalue = 'n_sep_nlocal_B'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_nlocal_B, cvalue)
-
-        cvalue = 'n_sep_contact_P'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_contact_P, cvalue)
-
-        cvalue = 'n_sep_contact_S'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_contact_S, cvalue)
-
-        cvalue = 'n_sep_contact_B'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_contact_B, cvalue)
-
-        cvalue = 'n_sep_base_stack'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%n_sep_base_stack, cvalue)
-
-        cvalue = 'cutoff_go_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cutoff_go, cvalue)
-
-        cvalue = 'cutoff_bp_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cutoff_bp, cvalue)
-
-        cvalue = 'cutoff_exvol_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cutoff_exvol, cvalue)
-
-        cvalue = 'dfcontact_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfcontact, cvalue)
-
-        cvalue = 'dfcontact_bp'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfcontact_bp, cvalue)
-
-        cvalue = 'dfcontact_st'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfcontact_st, cvalue)
-
-        cvalue = 'dfcontact_pro'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%dfcontact_pro, cvalue)
-
-        cvalue = 'cgo1210_P_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_P_P, cvalue)
-
-        cvalue = 'cgo1210_P_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_P_S, cvalue)
-
-        cvalue = 'cgo1210_P_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_P_B, cvalue)
-
-        cvalue = 'cgo1210_S_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_S_S, cvalue)
-
-        cvalue = 'cgo1210_S_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_S_B, cvalue)
-
-        cvalue = 'cgo1210_B_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_B_B, cvalue)
-
-        cvalue = 'cgo1210_pro_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_pro_P, cvalue)
-        
-        cvalue = 'cgo1210_pro_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_pro_S, cvalue)
-        
-        cvalue = 'cgo1210_pro_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgo1210_pro_B, cvalue)
-
-        cvalue = 'cbp1210_HB2'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbp1210_HB2, cvalue)
-        
-        cvalue = 'cbp1210_HB3'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbp1210_HB3, cvalue)
-        
-        cvalue = 'cst1210'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cst1210, cvalue)
-
-        cvalue = 'cgomorse_D_P_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_P_P, cvalue)
-
-        cvalue = 'cgomorse_D_P_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_P_S, cvalue)
-
-        cvalue = 'cgomorse_D_P_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_P_B, cvalue)
-
-        cvalue = 'cgomorse_D_S_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_S_S, cvalue)
-
-        cvalue = 'cgomorse_D_S_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_S_B, cvalue)
-
-        cvalue = 'cgomorse_D_B_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_B_B, cvalue)
-
-        cvalue = 'cgomorse_D_pro_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_pro_P, cvalue)
-        
-        cvalue = 'cgomorse_D_pro_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_pro_S, cvalue)
-        
-        cvalue = 'cgomorse_D_pro_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_D_pro_B, cvalue)
-
-        cvalue = 'cbpmorse_D'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbpmorse_D, cvalue)
-        
-        cvalue = 'cstmorse_D'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cstmorse_D, cvalue)
-        
-        cvalue = 'cgomorse_a_P_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_P_P, cvalue)
-
-        cvalue = 'cgomorse_a_P_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_P_S, cvalue)
-
-        cvalue = 'cgomorse_a_P_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_P_B, cvalue)
-
-        cvalue = 'cgomorse_a_S_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_S_S, cvalue)
-
-        cvalue = 'cgomorse_a_S_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_S_B, cvalue)
-
-        cvalue = 'cgomorse_a_B_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_B_B, cvalue)
-
-        cvalue = 'cgomorse_a_pro_P'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_pro_P, cvalue)
-        
-        cvalue = 'cgomorse_a_pro_S'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_pro_S, cvalue)
-        
-        cvalue = 'cgomorse_a_pro_B'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cgomorse_a_pro_B, cvalue)
-
-        cvalue = 'cbpmorse_a'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cbpmorse_a, cvalue)
-        
-        cvalue = 'cstmorse_a'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cstmorse_a, cvalue)
-        
-        cvalue = 'cdist_rep12_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%cdist_rep12, cvalue)
-        
-        cvalue = 'crep12_rna'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             inrna%crep12, cvalue)
-
-        cvalue = 'i_potential_go'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%i_potential_go, cvalue)
-
-        cvalue = 'i_potential_st'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%i_potential_st, cvalue)
-
-        cvalue = 'i_potential_bp'
-        call ukoto_ivalue2(lunout, csides(1, iequat), &
-             inrna%i_potential_bp, cvalue)
-
-     end do
-  end do
-
-  ! -------------------------------------------------------------------
-  if(inrna%energy_unit > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%energy_unit'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%i_use_atom_base < 0) then
-     error_message = 'Error: invalid value for inrna%i_use_atom_base'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%i_use_atom_sugar < 0) then
-     error_message = 'Error: invalid value for inrna%i_use_atom_sugar'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbd_PS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_PS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbd_SR > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_SR'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbd_SY > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_SY'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbd_SP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_SP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_PSR > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_PSR'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_PSY > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_PSY'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_PSP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_PSP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_RSP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_RSP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_YSP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_YSP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cba_SPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbd_SPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_PSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_PSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_SPSR > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_SPSR'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_SPSY > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_SPSY'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_SPSP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_SPSP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_RSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_RSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_1_YSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_1_YSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_PSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_PSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_SPSR > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_SPSR'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_SPSY > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_SPSY'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_SPSP > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_SPSP'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_RSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_RSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdih_3_YSPS > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdih_3_YSPS'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfhelix_BSSB_lower > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfhelix_BSSB_lower'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfhelix_BSSB_upper > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfhelix_BSSB_upper'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_nlocal_P < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_nlocal_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_nlocal_S < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_nlocal_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_nlocal_B < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_nlocal_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_contact_P < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_contact_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_contact_S < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_contact_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_contact_B < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_contact_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%n_sep_base_stack < 0) then
-     error_message = 'Error: invalid value for inrna%n_sep_base_stack'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cutoff_go > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cutoff_go'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cutoff_bp > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cutoff_bp'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cutoff_exvol > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cutoff_exvol'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfcontact > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfcontact'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfcontact_bp > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfcontact_bp'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfcontact_st > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfcontact_st'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%dfcontact_pro > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%dfcontact_pro'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_P_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_P_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_P_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_P_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_P_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_P_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_S_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_S_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_S_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_S_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_B_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_B_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_pro_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_pro_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_pro_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_pro_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgo1210_pro_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgo1210_pro_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbp1210_HB2 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbp1210_HB2'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbp1210_HB3 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbp1210_HB3'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cst1210 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cst1210'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_P_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_P_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_P_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_P_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_P_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_P_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_S_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_S_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_S_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_S_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_B_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_B_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_pro_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_pro_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_D_pro_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbpmorse_D > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbpmorse_D'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cstmorse_D > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cstmorse_D'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_P_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_P_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_P_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_P_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_P_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_P_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_S_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_S_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_S_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_S_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_B_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_B_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_pro_P > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_P'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_pro_B > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_B'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cgomorse_a_pro_S > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_S'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cbpmorse_a > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cbpmorse_a'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cstmorse_a > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cstmorse_a'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%cdist_rep12 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%cdist_rep12'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%crep12 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for inrna%crep12'
-     call util_error(ERROR%STOP_ALL, error_message)
-     
-  elseif (inrna%i_potential_go <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_go) then
-     error_message = 'Error: invalid value for inrna%i_potential_go'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%i_potential_st <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_st) then
-     error_message = 'Error: invalid value for inrna%i_potential_st'
-     call util_error(ERROR%STOP_ALL, error_message)
-
-  elseif (inrna%i_potential_bp <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_bp) then
-     error_message = 'Error: invalid value for inrna%i_potential_bp'
-     call util_error(ERROR%STOP_ALL, error_message)
-  endif
-
-  ! -----------------------------------------------------------------
-  ! using atoms of base (RNA), inmisc%i_use_atom_base
-  if(inrna%i_use_atom_base == USE_RNA_BASE%COM) then
-     write (lunout, *) 'using the center of mass for base in RNA'
-  else if (inrna%i_use_atom_base == USE_RNA_BASE%PuN1_PyN3) then
-     write (lunout, *) 'using N1 for purine and N3 for pyrimidine in RNA'
-  else
-     error_message = 'Error: invalid value for inrna%i_use_atom_base'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  ! using atoms of sugar (RNA), inmisc%i_use_atom_sugar
-  if(inrna%i_use_atom_sugar == USE_RNA_SUGAR%COM) then
-     write (lunout, *) 'using the center of mass for sugar in RNA'
-  else if (inrna%i_use_atom_sugar == USE_RNA_SUGAR%COM_RING) then
-     write (lunout, *) 'using the center of mass of sugar-ring position for sugar in RNA'
-  else if (inrna%i_use_atom_sugar == USE_RNA_SUGAR%C4) then
-     write (lunout, *) 'using C4 position for sugar in RNA'
-  else
-     error_message = 'Error: invalid value for inrna%i_use_atom_sugar'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+!  rewind(lunpara)
+!  call ukoto_uiread2(lunpara, lunout, 'para_cafemol_rna', kfind, &
+!       CARRAY_MXLINE, nlines, cwkinp)
+!  
+!  if(kfind /= 'FIND') then
+!     error_message = 'Error: cannot find "para_cafemol_rna" in the rna.para file'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
+!  
+!  do iline = 1, nlines
+!     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+!     
+!     do iequat = 1, nequat
+!        cvalue = 'energy_unit_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%energy_unit, cvalue)
+!
+!        cvalue = 'i_use_atom_base'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%i_use_atom_base, cvalue)
+!
+!        cvalue = 'i_use_atom_sugar'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%i_use_atom_sugar, cvalue)
+!
+!        cvalue = 'cbd_PS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbd_PS, cvalue)
+!
+!        cvalue = 'cbd_SR'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbd_SR, cvalue)
+!
+!        cvalue = 'cbd_SY'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbd_SY, cvalue)
+!
+!        cvalue = 'cbd_SP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbd_SP, cvalue)
+!        
+!        cvalue = 'cba_PSR'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_PSR, cvalue )
+!        
+!        cvalue = 'cba_PSY'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_PSY, cvalue)
+!        
+!        cvalue = 'cba_PSP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_PSP, cvalue)
+!        
+!        cvalue = 'cba_RSP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_RSP, cvalue)
+!        
+!        cvalue = 'cba_YSP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_YSP, cvalue)
+!        
+!        cvalue = 'cba_SPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cba_SPS, cvalue)
+!           
+!        cvalue = 'cdih_1_PSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_PSPS, cvalue)
+!        
+!        cvalue = 'cdih_1_SPSR'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_SPSR, cvalue)
+!
+!        cvalue = 'cdih_1_SPSY'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_SPSY, cvalue)
+!
+!        cvalue = 'cdih_1_SPSP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_SPSP, cvalue)
+!
+!        cvalue = 'cdih_1_RSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_RSPS, cvalue)
+!        
+!        cvalue = 'cdih_1_YSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_1_YSPS, cvalue)
+!        
+!        cvalue = 'cdih_3_PSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_PSPS, cvalue)
+!
+!        cvalue = 'cdih_3_SPSR'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_SPSR, cvalue)
+!
+!        cvalue = 'cdih_3_SPSY'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_SPSY, cvalue)
+!
+!        cvalue = 'cdih_3_SPSP'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_SPSP, cvalue)
+!
+!        cvalue = 'cdih_3_RSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_RSPS, cvalue)
+!
+!        cvalue = 'cdih_3_YSPS'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdih_3_YSPS, cvalue)
+!
+!        cvalue = 'dfhelix_BSSB_lower'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfhelix_BSSB_lower, cvalue)
+!
+!        cvalue = 'dfhelix_BSSB_upper'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfhelix_BSSB_upper, cvalue)
+!
+!        cvalue = 'n_sep_nlocal_P'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_nlocal_P, cvalue)
+!
+!        cvalue = 'n_sep_nlocal_S'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_nlocal_S, cvalue)
+!
+!        cvalue = 'n_sep_nlocal_B'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_nlocal_B, cvalue)
+!
+!        cvalue = 'n_sep_contact_P'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_contact_P, cvalue)
+!
+!        cvalue = 'n_sep_contact_S'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_contact_S, cvalue)
+!
+!        cvalue = 'n_sep_contact_B'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_contact_B, cvalue)
+!
+!        cvalue = 'n_sep_base_stack'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%n_sep_base_stack, cvalue)
+!
+!        cvalue = 'cutoff_go_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cutoff_go, cvalue)
+!
+!        cvalue = 'cutoff_bp_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cutoff_bp, cvalue)
+!
+!        cvalue = 'cutoff_exvol_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cutoff_exvol, cvalue)
+!
+!        cvalue = 'dfcontact_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfcontact, cvalue)
+!
+!        cvalue = 'dfcontact_bp'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfcontact_bp, cvalue)
+!
+!        cvalue = 'dfcontact_st'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfcontact_st, cvalue)
+!
+!        cvalue = 'dfcontact_pro'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%dfcontact_pro, cvalue)
+!
+!        cvalue = 'cgo1210_P_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_P_P, cvalue)
+!
+!        cvalue = 'cgo1210_P_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_P_S, cvalue)
+!
+!        cvalue = 'cgo1210_P_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_P_B, cvalue)
+!
+!        cvalue = 'cgo1210_S_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_S_S, cvalue)
+!
+!        cvalue = 'cgo1210_S_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_S_B, cvalue)
+!
+!        cvalue = 'cgo1210_B_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_B_B, cvalue)
+!
+!        cvalue = 'cgo1210_pro_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_pro_P, cvalue)
+!        
+!        cvalue = 'cgo1210_pro_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_pro_S, cvalue)
+!        
+!        cvalue = 'cgo1210_pro_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgo1210_pro_B, cvalue)
+!
+!        cvalue = 'cbp1210_HB2'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbp1210_HB2, cvalue)
+!        
+!        cvalue = 'cbp1210_HB3'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbp1210_HB3, cvalue)
+!        
+!        cvalue = 'cst1210'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cst1210, cvalue)
+!
+!        cvalue = 'cgomorse_D_P_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_P_P, cvalue)
+!
+!        cvalue = 'cgomorse_D_P_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_P_S, cvalue)
+!
+!        cvalue = 'cgomorse_D_P_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_P_B, cvalue)
+!
+!        cvalue = 'cgomorse_D_S_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_S_S, cvalue)
+!
+!        cvalue = 'cgomorse_D_S_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_S_B, cvalue)
+!
+!        cvalue = 'cgomorse_D_B_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_B_B, cvalue)
+!
+!        cvalue = 'cgomorse_D_pro_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_pro_P, cvalue)
+!        
+!        cvalue = 'cgomorse_D_pro_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_pro_S, cvalue)
+!        
+!        cvalue = 'cgomorse_D_pro_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_D_pro_B, cvalue)
+!
+!        cvalue = 'cbpmorse_D'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbpmorse_D, cvalue)
+!        
+!        cvalue = 'cstmorse_D'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cstmorse_D, cvalue)
+!        
+!        cvalue = 'cgomorse_a_P_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_P_P, cvalue)
+!
+!        cvalue = 'cgomorse_a_P_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_P_S, cvalue)
+!
+!        cvalue = 'cgomorse_a_P_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_P_B, cvalue)
+!
+!        cvalue = 'cgomorse_a_S_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_S_S, cvalue)
+!
+!        cvalue = 'cgomorse_a_S_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_S_B, cvalue)
+!
+!        cvalue = 'cgomorse_a_B_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_B_B, cvalue)
+!
+!        cvalue = 'cgomorse_a_pro_P'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_pro_P, cvalue)
+!        
+!        cvalue = 'cgomorse_a_pro_S'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_pro_S, cvalue)
+!        
+!        cvalue = 'cgomorse_a_pro_B'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cgomorse_a_pro_B, cvalue)
+!
+!        cvalue = 'cbpmorse_a'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cbpmorse_a, cvalue)
+!        
+!        cvalue = 'cstmorse_a'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cstmorse_a, cvalue)
+!        
+!        cvalue = 'cdist_rep12_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%cdist_rep12, cvalue)
+!        
+!        cvalue = 'crep12_rna'
+!        call ukoto_rvalue2(lunout, csides(1, iequat), &
+!             inrna%crep12, cvalue)
+!
+!        cvalue = 'i_potential_go'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%i_potential_go, cvalue)
+!
+!        cvalue = 'i_potential_st'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%i_potential_st, cvalue)
+!
+!        cvalue = 'i_potential_bp'
+!        call ukoto_ivalue2(lunout, csides(1, iequat), &
+!             inrna%i_potential_bp, cvalue)
+!
+!     end do
+!  end do
+!
+!  ! -------------------------------------------------------------------
+!  if(inrna%energy_unit > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%energy_unit'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%i_use_atom_base < 0) then
+!     error_message = 'Error: invalid value for inrna%i_use_atom_base'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%i_use_atom_sugar < 0) then
+!     error_message = 'Error: invalid value for inrna%i_use_atom_sugar'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbd_PS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_PS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbd_SR > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_SR'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbd_SY > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_SY'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbd_SP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_SP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_PSR > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_PSR'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_PSY > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_PSY'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_PSP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_PSP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_RSP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_RSP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_YSP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_YSP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cba_SPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbd_SPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_PSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_PSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_SPSR > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_SPSR'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_SPSY > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_SPSY'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_SPSP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_SPSP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_RSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_RSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_1_YSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_1_YSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_PSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_PSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_SPSR > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_SPSR'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_SPSY > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_SPSY'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_SPSP > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_SPSP'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_RSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_RSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdih_3_YSPS > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdih_3_YSPS'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfhelix_BSSB_lower > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfhelix_BSSB_lower'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfhelix_BSSB_upper > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfhelix_BSSB_upper'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_nlocal_P < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_nlocal_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_nlocal_S < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_nlocal_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_nlocal_B < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_nlocal_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_contact_P < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_contact_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_contact_S < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_contact_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_contact_B < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_contact_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%n_sep_base_stack < 0) then
+!     error_message = 'Error: invalid value for inrna%n_sep_base_stack'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cutoff_go > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cutoff_go'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cutoff_bp > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cutoff_bp'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cutoff_exvol > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cutoff_exvol'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfcontact > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfcontact'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfcontact_bp > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfcontact_bp'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfcontact_st > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfcontact_st'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%dfcontact_pro > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%dfcontact_pro'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_P_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_P_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_P_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_P_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_P_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_P_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_S_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_S_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_S_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_S_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_B_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_B_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_pro_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_pro_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_pro_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_pro_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgo1210_pro_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgo1210_pro_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbp1210_HB2 > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbp1210_HB2'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbp1210_HB3 > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbp1210_HB3'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cst1210 > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cst1210'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_P_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_P_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_P_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_P_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_P_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_P_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_S_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_S_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_S_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_S_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_B_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_B_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_pro_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_pro_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_D_pro_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_D_pro_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbpmorse_D > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbpmorse_D'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cstmorse_D > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cstmorse_D'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_P_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_P_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_P_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_P_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_P_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_P_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_S_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_S_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_S_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_S_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_B_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_B_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_pro_P > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_P'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_pro_B > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_B'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cgomorse_a_pro_S > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cgomorse_a_pro_S'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cbpmorse_a > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cbpmorse_a'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cstmorse_a > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cstmorse_a'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%cdist_rep12 > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%cdist_rep12'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%crep12 > INVALID_JUDGE) then
+!     error_message = 'Error: invalid value for inrna%crep12'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!     
+!  elseif (inrna%i_potential_go <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_go) then
+!     error_message = 'Error: invalid value for inrna%i_potential_go'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%i_potential_st <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_st) then
+!     error_message = 'Error: invalid value for inrna%i_potential_st'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!
+!  elseif (inrna%i_potential_bp <= 0 .OR. POTTYPE%MAX <= inrna%i_potential_bp) then
+!     error_message = 'Error: invalid value for inrna%i_potential_bp'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  endif
+!
+!  ! -----------------------------------------------------------------
+!  ! using atoms of base (RNA), inmisc%i_use_atom_base
+!  if(inrna%i_use_atom_base == USE_RNA_BASE%COM) then
+!     write (lunout, *) 'using the center of mass for base in RNA'
+!  else if (inrna%i_use_atom_base == USE_RNA_BASE%PuN1_PyN3) then
+!     write (lunout, *) 'using N1 for purine and N3 for pyrimidine in RNA'
+!  else
+!     error_message = 'Error: invalid value for inrna%i_use_atom_base'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
+!
+!  ! using atoms of sugar (RNA), inmisc%i_use_atom_sugar
+!  if(inrna%i_use_atom_sugar == USE_RNA_SUGAR%COM) then
+!     write (lunout, *) 'using the center of mass for sugar in RNA'
+!  else if (inrna%i_use_atom_sugar == USE_RNA_SUGAR%COM_RING) then
+!     write (lunout, *) 'using the center of mass of sugar-ring position for sugar in RNA'
+!  else if (inrna%i_use_atom_sugar == USE_RNA_SUGAR%C4) then
+!     write (lunout, *) 'using C4 position for sugar in RNA'
+!  else
+!     error_message = 'Error: invalid value for inrna%i_use_atom_sugar'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
 
 
   ! -------------------------------------------------------------------
@@ -1609,7 +1603,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
 #ifdef MPI_PAR
   end if
 
-  call MPI_Bcast (inrna,   inrna%sz,   MPI_BYTE,0,MPI_COMM_WORLD,ierr)
+!  call MPI_Bcast (inrna,   inrna%sz,   MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (indtrna13, indtrna13%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (indtrna15, indtrna15%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (inarna,  inarna%sz,  MPI_BYTE,0,MPI_COMM_WORLD,ierr)

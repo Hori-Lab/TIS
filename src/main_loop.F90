@@ -11,12 +11,12 @@ subroutine main_loop()
                           flg_file_out, outfile
   use var_setp,    only : insimu, inmisc, inele !, inflp
   !use var_mgo,     only : inmgo
-  use var_fmat,    only : infmat, i_num_sum
+!  use var_fmat,    only : infmat, i_num_sum
   use var_simu,    only : istep_sim, mstep_sim
   use mpiconst
 
   implicit none
-  character(CARRAY_MSG_ERROR) :: error_message
+!  character(CARRAY_MSG_ERROR) :: error_message
 
   ! -------------------------------------------------------------------
 #ifdef _DEBUG
@@ -31,19 +31,19 @@ subroutine main_loop()
   ! -------------------------------------------------------------------
   ! istep_sim: the numbers of potential switch + 1
   ! -------------------------------------------------------------------
-  if (i_run_mode == RUN%FMAT) then
-     mstep_sim = infmat%n_iter
-     if (i_go_native_read_style == NATIVEREAD%INFO) then
-        write(error_message, *) 'native-info is not available in fmat mode'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-     !if(inmgo%i_multi_mgo >= 1) then
-     !   write(error_message, *) 'multi-go is not available in fmat mode'
-     !   call util_error(ERROR%STOP_ALL, error_message)
-     !endif
-  else
+!  if (i_run_mode == RUN%FMAT) then
+!     mstep_sim = infmat%n_iter
+!     if (i_go_native_read_style == NATIVEREAD%INFO) then
+!        write(error_message, *) 'native-info is not available in fmat mode'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!     !if(inmgo%i_multi_mgo >= 1) then
+!     !   write(error_message, *) 'multi-go is not available in fmat mode'
+!     !   call util_error(ERROR%STOP_ALL, error_message)
+!     !endif
+!  else
      mstep_sim = insimu%n_step_sim
-  endif
+!  endif
 
 #ifdef _DEBUG
   write(*,*) '#### Enter the istep_sim loop'
@@ -118,7 +118,7 @@ subroutine main_loop()
         if (flg_file_out%psf) then
            call write_psf()
         endif
-        if (i_run_mode == RUN%FMAT) call write_fmat(istep_sim)
+!        if (i_run_mode == RUN%FMAT) call write_fmat(istep_sim)
      endif 
 
      ! -------------------------------------------------------------------
@@ -127,19 +127,21 @@ subroutine main_loop()
      
      call mloop_simulator()
 
-     if (i_run_mode == RUN%FMAT) then
-        if (infmat%i_type == FMATTYPE%HOMO) then
-           call mloop_fmat_homo(istep_sim)
-           call mloop_recalc_coef()
-        else if (infmat%i_type == FMATTYPE%HETERO) then
-           call mloop_fmat_hetero()
-        else
-           write(error_message, *) 'undefined inrep%i_type in main_loop'
-           call util_error(ERROR%STOP_ALL, error_message)
-        endif
-        call write_fmat(istep_sim)
-        i_num_sum = 0 
-     else if (i_run_mode == RUN%REPLICA) then
+!     if (i_run_mode == RUN%FMAT) then
+!        if (infmat%i_type == FMATTYPE%HOMO) then
+!           call mloop_fmat_homo(istep_sim)
+!           call mloop_recalc_coef()
+!        else if (infmat%i_type == FMATTYPE%HETERO) then
+!           call mloop_fmat_hetero()
+!        else
+!           write(error_message, *) 'undefined inrep%i_type in main_loop'
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        endif
+!        call write_fmat(istep_sim)
+!        i_num_sum = 0 
+!     endif
+
+     if (i_run_mode == RUN%REPLICA) then
         call write_rep_result()
      endif
 
@@ -151,11 +153,11 @@ subroutine main_loop()
   write(*,*) '#### Exit the istep_sim loop'
 #endif
 
-  if (i_run_mode == RUN%FMAT) then
-     if (infmat%i_type == FMATTYPE%HETERO) then
-        call write_nativeinfo(outfile%fmat)
-     endif
-  endif
+!  if (i_run_mode == RUN%FMAT) then
+!     if (infmat%i_type == FMATTYPE%HETERO) then
+!        call write_nativeinfo(outfile%fmat)
+!     endif
+!  endif
 
   ! -------------------------------------------------------------------
   ! memory deallocation

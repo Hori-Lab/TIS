@@ -8,7 +8,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,  only : inperi
+!  use var_setp,  only : inperi
   use var_struct,only : xyz_mp_rep, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, nmp_all
   use mpiconst
 
@@ -58,8 +58,8 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       ediv = 1.0e0_PREC
       for(:,:) = 0.0e0_PREC
      
-      !===== calc vectors =====
-      if(inperi%i_periodic == 0) then
+!      !===== calc vectors =====
+!      if(inperi%i_periodic == 0) then
          v12 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
               -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
          v13 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
@@ -70,9 +70,9 @@ subroutine force_dtrna_hbond13(irep, force_mp)
               -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
          v46 = xyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
               -xyz_mp_rep(1:3, idtrna_hb2mp(6,ihb), irep)
-      else
-         ! Add periodic boundary
-      end if
+!      else
+!         ! Add periodic boundary
+!      end if
 
       d1212 = dot_product(v12,v12)
       d1313 = dot_product(v13,v13)

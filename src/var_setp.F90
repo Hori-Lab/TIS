@@ -63,104 +63,104 @@ module var_setp
 
   type(input_ion_parameter), save :: inion
 
-  !==========================================
-  !> structure for parameters reading from "para_cafemol_rna" field in "rna.para" file
-  type input_rna_parameter
-     real(PREC) :: energy_unit
-     integer :: i_use_atom_base
-     integer :: i_use_atom_sugar
-
-     real(PREC) :: cbd_PS
-     real(PREC) :: cbd_SR
-     real(PREC) :: cbd_SY
-     real(PREC) :: cbd_SP
-
-     real(PREC) :: cba_PSR
-     real(PREC) :: cba_PSY
-     real(PREC) :: cba_PSP
-     real(PREC) :: cba_RSP
-     real(PREC) :: cba_YSP
-     real(PREC) :: cba_SPS
-!     real(PREC) :: cba_BSB
-
-     real(PREC) :: cdih_1_PSPS
-     real(PREC) :: cdih_1_SPSR
-     real(PREC) :: cdih_1_SPSY
-     real(PREC) :: cdih_1_SPSP
-     real(PREC) :: cdih_1_RSPS
-     real(PREC) :: cdih_1_YSPS
-     real(PREC) :: cdih_3_PSPS
-     real(PREC) :: cdih_3_SPSR
-     real(PREC) :: cdih_3_SPSY
-     real(PREC) :: cdih_3_SPSP
-     real(PREC) :: cdih_3_RSPS
-     real(PREC) :: cdih_3_YSPS
-
-     real(PREC) :: dfhelix_BSSB_lower
-     real(PREC) :: dfhelix_BSSB_upper
-
-     integer :: n_sep_nlocal_P
-     integer :: n_sep_nlocal_S
-     integer :: n_sep_nlocal_B
-     integer :: n_sep_contact_P
-     integer :: n_sep_contact_S
-     integer :: n_sep_contact_B
-
-     real(PREC) :: cutoff_go
-     real(PREC) :: cutoff_bp
-     real(PREC) :: cutoff_exvol
-
-     real(PREC) :: dfcontact
-     real(PREC) :: dfcontact_pro
-     real(PREC) :: cgo1210_pro_P
-     real(PREC) :: cgo1210_pro_S
-     real(PREC) :: cgo1210_pro_B
-     real(PREC) :: cgo1210_P_P
-     real(PREC) :: cgo1210_P_S
-     real(PREC) :: cgo1210_P_B
-     real(PREC) :: cgo1210_S_S
-     real(PREC) :: cgo1210_S_B
-     real(PREC) :: cgo1210_B_B
-     real(PREC) :: cgomorse_D_pro_P
-     real(PREC) :: cgomorse_D_pro_S
-     real(PREC) :: cgomorse_D_pro_B
-     real(PREC) :: cgomorse_D_P_P
-     real(PREC) :: cgomorse_D_P_S
-     real(PREC) :: cgomorse_D_P_B
-     real(PREC) :: cgomorse_D_S_S
-     real(PREC) :: cgomorse_D_S_B
-     real(PREC) :: cgomorse_D_B_B
-     real(PREC) :: cgomorse_a_pro_P
-     real(PREC) :: cgomorse_a_pro_S
-     real(PREC) :: cgomorse_a_pro_B
-     real(PREC) :: cgomorse_a_P_P
-     real(PREC) :: cgomorse_a_P_S
-     real(PREC) :: cgomorse_a_P_B
-     real(PREC) :: cgomorse_a_S_S
-     real(PREC) :: cgomorse_a_S_B
-     real(PREC) :: cgomorse_a_B_B
-     integer    :: i_potential_go
-
-     real(PREC) :: dfcontact_bp
-     real(PREC) :: cbp1210_HB2
-     real(PREC) :: cbp1210_HB3
-     real(PREC) :: cbpmorse_D
-     real(PREC) :: cbpmorse_a
-     integer    :: i_potential_bp
-
-     integer    :: n_sep_base_stack
-     real(PREC) :: dfcontact_st
-     real(PREC) :: cst1210
-     real(PREC) :: cstmorse_D
-     real(PREC) :: cstmorse_a
-     integer    :: i_potential_st
-
-     real(PREC) :: cdist_rep12
-     real(PREC) :: crep12
-     
-     integer    :: sz
-  endtype input_rna_parameter
-  type(input_rna_parameter), save :: inrna
+!  !==========================================
+!  !> structure for parameters reading from "para_cafemol_rna" field in "rna.para" file
+!  type input_rna_parameter
+!     real(PREC) :: energy_unit
+!     integer :: i_use_atom_base
+!     integer :: i_use_atom_sugar
+!
+!     real(PREC) :: cbd_PS
+!     real(PREC) :: cbd_SR
+!     real(PREC) :: cbd_SY
+!     real(PREC) :: cbd_SP
+!
+!     real(PREC) :: cba_PSR
+!     real(PREC) :: cba_PSY
+!     real(PREC) :: cba_PSP
+!     real(PREC) :: cba_RSP
+!     real(PREC) :: cba_YSP
+!     real(PREC) :: cba_SPS
+!!     real(PREC) :: cba_BSB
+!
+!     real(PREC) :: cdih_1_PSPS
+!     real(PREC) :: cdih_1_SPSR
+!     real(PREC) :: cdih_1_SPSY
+!     real(PREC) :: cdih_1_SPSP
+!     real(PREC) :: cdih_1_RSPS
+!     real(PREC) :: cdih_1_YSPS
+!     real(PREC) :: cdih_3_PSPS
+!     real(PREC) :: cdih_3_SPSR
+!     real(PREC) :: cdih_3_SPSY
+!     real(PREC) :: cdih_3_SPSP
+!     real(PREC) :: cdih_3_RSPS
+!     real(PREC) :: cdih_3_YSPS
+!
+!     real(PREC) :: dfhelix_BSSB_lower
+!     real(PREC) :: dfhelix_BSSB_upper
+!
+!     integer :: n_sep_nlocal_P
+!     integer :: n_sep_nlocal_S
+!     integer :: n_sep_nlocal_B
+!     integer :: n_sep_contact_P
+!     integer :: n_sep_contact_S
+!     integer :: n_sep_contact_B
+!
+!     real(PREC) :: cutoff_go
+!     real(PREC) :: cutoff_bp
+!     real(PREC) :: cutoff_exvol
+!
+!     real(PREC) :: dfcontact
+!     real(PREC) :: dfcontact_pro
+!     real(PREC) :: cgo1210_pro_P
+!     real(PREC) :: cgo1210_pro_S
+!     real(PREC) :: cgo1210_pro_B
+!     real(PREC) :: cgo1210_P_P
+!     real(PREC) :: cgo1210_P_S
+!     real(PREC) :: cgo1210_P_B
+!     real(PREC) :: cgo1210_S_S
+!     real(PREC) :: cgo1210_S_B
+!     real(PREC) :: cgo1210_B_B
+!     real(PREC) :: cgomorse_D_pro_P
+!     real(PREC) :: cgomorse_D_pro_S
+!     real(PREC) :: cgomorse_D_pro_B
+!     real(PREC) :: cgomorse_D_P_P
+!     real(PREC) :: cgomorse_D_P_S
+!     real(PREC) :: cgomorse_D_P_B
+!     real(PREC) :: cgomorse_D_S_S
+!     real(PREC) :: cgomorse_D_S_B
+!     real(PREC) :: cgomorse_D_B_B
+!     real(PREC) :: cgomorse_a_pro_P
+!     real(PREC) :: cgomorse_a_pro_S
+!     real(PREC) :: cgomorse_a_pro_B
+!     real(PREC) :: cgomorse_a_P_P
+!     real(PREC) :: cgomorse_a_P_S
+!     real(PREC) :: cgomorse_a_P_B
+!     real(PREC) :: cgomorse_a_S_S
+!     real(PREC) :: cgomorse_a_S_B
+!     real(PREC) :: cgomorse_a_B_B
+!     integer    :: i_potential_go
+!
+!     real(PREC) :: dfcontact_bp
+!     real(PREC) :: cbp1210_HB2
+!     real(PREC) :: cbp1210_HB3
+!     real(PREC) :: cbpmorse_D
+!     real(PREC) :: cbpmorse_a
+!     integer    :: i_potential_bp
+!
+!     integer    :: n_sep_base_stack
+!     real(PREC) :: dfcontact_st
+!     real(PREC) :: cst1210
+!     real(PREC) :: cstmorse_D
+!     real(PREC) :: cstmorse_a
+!     integer    :: i_potential_st
+!
+!     real(PREC) :: cdist_rep12
+!     real(PREC) :: crep12
+!     
+!     integer    :: sz
+!  endtype input_rna_parameter
+!  type(input_rna_parameter), save :: inrna
 
   !==========================================
   !> structure for parameters reading from "para_cafemol_DT_rna" field in "rna.para" file
@@ -269,54 +269,54 @@ module var_setp
 
   type(input_ligandparameter), save :: inligand
 
-  !==========================================
-  !> structure for parameters reading from "hydrophobic.para" file
-  type input_hpparameter
-     ! hydrophobic.para
-     real(PREC) :: rho_min_hp
-     real(PREC) :: coef_rho_hp
-     real(PREC) :: coef_hp
-     real(PREC) :: coefaa_para_hp(21)
-     integer    :: ncoor_para_hp(21)
-     real(PREC) :: ncoormax_para_hp(21)
-     real(PREC) :: cutoffdmin_para_hp(21,21)
-     real(PREC) :: cutoffdmax_para_hp(21,21)
-     logical    :: flag_hp(MXMP)    ! filter
+!  !==========================================
+!  !> structure for parameters reading from "hydrophobic.para" file
+!  type input_hpparameter
+!     ! hydrophobic.para
+!     real(PREC) :: rho_min_hp
+!     real(PREC) :: coef_rho_hp
+!     real(PREC) :: coef_hp
+!     real(PREC) :: coefaa_para_hp(21)
+!     integer    :: ncoor_para_hp(21)
+!     real(PREC) :: ncoormax_para_hp(21)
+!     real(PREC) :: cutoffdmin_para_hp(21,21)
+!     real(PREC) :: cutoffdmax_para_hp(21,21)
+!     logical    :: flag_hp(MXMP)    ! filter
+!
+!     integer :: sz
+!  end type input_hpparameter
+!
+!  type(input_hpparameter), save :: inhp
 
-     integer :: sz
-  end type input_hpparameter
-
-  type(input_hpparameter), save :: inhp
-
-  !==========================================
-  !> structure for parameters reading from "flexible_local.para" file
-  type input_flexible_local_parameter
-     
-     integer :: i_flp ! flag
-!     integer :: nflp  ! # of the region
-     ! start and end id of the region calculated by flexible local potential
-!     integer :: iflp_lgo(2, MXFLEXIBLE)
-          
-     real(PREC) :: ang_para_x(10)
-     real(PREC) :: ang_para_y(20,10)
-     real(PREC) :: ang_para_y2(20,10)
-     real(PREC) :: dih_para(400,400,7)
-     !real(PREC) :: coeff ! boltzmann constant * temperature
-     real(PREC) :: k_ang
-     real(PREC) :: k_dih
-
-     ! variable related to boundary
-     integer :: boundary
-     real(PREC) :: boundary_lower_limit
-     real(PREC) :: boundary_upper_limit
-     real(PREC) :: boundary_cutoff
-     real(PREC) :: boundary_max_force
-
-     integer :: sz
-     
-  end type input_flexible_local_parameter
-
-  type(input_flexible_local_parameter), save :: inflp
+!  !==========================================
+!  !> structure for parameters reading from "flexible_local.para" file
+!  type input_flexible_local_parameter
+!     
+!     integer :: i_flp ! flag
+!!     integer :: nflp  ! # of the region
+!     ! start and end id of the region calculated by flexible local potential
+!!     integer :: iflp_lgo(2, MXFLEXIBLE)
+!          
+!     real(PREC) :: ang_para_x(10)
+!     real(PREC) :: ang_para_y(20,10)
+!     real(PREC) :: ang_para_y2(20,10)
+!     real(PREC) :: dih_para(400,400,7)
+!     !real(PREC) :: coeff ! boltzmann constant * temperature
+!     real(PREC) :: k_ang
+!     real(PREC) :: k_dih
+!
+!     ! variable related to boundary
+!     integer :: boundary
+!     real(PREC) :: boundary_lower_limit
+!     real(PREC) :: boundary_upper_limit
+!     real(PREC) :: boundary_cutoff
+!     real(PREC) :: boundary_max_force
+!
+!     integer :: sz
+!     
+!  end type input_flexible_local_parameter
+!
+!  type(input_flexible_local_parameter), save :: inflp
 
   !==========================================
   !> structure for parameters reading from "md_information" field in input file
@@ -348,26 +348,26 @@ module var_setp
 
   type(input_simuparameter), save :: insimu
 
-  !==========================================
-  !> structure for parameters reading from "annealing" field in input file
-  type input_annealing
-     real(PREC) :: tempk_init
-     real(PREC) :: tempk_last
-     integer    :: n_time_change
-     integer    :: sz
-  end type input_annealing
+!  !==========================================
+!  !> structure for parameters reading from "annealing" field in input file
+!  type input_annealing
+!     real(PREC) :: tempk_init
+!     real(PREC) :: tempk_last
+!     integer    :: n_time_change
+!     integer    :: sz
+!  end type input_annealing
+!
+!  type(input_annealing), save :: inann
 
-  type(input_annealing), save :: inann
-
-  !==========================================
-  !> structure for parameters reading from "searching_tf" field in input file
-  type input_searchingtf
-     real(PREC) :: tempk_upper
-     real(PREC) :: tempk_lower
-     integer    :: sz
-  end type input_searchingtf
-
-  type(input_searchingtf), save :: insear
+!  !==========================================
+!  !> structure for parameters reading from "searching_tf" field in input file
+!  type input_searchingtf
+!     real(PREC) :: tempk_upper
+!     real(PREC) :: tempk_lower
+!     integer    :: sz
+!  end type input_searchingtf
+!
+!  type(input_searchingtf), save :: insear
 
   !==========================================
   !> structure for parameters reading from various fields in input file
@@ -505,7 +505,7 @@ module var_setp
 
      ! Window exchange simulation
      integer    :: i_window
-     integer    :: i_winz
+!     integer    :: i_winz
 
      ! Tensor type of hydrodynamic interaction in Brownian dynamics
      integer    :: i_hydro_tensor
@@ -522,66 +522,66 @@ module var_setp
 
   type(input_miscellaneous), save :: inmisc
 
-  !==========================================
-  !mcanonical
-  type input_modified_muca
-     integer    :: i_modified_muca
-     real(PREC) :: em_depth
-     real(PREC) :: em_sigma
-     real(PREC) :: em_mid
-     integer    :: sz
-  end type input_modified_muca
+!  !==========================================
+!  !mcanonical
+!  type input_modified_muca
+!     integer    :: i_modified_muca
+!     real(PREC) :: em_depth
+!     real(PREC) :: em_sigma
+!     real(PREC) :: em_mid
+!     integer    :: sz
+!  end type input_modified_muca
+!
+!  type(input_modified_muca), save :: inmmc
 
-  type(input_modified_muca), save :: inmmc
-
-  !==========================================
-  ! aicg
-  type input_aicg_parameter
-     real(PREC) :: cbd_aicg
-     real(PREC) :: cba_aicg_G
-     real(PREC) :: cba_aicg_H
-     real(PREC) :: cba_aicg_E
-     real(PREC) :: cba_aicg_T
-     real(PREC) :: cba_aicg_C
-     real(PREC) :: cdih_aicg_G
-     real(PREC) :: cdih_aicg_H
-     real(PREC) :: cdih_aicg_E
-     real(PREC) :: cdih_aicg_T
-     real(PREC) :: cdih_aicg_C
-     real(PREC) :: ave_caicg
-     real(PREC) :: gen_caicg
-     real(PREC) :: ecut_low
-     real(PREC) :: ecut_up
-     integer    :: iflag_scale
-     integer    :: sz
-  end type input_aicg_parameter
-
-  type(input_aicg_parameter), save :: inaicg
-
-  !==========================================
-  ! aicg2
-  type input_aicg2_parameter
-     real(PREC) :: cbd_aicg2
-     real(PREC) :: wid_aicg13
-     real(PREC) :: wid_aicg14
-     real(PREC) :: wid_dih
-     real(PREC) :: ave_caicg2_loc
-     real(PREC) :: gen_caicg2_loc
-     real(PREC) :: ave_caicg2plus_13
-     real(PREC) :: gen_caicg2plus_13
-     real(PREC) :: ave_caicg2plus_14
-     real(PREC) :: gen_caicg2plus_14
-     real(PREC) :: ave_caicg2_nloc
-     real(PREC) :: gen_caicg2_nloc
-     real(PREC) :: ave_caicg2plus_nloc
-     real(PREC) :: gen_caicg2plus_nloc
-     real(PREC) :: ecut_low_aicg2
-     real(PREC) :: ecut_up_aicg2
-     integer    :: iflag_scale_aicg2
-     integer    :: sz
-  end type input_aicg2_parameter
-
-  type(input_aicg2_parameter), save :: inaicg2
+!  !==========================================
+!  ! aicg
+!  type input_aicg_parameter
+!     real(PREC) :: cbd_aicg
+!     real(PREC) :: cba_aicg_G
+!     real(PREC) :: cba_aicg_H
+!     real(PREC) :: cba_aicg_E
+!     real(PREC) :: cba_aicg_T
+!     real(PREC) :: cba_aicg_C
+!     real(PREC) :: cdih_aicg_G
+!     real(PREC) :: cdih_aicg_H
+!     real(PREC) :: cdih_aicg_E
+!     real(PREC) :: cdih_aicg_T
+!     real(PREC) :: cdih_aicg_C
+!     real(PREC) :: ave_caicg
+!     real(PREC) :: gen_caicg
+!     real(PREC) :: ecut_low
+!     real(PREC) :: ecut_up
+!     integer    :: iflag_scale
+!     integer    :: sz
+!  end type input_aicg_parameter
+!
+!  type(input_aicg_parameter), save :: inaicg
+!
+!  !==========================================
+!  ! aicg2
+!  type input_aicg2_parameter
+!     real(PREC) :: cbd_aicg2
+!     real(PREC) :: wid_aicg13
+!     real(PREC) :: wid_aicg14
+!     real(PREC) :: wid_dih
+!     real(PREC) :: ave_caicg2_loc
+!     real(PREC) :: gen_caicg2_loc
+!     real(PREC) :: ave_caicg2plus_13
+!     real(PREC) :: gen_caicg2plus_13
+!     real(PREC) :: ave_caicg2plus_14
+!     real(PREC) :: gen_caicg2plus_14
+!     real(PREC) :: ave_caicg2_nloc
+!     real(PREC) :: gen_caicg2_nloc
+!     real(PREC) :: ave_caicg2plus_nloc
+!     real(PREC) :: gen_caicg2plus_nloc
+!     real(PREC) :: ecut_low_aicg2
+!     real(PREC) :: ecut_up_aicg2
+!     integer    :: iflag_scale_aicg2
+!     integer    :: sz
+!  end type input_aicg2_parameter
+!
+!  type(input_aicg2_parameter), save :: inaicg2
 
   !==========================================
   ! electrostatic
@@ -611,18 +611,18 @@ module var_setp
 
   type(input_electrostatic), save :: inele
   
-  !==========================================
-  ! sasa
-  type input_sasa
-     real(PREC) :: p_sasa(SEQID%MAX+1)
-     real(PREC) :: r_sasa(SEQID%MAX+1)
-     real(PREC) :: r_sol
-     real(PREC) :: connectivity(4)
-     real(PREC) :: coef_surf
-     integer    :: sz
-  endtype input_sasa
-
-  type(input_sasa), save :: insasa
+!  !==========================================
+!  ! sasa
+!  type input_sasa
+!     real(PREC) :: p_sasa(SEQID%MAX+1)
+!     real(PREC) :: r_sasa(SEQID%MAX+1)
+!     real(PREC) :: r_sol
+!     real(PREC) :: connectivity(4)
+!     real(PREC) :: coef_surf
+!     integer    :: sz
+!  endtype input_sasa
+!
+!  type(input_sasa), save :: insasa
 
   !==========================================
   ! excluded volume
@@ -639,7 +639,7 @@ module var_setp
   ! Window exchange
   type input_window
      integer :: iwind(MXREPLICA)
-     integer :: iwinz(MXREPLICA)
+!     integer :: iwinz(MXREPLICA)
   endtype input_window
 
   type(input_window), save :: inwind

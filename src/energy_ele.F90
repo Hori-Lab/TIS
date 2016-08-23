@@ -80,6 +80,8 @@ subroutine energy_ele(irep, energy, energy_unit)
         ene = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
              * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
 
+     else
+        ene = 0.0  ! to suppress compiler message
      endif
      
      ! --------------------------------------------------------------------

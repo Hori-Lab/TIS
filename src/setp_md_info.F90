@@ -8,8 +8,8 @@ subroutine setp_md_info()
   use const_index
   use const_physical
   use var_io, only : infile, outfile, flg_rst, i_simulate_type
-  use var_setp, only: insimu, inmisc, irand, mts, &
-                      inmmc   !mcanonical
+  use var_setp, only: insimu, inmisc, irand, mts
+!                      inmmc   !mcanonical
   use var_replica, only : exchange_step, flg_rep,&
                           n_replica_mpi, irep2grep
   use mt_stream
@@ -92,7 +92,7 @@ subroutine setp_md_info()
   inmisc%i_reset_struct   = 0
   inmisc%i_hydro_tensor   = 0
 
-  inmmc%i_modified_muca   = 0
+!  inmmc%i_modified_muca   = 0
   ! ---------------------------------------------------------------------
 
   if (flg_rst) then
@@ -252,9 +252,9 @@ subroutine setp_md_info()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_implig, cvalue)
 
-        cvalue = 'i_modified_muca'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmmc%i_modified_muca, cvalue)
+!        cvalue = 'i_modified_muca'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inmmc%i_modified_muca, cvalue)
 
         cvalue = 'i_reset_struct'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -542,16 +542,16 @@ subroutine setp_md_info()
 
   
 
-  ! -----------------------------------------------------------------
-  ! applying modified-multicanonical sampling, inmmc%i_modified_muca
-  if(inmmc%i_modified_muca == 0) then
-     !write (lunout, *) 'not using modified multicanonical sampling'
-  else if(inmmc%i_modified_muca == 1) then
-     write (lunout, *) 'using modified multicanonical sampling'
-  else
-     error_message = 'Error: invalid value for i_modified_muca'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+!  ! -----------------------------------------------------------------
+!  ! applying modified-multicanonical sampling, inmmc%i_modified_muca
+!  if(inmmc%i_modified_muca == 0) then
+!     !write (lunout, *) 'not using modified multicanonical sampling'
+!  else if(inmmc%i_modified_muca == 1) then
+!     write (lunout, *) 'using modified multicanonical sampling'
+!  else
+!     error_message = 'Error: invalid value for i_modified_muca'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
 
   ! -----------------------------------------------------------------
   ! applying structure resetting option, inmisc%i_reset_struct

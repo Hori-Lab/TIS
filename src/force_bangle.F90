@@ -6,9 +6,9 @@ subroutine force_bangle(irep, force_mp)
 
   use const_maxsize
   use const_physical
-  use var_struct, only : xyz_mp_rep, imp2unit, &
-                         nba, iba2mp, ba_nat, coef_ba, &
-                         nunit_all, nmp_all
+  use var_struct, only : xyz_mp_rep, &! imp2unit, &
+                         nba, iba2mp, ba_nat, coef_ba, nmp_all
+!                         nunit_all
 !  use var_mgo,    only : inmgo, iba2sysmbr_mgo
   use mpiconst
 
@@ -24,7 +24,7 @@ subroutine force_bangle(irep, force_mp)
   integer :: ksta, kend
   real(PREC) :: c11, c21, c22, t3, co_theta
   real(PREC) :: for, dba
-  real(PREC) :: efull
+!  real(PREC) :: efull
   real(PREC) :: force_21(3), force_32(3)
   real(PREC) :: v21(3), v32(3)
 #ifdef MPI_PAR

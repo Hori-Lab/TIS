@@ -3,22 +3,17 @@
 
 ! ************************************************************************
 !subroutine force_fene(irep, force_mp, force_mp_mgo, ene_unit)
-subroutine force_fene(irep, force_mp, ene_unit)
+subroutine force_fene(irep, force_mp)
 
   use const_maxsize
   use var_struct, only : xyz_mp_rep, nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
                          nunit_all, nmp_all
-  !use var_mgo,    only : inmgo, ifene2sysmbr_mgo
   use mpiconst
 
   implicit none
 
   integer,    intent(in)    :: irep
-  real(PREC), intent(inout) :: force_mp(3, nmp_all), ene_unit(nunit_all, nunit_all)
-  !real(PREC), intent(inout) :: force_mp_mgo(3, nmp_all, &
-  !                                          inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
-  !real(PREC), intent(inout) :: force_mp_mgo(3, inmgo%i_multi_mgo*nmp_all, &
-  !                                           inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
+  real(PREC), intent(inout) :: force_mp(3, nmp_all)
 
   integer :: ifene, imp1, imp2
   integer :: ksta, kend
@@ -59,27 +54,6 @@ subroutine force_fene(irep, force_mp, ene_unit)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
      force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
 
-!     if(inmgo%i_multi_mgo == 0) then
-!        force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
-!        force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
-!
-!     else
-!        ! calc energy
-!        efull = (coef_fene(1, ifene) + coef_fene(2, ifene) * ddist2) * ddist2
-!        iunit = imp2unit(imp1)
-!        junit = imp2unit(imp2)
-!        ene_unit(iunit, junit) = ene_unit(iunit, junit) + efull
-!
-!        isys = ifene2sysmbr_mgo(1, ifene)
-!        if(isys == 0) then
-!           force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
-!           force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
-!        else
-!           istat = ifene2sysmbr_mgo(2, ifene)
-!           force_mp_mgo(1:3, imp1, istat, isys) = force_mp_mgo(1:3, imp1, istat, isys) - force(1:3)
-!           force_mp_mgo(1:3, imp2, istat, isys) = force_mp_mgo(1:3, imp2, istat, isys) + force(1:3)
-!        end if
-!     end if
   end do
 !$omp end do nowait
 

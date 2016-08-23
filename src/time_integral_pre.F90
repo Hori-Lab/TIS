@@ -18,17 +18,19 @@ subroutine time_integral_pre(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, flg_rst
-  use var_setp,    only : inpara, insimu, inmmc, inmisc
+  use var_setp,    only : inpara, insimu, inmisc
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, grp, xyz_mp_rep
   use var_replica, only : rep2val, flg_rep, n_replica_mpi, irep2grep
   use var_simu,    only : istep_sim, ibefore_time,tstep, tsteph, tempk, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, &
-                          cmass_cs, e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-                          energy_muca, energy_unit_muca, rlan_const, &
+                          cmass_cs, &
+!                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
+!                          energy_muca, energy_unit_muca,&
+                          rlan_const, &
                           ics, ncs, velo_yojou, xyz_cs, velo_cs, &
                           rg, rg_unit, rmsd, rmsd_unit, &
                           energy, energy_unit, replica_energy, dxyz_mp
-  use time, only : tm_random, tm_muca, time_s, time_e
+  use time, only : tm_random, time_s, time_e !,tm_muca
   use mpiconst
 
   implicit none
@@ -123,17 +125,17 @@ subroutine time_integral_pre(flg_step_each_replica)
      !mcanonical
      ! multicanonical algorithm --------------------
      ! based on Gosavi et al. JMB,2006,357,986
-     TIME_S( tm_muca )
-     if(inmmc%i_modified_muca == 1)then
-        call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
-        e_md = energy_muca(E_TYPE%TOTAL)
-        fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
-             exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
-        do imp = 1, nmp_real
-           force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
-        end do
-     endif
-     TIME_E( tm_muca )
+!     TIME_S( tm_muca )
+!     if(inmmc%i_modified_muca == 1)then
+!        call energy_sumup(irep, velo_mp(:,:,irep), energy_muca, energy_unit_muca)
+!        e_md = energy_muca(E_TYPE%TOTAL)
+!        fac_mmc = 1 + em_depth * (e_md - em_mid) / (em_sigma*em_sigma) * &
+!             exp(-(e_md - em_mid)**2 / (2.0e0_PREC*em_sigma*em_sigma))
+!        do imp = 1, nmp_real
+!           force_mp(1:3, imp) = force_mp(1:3, imp) * fac_mmc
+!        end do
+!     endif
+!     TIME_E( tm_muca )
      !----------------------------------------------
 
 #ifdef _DEBUG

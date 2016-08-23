@@ -100,15 +100,15 @@ interface
       real(PREC), intent(inout) :: velo_mp(:,:,:)
    endsubroutine simu_velo_nosehoover
 
-   subroutine simu_mc_implig(irep, istep, tempk)
-      use const_maxsize
-      use var_implig, only : inimplig
-      use var_replica, only : n_replica_all
-      implicit none
-      integer,    intent(in) :: irep
-      integer(L_INT), intent(in) :: istep
-      real(PREC), intent(in) :: tempk
-   endsubroutine simu_mc_implig
+!   subroutine simu_mc_implig(irep, istep, tempk)
+!      use const_maxsize
+!      use var_implig, only : inimplig
+!      use var_replica, only : n_replica_all
+!      implicit none
+!      integer,    intent(in) :: irep
+!      integer(L_INT), intent(in) :: istep
+!      real(PREC), intent(in) :: tempk
+!   endsubroutine simu_mc_implig
 
    subroutine simu_replica_opt_temp(i_current_stage)
       implicit none

@@ -10,10 +10,8 @@ subroutine inp_energy_func()
   use const_maxsize
   use const_index
   use const_physical
-  use var_io,    only : infile, ius2unit, outfile, &
-                         i_aicg  !aicg
-       
-  use var_setp,   only : inmisc, inflp
+  use var_io,    only : infile, ius2unit, outfile !, i_aicg
+  use var_setp,   only : inmisc !, inflp
   use var_struct, only : nunit_all
 !  use var_mgo,    only : inmgo
   use mpiconst
@@ -23,9 +21,9 @@ subroutine inp_energy_func()
   integer :: k
   integer :: i1 = 1
   integer :: i2 = 1
-  integer :: isw, isw2, itype, icol, jcol, i_ninfo
+  integer :: isw, itype, icol, jcol, i_ninfo
   integer :: iu, ju, iunit, junit, i_local_type
-  integer :: isys, istat, iactnum, iact
+!  integer :: isys, istat, iactnum, iact, isw2
   integer :: inunit(2), jnunit(2), instate, instate2
   integer :: inum
   integer :: luninp, lunout
@@ -49,14 +47,14 @@ subroutine inp_energy_func()
   inmisc%flag_nlocal_unit(1:MXUNIT, 1:MXUNIT, 1:INTERACT%MAX) = .FALSE.
   inmisc%flag_nlocal_unit(1:MXUNIT, 1:MXUNIT, INTERACT%NOTHING) = .TRUE.
 
-  i_aicg = 1  ! aicg
-  inflp%i_flp = 0 ! flexible_local_potential
+!  i_aicg = 1  ! aicg
+!  inflp%i_flp = 0 ! flexible_local_potential
 
   inmisc%i_use_atom_protein = 0
   inmisc%i_residuenergy_radii = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
-  inmisc%flg_coef_from_ninfo = .false.
+  inmisc%flg_coef_from_ninfo = .true.  ! default
   inmisc%i_temp_independent = 0   ! default
   inmisc%i_dtrna_model = 2013  ! default
 
@@ -330,28 +328,28 @@ subroutine inp_energy_func()
 !  end if
 
 
-  ! ----------------------------------------------------------------------
-  ! flexible local potentail
-#ifdef MPI_PAR
-  if (myrank == 0) then
-#endif
-
-  do iline = 1, nlines
-     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-     
-     do iequa = 1, nequat
-        ! flexible local potential
-        cvalue = 'i_flp'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inflp%i_flp, cvalue)
-        
-     end do
-  end do
-
-#ifdef MPI_PAR
-  end if
-  call MPI_Bcast(inflp%i_flp,     1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-#endif
+!  ! ----------------------------------------------------------------------
+!  ! flexible local potentail
+!#ifdef MPI_PAR
+!  if (myrank == 0) then
+!#endif
+!
+!  do iline = 1, nlines
+!     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+!     
+!     do iequa = 1, nequat
+!        ! flexible local potential
+!        cvalue = 'i_flp'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inflp%i_flp, cvalue)
+!        
+!     end do
+!  end do
+!
+!#ifdef MPI_PAR
+!  end if
+!  call MPI_Bcast(inflp%i_flp,     1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+!#endif
 
   ! ----------------------------------------------------------------------
   ! atom selection, energy output style, ....
@@ -384,34 +382,15 @@ subroutine inp_energy_func()
         if(csides(1, iequa) == cvalue) then
            call ukoto_ivalue2(lunout, csides(1, iequa), &
                 i_ninfo, cvalue)
-           if (i_ninfo == 0) then
-              inmisc%flg_coef_from_ninfo = .false.
-           else if (i_ninfo == 1) then
+           !if (i_ninfo == 0) then
+           !   inmisc%flg_coef_from_ninfo = .false.
+           !else if (i_ninfo == 1) then
+           if (i_ninfo == 1) then
               inmisc%flg_coef_from_ninfo = .true.
            else
-              error_message = 'Error: in reading i_coef_from_ninfo'
+              error_message = 'Error: i_coef_from_ninfo must be 1'
               call util_error(ERROR%STOP_ALL, error_message)
            end if
-        end if
-
-        !!!  'i_para_from_ninfo' is replaced with 'i_coef_from_ninfo' and deprecated.
-        !!!  This flag will be completely deleted in near future. (Jul. 2012 hori)
-        cvalue = 'i_para_from_ninfo'
-        if(csides(1, iequa) == cvalue) then
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                i_ninfo, cvalue)
-           if (i_ninfo == 0) then
-              inmisc%flg_coef_from_ninfo = .false.
-           else if (i_ninfo == 1) then
-              inmisc%flg_coef_from_ninfo = .true.
-           else
-              error_message = 'Error: in reading i_coef_from_ninfo'
-              call util_error(ERROR%STOP_ALL, error_message)
-           end if
-           error_message = 'Warning: "i_para_from_ninfo" is replaced with ' // &
-           '"i_coef_from_ninfo" and deprecated. This flag will be completely '// &
-           'discontinued in near future.'
-           call util_error(ERROR%WARN_ALL, error_message)
         end if
 
         cvalue = 'i_temp_independent'
@@ -438,50 +417,50 @@ subroutine inp_energy_func()
   
 #endif
 
-  ! ----------------------------------------------------------------------
-  ! ----------------------------------------------------------------------
-  ! read i_aicg  !AICG
-#ifdef MPI_PAR
-  if (myrank == 0) then
-#endif
-
-  if (inmisc%force_flag(INTERACT%AICG1) .OR. &
-      inmisc%force_flag(INTERACT%AICG2) .OR. &
-      inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-
-     rewind(luninp)
-     call ukoto_uiread2(luninp, lunout, 'aicg            ', kfind, &
-          CARRAY_MXLINE, nlines, cwkinp)
-     if(kfind /= 'FIND') then 
-        error_message = 'Error: cannot find "aicg " field in the input file'
-        call util_error(ERROR%STOP_ALL, error_message)
-     end if
-     
-     do iline = 1, nlines
-        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-        
-        do iequa = 1, nequat
-           ! aicg
-           cvalue = 'i_aicg'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                i_aicg, cvalue)
-        end do
-     end do
-     
-  end if
-
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-     error_message = 'Warning: L_AICG2 interaction may cause mirror image problem. ' // &
-                     'You should use L_AICG2_PLUS interaction instead of L_AICG2 interaction.'
-     call util_error(ERROR%WARN_ALL, error_message)
-  end if
-
-#ifdef MPI_PAR
-  end if
-  call MPI_Bcast(i_aicg,          1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-#endif
+!  ! ----------------------------------------------------------------------
+!  ! ----------------------------------------------------------------------
+!  ! read i_aicg  !AICG
+!#ifdef MPI_PAR
+!  if (myrank == 0) then
+!#endif
+!
+!  if (inmisc%force_flag(INTERACT%AICG1) .OR. &
+!      inmisc%force_flag(INTERACT%AICG2) .OR. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!
+!     rewind(luninp)
+!     call ukoto_uiread2(luninp, lunout, 'aicg            ', kfind, &
+!          CARRAY_MXLINE, nlines, cwkinp)
+!     if(kfind /= 'FIND') then 
+!        error_message = 'Error: cannot find "aicg " field in the input file'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     end if
+!     
+!     do iline = 1, nlines
+!        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+!        
+!        do iequa = 1, nequat
+!           ! aicg
+!           cvalue = 'i_aicg'
+!           call ukoto_ivalue2(lunout, csides(1, iequa), &
+!                i_aicg, cvalue)
+!        end do
+!     end do
+!     
+!  end if
+!
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!     error_message = 'Warning: L_AICG2 interaction may cause mirror image problem. ' // &
+!                     'You should use L_AICG2_PLUS interaction instead of L_AICG2 interaction.'
+!     call util_error(ERROR%WARN_ALL, error_message)
+!  end if
+!
+!#ifdef MPI_PAR
+!  end if
+!  call MPI_Bcast(i_aicg,          1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+!#endif
 
 
   ! ----------------------------------------------------------------------
@@ -517,17 +496,17 @@ subroutine inp_energy_func()
 !  write (lunout, '(a)') ''
 
 
-  ! -----------------------------------------------------------------
-  ! AICG
-  write (lunout, *) 'i_aicg = ', i_aicg
-  if(i_aicg == 1) then
-     write (lunout, *) 'aicg parameters are given by cafemol'
-  else if(i_aicg == 2) then
-     write (lunout, *) 'aicg parameters are given by users'
-  else
-     error_message = 'Error: invalid value about i_aicg'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+!  ! -----------------------------------------------------------------
+!  ! AICG
+!  write (lunout, *) 'i_aicg = ', i_aicg
+!  if(i_aicg == 1) then
+!     write (lunout, *) 'aicg parameters are given by cafemol'
+!  else if(i_aicg == 2) then
+!     write (lunout, *) 'aicg parameters are given by users'
+!  else
+!     error_message = 'Error: invalid value about i_aicg'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
   ! -----------------------------------------------------------------
   ! using atoms of protein, inmisc%i_use_atom_protein
   if(inmisc%i_use_atom_protein == 0) then

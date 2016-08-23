@@ -24,8 +24,8 @@ module mpiconst
   integer :: ncharge_l                  ! MPI-local ncharge
   integer,allocatable :: icharge_l2g(:) ! MPI-local icharge
                                         !   -> MPI-global icharge
-  integer :: nhp_l                    ! MPI-local nhp
-  integer,allocatable :: ihp_l2g(:)   ! MPI-local ihp
+!  integer :: nhp_l                    ! MPI-local nhp
+!  integer,allocatable :: ihp_l2g(:)   ! MPI-local ihp
                                         !   -> MPI-global ihp
   integer :: mpi_comm_local             ! MPI Local Communicator
   integer :: mpi_comm_rep               ! MPI Replica Communicator
@@ -83,7 +83,7 @@ end subroutine mpiconst_initialize
 
 subroutine mpiconst_tables
 
-  use var_struct, only : nmp_real, ncharge, nhp
+  use var_struct, only : nmp_real, ncharge !, nhp
 
   !--------------------------------------------------
   print *,"list for neighborlist"
@@ -102,12 +102,12 @@ subroutine mpiconst_tables
   write (*, *) "neighborlist(ele) local_rank_mpi = ", &
        local_rank_mpi, ncharge_l, ncharge
 
-  !--------------------------------------------------
-  print *,"list for neighborlist (hp)"
-  !--------------------------------------------------
-  allocate( ihp_l2g(nhp/npar_mpi+1) )
-
-  call tables( ihp_l2g, nhp_l, nhp ) 
+!  !--------------------------------------------------
+!  print *,"list for neighborlist (hp)"
+!  !--------------------------------------------------
+!  allocate( ihp_l2g(nhp/npar_mpi+1) )
+!
+!  call tables( ihp_l2g, nhp_l, nhp ) 
 
 end subroutine mpiconst_tables
 

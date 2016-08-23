@@ -13,9 +13,7 @@ subroutine util_posmass_rna(nunit,       &  ![i ]
   use const_physical
   use var_struct, only : lunit2mp, iclass_unit, cmp2seq, cmp2atom, imp2type
   use var_setp,   only : inrna
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
   

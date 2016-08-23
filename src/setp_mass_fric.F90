@@ -333,6 +333,7 @@ contains
       else if (cmp2seq(imp) == 'VAL') then
          imp2chemicaltype = CHEMICALTYPE%VAL
       else
+         imp2chemicaltype = CHEMICALTYPE%UNKNOWN
          write(error_message,*) 'Error: unknown chemical type in setp_mass_fric; imp= ',imp
          call util_error(ERROR%STOP_ALL, error_message)
       endif

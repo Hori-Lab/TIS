@@ -6,7 +6,7 @@ subroutine force_exv_rep12(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inrna, inligand, inmisc, inperi
+  use var_setp,   only : inpro, inligand, inmisc, inperi !,inrna
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp
   use mpiconst
 
@@ -19,11 +19,12 @@ subroutine force_exv_rep12(irep, force_mp)
   integer :: imp1, imp2
   integer :: iexv, imirror
   real(PREC) :: dist2
-  real(PREC) :: coef, coef_pro, coef_rna, coef_rna_pro, coef_llig, coef_lpro
-  real(PREC) :: cdist2, cdist2_pro, cdist2_rna, cdist2_rna_pro, &
-                cdist2_llig, cdist2_lpro
-  real(PREC) :: cutoff2, cutoff2_pro, cutoff2_rna, cutoff2_rna_pro, &
-                cutoff2_llig, cutoff2_lpro
+  real(PREC) :: coef, coef_pro, coef_llig, coef_lpro
+!  real(PREC) :: coef_rna, coef_rna_pro
+  real(PREC) :: cdist2, cdist2_pro, cdist2_llig, cdist2_lpro
+!  real(PREC) :: cdist2_rna, cdist2_rna_pro
+  real(PREC) :: cutoff2, cutoff2_pro, cutoff2_llig, cutoff2_lpro
+!  real(PREC) :: cutoff2_rna, cutoff2_rna_pro
   real(PREC) :: roverdist2, roverdist4, roverdist8
   real(PREC) :: roverdist14
   real(PREC) :: dvdw_dr
@@ -38,14 +39,14 @@ subroutine force_exv_rep12(irep, force_mp)
   cutoff2_pro = (inpro%cutoff_exvol * inpro%cdist_rep12)**2
   cdist2_pro = inpro%cdist_rep12**2
   coef_pro = 12.0e0_PREC * inpro%crep12 / cdist2_pro
-  if (inmisc%class_flag(CLASS%RNA)) then
-     cutoff2_rna = (inrna%cutoff_exvol * inrna%cdist_rep12 )**2
-     cdist2_rna = inrna%cdist_rep12**2
-     coef_rna = 12.0e0_PREC * inrna%crep12 / cdist2_rna
-     cutoff2_rna_pro = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12)**2 / 4
-     cdist2_rna_pro = (inrna%cdist_rep12 + inpro%cdist_rep12) ** 2 / 4
-     coef_rna_pro = 12.0e0_PREC * inrna%crep12 / cdist2_rna_pro
-  endif
+!  if (inmisc%class_flag(CLASS%RNA)) then
+!     cutoff2_rna = (inrna%cutoff_exvol * inrna%cdist_rep12 )**2
+!     cdist2_rna = inrna%cdist_rep12**2
+!     coef_rna = 12.0e0_PREC * inrna%crep12 / cdist2_rna
+!     cutoff2_rna_pro = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12)**2 / 4
+!     cdist2_rna_pro = (inrna%cdist_rep12 + inpro%cdist_rep12) ** 2 / 4
+!     coef_rna_pro = 12.0e0_PREC * inrna%crep12 / cdist2_rna_pro
+!  endif
   if (inmisc%class_flag(CLASS%LIG)) then
      cutoff2_llig = (inligand%cutoff_exvol *inligand%cdist_rep12_llig )**2
      cdist2_llig = inligand%cdist_rep12_llig**2
@@ -90,16 +91,17 @@ subroutine force_exv_rep12(irep, force_mp)
 
      dist2 = v21(1)**2 + v21(2)**2 + v21(3)**2
 
-     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        cutoff2 = cutoff2_rna
-        cdist2  = cdist2_rna
-        coef    = coef_rna
-     else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-              (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
-        cutoff2 = cutoff2_rna_pro
-        cdist2  = cdist2_rna_pro
-        coef    = coef_rna_pro
-     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
+!     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+!        cutoff2 = cutoff2_rna
+!        cdist2  = cdist2_rna
+!        coef    = coef_rna
+!     else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
+!              (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
+!        cutoff2 = cutoff2_rna_pro
+!        cdist2  = cdist2_rna_pro
+!        coef    = coef_rna_pro
+!     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
+     if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
         cutoff2 = cutoff2_llig
         cdist2  = cdist2_llig
         coef    = coef_llig

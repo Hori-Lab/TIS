@@ -214,28 +214,28 @@ subroutine setp_native_bangle(xyz_mp_init)
 !     end do
 !  end if
 
-  !------------------------------------------------------------------
-  ! aicg2
-!  if (inmisc%force_flag(INTERACT%AICG2) .OR. inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-     do iba = 1, nba
-        iunit = imp2unit(iba2mp(1, iba))
-        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) .or. &
-           inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS))then
-           imp1 = iba2mp(1, iba)
-           imp2 = iba2mp(2, iba)
-           imp3 = iba2mp(3, iba)
-           aicg13_nat(iba) = sqrt((xyz_mp_init(1, imp1) - xyz_mp_init(1, imp3))**2  &
-                                + (xyz_mp_init(2, imp1) - xyz_mp_init(2, imp3))**2  &
-                                + (xyz_mp_init(3, imp1) - xyz_mp_init(3, imp3))**2)
-           factor_aicg13(iba) = factor_ba(iba)
-           factor_ba(iba) = 0.0e0_PREC
-           coef_ba(1, iba) = 0.0e0_PREC
-           coef_ba(2, iba) = 0.0e0_PREC
-        end if
-     end do
-  end if
+!  !------------------------------------------------------------------
+!  ! aicg2
+!!  if (inmisc%force_flag(INTERACT%AICG2) .OR. inmisc%force_flag_local(LINTERACT%L_AICG2)) then
+!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
+!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
+!     do iba = 1, nba
+!        iunit = imp2unit(iba2mp(1, iba))
+!        if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) .or. &
+!           inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS))then
+!           imp1 = iba2mp(1, iba)
+!           imp2 = iba2mp(2, iba)
+!           imp3 = iba2mp(3, iba)
+!           aicg13_nat(iba) = sqrt((xyz_mp_init(1, imp1) - xyz_mp_init(1, imp3))**2  &
+!                                + (xyz_mp_init(2, imp1) - xyz_mp_init(2, imp3))**2  &
+!                                + (xyz_mp_init(3, imp1) - xyz_mp_init(3, imp3))**2)
+!           factor_aicg13(iba) = factor_ba(iba)
+!           factor_ba(iba) = 0.0e0_PREC
+!           coef_ba(1, iba) = 0.0e0_PREC
+!           coef_ba(2, iba) = 0.0e0_PREC
+!        end if
+!     end do
+!  end if
 
   ! -----------------------------------------------------------------
   ! del bond angel interaction

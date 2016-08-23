@@ -35,7 +35,7 @@ module var_struct
   character(4), save :: cmp2atom(MXMP) !< atom name of mp
 
   integer, save :: imp2unit(MXMP)  !< unit of mp
-  integer, save :: istype_mp(MXMP) !< secondary structure of mp
+!  integer, save :: istype_mp(MXMP) !< secondary structure of mp
   integer, save :: imp2type(MXMP)
 
   type group
@@ -71,30 +71,30 @@ module var_struct
 
   !> parameters for bond angle potential
   integer,    save :: nba = 0
-  integer,    save :: nfba = 0
+!  integer,    save :: nfba = 0
   integer,    allocatable, save :: iba2mp(:,:)       !(3, MXBA)
-  integer,    allocatable, save :: ifba2mp(:,:)      !(3, MXBA)
+!  integer,    allocatable, save :: ifba2mp(:,:)      !(3, MXBA)
   integer,    allocatable, save :: iba2type(:)       !(MXBA)
   integer,    allocatable, save :: iunit2ba(:,:)     !(2, MXUNIT)
   real(PREC), allocatable, save :: ba_nat(:)         !(MXBA)
   real(PREC), allocatable, save :: factor_ba(:)      !(MXBA)
   real(PREC), allocatable, save :: coef_ba(:,:)      !(2, MXBA)
   real(PREC), allocatable, save :: correct_ba_mgo(:) !(MXBA)
-  real(PREC), allocatable, save :: fba_para_x(:,:)   !(10, nfba)
-  real(PREC), allocatable, save :: fba_para_y(:,:)   !(10, nfba)
-  real(PREC), allocatable, save :: fba_para_y2(:,:)  !(10, nfba)
-  real(PREC), allocatable, save :: fba_ener_corr(:)   !(nfba)
-  real(PREC), allocatable, save :: fba_max_th(:)     !(nfba)
-  real(PREC), allocatable, save :: fba_max_th_ener(:)!(nfba)
-  real(PREC), allocatable, save :: fba_min_th(:)     !(nfba)
-  real(PREC), allocatable, save :: fba_min_th_ener(:)!(nfba)
-  integer,    allocatable, save :: ifba2ba(:)      !(MXBA) !flp_mgo
+!  real(PREC), allocatable, save :: fba_para_x(:,:)   !(10, nfba)
+!  real(PREC), allocatable, save :: fba_para_y(:,:)   !(10, nfba)
+!  real(PREC), allocatable, save :: fba_para_y2(:,:)  !(10, nfba)
+!  real(PREC), allocatable, save :: fba_ener_corr(:)   !(nfba)
+!  real(PREC), allocatable, save :: fba_max_th(:)     !(nfba)
+!  real(PREC), allocatable, save :: fba_max_th_ener(:)!(nfba)
+!  real(PREC), allocatable, save :: fba_min_th(:)     !(nfba)
+!  real(PREC), allocatable, save :: fba_min_th_ener(:)!(nfba)
+!  integer,    allocatable, save :: ifba2ba(:)      !(MXBA) !flp_mgo
 
   !> parameters for dihedral angle potential
   integer,    save :: ndih = 0
-  integer,    save :: nfdih = 0
+!  integer,    save :: nfdih = 0
   integer,    allocatable, save :: idih2mp(:,:)        !(4, MXDIH)
-  integer,    allocatable, save :: ifdih2mp(:,:)       !(4, MXDIH)
+!  integer,    allocatable, save :: ifdih2mp(:,:)       !(4, MXDIH)
   integer,    allocatable, save :: idih2type(:)        !(MXDIH)
   integer,    allocatable, save :: iunit2dih(:,:)      !(2, MXUNIT)
   real(PREC), allocatable, save :: dih_nat(:)          !(MXDIH)
@@ -103,11 +103,11 @@ module var_struct
   real(PREC), allocatable, save :: dih_sin_nat(:)      !(MXDIH)
   real(PREC), allocatable, save :: dih_cos_nat(:)      !(MXDIH)
   real(PREC), allocatable, save :: correct_dih_mgo(:)  !(MXDIH)
-  real(PREC), allocatable, save :: fdih_para(:,:)      !(7, nfdih)
-  real(PREC), allocatable, save :: fdih_ener_corr(:)   !(nfdih)
-  real(PREC), allocatable, save :: fdih_mult_para(:,:) !(7, nres)
-  integer,    allocatable, save :: fdih_mult_resID(:)  !(nres)
-  integer,    allocatable, save :: ifdih2dih(:)       !(MXDIH) !flp_mgo      
+!  real(PREC), allocatable, save :: fdih_para(:,:)      !(7, nfdih)
+!  real(PREC), allocatable, save :: fdih_ener_corr(:)   !(nfdih)
+!  real(PREC), allocatable, save :: fdih_mult_para(:,:) !(7, nres)
+!  integer,    allocatable, save :: fdih_mult_resID(:)  !(nres)
+!  integer,    allocatable, save :: ifdih2dih(:)       !(MXDIH) !flp_mgo      
 
   !> parameters for go (1210) potential
   integer,    save :: ncon = 0
@@ -132,73 +132,73 @@ module var_struct
   !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
   real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
 
-  !> parameter for go (morse) potential
-  integer,    save :: nmorse = 0
-  integer,    allocatable, save :: imorse2mp(:,:)      !(2, MXMORSE)
-  integer,    allocatable, save :: imorse2type(:)      !(MXMORSE)
-  integer,    allocatable, save :: lmp2morse(:)        !(MXMP)
-  integer,    allocatable, save :: imorse2unit(:,:)    !(2, MXMORSE)
-  integer,    allocatable, save :: imorse_dummy_mgo(:) !(MXMORSE)
-  real(PREC), allocatable, save :: morse_nat(:)        !(MXMORSE)
-  real(PREC), allocatable, save :: morse_nat2(:)       !(MXMORSE)
-  real(PREC), allocatable, save :: factor_morse(:)     !(MXMORSE)
-  real(PREC), allocatable, save :: coef_morse_fD(:)    !(MXMORSE)
-  real(PREC), allocatable, save :: coef_morse_a(:)     !(MXMORSE)
+!  !> parameter for go (morse) potential
+!  integer,    save :: nmorse = 0
+!  integer,    allocatable, save :: imorse2mp(:,:)      !(2, MXMORSE)
+!  integer,    allocatable, save :: imorse2type(:)      !(MXMORSE)
+!  integer,    allocatable, save :: lmp2morse(:)        !(MXMP)
+!  integer,    allocatable, save :: imorse2unit(:,:)    !(2, MXMORSE)
+!  integer,    allocatable, save :: imorse_dummy_mgo(:) !(MXMORSE)
+!  real(PREC), allocatable, save :: morse_nat(:)        !(MXMORSE)
+!  real(PREC), allocatable, save :: morse_nat2(:)       !(MXMORSE)
+!  real(PREC), allocatable, save :: factor_morse(:)     !(MXMORSE)
+!  real(PREC), allocatable, save :: coef_morse_fD(:)    !(MXMORSE)
+!  real(PREC), allocatable, save :: coef_morse_a(:)     !(MXMORSE)
 
-  !> parameters for aicg13 potential  !aicg2
-  real(PREC), allocatable, save :: aicg13_nat(:)        !(MXBA)
-  real(PREC), allocatable, save :: coef_aicg13_gauss(:) !(MXBA)
-  real(PREC), allocatable, save :: wid_aicg13_gauss(:)  !(MXBA)
-  real(PREC), allocatable, save :: factor_aicg13(:)     !(MXBA)
+!  !> parameters for aicg13 potential  !aicg2
+!  real(PREC), allocatable, save :: aicg13_nat(:)        !(MXBA)
+!  real(PREC), allocatable, save :: coef_aicg13_gauss(:) !(MXBA)
+!  real(PREC), allocatable, save :: wid_aicg13_gauss(:)  !(MXBA)
+!  real(PREC), allocatable, save :: factor_aicg13(:)     !(MXBA)
+!
+!  !> parameters for aicg14 potential  !aicg2
+!  real(PREC), allocatable, save :: aicg14_nat(:)          !(MXDIH)
+!  real(PREC), allocatable, save :: coef_aicg14_gauss(:)   !(MXDIH)
+!  real(PREC), allocatable, save :: wid_aicg14_gauss(:)    !(MXDIH)
+!  real(PREC), allocatable, save :: coef_dih_gauss(:)   !(MXDIH)
+!  real(PREC), allocatable, save :: wid_dih_gauss(:)    !(MXDIH)
+!  real(PREC), allocatable, save :: factor_aicg14(:)       !(MXDIH)
 
-  !> parameters for aicg14 potential  !aicg2
-  real(PREC), allocatable, save :: aicg14_nat(:)          !(MXDIH)
-  real(PREC), allocatable, save :: coef_aicg14_gauss(:)   !(MXDIH)
-  real(PREC), allocatable, save :: wid_aicg14_gauss(:)    !(MXDIH)
-  real(PREC), allocatable, save :: coef_dih_gauss(:)   !(MXDIH)
-  real(PREC), allocatable, save :: wid_dih_gauss(:)    !(MXDIH)
-  real(PREC), allocatable, save :: factor_aicg14(:)       !(MXDIH)
+!  !> parameters sasa
+!  !sasa
+!  real(PREC), allocatable, save :: para_sasa(:)          !(MXMP)
+!  real(PREC), allocatable, save :: rad_sasa(:)   !(MXMP)
+!  real(PREC), allocatable, save :: surf(:)   !(MXMP)
+!  real(PREC), allocatable, save :: connect(:)   !(-MXMP:MXMP) 
 
-  !> parameters sasa
-  !sasa
-  real(PREC), allocatable, save :: para_sasa(:)          !(MXMP)
-  real(PREC), allocatable, save :: rad_sasa(:)   !(MXMP)
-  real(PREC), allocatable, save :: surf(:)   !(MXMP)
-  real(PREC), allocatable, save :: connect(:)   !(-MXMP:MXMP) 
+!  !> parameters for rna_bp potential
+!  integer,    save :: nrna_bp = 0
+!  integer,    allocatable, save :: irna_bp2mp(:,:)      !(2, MXRNABP)
+!  integer,    allocatable, save :: lmp2rna_bp(:)        !(MXMP)
+!  integer,    allocatable, save :: irna_bp2unit(:,:)    !(2, MXRNABP)
+!  integer,    allocatable, save :: nhb_bp(:)            !(MXRNABP)
+!  integer,    allocatable, save :: irna_bp_dummy_mgo(:) !(MXRNABP)
+!  real(PREC), allocatable, save :: rna_bp_nat(:)        !(MXRNABP)
+!  real(PREC), allocatable, save :: rna_bp_nat2(:)       !(MXRNABP)
+!  real(PREC), allocatable, save :: coef_rna_bp(:)       !(MXRNABP) for LJ1210
+!  real(PREC), allocatable, save :: coef_rna_bp_a(:)     !(MXRNABP) for Morse
+!  real(PREC), allocatable, save :: coef_rna_bp_fD(:)    !(MXRNABP) for Morse
+!  real(PREC), allocatable, save :: factor_rna_bp(:)     !(MXRNABP)
 
-  !> parameters for rna_bp potential
-  integer,    save :: nrna_bp = 0
-  integer,    allocatable, save :: irna_bp2mp(:,:)      !(2, MXRNABP)
-  integer,    allocatable, save :: lmp2rna_bp(:)        !(MXMP)
-  integer,    allocatable, save :: irna_bp2unit(:,:)    !(2, MXRNABP)
-  integer,    allocatable, save :: nhb_bp(:)            !(MXRNABP)
-  integer,    allocatable, save :: irna_bp_dummy_mgo(:) !(MXRNABP)
-  real(PREC), allocatable, save :: rna_bp_nat(:)        !(MXRNABP)
-  real(PREC), allocatable, save :: rna_bp_nat2(:)       !(MXRNABP)
-  real(PREC), allocatable, save :: coef_rna_bp(:)       !(MXRNABP) for LJ1210
-  real(PREC), allocatable, save :: coef_rna_bp_a(:)     !(MXRNABP) for Morse
-  real(PREC), allocatable, save :: coef_rna_bp_fD(:)    !(MXRNABP) for Morse
-  real(PREC), allocatable, save :: factor_rna_bp(:)     !(MXRNABP)
+!  !> parameters for rna_st potential
+!  integer,    save :: nrna_st = 0
+!  integer,    allocatable, save :: irna_st2mp(:,:)       !(2, MXRNAST)
+!  integer,    allocatable, save :: lmp2rna_st(:)         !(MXMP)
+!  integer,    allocatable, save :: irna_st2unit(:,:)     !(2,MXRNAST)
+!  integer,    allocatable, save :: irna_st_dummy_mgo(:)  !(MXRNAST)
+!  real(PREC), allocatable, save :: rna_st_nat(:)         !(MXRNAST)
+!  real(PREC), allocatable, save :: rna_st_nat2(:)        !(MXRNAST)
+!  real(PREC), allocatable, save :: coef_rna_st(:)        !(MXRNAST) for LJ1210
+!  real(PREC), allocatable, save :: coef_rna_st_a(:)      !(MXRNAST) for Morse
+!  real(PREC), allocatable, save :: coef_rna_st_fD(:)     !(MXRNAST) for Morse
+!  real(PREC), allocatable, save :: factor_rna_st(:)      !(MXRNAST)
 
-  !> parameters for rna_st potential
-  integer,    save :: nrna_st = 0
-  integer,    allocatable, save :: irna_st2mp(:,:)       !(2, MXRNAST)
-  integer,    allocatable, save :: lmp2rna_st(:)         !(MXMP)
-  integer,    allocatable, save :: irna_st2unit(:,:)     !(2,MXRNAST)
-  integer,    allocatable, save :: irna_st_dummy_mgo(:)  !(MXRNAST)
-  real(PREC), allocatable, save :: rna_st_nat(:)         !(MXRNAST)
-  real(PREC), allocatable, save :: rna_st_nat2(:)        !(MXRNAST)
-  real(PREC), allocatable, save :: coef_rna_st(:)        !(MXRNAST) for LJ1210
-  real(PREC), allocatable, save :: coef_rna_st_a(:)      !(MXRNAST) for Morse
-  real(PREC), allocatable, save :: coef_rna_st_fD(:)     !(MXRNAST) for Morse
-  real(PREC), allocatable, save :: factor_rna_st(:)      !(MXRNAST)
-
-  !> parameters for rna stack angle potential
-  integer,    save :: nstangle = 0
-  integer,    allocatable, save :: istangle2mp(:,:)  !(3,MXMP)
-  real(PREC), allocatable, save :: stangle_nat(:)    !(MXRNASTANGLE)
-  real(PREC), allocatable, save :: factor_stangle(:) !(MXRNASTANGLE)
-  real(PREC), allocatable, save :: coef_stangle(:,:) !(2, MXRNASTANGLE)
+!  !> parameters for rna stack angle potential
+!  integer,    save :: nstangle = 0
+!  integer,    allocatable, save :: istangle2mp(:,:)  !(3,MXMP)
+!  real(PREC), allocatable, save :: stangle_nat(:)    !(MXRNASTANGLE)
+!  real(PREC), allocatable, save :: factor_stangle(:) !(MXRNASTANGLE)
+!  real(PREC), allocatable, save :: coef_stangle(:,:) !(2, MXRNASTANGLE)
 
   !> parameters for base-stack potential of DT-RNA model
   integer,    save :: ndtrna_st = 0
@@ -226,7 +226,7 @@ module var_struct
   integer, allocatable, save :: nhbneigh(:)         ! (REPLICA)
   integer, allocatable, save :: ineigh2hb(:,:)      ! (1:MXMPHBNEIGH*nmp_all/2, REPLICA)
   logical, allocatable, save :: flg_hb_tertiary(:)  ! (1:MXDTRNHB)
-  real(PREC), save :: dtrna_hb_longest
+  real(PREC), allocatable, save :: dtrna_hb_neigh_dist2(:)!(MXDTRNAHB)
 
   !> parameters for tertiary-base-stack potential of DT-RNA model (2015)
   integer,    save :: ndtrna_tst = 0
@@ -243,8 +243,8 @@ module var_struct
 
   !> parameter for qscore
   integer,    save :: ncon_unit(MXUNIT, MXUNIT)
-  integer,    save :: nrna_bp_unit(MXUNIT, MXUNIT)
-  integer,    save :: nrna_st_unit(MXUNIT, MXUNIT)
+!  integer,    save :: nrna_bp_unit(MXUNIT, MXUNIT)
+!  integer,    save :: nrna_st_unit(MXUNIT, MXUNIT)
 
   !> parameters for electrostatic
   integer,    save :: ncharge
@@ -266,19 +266,19 @@ module var_struct
   integer, allocatable, save :: lexv(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
   integer, allocatable, save :: iexv2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
 
-  ! ----------------------------------------------------------------
-  !> parameters for hydrophobic interaction
-  integer, save :: nhp                     ! number of HP mass_points
-  integer, save :: ihp2mp(MXHP)
-  integer, save :: lunit2hp(2, MXUNIT)
-  real(PREC), save :: ncoor_hp(MXHP)     ! number of united atoms
-  real(PREC), save :: ncoor_max_hp(MXHP) ! the max coordination number 
-  real(PREC), save :: coef_aa_hp(MXHP)   ! coefficients
-  integer, allocatable, save :: nhpneigh(:) ! neighbor list for hp (REPLICA)
-  integer, allocatable, save :: lhp2neigh(:, :, :)   !(2, MXHP, REPLICA)
-  integer, allocatable, save :: ineigh2hp(:, :)      !(MXMPHP*nhp, REPLICA)
-  real(PREC), allocatable, save :: cutoff_dmin_hp(:, :) !(MXMPHP*nhp, REPLICA) 
-  real(PREC), allocatable, save :: cutoff_dmax_hp(:, :) !(MXMPHP*nhp, REPLICA)
+!  ! ----------------------------------------------------------------
+!  !> parameters for hydrophobic interaction
+!  integer, save :: nhp                     ! number of HP mass_points
+!  integer, save :: ihp2mp(MXHP)
+!  integer, save :: lunit2hp(2, MXUNIT)
+!  real(PREC), save :: ncoor_hp(MXHP)     ! number of united atoms
+!  real(PREC), save :: ncoor_max_hp(MXHP) ! the max coordination number 
+!  real(PREC), save :: coef_aa_hp(MXHP)   ! coefficients
+!  integer, allocatable, save :: nhpneigh(:) ! neighbor list for hp (REPLICA)
+!  integer, allocatable, save :: lhp2neigh(:, :, :)   !(2, MXHP, REPLICA)
+!  integer, allocatable, save :: ineigh2hp(:, :)      !(MXMPHP*nhp, REPLICA)
+!  real(PREC), allocatable, save :: cutoff_dmin_hp(:, :) !(MXMPHP*nhp, REPLICA) 
+!  real(PREC), allocatable, save :: cutoff_dmax_hp(:, :) !(MXMPHP*nhp, REPLICA)
 
   ! Test particles used in widom method
   integer, save :: ntp

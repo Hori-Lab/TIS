@@ -125,6 +125,7 @@ subroutine util_posmass(nunit, xyz, xyz_mp, cname_ha, cmp2atom)
            elseif (cname_ha(iatom,imp)(2:2) == 'S') then
               ms = MASS_S
            else
+              ms = 0
               write(error_message,*) 'Error: Atom type is not defined. imp=',imp,&
                                      ' atom=',cname_ha(iatom,imp),' (in util_possmass)'
               call util_error(ERROR%STOP_ALL, error_message)

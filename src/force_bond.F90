@@ -6,9 +6,8 @@
 subroutine force_bond(irep, force_mp)
 
   use const_maxsize
-  use var_struct, only : xyz_mp_rep, imp2unit, &
-                         nbd, ibd2mp, bd_nat, coef_bd, &
-                         nunit_all, nmp_all
+  use var_struct, only : xyz_mp_rep, nmp_all, & !imp2unit, &
+                         nbd, ibd2mp, bd_nat, coef_bd
 !  use var_mgo,    only : inmgo, ibd2sysmbr_mgo
   use mpiconst
 
@@ -23,8 +22,8 @@ subroutine force_bond(irep, force_mp)
   integer :: ibd, imp1, imp2
 !  integer :: iunit, junit, isys, istat
   integer :: ksta, kend
-  real(PREC) :: dist, ddist, ddist2
-  real(PREC) :: efull, for
+  real(PREC) :: dist, ddist, ddist2, for
+!  real(PREC) :: efull
   real(PREC) :: force(3), v21(3)
 #ifdef MPI_PAR
   integer :: klen

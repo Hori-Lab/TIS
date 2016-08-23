@@ -50,6 +50,7 @@ subroutine read_pdbatom_pro(pdb_atom,  & ![i ] pdb atom information
 #endif
 
   ! ---------------------------------------------------------------------
+  c_icode_save = ' '
   imp = nmp
   ires = nres
 

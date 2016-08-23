@@ -167,7 +167,7 @@ subroutine read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)
 
   ! ---------------------------------------------------------------------
   ! coarse grainig particle to xyz_mp
-  call util_posmass_rna(nunit_all, iatomnum, xyz, xyz_mp_init, cname_ha)
+!  call util_posmass_rna(nunit_all, iatomnum, xyz, xyz_mp_init, cname_ha)
   call util_posmass(nunit_all, xyz, xyz_mp_init, cname_ha, cmp2atom)
   
 #ifdef MPI_PAR

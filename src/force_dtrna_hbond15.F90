@@ -111,10 +111,10 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         enddo
      endif
 
-     ex = 0.0e0_PREC
+     !ex = 0.0e0_PREC
      for(:,:,ihb) = 0.0e0_PREC
 
-     ex = ex - coef_dtrna_hb(1, ihb) * d**2
+     ex = - coef_dtrna_hb(1, ihb) * d**2
      f_i(:) = 2.0e0_PREC * coef_dtrna_hb(1,ihb) * d * v12(:) / a12
      for(:,1,ihb) = + f_i(:)
      for(:,2,ihb) = - f_i(:)
@@ -191,9 +191,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      for(:,4,ihb) = for(:,4,ihb) + f_i(:)
      for(:,2,ihb) = for(:,2,ihb) + (-1.0e0_PREC + d1242over1212) * f_i(:) &
-                         - (              d1213over1212) * f_l(:)
+                                 - (              d1213over1212) * f_l(:)
      for(:,1,ihb) = for(:,1,ihb) + (-1.0e0_PREC + d1213over1212) * f_l(:) &
-                         - (              d1242over1212) * f_i(:)
+                                 - (              d1242over1212) * f_i(:)
      for(:,3,ihb) = for(:,3,ihb) + f_l(:)
 
 
@@ -220,9 +220,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      for(:,5,ihb) = for(:,5,ihb) + f_i(:)
      for(:,3,ihb) = for(:,3,ihb) + (-1.0e0_PREC + d1353over1313) * f_i(:) &
-                         - (              d1213over1313) * f_l(:)
+                                 - (              d1213over1313) * f_l(:)
      for(:,1,ihb) = for(:,1,ihb) + (-1.0e0_PREC + d1213over1313) * f_l(:) &
-                         - (              d1353over1313) * f_i(:)
+                                 - (              d1353over1313) * f_i(:)
      for(:,2,ihb) = for(:,2,ihb) + f_l(:)
 
 
@@ -249,9 +249,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      for(:,1,ihb) = for(:,1,ihb) + f_i(:)
      for(:,2,ihb) = for(:,2,ihb) + (-1.0e0_PREC + d1242over4242) * f_i(:) &
-                         - (              d4246over4242) * f_l(:)
+                                 - (              d4246over4242) * f_l(:)
      for(:,4,ihb) = for(:,4,ihb) + (-1.0e0_PREC + d4246over4242) * f_l(:) &
-                         - (              d1242over4242) * f_i(:)
+                                 - (              d1242over4242) * f_i(:)
      for(:,6,ihb) = for(:,6,ihb) + f_l(:)
 
      !===== Total =====

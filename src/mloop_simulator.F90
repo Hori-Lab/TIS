@@ -37,7 +37,7 @@ subroutine mloop_simulator()
   use var_setp,    only : inele, insimu
   use var_replica, only : n_replica_mpi
   use var_simu,    only : imstep, mstep, istep, ntstep, ibefore_time, &
-                          tempk, qscore, velo_mp
+                          tempk, velo_mp
   use time, only : tm_main_loop, time_s, time_e, time_write, time_initialize, &
                    tm_tinte, tm_tinte_post
   use mpiconst
@@ -150,9 +150,9 @@ subroutine mloop_simulator()
      end do ! for ntstep
      TIME_E( tm_main_loop )
 
-     if(i_run_mode == RUN%SEARCH_TF) then
-        call simu_searchingtf(istep, ntstep, qscore(1), tempk)
-     end if
+!     if(i_run_mode == RUN%SEARCH_TF) then
+!        call simu_searchingtf(istep, ntstep, qscore(1), tempk)
+!     end if
 
   end do loop_mstep
 

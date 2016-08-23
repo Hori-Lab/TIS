@@ -43,7 +43,7 @@ module const_maxsize
 
   ! MD-control
   integer, parameter :: MXSIM = 10     !< maximum # of simulation stages
-  integer, parameter :: MXSEARCHINGTF = 1000  !< maximum # of cycles for simulated searching TF
+!  integer, parameter :: MXSEARCHINGTF = 1000  !< maximum # of cycles for simulated searching TF
   integer, parameter :: MX_REP_OPT_STAGE = 10000 !< maximum # of cycles for Feedback-optimized REM
   integer(L_INT), parameter :: MX_NTSTEP = 2000000000
 
@@ -53,7 +53,7 @@ module const_maxsize
   integer, parameter :: MXMP = 30000       !< maximum # of mass points
   integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 
-  integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
+!  integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
   integer, parameter :: MXMPBD = 1
   integer, parameter :: MXBD = MXMPBD * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPFENE = 1
@@ -66,10 +66,10 @@ module const_maxsize
   integer, parameter :: MXCON = MXMPCON * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPLJ = 20       !< maximum # of Go-type contacts per residue 
   integer, parameter :: MXLJ = MXMPLJ * MXMP  !< maximum # of total contacts
-  integer, parameter :: MXMPRNABP = 2
-  integer, parameter :: MXRNABP = MXMPRNABP * MXMP  !< maximum # of contacts
-  integer, parameter :: MXMPRNAST = 2
-  integer, parameter :: MXRNAST = MXMPRNAST * MXMP  !< maximum # of contacts
+!  integer, parameter :: MXMPRNABP = 2
+!  integer, parameter :: MXRNABP = MXMPRNABP * MXMP  !< maximum # of contacts
+!  integer, parameter :: MXMPRNAST = 2
+!  integer, parameter :: MXRNAST = MXMPRNAST * MXMP  !< maximum # of contacts
   integer, parameter :: MXDTRNAST = int(real(MXMP) / 3.0)
   integer, parameter :: MXMPDTRNAHB = 2
   !integer, parameter :: MXDTRNAHB = MXMPDTRNAHB * MXMP / 2
@@ -77,8 +77,7 @@ module const_maxsize
   integer, parameter :: MXDTRNATST= 50
   integer, parameter :: MXMPMORSE = 10    !< maximum # of contacts
   integer, parameter :: MXMORSE = MXMPMORSE * MXMP    !< maximum # of contacts
-  integer, parameter :: MXRNASTANGLE = (MXMP/3) !< maximum # of stack-angles in RNA
-  integer, parameter :: MXSTACK = 6 * (MXMP/3)  !< maximum # of stacking interaction
+!  integer, parameter :: MXRNASTANGLE = (MXMP/3) !< maximum # of stack-angles in RNA
   integer, parameter :: MXCHARGE = MXMP    !< maximum # of chage particle
   integer, parameter :: MXCHARGECHANGE = 100 !< maximum # number of CHARGE_CHANGE lines in input file
   integer, parameter :: MXMPELE = 7000     !< maximum # of electrostatic interactions per residue
@@ -110,22 +109,22 @@ module const_maxsize
   integer, parameter :: MXANCHOR = 600    !< maximum # of anchored residues
   integer, parameter :: MXREST1D = 20     !< maximum # of 1D-restrained residues
   integer, parameter :: MXFIX = MXMP      !< maximum # of fixed residues
-  integer, parameter :: MXFLEXIBLE = 20   !< maximum # of the region calculated by flexible local potential
+!  integer, parameter :: MXFLEXIBLE = 20   !< maximum # of the region calculated by flexible local potential
   integer, parameter :: MXGRP = 10
   integer, parameter :: MXMPGRP = 1000
 
-  ! Multiple Go model
-  integer, parameter :: MXSYSTEM_MGO = 20 !< maximum # of systems in multiple-Go simulation
+!  ! Multiple Go model
+!  integer, parameter :: MXSYSTEM_MGO = 20 !< maximum # of systems in multiple-Go simulation
   integer, parameter :: MXSTATE_MGO = 3   !< maximum # of states in multiple-Go simulation
-  integer, parameter :: MXACT_MGO = 6000  !< maximum # of interaction types
+!  integer, parameter :: MXACT_MGO = 6000  !< maximum # of interaction types
   !integer, parameter :: MXLCON_MGO = 2 * MXCON / MXACT_MGO !< maximum # of contacts belonging to the interaction type
 
-  ! Implicit ligand 
-  integer, parameter :: MXSITE_IMPLIG = 5  !< maximum # of ligand-binding sites
-  integer, parameter :: MXAA_IMPLIG = 30   !< maximum # of residues per binding site 
-  integer, parameter :: MXUNIT_IMPLIG = 5  !< maximum # of interactive units per binding site
-  integer, parameter :: MXCON_SITE_IMPLIG = 100 !< maximum # of ligand-mediated contacts per binding site
-  integer, parameter :: MXCON_IMPLIG = MXSITE_IMPLIG * MXCON_SITE_IMPLIG !< maximum # of the total of ligand-mediated contacts
+!  ! Implicit ligand 
+!  integer, parameter :: MXSITE_IMPLIG = 5  !< maximum # of ligand-binding sites
+!  integer, parameter :: MXAA_IMPLIG = 30   !< maximum # of residues per binding site 
+!  integer, parameter :: MXUNIT_IMPLIG = 5  !< maximum # of interactive units per binding site
+!  integer, parameter :: MXCON_SITE_IMPLIG = 100 !< maximum # of ligand-mediated contacts per binding site
+!  integer, parameter :: MXCON_IMPLIG = MXSITE_IMPLIG * MXCON_SITE_IMPLIG !< maximum # of the total of ligand-mediated contacts
 
   ! Hydrophobic interactions
   integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues

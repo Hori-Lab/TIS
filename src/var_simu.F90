@@ -30,10 +30,10 @@ module var_simu
   real(PREC), allocatable, save :: force_mp(:,:)   ! (SDIM, nmp_all)
   real(PREC), allocatable, save :: rcmass_mp(:)    ! (nmp_all)
 
-  ! mcanonical
-  real(PREC), save :: e_md, fac_mmc, em_mid, em_depth, em_sigma
-  real(PREC), save :: energy_muca(E_TYPE%MAX)
-  real(PREC), allocatable, save :: energy_unit_muca(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
+!  ! mcanonical
+!  real(PREC), save :: e_md, fac_mmc, em_mid, em_depth, em_sigma
+!  real(PREC), save :: energy_muca(E_TYPE%MAX)
+!  real(PREC), allocatable, save :: energy_unit_muca(:,:,:) ! (nunit_all, nunit_all, E_TYPE%MAX)
   
   ! Langevin
   integer, parameter          :: nLAN_CONST = 4

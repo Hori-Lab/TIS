@@ -58,7 +58,7 @@ subroutine ukoto_uiread2(luninp, lunout, naminp, kfind, mxline, nlines, cwkinp)
         read (luninp, '(a)') ctmp01
 
         !----    check the input data -----------------------------------------
-        call ukoto_uichec2(lunout, ctmp01, kcheck)
+        call ukoto_uichec2(ctmp01, kcheck)
 
         !----    store the input data -----------------------------------------
         if(kcheck == 'DATA') then

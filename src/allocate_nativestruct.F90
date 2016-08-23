@@ -17,19 +17,19 @@ subroutine allocate_nativestruct()
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
                            iLJ2mp, lmp2LJ, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,           &
-                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
-                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
-                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
-                           irna_bp_dummy_mgo, rna_bp_nat, rna_bp_nat2, &
-                           coef_rna_bp,coef_rna_bp_a, coef_rna_bp_fD, factor_rna_bp,          &
-                           irna_st2mp, lmp2rna_st, irna_st2unit, &
-                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
-                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
-                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
-                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
-                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
-                           coef_dih_gauss, wid_dih_gauss,&  ! aicg2
-                           para_sasa, rad_sasa, surf, connect,& ! sasa
+!                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
+!                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
+!                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
+!                           irna_bp_dummy_mgo, rna_bp_nat, rna_bp_nat2, &
+!                           coef_rna_bp,coef_rna_bp_a, coef_rna_bp_fD, factor_rna_bp,          &
+!                           irna_st2mp, lmp2rna_st, irna_st2unit, &
+!                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
+!                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
+!                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
+!                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
+!                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
+!                           coef_dih_gauss, wid_dih_gauss,&  ! aicg2
+!                           para_sasa, rad_sasa, surf, connect,& ! sasa
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite, &
                            flg_hb_tertiary, &
@@ -167,46 +167,46 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    correct_dih_mgo(:) = 1.0e0_PREC
 
-   ! aicg2
-   allocate( aicg13_nat(MXMPBA*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   aicg13_nat(:) = 0.0e0_PREC
-
-   allocate( factor_aicg13(MXMPBA*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   factor_aicg13(:) = 0.0e0_PREC
-
-   allocate( coef_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_aicg13_gauss(:) = 0.0e0_PREC
-
-   allocate( wid_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   wid_aicg13_gauss(:) = 0.0e0_PREC
-
-   allocate( aicg14_nat(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   aicg14_nat(:) = 0.0e0_PREC
-
-   allocate( factor_aicg14(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   factor_aicg14(:) = 0.0e0_PREC
-
-   allocate( coef_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_aicg14_gauss(:) = 0.0e0_PREC
-
-   allocate( wid_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   wid_aicg14_gauss(:) = 0.0e0_PREC
-
-   allocate( coef_dih_gauss(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_dih_gauss(:) = 0.0e0_PREC
-
-   allocate( wid_dih_gauss(MXMPDIH*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   wid_dih_gauss(:) = 0.0e0_PREC
+!   ! aicg2
+!   allocate( aicg13_nat(MXMPBA*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   aicg13_nat(:) = 0.0e0_PREC
+!
+!   allocate( factor_aicg13(MXMPBA*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   factor_aicg13(:) = 0.0e0_PREC
+!
+!   allocate( coef_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   coef_aicg13_gauss(:) = 0.0e0_PREC
+!
+!   allocate( wid_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   wid_aicg13_gauss(:) = 0.0e0_PREC
+!
+!   allocate( aicg14_nat(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   aicg14_nat(:) = 0.0e0_PREC
+!
+!   allocate( factor_aicg14(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   factor_aicg14(:) = 0.0e0_PREC
+!
+!   allocate( coef_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   coef_aicg14_gauss(:) = 0.0e0_PREC
+!
+!   allocate( wid_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   wid_aicg14_gauss(:) = 0.0e0_PREC
+!
+!   allocate( coef_dih_gauss(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   coef_dih_gauss(:) = 0.0e0_PREC
+!
+!   allocate( wid_dih_gauss(MXMPDIH*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   wid_dih_gauss(:) = 0.0e0_PREC
    
    ! go (LJ1210)
    allocate( icon2mp(2, nmp_all*MXMPCON), stat=ier)
@@ -270,46 +270,46 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ(:) = 0.0e0_PREC
 
-   ! go (morse)
-   allocate( imorse2mp(2, MXMPMORSE*nmp_all),     stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   imorse2mp(:,:) = 0
-
-   allocate( imorse2type(MXMPMORSE*nmp_all),      stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   imorse2type(:) = 0
-
-   allocate( lmp2morse(MXMP),           stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   lmp2morse(:) = 0
-
-   allocate( imorse2unit(2, MXMPMORSE*nmp_all),   stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   imorse2unit(:,:) = 0
-
-   allocate( imorse_dummy_mgo(MXMPMORSE*nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   imorse_dummy_mgo = 0
-
-   allocate( morse_nat(MXMPMORSE*nmp_all),        stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   morse_nat(:) = 0.0e0_PREC
-
-   allocate( morse_nat2(MXMPMORSE*nmp_all),       stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   morse_nat2(:) = 0.0e0_PREC
-
-   allocate( factor_morse(MXMPMORSE*nmp_all),     stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   factor_morse(:) = 0.0e0_PREC
-
-   allocate( coef_morse_fD(MXMPMORSE*nmp_all),    stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_morse_fD(:) = 0.0e0_PREC
-
-   allocate( coef_morse_a(MXMPMORSE*nmp_all),     stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_morse_a(:) = 0.0e0_PREC
+!   ! go (morse)
+!   allocate( imorse2mp(2, MXMPMORSE*nmp_all),     stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   imorse2mp(:,:) = 0
+!
+!   allocate( imorse2type(MXMPMORSE*nmp_all),      stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   imorse2type(:) = 0
+!
+!   allocate( lmp2morse(MXMP),           stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   lmp2morse(:) = 0
+!
+!   allocate( imorse2unit(2, MXMPMORSE*nmp_all),   stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   imorse2unit(:,:) = 0
+!
+!   allocate( imorse_dummy_mgo(MXMPMORSE*nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   imorse_dummy_mgo = 0
+!
+!   allocate( morse_nat(MXMPMORSE*nmp_all),        stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   morse_nat(:) = 0.0e0_PREC
+!
+!   allocate( morse_nat2(MXMPMORSE*nmp_all),       stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   morse_nat2(:) = 0.0e0_PREC
+!
+!   allocate( factor_morse(MXMPMORSE*nmp_all),     stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   factor_morse(:) = 0.0e0_PREC
+!
+!   allocate( coef_morse_fD(MXMPMORSE*nmp_all),    stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   coef_morse_fD(:) = 0.0e0_PREC
+!
+!   allocate( coef_morse_a(MXMPMORSE*nmp_all),     stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   coef_morse_a(:) = 0.0e0_PREC
 
    ! charge
    allocate( icharge2mp(nmp_all),     stat=ier)
@@ -324,127 +324,127 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_charge(:,:) = 0.0e0_PREC
 
-   ! sasa
-   allocate( para_sasa(nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   para_sasa(:) = 0.0e0_PREC
-
-   allocate( rad_sasa(nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   rad_sasa(:) = 0.0e0_PREC
-
-   allocate( surf(nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   surf(:) = 0.0e0_PREC
-
-   allocate( connect(-nmp_all:nmp_all), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   connect(:) = 0.0e0_PREC
+!   ! sasa
+!   allocate( para_sasa(nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   para_sasa(:) = 0.0e0_PREC
+!
+!   allocate( rad_sasa(nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   rad_sasa(:) = 0.0e0_PREC
+!
+!   allocate( surf(nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   surf(:) = 0.0e0_PREC
+!
+!   allocate( connect(-nmp_all:nmp_all), stat=ier)
+!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!   connect(:) = 0.0e0_PREC
 
    ! RNA specific
    if (inmisc%class_flag(CLASS%RNA)) then
-      ! basepair
-      allocate( irna_bp2mp(2, MXRNABP),             stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_bp2mp(:,:) = 0
-   
-      allocate( lmp2rna_bp(MXMP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      lmp2rna_bp(:) = 0
-   
-      allocate( irna_bp2unit(2, MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_bp2unit(:,:) = 0
-   
-      allocate( nhb_bp(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      nhb_bp(:) = 0
-   
-      allocate( irna_bp_dummy_mgo(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_bp_dummy_mgo(:) = 0
-   
-      allocate( rna_bp_nat(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      rna_bp_nat(:) = 0.0e0_PREC
-   
-      allocate( rna_bp_nat2(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      rna_bp_nat2(:) = 0.0e0_PREC
-   
-      allocate( coef_rna_bp(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_bp(:) = 0.0e0_PREC
-   
-      allocate( coef_rna_bp_a(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_bp_a(:) = 0.0e0_PREC
-   
-      allocate( coef_rna_bp_fD(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_bp_fD(:) = 0.0e0_PREC
-   
-      allocate( factor_rna_bp(MXRNABP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      factor_rna_bp(:) = 0.0e0_PREC
-
-      ! stack
-      allocate( irna_st2mp(2, MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_st2mp(:,:) = 0
-
-      allocate( lmp2rna_st(MXMP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      lmp2rna_st(:) = 0
-
-      allocate( irna_st2unit(2, MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_st2unit(:,:) = 0
-
-      allocate( irna_st_dummy_mgo(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      irna_st_dummy_mgo(:) = 0
-
-      allocate( rna_st_nat(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      rna_st_nat(:) = 0.0e0_PREC
-
-      allocate( rna_st_nat2(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      rna_st_nat2(:) = 0.0e0_PREC
-
-      allocate( coef_rna_st(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_st(:) = 0.0e0_PREC
-
-      allocate( coef_rna_st_a(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_st_a(:) = 0.0e0_PREC
-
-      allocate( coef_rna_st_fD(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_rna_st_fD(:) = 0.0e0_PREC
-
-      allocate( factor_rna_st(MXRNAST), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      factor_rna_st(:) = 0.0e0_PREC
-
-      ! stack angle
-      allocate( istangle2mp(3, MXMP), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      istangle2mp(:,:) = 0
-
-      allocate( stangle_nat(MXRNASTANGLE), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      stangle_nat(:) = 0.0e0_PREC
-
-      allocate( factor_stangle(MXRNASTANGLE), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      factor_stangle(:) = 0.0e0_PREC
-      
-      allocate( coef_stangle(2, MXRNASTANGLE), stat=ier)
-      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-      coef_stangle(:,:) = 0.0e0_PREC
+!      ! basepair
+!      allocate( irna_bp2mp(2, MXRNABP),             stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_bp2mp(:,:) = 0
+!   
+!      allocate( lmp2rna_bp(MXMP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      lmp2rna_bp(:) = 0
+!   
+!      allocate( irna_bp2unit(2, MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_bp2unit(:,:) = 0
+!   
+!      allocate( nhb_bp(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      nhb_bp(:) = 0
+!   
+!      allocate( irna_bp_dummy_mgo(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_bp_dummy_mgo(:) = 0
+!   
+!      allocate( rna_bp_nat(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      rna_bp_nat(:) = 0.0e0_PREC
+!   
+!      allocate( rna_bp_nat2(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      rna_bp_nat2(:) = 0.0e0_PREC
+!   
+!      allocate( coef_rna_bp(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_bp(:) = 0.0e0_PREC
+!   
+!      allocate( coef_rna_bp_a(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_bp_a(:) = 0.0e0_PREC
+!   
+!      allocate( coef_rna_bp_fD(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_bp_fD(:) = 0.0e0_PREC
+!   
+!      allocate( factor_rna_bp(MXRNABP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      factor_rna_bp(:) = 0.0e0_PREC
+!
+!      ! stack
+!      allocate( irna_st2mp(2, MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_st2mp(:,:) = 0
+!
+!      allocate( lmp2rna_st(MXMP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      lmp2rna_st(:) = 0
+!
+!      allocate( irna_st2unit(2, MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_st2unit(:,:) = 0
+!
+!      allocate( irna_st_dummy_mgo(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      irna_st_dummy_mgo(:) = 0
+!
+!      allocate( rna_st_nat(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      rna_st_nat(:) = 0.0e0_PREC
+!
+!      allocate( rna_st_nat2(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      rna_st_nat2(:) = 0.0e0_PREC
+!
+!      allocate( coef_rna_st(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_st(:) = 0.0e0_PREC
+!
+!      allocate( coef_rna_st_a(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_st_a(:) = 0.0e0_PREC
+!
+!      allocate( coef_rna_st_fD(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_rna_st_fD(:) = 0.0e0_PREC
+!
+!      allocate( factor_rna_st(MXRNAST), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      factor_rna_st(:) = 0.0e0_PREC
+!
+!      ! stack angle
+!      allocate( istangle2mp(3, MXMP), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      istangle2mp(:,:) = 0
+!
+!      allocate( stangle_nat(MXRNASTANGLE), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      stangle_nat(:) = 0.0e0_PREC
+!
+!      allocate( factor_stangle(MXRNASTANGLE), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      factor_stangle(:) = 0.0e0_PREC
+!      
+!      allocate( coef_stangle(2, MXRNASTANGLE), stat=ier)
+!      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+!      coef_stangle(:,:) = 0.0e0_PREC
       
       ! DT-RNA
       if (inmisc%force_flag_local(LINTERACT%L_DTRNA)) then
@@ -555,17 +555,17 @@ contains
       if (allocated(dih_cos_nat))       flg_error = .true.
       if (allocated(correct_dih_mgo))   flg_error = .true.
 
-      !  aicg2
-      if (allocated(aicg13_nat))        flg_error = .true.
-      if (allocated(factor_aicg13))     flg_error = .true.
-      if (allocated(coef_aicg13_gauss)) flg_error = .true.
-      if (allocated(wid_aicg13_gauss))  flg_error = .true.
-      if (allocated(aicg14_nat))        flg_error = .true.
-      if (allocated(factor_aicg14))     flg_error = .true.
-      if (allocated(coef_aicg14_gauss)) flg_error = .true.
-      if (allocated(wid_aicg14_gauss))  flg_error = .true.
-      if (allocated(coef_dih_gauss))    flg_error = .true.
-      if (allocated(wid_dih_gauss))     flg_error = .true.
+!      !  aicg2
+!      if (allocated(aicg13_nat))        flg_error = .true.
+!      if (allocated(factor_aicg13))     flg_error = .true.
+!      if (allocated(coef_aicg13_gauss)) flg_error = .true.
+!      if (allocated(wid_aicg13_gauss))  flg_error = .true.
+!      if (allocated(aicg14_nat))        flg_error = .true.
+!      if (allocated(factor_aicg14))     flg_error = .true.
+!      if (allocated(coef_aicg14_gauss)) flg_error = .true.
+!      if (allocated(wid_aicg14_gauss))  flg_error = .true.
+!      if (allocated(coef_dih_gauss))    flg_error = .true.
+!      if (allocated(wid_dih_gauss))     flg_error = .true.
    
       ! go (LJ1210)
       if (allocated(icon2mp))           flg_error = .true.
@@ -578,58 +578,58 @@ contains
       if (allocated(factor_go))         flg_error = .true.
       if (allocated(coef_go))           flg_error = .true.
    
-      ! go (morse)
-      if (allocated(imorse2mp))         flg_error = .true.
-      if (allocated(imorse2type))       flg_error = .true.
-      if (allocated(lmp2morse))         flg_error = .true.
-      if (allocated(imorse2unit))       flg_error = .true.
-      if (allocated(imorse_dummy_mgo))  flg_error = .true.
-      if (allocated(morse_nat))         flg_error = .true.
-      if (allocated(morse_nat2))        flg_error = .true.
-      if (allocated(factor_morse))      flg_error = .true.
-      if (allocated(coef_morse_fD))     flg_error = .true.
-      if (allocated(coef_morse_a))      flg_error = .true.
+!      ! go (morse)
+!      if (allocated(imorse2mp))         flg_error = .true.
+!      if (allocated(imorse2type))       flg_error = .true.
+!      if (allocated(lmp2morse))         flg_error = .true.
+!      if (allocated(imorse2unit))       flg_error = .true.
+!      if (allocated(imorse_dummy_mgo))  flg_error = .true.
+!      if (allocated(morse_nat))         flg_error = .true.
+!      if (allocated(morse_nat2))        flg_error = .true.
+!      if (allocated(factor_morse))      flg_error = .true.
+!      if (allocated(coef_morse_fD))     flg_error = .true.
+!      if (allocated(coef_morse_a))      flg_error = .true.
 
-      !sasa
-      if (allocated(para_sasa))         flg_error = .true.
-      if (allocated(rad_sasa))          flg_error = .true.
-      if (allocated(surf))              flg_error = .true.
-      if (allocated(connect))           flg_error = .true.
+!      !sasa
+!      if (allocated(para_sasa))         flg_error = .true.
+!      if (allocated(rad_sasa))          flg_error = .true.
+!      if (allocated(surf))              flg_error = .true.
+!      if (allocated(connect))           flg_error = .true.
 
       ! Electrostatic
       if (allocated(lmp2charge))        flg_error = .true.
       if (allocated(coef_charge))       flg_error = .true.
 
-      ! RNA basepair
-      if (allocated(irna_bp2mp))        flg_error = .true.
-      if (allocated(lmp2rna_bp))        flg_error = .true.
-      if (allocated(irna_bp2unit))      flg_error = .true.
-      if (allocated(nhb_bp))            flg_error = .true.
-      if (allocated(irna_bp_dummy_mgo)) flg_error = .true.
-      if (allocated(rna_bp_nat))        flg_error = .true.
-      if (allocated(rna_bp_nat2))       flg_error = .true.
-      if (allocated(coef_rna_bp))       flg_error = .true.
-      if (allocated(coef_rna_bp_a))     flg_error = .true.
-      if (allocated(coef_rna_bp_fD))    flg_error = .true.
-      if (allocated(factor_rna_bp))     flg_error = .true.
-   
-      ! RNA stack
-      if (allocated(irna_st2mp))        flg_error = .true.
-      if (allocated(lmp2rna_st))        flg_error = .true.
-      if (allocated(irna_st2unit))      flg_error = .true.
-      if (allocated(irna_st_dummy_mgo)) flg_error = .true.
-      if (allocated(rna_st_nat))        flg_error = .true.
-      if (allocated(rna_st_nat2))       flg_error = .true.
-      if (allocated(coef_rna_st))       flg_error = .true.
-      if (allocated(coef_rna_st_a))     flg_error = .true.
-      if (allocated(coef_rna_st_fD))    flg_error = .true.
-      if (allocated(factor_rna_st))     flg_error = .true.
-
-      ! RNA stack angle
-      if (allocated(istangle2mp))       flg_error = .true.
-      if (allocated(stangle_nat))       flg_error = .true.
-      if (allocated(factor_stangle))    flg_error = .true.
-      if (allocated(coef_stangle))      flg_error = .true.
+!      ! RNA basepair
+!      if (allocated(irna_bp2mp))        flg_error = .true.
+!      if (allocated(lmp2rna_bp))        flg_error = .true.
+!      if (allocated(irna_bp2unit))      flg_error = .true.
+!      if (allocated(nhb_bp))            flg_error = .true.
+!      if (allocated(irna_bp_dummy_mgo)) flg_error = .true.
+!      if (allocated(rna_bp_nat))        flg_error = .true.
+!      if (allocated(rna_bp_nat2))       flg_error = .true.
+!      if (allocated(coef_rna_bp))       flg_error = .true.
+!      if (allocated(coef_rna_bp_a))     flg_error = .true.
+!      if (allocated(coef_rna_bp_fD))    flg_error = .true.
+!      if (allocated(factor_rna_bp))     flg_error = .true.
+!   
+!      ! RNA stack
+!      if (allocated(irna_st2mp))        flg_error = .true.
+!      if (allocated(lmp2rna_st))        flg_error = .true.
+!      if (allocated(irna_st2unit))      flg_error = .true.
+!      if (allocated(irna_st_dummy_mgo)) flg_error = .true.
+!      if (allocated(rna_st_nat))        flg_error = .true.
+!      if (allocated(rna_st_nat2))       flg_error = .true.
+!      if (allocated(coef_rna_st))       flg_error = .true.
+!      if (allocated(coef_rna_st_a))     flg_error = .true.
+!      if (allocated(coef_rna_st_fD))    flg_error = .true.
+!      if (allocated(factor_rna_st))     flg_error = .true.
+!
+!      ! RNA stack angle
+!      if (allocated(istangle2mp))       flg_error = .true.
+!      if (allocated(stangle_nat))       flg_error = .true.
+!      if (allocated(factor_stangle))    flg_error = .true.
+!      if (allocated(coef_stangle))      flg_error = .true.
 
       ! DT-RNA stack
       if (allocated( idtrna_st2mp))     flg_error = .true.
@@ -678,19 +678,19 @@ subroutine deallocate_nativestruct
                            dih_sin_nat, dih_cos_nat, correct_dih_mgo,                    &
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
-                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
-                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
-                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
-                           irna_bp_dummy_mgo, rna_bp_nat, rna_bp_nat2, coef_rna_bp,&
-                           coef_rna_bp_a, coef_rna_bp_fD, factor_rna_bp,           &
-                           irna_st2mp, lmp2rna_st, irna_st2unit, &
-                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
-                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
-                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
-                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
-                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
-                           coef_dih_gauss, wid_dih_gauss,  & !aicg2
-                           para_sasa, rad_sasa, surf, connect, & !sasa
+!                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
+!                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
+!                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
+!                           irna_bp_dummy_mgo, rna_bp_nat, rna_bp_nat2, coef_rna_bp,&
+!                           coef_rna_bp_a, coef_rna_bp_fD, factor_rna_bp,           &
+!                           irna_st2mp, lmp2rna_st, irna_st2unit, &
+!                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
+!                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
+!                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
+!                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
+!                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
+!                           coef_dih_gauss, wid_dih_gauss,  & !aicg2
+!                           para_sasa, rad_sasa, surf, connect, & !sasa
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite,&
                            flg_hb_tertiary, &
@@ -734,17 +734,17 @@ subroutine deallocate_nativestruct
    if (allocated(dih_cos_nat))        deallocate(dih_cos_nat)
    if (allocated(correct_dih_mgo))    deallocate(correct_dih_mgo)
 
-  !  aicg2
-   if (allocated(aicg13_nat))         deallocate(aicg13_nat)
-   if (allocated(factor_aicg13))      deallocate(factor_aicg13)
-   if (allocated(coef_aicg13_gauss))  deallocate(coef_aicg13_gauss)
-   if (allocated(wid_aicg13_gauss))   deallocate(wid_aicg13_gauss)
-   if (allocated(aicg14_nat))         deallocate(aicg14_nat)
-   if (allocated(factor_aicg14))      deallocate(factor_aicg14)
-   if (allocated(coef_aicg14_gauss))  deallocate(coef_aicg14_gauss)
-   if (allocated(wid_aicg14_gauss))   deallocate(wid_aicg14_gauss)
-   if (allocated(coef_dih_gauss))     deallocate(coef_dih_gauss)
-   if (allocated(wid_dih_gauss))      deallocate(wid_dih_gauss)
+!  !  aicg2
+!   if (allocated(aicg13_nat))         deallocate(aicg13_nat)
+!   if (allocated(factor_aicg13))      deallocate(factor_aicg13)
+!   if (allocated(coef_aicg13_gauss))  deallocate(coef_aicg13_gauss)
+!   if (allocated(wid_aicg13_gauss))   deallocate(wid_aicg13_gauss)
+!   if (allocated(aicg14_nat))         deallocate(aicg14_nat)
+!   if (allocated(factor_aicg14))      deallocate(factor_aicg14)
+!   if (allocated(coef_aicg14_gauss))  deallocate(coef_aicg14_gauss)
+!   if (allocated(wid_aicg14_gauss))   deallocate(wid_aicg14_gauss)
+!   if (allocated(coef_dih_gauss))     deallocate(coef_dih_gauss)
+!   if (allocated(wid_dih_gauss))      deallocate(wid_dih_gauss)
 
    ! go (LJ1210)
    if (allocated(icon2mp))            deallocate(icon2mp)
@@ -757,58 +757,58 @@ subroutine deallocate_nativestruct
    if (allocated(factor_go))          deallocate(factor_go)
    if (allocated(coef_go))            deallocate(coef_go)
    
-   ! go (morse)
-   if (allocated(imorse2mp))          deallocate(imorse2mp)
-   if (allocated(imorse2type))        deallocate(imorse2type)
-   if (allocated(lmp2morse))          deallocate(lmp2morse)
-   if (allocated(imorse2unit))        deallocate(imorse2unit)
-   if (allocated(imorse_dummy_mgo))   deallocate(imorse_dummy_mgo)
-   if (allocated(morse_nat))          deallocate(morse_nat)
-   if (allocated(morse_nat2))         deallocate(morse_nat2)
-   if (allocated(factor_morse))       deallocate(factor_morse)
-   if (allocated(coef_morse_fD))      deallocate(coef_morse_fD)
-   if (allocated(coef_morse_a))       deallocate(coef_morse_a)
+!   ! go (morse)
+!   if (allocated(imorse2mp))          deallocate(imorse2mp)
+!   if (allocated(imorse2type))        deallocate(imorse2type)
+!   if (allocated(lmp2morse))          deallocate(lmp2morse)
+!   if (allocated(imorse2unit))        deallocate(imorse2unit)
+!   if (allocated(imorse_dummy_mgo))   deallocate(imorse_dummy_mgo)
+!   if (allocated(morse_nat))          deallocate(morse_nat)
+!   if (allocated(morse_nat2))         deallocate(morse_nat2)
+!   if (allocated(factor_morse))       deallocate(factor_morse)
+!   if (allocated(coef_morse_fD))      deallocate(coef_morse_fD)
+!   if (allocated(coef_morse_a))       deallocate(coef_morse_a)
 
-   ! sasa
-   if (allocated(para_sasa))          deallocate(para_sasa)
-   if (allocated(rad_sasa))           deallocate(rad_sasa)
-   if (allocated(surf))               deallocate(surf)
-   if (allocated(connect))            deallocate(connect)
+!   ! sasa
+!   if (allocated(para_sasa))          deallocate(para_sasa)
+!   if (allocated(rad_sasa))           deallocate(rad_sasa)
+!   if (allocated(surf))               deallocate(surf)
+!   if (allocated(connect))            deallocate(connect)
 
    ! Electrostatic
    if (allocated(lmp2charge))        deallocate(lmp2charge)
    if (allocated(coef_charge))        deallocate(coef_charge)
 
-   ! RNA basepair
-   if (allocated(irna_bp2mp))         deallocate(irna_bp2mp)
-   if (allocated(lmp2rna_bp))         deallocate(lmp2rna_bp)
-   if (allocated(irna_bp2unit))       deallocate(irna_bp2unit)
-   if (allocated(nhb_bp))             deallocate(nhb_bp)
-   if (allocated(irna_bp_dummy_mgo))  deallocate(irna_bp_dummy_mgo)
-   if (allocated(rna_bp_nat))         deallocate(rna_bp_nat)
-   if (allocated(rna_bp_nat2))        deallocate(rna_bp_nat2)
-   if (allocated(coef_rna_bp))        deallocate(coef_rna_bp)
-   if (allocated(coef_rna_bp_a))      deallocate(coef_rna_bp_a)
-   if (allocated(coef_rna_bp_fD))     deallocate(coef_rna_bp_fD)
-   if (allocated(factor_rna_bp))      deallocate(factor_rna_bp)
-
-   ! RNA stack
-   if (allocated(irna_st2mp))         deallocate(irna_st2mp)
-   if (allocated(lmp2rna_st))         deallocate(lmp2rna_st)
-   if (allocated(irna_st2unit))       deallocate(irna_st2unit)
-   if (allocated(irna_st_dummy_mgo))  deallocate(irna_st_dummy_mgo)
-   if (allocated(rna_st_nat))         deallocate(rna_st_nat)
-   if (allocated(rna_st_nat2))        deallocate(rna_st_nat2)
-   if (allocated(coef_rna_st))        deallocate(coef_rna_st)
-   if (allocated(coef_rna_st_a))      deallocate(coef_rna_st_a)
-   if (allocated(coef_rna_st_fD))     deallocate(coef_rna_st_fD)
-   if (allocated(factor_rna_st))      deallocate(factor_rna_st)
-
-   ! RNA stack angle
-   if (allocated(istangle2mp))        deallocate(istangle2mp)
-   if (allocated(stangle_nat))        deallocate(stangle_nat)
-   if (allocated(factor_stangle))     deallocate(factor_stangle)
-   if (allocated(coef_stangle))       deallocate(coef_stangle)
+!   ! RNA basepair
+!   if (allocated(irna_bp2mp))         deallocate(irna_bp2mp)
+!   if (allocated(lmp2rna_bp))         deallocate(lmp2rna_bp)
+!   if (allocated(irna_bp2unit))       deallocate(irna_bp2unit)
+!   if (allocated(nhb_bp))             deallocate(nhb_bp)
+!   if (allocated(irna_bp_dummy_mgo))  deallocate(irna_bp_dummy_mgo)
+!   if (allocated(rna_bp_nat))         deallocate(rna_bp_nat)
+!   if (allocated(rna_bp_nat2))        deallocate(rna_bp_nat2)
+!   if (allocated(coef_rna_bp))        deallocate(coef_rna_bp)
+!   if (allocated(coef_rna_bp_a))      deallocate(coef_rna_bp_a)
+!   if (allocated(coef_rna_bp_fD))     deallocate(coef_rna_bp_fD)
+!   if (allocated(factor_rna_bp))      deallocate(factor_rna_bp)
+!
+!   ! RNA stack
+!   if (allocated(irna_st2mp))         deallocate(irna_st2mp)
+!   if (allocated(lmp2rna_st))         deallocate(lmp2rna_st)
+!   if (allocated(irna_st2unit))       deallocate(irna_st2unit)
+!   if (allocated(irna_st_dummy_mgo))  deallocate(irna_st_dummy_mgo)
+!   if (allocated(rna_st_nat))         deallocate(rna_st_nat)
+!   if (allocated(rna_st_nat2))        deallocate(rna_st_nat2)
+!   if (allocated(coef_rna_st))        deallocate(coef_rna_st)
+!   if (allocated(coef_rna_st_a))      deallocate(coef_rna_st_a)
+!   if (allocated(coef_rna_st_fD))     deallocate(coef_rna_st_fD)
+!   if (allocated(factor_rna_st))      deallocate(factor_rna_st)
+!
+!   ! RNA stack angle
+!   if (allocated(istangle2mp))        deallocate(istangle2mp)
+!   if (allocated(stangle_nat))        deallocate(stangle_nat)
+!   if (allocated(factor_stangle))     deallocate(factor_stangle)
+!   if (allocated(coef_stangle))       deallocate(coef_stangle)
 
    ! DT-RNA stack
    if (allocated(idtrna_st2mp))       deallocate(idtrna_st2mp)

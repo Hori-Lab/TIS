@@ -4,13 +4,13 @@ subroutine simu_para()
   use const_physical
   use const_index
   use var_io,     only : i_run_mode
-  use var_setp,    only : insimu, inmmc
-  use var_replica, only : inrep, n_replica_all
+  use var_setp,    only : insimu !, inmmc
+  use var_replica, only : inrep !, n_replica_all
   use var_struct,  only : nmp_real, cmass_mp
-  use var_simu,    only : istep_sim, istep, mstep, ntstep, tstep, &
-                          tempk, nstep_opt_temp, rcmass_mp, tstep2, tsteph, &
-                          qscore, n_exchange, em_mid, em_depth, em_sigma
-  use var_fmat,    only : infmat, fmat_clear
+  use var_simu,    only : istep_sim, mstep, ntstep, tstep, &
+                          tempk, nstep_opt_temp, rcmass_mp, tstep2, tsteph
+                          !qscore, n_exchange, em_mid, em_depth, em_sigma
+!  use var_fmat,    only : infmat, fmat_clear
 
   implicit none
 
@@ -27,49 +27,49 @@ subroutine simu_para()
   tsteph           = 0.5e0_PREC * tstep
 
   ! mcanonical  : setting parameters
-  if(inmmc%i_modified_muca == 1)then
-     em_depth = inmmc%em_depth
-     em_mid = inmmc%em_mid
-     em_sigma = inmmc%em_sigma
-  endif
+!  if(inmmc%i_modified_muca == 1)then
+!     em_depth = inmmc%em_depth
+!     em_mid = inmmc%em_mid
+!     em_sigma = inmmc%em_sigma
+!  endif
 
 
   mstep = 1  ! for not searching Tf
 
   ! anealing or heating
-  if(i_run_mode == RUN%SA) then
-     ntstep = insimu%n_tstep(istep_sim)
-
-     ! # of replica should be one
-     if (n_replica_all /= 1) then
-        write(error_message,*) 'defect at simu_para, PROGRAM STOP'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-
-     istep = 0
-     call simu_anneal(istep, tempk)
-
-  ! searchingtf
-  else if(i_run_mode == RUN%SEARCH_TF) then
-     ntstep = insimu%n_tstep(istep_sim)
-
-     ! # of replica should be one
-     if (n_replica_all /= 1) then
-        write(error_message,*) 'defect at simu_para, PROGRAM STOP'
-        call util_error(ERROR%STOP_ALL, error_message) 
-     endif
-
-     istep = 0
-     call simu_searchingtf(istep, ntstep, qscore, tempk)
-     mstep = MXSEARCHINGTF    ! defined by const_maxsize.F90 (default=1000)
-
-  ! fluctuation matching
-  else if (i_run_mode == RUN%FMAT) then
-     call fmat_clear()
-     ntstep = infmat%n_step
+!  if(i_run_mode == RUN%SA) then
+!     ntstep = insimu%n_tstep(istep_sim)
+!
+!     ! # of replica should be one
+!     if (n_replica_all /= 1) then
+!        write(error_message,*) 'defect at simu_para, PROGRAM STOP'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!
+!     istep = 0
+!     call simu_anneal(istep, tempk)
+!
+!  ! searchingtf
+!  else if(i_run_mode == RUN%SEARCH_TF) then
+!     ntstep = insimu%n_tstep(istep_sim)
+!
+!     ! # of replica should be one
+!     if (n_replica_all /= 1) then
+!        write(error_message,*) 'defect at simu_para, PROGRAM STOP'
+!        call util_error(ERROR%STOP_ALL, error_message) 
+!     endif
+!
+!     istep = 0
+!     call simu_searchingtf(istep, ntstep, qscore, tempk)
+!     mstep = MXSEARCHINGTF    ! defined by const_maxsize.F90 (default=1000)
+!
+!  ! fluctuation matching
+!  else if (i_run_mode == RUN%FMAT) then
+!     call fmat_clear()
+!     ntstep = infmat%n_step
 
   ! Replica exchange method
-  else if (i_run_mode == RUN%REPLICA) then
+  if (i_run_mode == RUN%REPLICA) then
      ntstep = insimu%n_tstep(istep_sim)
 
      if (inrep%flg_opt_temp) then
@@ -90,7 +90,7 @@ subroutine simu_para()
      !   write(6,*) ' - ntstep, max_exchange, ntstep_max - ', ntstep, max_exchange, ntstep_max
      !endif
 
-     n_exchange = 0
+!     n_exchange = 0
 
   else
      ntstep = insimu%n_tstep(istep_sim)

@@ -44,6 +44,7 @@ subroutine setp_electrostatic()
   character(CARRAY_MSG_ERROR) :: error_message
 
   ! -----------------------------------------------------------------------
+  iulen = 0
   luninp = infile%inp
   lunout = outfile%data
 

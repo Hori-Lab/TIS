@@ -49,7 +49,7 @@ program cafemol
   ! memory allocation
   call allocate_replica(xyz_mp_init)
   call allocate_neighbor()
-  call allocate_fmat()
+!  call allocate_fmat()
 
   deallocate( xyz_mp_init )
 
@@ -62,7 +62,7 @@ program cafemol
   call deallocate_nativestruct() ! allocated in setpara
   call deallocate_replica()
   call deallocate_neighbor()
-  call deallocate_fmat()
+!  call deallocate_fmat()
 
 #ifdef MPI_PAR
   call MPI_Finalize(ierr)

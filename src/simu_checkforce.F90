@@ -87,7 +87,7 @@ subroutine simu_checkforce()
   end do
 
   do irep = 1, n_replica_mpi
-     call simu_copyxyz(irep)
+!     call simu_copyxyz(irep)
      call neighbor(irep)
   enddo
   
@@ -102,7 +102,7 @@ subroutine simu_checkforce()
         xyz_save = xyz_mp_rep(idimn, imp, IDX_REPLICA)
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_mp_rep(idimn, imp, IDX_REPLICA) + small
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) + small
-        call simu_copyxyz(IDX_REPLICA)
+!        call simu_copyxyz(IDX_REPLICA)
    
         call energy_allrep(energy_unit, energy, &
                          velo_mp, replica_energy, .false., tempk)
@@ -110,7 +110,7 @@ subroutine simu_checkforce()
         af_ene = energy(E_TYPE%TOTAL, IDX_REPLICA)
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_mp_rep(idimn, imp, IDX_REPLICA) - 2.0_PREC * small
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) - 2.0_PREC * small
-        call simu_copyxyz(IDX_REPLICA)
+!        call simu_copyxyz(IDX_REPLICA)
    
         call energy_allrep(energy_unit, energy, &
                          velo_mp, replica_energy, .false., tempk)

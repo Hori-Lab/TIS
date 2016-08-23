@@ -33,24 +33,25 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   use if_write
   use if_energy
   use var_io,     only : i_run_mode, i_simulate_type, flg_file_out, outfile
-  use var_setp,    only : insimu, inann, inmisc, inele, inwidom
+  use var_setp,    only : insimu, inmisc, inele, inwidom !, inann
   use var_struct,  only : nmp_real, cmass_mp, fric_mp, xyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, &
-                          n_replica_all, n_replica_mpi, irep2grep, exchange_step
+                          n_replica_mpi, irep2grep, exchange_step
 !  use var_implig,  only : inimplig  ! implicit ligand
   use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
                           n_exchange, iopt_stage, &
                           tstep, tempk, velo_mp, rlan_const, &
-                          energy, energy_unit, qscore, rg, rg_unit, rmsd, rmsd_unit, &
+                          energy, energy_unit, rg, rg_unit, rmsd, rmsd_unit, &
                           replica_energy
-  use time, only : tm_lap, tm_energy, tm_radiusg_rmsd, &
-                   tm_output, tm_implig, tm_replica, tm_step_adj, &
-                   time_s, time_e, tm_others
-  use var_fmat,    only : infmat
+  use time, only : tm_energy, tm_radiusg_rmsd, &
+                   tm_output, tm_replica, & 
+                   time_s, time_e, tm_others !, tm_implig, tm_step_adj, &
+!  use var_fmat,    only : infmat
 #ifdef MPI_PAR
   use mpiconst
   use var_simu, only : replica_energy_l
   use time , only : tmc_replica
+  use var_replica, only : n_replica_all
 #endif
 
   implicit none
@@ -60,7 +61,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
   logical :: flg_step_rst, flg_step_widom !,flg_step_implig
-  integer :: imp1, imp2, imirror
+  integer :: imp1, imp2
   integer :: imp, irep, grep
   real(PREC) :: v21(3), dee
 #ifdef _DUMP_COMMON
@@ -167,10 +168,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      end if
      ! call mpi_barrier(MPI_COMM_WORLD, ierr)
 #endif
-     if(i_run_mode == RUN%SEARCH_TF) then
-        irep = 1
-        call simu_searchingtf(istep, ntstep, qscore(irep), tempk)
-     end if
+!     if(i_run_mode == RUN%SEARCH_TF) then
+!        irep = 1
+!        call simu_searchingtf(istep, ntstep, qscore(irep), tempk)
+!     end if
   end if
   TIME_E( tm_output )
   
@@ -203,24 +204,24 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! --------------------------------------------------------------
   ! annealing
   ! --------------------------------------------------------------
-  if(i_run_mode == RUN%SA .AND. mod(istep, (ntstep/(inann%n_time_change+1))) == 0) then
-     call simu_anneal(istep, ntstep, tempk)
-     
-     call simu_para2(tempk, inele%ionic_strength)
-     
-     if(i_simulate_type == SIM%LANGEVIN) then
-        do imp = 1, nmp_real
-           rlan_const(1, imp, 1) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk &
-                / (tstep * cmass_mp(imp) )        )   
-           !NOTE: SA should be only 1 replica.
-        end do
-     elseif (i_simulate_type == SIM%BROWNIAN .or. i_simulate_type == SIM%PS_BROWNIAN) then
-        do imp = 1, nmp_real
-           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZ_KCAL_MOL * tempk * tstep / fric_mp(imp))
-           !NOTE: SA should be only 1 replica.
-        end do
-     end if
-  end if
+!  if(i_run_mode == RUN%SA .AND. mod(istep, (ntstep/(inann%n_time_change+1))) == 0) then
+!     call simu_anneal(istep, ntstep, tempk)
+!     
+!     call simu_para2(tempk, inele%ionic_strength)
+!     
+!     if(i_simulate_type == SIM%LANGEVIN) then
+!        do imp = 1, nmp_real
+!           rlan_const(1, imp, 1) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk &
+!                / (tstep * cmass_mp(imp) )        )   
+!           !NOTE: SA should be only 1 replica.
+!        end do
+!     elseif (i_simulate_type == SIM%BROWNIAN .or. i_simulate_type == SIM%PS_BROWNIAN) then
+!        do imp = 1, nmp_real
+!           rlan_const(2, imp, irep) = sqrt( 2.0e0_PREC * BOLTZ_KCAL_MOL * tempk * tstep / fric_mp(imp))
+!           !NOTE: SA should be only 1 replica.
+!        end do
+!     end if
+!  end if
   
   ! ------------------------
   ! Replica Exchange
@@ -237,7 +238,6 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      if (flg_step_rep_exc) then
         
         !              write(6,*) ' << Replica Exchange istep >> ', istep, n_exchange
-        TIME_E( tm_lap )
         
         flg_step_each_replica(1:n_replica_mpi)  = .false. 
 #ifdef MPI_PAR
@@ -247,7 +247,6 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
              MPI_SUM, mpi_comm_rep, ierr)
         
         TIME_E( tmc_replica )
-        TIME_S( tm_lap )
 #endif
         
         n_exchange = n_exchange + 1
@@ -283,14 +282,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
         
         !if (inrep%i_loadbalance >= 1) then
         !   if (mod(n_exchange, inrep%n_adjust_interval) == 0) then
-        !      TIME_E( tm_lap )
         !      
         !      TIME_S(tm_step_adj)
         !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
         !      TIME_E(tm_step_adj)
         !
-        !      total_time(tm_lap)  = 0.0_8
-        !      TIME_S( tm_lap )
         !   end if
         !endif
         
@@ -320,17 +316,17 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   TIME_E( tm_replica )
   TIME_S( tm_others )
   
-  ! --------------------------------------------------------------
-  ! fmat
-  ! --------------------------------------------------------------
-  if(i_run_mode == RUN%FMAT .AND. mod(istep, infmat%n_step_interval) == 0) then
-     
-     call simu_fmat()
-     
-     if (mod(istep, infmat%n_step_save) == 0) then
-     endif
-     
-  end if
+!  ! --------------------------------------------------------------
+!  ! fmat
+!  ! --------------------------------------------------------------
+!  if(i_run_mode == RUN%FMAT .AND. mod(istep, infmat%n_step_interval) == 0) then
+!     
+!     call simu_fmat()
+!     
+!     if (mod(istep, infmat%n_step_save) == 0) then
+!     endif
+!     
+!  end if
   
 #ifdef _DUMP_COMMON
   if (istep <= 5) then

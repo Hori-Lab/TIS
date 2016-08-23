@@ -8,7 +8,7 @@
 
 !#define _DEBUG_ADJUST
 
-subroutine step_adjustment(istep, n_exchange, i_loadbalance)
+subroutine step_adjustment(istep, i_loadbalance)
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, insimu
@@ -23,7 +23,6 @@ subroutine step_adjustment(istep, n_exchange, i_loadbalance)
   implicit none
   ! ------------------------------------------------
   integer(L_INT), intent(in) :: istep 
-  integer, intent(in) :: n_exchange
   integer, intent(in) :: i_loadbalance
   ! ------------------------------------------------
   integer    :: irep, grep
@@ -190,7 +189,7 @@ subroutine step_adjustment(istep, n_exchange, i_loadbalance)
 #endif
 
   n_adjust = n_adjust + 1
-  call write_rep_adjust(istep, n_exchange, n_adjust, i_loadbalance, lele_all, loop_time_rep)
+  call write_rep_adjust(istep, n_adjust, i_loadbalance, lele_all, loop_time_rep)
 
   return
 end subroutine step_adjustment

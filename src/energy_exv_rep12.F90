@@ -8,7 +8,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inpro, inrna, inligand, inperi
+  use var_setp,    only : inpro, inligand, inperi !, inrna
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
                           lexv, iexv2mp, iclass_mp
   use mpiconst
@@ -24,11 +24,12 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
   real(PREC) :: dist2
-  real(PREC) :: coef, coef_pro, coef_rna, coef_rna_pro, coef_lig
-  real(PREC) :: cdist2, cdist2_pro, cdist2_rna, cdist2_rna_pro, &
-                cdist2_llig, cdist2_lpro
-  real(PREC) :: cutoff2, cutoff2_pro, cutoff2_rna, cutoff2_rna_pro, &
-                cutoff2_llig, cutoff2_lpro 
+  real(PREC) :: coef, coef_pro, coef_lig
+!  real(PREC) :: coef_rna, coef_rna_pro
+  real(PREC) :: cdist2, cdist2_pro, cdist2_llig, cdist2_lpro
+!  real(PREC) :: cdist2_rna, cdist2_rna_pro
+  real(PREC) :: cutoff2, cutoff2_pro, cutoff2_llig, cutoff2_lpro 
+!  real(PREC) :: cutoff2_rna, cutoff2_rna_pro
   real(PREC) :: roverdist2, roverdist4
   real(PREC) :: roverdist8, roverdist12
   real(PREC) :: ene
@@ -48,18 +49,18 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   ! ------------------------------------------------------------------------
   ! for speed up
   cutoff2_pro = (inpro%cutoff_exvol*inpro%cdist_rep12)**2
-  cutoff2_rna = (inrna%cutoff_exvol *inrna%cdist_rep12 )**2
-  cutoff2_rna_pro = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12)**2 / 4
+!  cutoff2_rna = (inrna%cutoff_exvol *inrna%cdist_rep12 )**2
+!  cutoff2_rna_pro = (inrna%cutoff_exvol*inrna%cdist_rep12 + inpro%cutoff_exvol*inpro%cdist_rep12)**2 / 4
   cutoff2_llig = (inligand%cutoff_exvol *inligand%cdist_rep12_llig )**2
   cutoff2_lpro = (inligand%cutoff_exvol *inligand%cdist_rep12_lpro )**2
   cdist2_pro = inpro%cdist_rep12 * inpro%cdist_rep12
-  cdist2_rna = inrna%cdist_rep12 * inrna%cdist_rep12
-  cdist2_rna_pro = (inrna%cdist_rep12 + inpro%cdist_rep12) ** 2 / 4
+!  cdist2_rna = inrna%cdist_rep12 * inrna%cdist_rep12
+!  cdist2_rna_pro = (inrna%cdist_rep12 + inpro%cdist_rep12) ** 2 / 4
   cdist2_llig = inligand%cdist_rep12_llig * inligand%cdist_rep12_llig
   cdist2_lpro = inligand%cdist_rep12_lpro * inligand%cdist_rep12_lpro
   coef_pro = inpro%crep12
-  coef_rna = inrna%crep12
-  coef_rna_pro = inrna%crep12
+!  coef_rna = inrna%crep12
+!  coef_rna_pro = inrna%crep12
   coef_lig = inligand%crep12
 
 #ifdef MPI_PAR3
@@ -94,16 +95,17 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 
      dist2 = v21(1)*v21(1) + v21(2)*v21(2) + v21(3)*v21(3)
 
-     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        cutoff2 = cutoff2_rna
-        cdist2  = cdist2_rna
-        coef    = coef_rna
-     else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-              (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
-        cutoff2 = cutoff2_rna_pro
-        cdist2  = cdist2_rna_pro
-        coef    = coef_rna_pro
-     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
+!     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+!        cutoff2 = cutoff2_rna
+!        cdist2  = cdist2_rna
+!        coef    = coef_rna
+!     else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
+!              (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
+!        cutoff2 = cutoff2_rna_pro
+!        cdist2  = cdist2_rna_pro
+!        coef    = coef_rna_pro
+!     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
+     if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
         cutoff2 = cutoff2_llig
         cdist2  = cdist2_llig
         coef    = coef_lig

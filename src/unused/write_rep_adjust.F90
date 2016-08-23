@@ -1,4 +1,4 @@
-subroutine write_rep_adjust( istep , n_exchange, n_adjust, i_loadbalance, lele_all, loop_time_rep )
+subroutine write_rep_adjust( istep , n_adjust, i_loadbalance, lele_all, loop_time_rep )
 
 #include "format.F90"
 
@@ -14,7 +14,6 @@ subroutine write_rep_adjust( istep , n_exchange, n_adjust, i_loadbalance, lele_a
    !------------------------
    ! IN/OUT 
    integer(L_INT), intent(in) :: istep
-   integer, intent(in)    :: n_exchange
    integer, intent(in)    :: n_adjust
    integer, intent(in)    :: i_loadbalance
    integer, intent(in)    :: lele_all(MXREPLICA)

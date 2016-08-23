@@ -8,8 +8,9 @@ subroutine inp_split_mpi()
   use const_index
 #ifdef MPI_PAR
   use var_io,     only : i_run_mode
+  use var_replica, only : inrep, flg_npar_rep
 #endif
-  use var_replica, only : inrep, n_replica_all, flg_npar_rep, &
+  use var_replica, only : n_replica_all, &
                           n_replica_mpi, irep2grep, grep2irep, grep2rank
   use mpiconst
 

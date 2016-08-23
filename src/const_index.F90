@@ -373,13 +373,15 @@ module const_index
      integer :: ION    !< 2: Ionic strength
      integer :: PULL   !< 3: Pulling force
      integer :: WIND   !< 4: Window
-     integer :: WINZ   !< 5: Window2
+     !integer :: WINZ   !< 5: Window2
      integer :: MAX    !< 5: Maximum value
   endtype replica_type
-  type(replica_type), parameter :: REPTYPE = replica_type(1,2,3,4,5,5)
+  !type(replica_type), parameter :: REPTYPE = replica_type(1,2,3,4,5,5)
+  type(replica_type), parameter :: REPTYPE = replica_type(1,2,3,4,4)
 
   character(4), parameter :: CHAR_REPTYPE(REPTYPE%MAX) &
-     = (/'temp','ion ','pull','wind', 'winz'/)
+     != (/'temp','ion ','pull','wind', 'winz'/)
+     = (/'temp','ion ','pull','wind'/)
 
   type wind_type
      integer :: IMP    !< 1: ID of mass point I

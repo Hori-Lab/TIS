@@ -20,7 +20,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
   use const_physical
   use const_index
   use var_setp,   only : inmisc, inele !, inflp
-  use var_struct, only : nunit_all, nmp_all
+  use var_struct, only : nmp_all  !, nunit_all
   !use var_mgo,    only : inmgo
   use time
   use mpiconst
@@ -145,24 +145,40 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
 !$omp master
   TIME_E( tm_force_go )
-
-  TIME_S( tm_force_dtrna ) 
 !$omp end master
 
   if (inmisc%class_flag(CLASS%RNA)) then
      if (inmisc%i_dtrna_model == 2013) then
+!$omp master
+  TIME_S( tm_force_dtrna_st ) 
+!$omp end master
         call force_dtrna_stack(irep, force_mp_l(1,1,tn))
+!$omp master
+  TIME_E( tm_force_dtrna_st ) 
+  TIME_S( tm_force_dtrna_hb ) 
+!$omp end master
         call force_dtrna_hbond13(irep, force_mp_l(1,1,tn))
+!$omp master
+  TIME_E( tm_force_dtrna_hb ) 
+!$omp end master
      else if (inmisc%i_dtrna_model == 2015) then
+!$omp master
+  TIME_S( tm_force_dtrna_st ) 
+!$omp end master
         call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn))
         call force_dtrna_stack(irep, force_mp_l(1,1,tn))
+!$omp master
+  TIME_E( tm_force_dtrna_st ) 
+  TIME_S( tm_force_dtrna_hb ) 
+!$omp end master
         call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
+!$omp master
+  TIME_E( tm_force_dtrna_hb ) 
+!$omp end master
      endif
   endif
 
 !$omp master
-  TIME_E( tm_force_dtrna )
-
   TIME_S( tm_force_exv ) 
 !$omp end master
 
@@ -322,9 +338,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_window(irep, force_mp)
   end if
 
-  if(inmisc%i_winz == 1) then
-     call force_winz(irep, force_mp)
-  end if
+!  if(inmisc%i_winz == 1) then
+!     call force_winz(irep, force_mp)
+!  end if
 
 !!! implicit ligand model
 !  if(inmisc%i_implig == 1) then

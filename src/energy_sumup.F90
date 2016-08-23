@@ -23,7 +23,7 @@ subroutine energy_sumup(irep,          &
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele !,inflp
-  use var_struct,  only : nunit_all, ncon, nLJ, nmorse, nrna_bp
+  use var_struct,  only : nunit_all, ncon, nLJ !, nmorse, nrna_bp
 !  use var_mgo,     only : inmgo
   use time
   use mpiconst
@@ -41,15 +41,16 @@ subroutine energy_sumup(irep,          &
 #ifdef MEM_ALLOC
   integer, allocatable :: now_con(:, :)  ! (ncon)
   integer, allocatable :: now_LJ(:, :)
-  integer, allocatable :: now_morse(:, :)
-  integer, allocatable :: now_rna_bp(:, :)
+!  integer, allocatable :: now_morse(:, :)
+!  integer, allocatable :: now_rna_bp(:, :)
   integer, allocatable :: now_allcon(:, :)
 #else
   integer :: now_con(2, ncon)
   integer :: now_LJ(2, nLJ)
-  integer :: now_morse(2, nmorse)
-  integer :: now_rna_bp(2, nrna_bp)
-  integer :: now_allcon(2, ncon+nmorse+nrna_bp+nLJ)
+!  integer :: now_morse(2, nmorse)
+!  integer :: now_rna_bp(2, nrna_bp)
+  !integer :: now_allcon(2, ncon+nmorse+nrna_bp+nLJ)
+  integer :: now_allcon(2, ncon+nLJ)
 #endif
   character(CARRAY_MSG_ERROR),parameter :: msg_er_allocate = &
      'failed in memory allocation at mloop_simulator, PROGRAM STOP'
@@ -75,18 +76,19 @@ subroutine energy_sumup(irep,          &
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
   allocate(now_LJ(2, nLJ), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-  allocate(now_morse(2, nmorse), stat=ier)
-  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-  allocate(now_rna_bp(2, nrna_bp, stat=ier)
-  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-  allocate(now_allcon(2, ncon+nmorse+nrna_bp+nLJ), stat=ier)
+!  allocate(now_morse(2, nmorse), stat=ier)
+!  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
+!  allocate(now_rna_bp(2, nrna_bp, stat=ier)
+!  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
+!  allocate(now_allcon(2, ncon+nmorse+nrna_bp+nLJ), stat=ier)
+  allocate(now_allcon(2, ncon+nLJ), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
 #endif
 
   now_con(:, :) = 0
   now_LJ(:, :) = 0
-  now_morse(:, :) = 0
-  now_rna_bp(:, :) = 0
+!  now_morse(:, :) = 0
+!  now_rna_bp(:, :) = 0
   now_allcon(:, :) = 0
 
 ! --------------------------------------------------------------------
@@ -94,7 +96,8 @@ subroutine energy_sumup(irep,          &
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
   allocate( energy_unit_l(nunit_all, nunit_all, E_TYPE%MAX, 0:nthreads-1), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-  allocate( now_allcon_l(2, ncon+nmorse+nrna_bp+nLJ), stat=ier)
+  !allocate( now_allcon_l(2, ncon+nmorse+nrna_bp+nLJ), stat=ier)
+  allocate( now_allcon_l(2, ncon+nLJ), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
 
 !$omp parallel private(tn)
@@ -182,12 +185,14 @@ subroutine energy_sumup(irep,          &
   TIME_S( tm_energy_orderpara) 
   ! sum total
   now_allcon_l(1:2, 1:ncon) = now_con(1:2, 1:ncon)
-  now_allcon_l(1:2, ncon+1:ncon+nmorse) = now_morse(1:2, 1:nmorse)
-  now_allcon_l(1:2, ncon+nmorse+1:ncon+nmorse+nrna_bp) = now_rna_bp(1:2, 1:nrna_bp)
-  now_allcon_l(1:2, ncon+nmorse+nrna_bp+1:ncon+nmorse+nrna_bp+nLJ) = now_LJ(1:2, 1:nLJ)
+!  now_allcon_l(1:2, ncon+1:ncon+nmorse) = now_morse(1:2, 1:nmorse)
+!  now_allcon_l(1:2, ncon+nmorse+1:ncon+nmorse+nrna_bp) = now_rna_bp(1:2, 1:nrna_bp)
+!  now_allcon_l(1:2, ncon+nmorse+nrna_bp+1:ncon+nmorse+nrna_bp+nLJ) = now_LJ(1:2, 1:nLJ)
+  now_allcon_l(1:2, ncon+1:ncon+nLJ) = now_LJ(1:2, 1:nLJ)
 #ifdef MPI_PAR3
   call mpi_allreduce(now_allcon_l, now_allcon, &
-       2*(ncon+nmorse+nrna_bp+nLJ), MPI_INTEGER, &
+       !2*(ncon+nmorse+nrna_bp+nLJ), MPI_INTEGER, &
+       2*(ncon+nLJ), MPI_INTEGER, &
        MPI_SUM, mpi_comm_local, ierr)
 #else
   now_allcon(:,:) = now_allcon_l(:,:)
@@ -322,9 +327,9 @@ subroutine energy_sumup(irep,          &
      call energy_window(irep, energy_unit, energy)
   end if
   
-  if(inmisc%i_winz == 1) then
-     call energy_winz(irep, energy_unit, energy)
-  end if
+!  if(inmisc%i_winz == 1) then
+!     call energy_winz(irep, energy_unit, energy)
+!  end if
 
 !  ! implicit ligand model
 !  if(inmisc%i_implig == 1) then
@@ -397,8 +402,8 @@ subroutine energy_sumup(irep,          &
 #ifdef MEM_ALLOC
   deallocate( now_con )
   deallocate( now_LJ )
-  deallocate( now_morse )
-  deallocate( now_rna_bp )
+!  deallocate( now_morse )
+!  deallocate( now_rna_bp )
   deallocate( now_allcon )
 #endif
 

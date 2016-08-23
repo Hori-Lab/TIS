@@ -3,14 +3,14 @@ subroutine write_rst()
    use const_maxsize
    use const_index
    use const_physical, only : SDIM
-   use var_setp,   only : inmisc, mts
+   use var_setp,   only : inmisc !, mts
    use var_io,    only : outfile, fullpath
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep, ndtrna_hb, ndtrna_st
    use var_simu,   only : istep_sim, istep, velo_mp, accel_mp, &
                           hb_status, st_status
    use var_replica,only : n_replica_all, n_replica_mpi, irep2grep, rep2lab
    use mpiconst
-   use mt_stream, only : save
+   !use mt_stream, only : save
 
    implicit none
 
@@ -20,7 +20,7 @@ subroutine write_rst()
    integer :: iopen_status 
    integer :: irep
    integer :: nblock_size
-   integer :: mts_dim_1st, mts_dim_2nd
+!   integer :: mts_dim_1st, mts_dim_2nd
    character(CARRAY_MSG_ERROR) :: error_message
 
 #ifdef MPI_PAR

@@ -12,7 +12,7 @@ subroutine setp_native_go(xyz_mp_init,         &
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inmisc, inrna
+  use var_setp,   only : inpro, inmisc !, inrna
   use var_struct, only : nunit_all, nmp_all, imp2unit, &
                          ncon, icon2mp, lmp2con, icon2unit, icon2type, &
                          go_nat, go_nat2, factor_go, coef_go, ncon_unit, &

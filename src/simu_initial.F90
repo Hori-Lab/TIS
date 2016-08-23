@@ -51,7 +51,7 @@ subroutine simu_initial()
         call simu_xyz_adjst()
      end if
 
-     call simu_copyxyz(0)
+!     call simu_copyxyz(0)
 
      if(i_seq_read_style /= SEQREAD%PDB) then
         xyz_ref_mp(1:SDIM, 1:nmp_all) = xyz_mp_rep(1:SDIM, 1:nmp_all, 1)
