@@ -63,9 +63,9 @@ integer,parameter :: tm_neighbor_hb       =  54
 
 ! for energy
 !integer,parameter :: tm_energy_sasa       = 100  !sasa
-integer,parameter :: tm_energy_velo       = 101
-integer,parameter :: tm_energy_bond       = 102
-integer,parameter :: tm_energy_bangle     = 103
+!integer,parameter :: tm_energy_velo       = 101
+!integer,parameter :: tm_energy_bond       = 102
+!integer,parameter :: tm_energy_bangle     = 103
 !integer,parameter :: tm_energy_dih        = 104
 !integer,parameter :: tm_energy_nlocal_mgo = 105
 integer,parameter :: tm_energy_nlocal_go  = 106
@@ -162,6 +162,16 @@ subroutine time_write( lunout )
 
   write(lunout, fmt=fmt1) 'energy         ', total_time(tm_energy), trate*total_time(tm_energy)
   write(lunout, fmt=fmt1) '_energy(comm)  ', total_time(tmc_energy), trate*total_time(tmc_energy)
+!  write(lunout, fmt=fmt1) '_energy(velo)  ', total_time(tm_energy_velo), trate*total_time(tm_energy_velo)
+!  write(lunout, fmt=fmt1) '_energy(bond)  ', total_time(tm_energy_bond), trate*total_time(tm_energy_bond)
+!  write(lunout, fmt=fmt1) '_energy(bangle)', total_time(tm_energy_bangle), trate*total_time(tm_energy_bangle)
+  write(lunout, fmt=fmt1) '_energy(nlclgo)', total_time(tm_energy_nlocal_go), trate*total_time(tm_energy_nlocal_go)
+  write(lunout, fmt=fmt1) '_energy(enm)   ', total_time(tm_energy_enm), trate*total_time(tm_energy_enm)
+  write(lunout, fmt=fmt1) '_energy(order) ', total_time(tm_energy_orderpara), trate*total_time(tm_energy_orderpara)
+  write(lunout, fmt=fmt1) '_energy(exv)   ', total_time(tm_energy_exv), trate*total_time(tm_energy_exv)
+  write(lunout, fmt=fmt1) '_energy(unit)  ', total_time(tm_energy_unit), trate*total_time(tm_energy_unit)
+  write(lunout, fmt=fmt1) '_energy(total) ', total_time(tm_energy_total), trate*total_time(tm_energy_total)
+  write(lunout, fmt=fmt1) '_energy(rep)   ', total_time(tm_energy_replica), trate*total_time(tm_energy_replica)
 
   if (i_run_mode == RUN%REPLICA) then
      write(lunout, fmt=fmt1) 'replica        ', total_time(tm_replica), trate*total_time(tm_replica)

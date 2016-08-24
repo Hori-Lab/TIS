@@ -1,5 +1,6 @@
 .SUFFIXES: .F90 .o
 TARGET = ../md
+#TARGET = ../md.omp
 
 # .. utilites
 UTIL1 = ../crd2pdb
@@ -178,9 +179,9 @@ FSUB2 = read_xyz.o read_xyz_cg.o read_pdb_pro.o\
 	util_bondangle.o util_sort_contact.o\
 	util_ppgauss.o util_bestfit.o\
 	util_periodic.o util_pbneighbor.o util_pbindex.o\
-	util_uintra2xyz.o ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
+	ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
 	ukoto_uichec2.o ukoto_uiunpk2.o
-	#util_posmass_rna.o\
+	#util_posmass_rna.o util_uintra2xyz.o\
 	#util_sort_rna_st.o util_sort_rna_bp.o util_dihangle.o\
 
 # programs

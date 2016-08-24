@@ -107,18 +107,12 @@ subroutine energy_sumup(irep,          &
   energy_l(:,tn) = 0.0e0_PREC
   energy_unit_l(:,:,:,tn) = 0.0e0_PREC
 
-  TIME_S( tm_energy_velo) 
   call energy_velo(velo_mp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  TIME_E( tm_energy_velo) 
 
-  TIME_S( tm_energy_bond) 
   call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  TIME_E( tm_energy_bond) 
 
-  TIME_S( tm_energy_bangle)
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  TIME_E( tm_energy_bangle)
 
 !  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
 !      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then

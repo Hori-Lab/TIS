@@ -3,11 +3,12 @@ TARGET = mt_cafe
 
 
 # fortran90/95 compiler
-FC  := ifort
-#FC := gfortran
+#FC  := ifort
+FC := gfortran
 
 # fortran compiler options
-FLAGS := -O3
+#FLAGS := -O3
+FLAGS := -O3 -fno-range-check
 
 MTMOD = mt_kind_defs.o mt_stream.o gf2xe.o
 MTSUB = f_get_coeff.o
@@ -23,4 +24,4 @@ clean :
 
 # suffix rule
 .F90.o:
-	$(FC) $(FLAG) -c $< 
+	$(FC) $(FLAGS) -c $< 

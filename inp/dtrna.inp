@@ -30,15 +30,17 @@ NINFO(all/all) bwyv.ninfo
 
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 10
-tstep_size = 0.1
-n_step_save = 1
+n_tstep(1) = 10000
+tstep_size = 0.05
+n_step_save = 100
 n_step_neighbor = 1
 n_step_rst = 100
 i_com_zeroing = 0
 i_no_trans_rot = 0
 tempk = 323.15
 n_seed = 3
+i_fric = 1
+i_mass = 1
 >>>>
 
 
@@ -55,6 +57,8 @@ i_coef_from_ninfo = 1
 cutoff_ele = 999.0
 ionic_strength = 0.1
 diele_water = 99999.0
+
+i_function_form = 0
 
 ** dielectric constant
 **            = 0 constant value (default)
@@ -74,4 +78,8 @@ i_calc_method = 0
 
 CHARGE_CHANGE 3   0.0
 CHARGE_CHANGE 87  0.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000010
 >>>>

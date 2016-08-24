@@ -55,14 +55,13 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   kend = ndtrna_tst
 #endif
 
-!$omp master
   st_status_l(:) = .True.
 
-!!$omp do private(f_i,f_k,f_l,for,pre,ediv,m,n,dmm,dnn,&
-!!$omp&           d,cos_theta,dih,ist_2nd,&
-!!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
-!!$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
-!!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
+!$omp do private(f_i,f_k,f_l,for,pre,ediv,m,n,dmm,dnn,&
+!$omp&           d,cos_theta,dih,ist_2nd,&
+!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
+!$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
+!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
   do ist=ksta,kend
 
      v12 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
@@ -239,7 +238,7 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
      force_mp(1:3,idtrna_tst2mp(5,ist)) = force_mp(1:3,idtrna_tst2mp(5,ist)) + for(:,5)
      force_mp(1:3,idtrna_tst2mp(6,ist)) = force_mp(1:3,idtrna_tst2mp(6,ist)) + for(:,6)
   end do
-!!$omp end do nowait
+!$omp end do nowait
 
 #ifdef MPI_PAR3
   call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
@@ -247,8 +246,5 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
 #else
   st_status(:,irep) = st_status_l(:)
 #endif
-
-!$omp end master
-!$omp barrier
 
 end subroutine force_dtrna_stack_nlocal

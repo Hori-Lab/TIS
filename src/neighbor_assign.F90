@@ -424,7 +424,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  case (MPTYPE%RNA_BASE) !B 
                     isep_nlocal_rna = indtrna15%n_sep_nlocal_B
                  case default 
-                    isep_nlocal_rna = -1 ! to supress compiler warning
+                    isep_nlocal_rna = -1 ! to suppress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'
                     call util_error(ERROR%STOP_ALL, error_message)
                  endselect

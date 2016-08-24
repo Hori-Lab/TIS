@@ -47,8 +47,10 @@
    kend = ndtrna_st
 #endif
 
-!$omp do private(f_i,f_l,for,m,n,dmm,dnn,&
-!$omp&           dih,dist, ddist,d,ediv)
+!$omp do private(ediv, for, d, dist, ddist, dih, f_i, f_l,&
+!$omp&           v21,v34,v54,v56,v76,&
+!$omp&           m,n,dmm,dnn,d5454,d5656,abs54,abs56,&
+!$omp&           d3454over5454,d5654over5454,d7656over5656,d5456over5656)
    do ist=ksta,kend
 
       if (.not. st_status(ist, irep)) then

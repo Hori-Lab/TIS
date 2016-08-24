@@ -58,6 +58,7 @@ n_seed = 5
 i_mass = 1
 i_fric = 1
 i_redef_para = 1
+i_neigh_dynamic = 1
 >>>>
 
 

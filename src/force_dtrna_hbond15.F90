@@ -41,7 +41,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: for(3,6,1:ndtrna_hb)
 
   real(PREC) :: rnd
-  real(PREC) :: ratio, beta
+  real(PREC) :: beta, delta
   integer :: i,jhb, i_swap, i_save, ihbsite
   integer :: ihb_delete
   integer :: ihbsite_delete
@@ -58,7 +58,6 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 #endif 
 
   ! --------------------------------------------------------------------
-!$omp master
 
   beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL)
 
@@ -76,11 +75,11 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   kend = nhbneigh(irep)
 #endif
 
-!!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
-!!$omp&           d,cos_theta,dih,&
-!!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
-!!$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
-!!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
+!$omp parallel do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
+!$omp&           d,cos_theta,dih,&
+!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
+!$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
+!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
   do ineigh=ksta,kend
     
      ihb = ineigh2hb(ineigh, irep)
@@ -100,12 +99,14 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,1,ihb)
            if (ihbsite > 0) then
+!$omp atomic
               hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
            endif
         enddo
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,2,ihb)
            if (ihbsite > 0) then
+!$omp atomic
               hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
            endif
         enddo
@@ -258,7 +259,8 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
      for(:,:,ihb) = for(:,:,ihb) * hb_energy_l(ihb)
   end do
-!!$omp end do nowait
+!$omp end parallel do
+
 
 #ifdef MPI_PAR3
   call mpi_allreduce(hb_energy_l, hb_energy(1,irep), ndtrna_hb, &
@@ -318,11 +320,16 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      ihb_delete = hb_seq(1)
      do i = 2, nhb_seq
         jhb = hb_seq(i)
-        ratio = exp( (hb_energy(jhb, irep) - hb_energy(ihb_delete, irep)) * beta )
-        rnd = genrand_double1(mts(0,0))
-
-        if (rnd < ratio) then
+        delta = hb_energy(jhb,irep) - hb_energy(ihb_delete, irep)
+        if (delta > 0.0e0_PREC) then
            ihb_delete = jhb
+        else
+           !ratio = exp( delta * beta )
+           !rnd = genrand_double1(mts(0,0))
+           !if (rnd < ratio) then
+           if ( genrand_double1(mts(0,0)) < exp(delta * beta) ) then
+              ihb_delete = jhb
+           endif
         endif
      enddo
 
@@ -331,27 +338,22 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      hb_energy( ihb_delete, irep ) = 0.0e0_PREC
 
      ! Update hbsite_excess and nhbsite_excess
-     ! for one side of the HB interaction
      do i = 1, 3
+        ! for one side of the HB interaction
         ihbsite = idtrna_hb2hbsite(i,1,ihb_delete) 
-        if (ihbsite <= 0) then
-           cycle
+        if (ihbsite > 0) then
+           if (hbsite_excess(ihbsite) > 0) then
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
+           endif
         endif
-        if (hbsite_excess(ihbsite) <= 0) then
-           cycle
-        endif
-        hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
-     enddo
-     ! the other side of the HB interaction
-     do i = 1, 3
+
+        ! the other side of the HB interaction
         ihbsite = idtrna_hb2hbsite(i,2,ihb_delete) 
-        if (ihbsite <= 0) then
-           cycle
+        if (ihbsite > 0) then
+           if (hbsite_excess(ihbsite) > 0) then
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
+           endif
         endif
-        if (hbsite_excess(ihbsite) <= 0) then
-           cycle
-        endif
-        hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
      enddo
 
      nhbsite_excess = 0
@@ -366,7 +368,6 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   enddo
 
 
-!!!$omp do private(ihb)
   do ineigh=ksta,kend
 
      ihb = ineigh2hb(ineigh, irep)
@@ -382,9 +383,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      force_mp(1:3,idtrna_hb2mp(5,ihb)) = force_mp(1:3,idtrna_hb2mp(5,ihb)) + for(1:3,5,ihb)
      force_mp(1:3,idtrna_hb2mp(6,ihb)) = force_mp(1:3,idtrna_hb2mp(6,ihb)) + for(1:3,6,ihb)
   end do
-!!!$omp end do nowait
 
   flg_hb_energy = .True.
-!$omp end master
 
 end subroutine force_dtrna_hbond15
