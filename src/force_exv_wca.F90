@@ -7,7 +7,7 @@ subroutine force_exv_wca(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,   only : indtrna13, inperi
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
+  use var_struct, only : nmp_all, pxyz_mp_rep, lexv, iexv2mp
   use mpiconst
 
   implicit none
@@ -67,14 +67,13 @@ subroutine force_exv_wca(irep, force_mp)
 
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
+     imirror = iexv2mp(3, iexv, irep)
 
-!     v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     else
-        imirror = iexv2mp(3, iexv, irep)
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !else
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     end if
+     !end if
 
      dist2 = dot_product(v21,v21)
 

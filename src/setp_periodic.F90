@@ -89,7 +89,7 @@ subroutine setp_periodic()
               else if(ix == 2) then
                  inperi%d_mirror(1, imirror) = inperi%psize(1)
               else
-                 inperi%d_mirror(1, imirror) = 0
+                 inperi%d_mirror(1, imirror) = 0.0e0_PREC
               end if
 
               if(iy == 1) then
@@ -97,7 +97,7 @@ subroutine setp_periodic()
               else if(iy == 2) then
                  inperi%d_mirror(2, imirror) = inperi%psize(2)
               else
-                 inperi%d_mirror(2, imirror) = 0
+                 inperi%d_mirror(2, imirror) = 0.0e0_PREC
               end if
 
               if(iz == 1) then
@@ -105,7 +105,7 @@ subroutine setp_periodic()
               else if(iz == 2) then
                  inperi%d_mirror(3, imirror) = inperi%psize(3)
               else
-                 inperi%d_mirror(3, imirror) = 0
+                 inperi%d_mirror(3, imirror) = 0.0e0_PREC
               end if
 
            end do

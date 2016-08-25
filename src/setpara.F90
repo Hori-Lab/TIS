@@ -41,6 +41,7 @@ subroutine setpara( xyz_mp_init )
   ! -----------------------------------------------------------------------
   ! periodic boundary
   inperi%n_mirror_index = 0
+  inperi%d_mirror(:,:) = 0.0e0_PREC
   if(inperi%i_periodic == 1) call setp_periodic()
 
   ! -----------------------------------------------------------------------

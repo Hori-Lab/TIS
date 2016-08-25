@@ -7,7 +7,7 @@ subroutine force_ele(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,   only : inele, inperi
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
+  use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use var_replica,only : irep2grep
   use mpiconst
 
@@ -70,17 +70,17 @@ subroutine force_ele(irep, force_mp)
   do iele1=ksta, kend
      imp1 = iele2mp(1, iele1, irep)
      imp2 = iele2mp(2, iele1, irep)
+     imirror = iele2mp(3, iele1, irep)
 
-     if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     else
-        imirror = iele2mp(3, iele1, irep)
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !else
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     end if
+     !end if
 
      ! v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
 
-     dist2 = v21(1)**2 + v21(2)**2 + v21(3)**2
+     dist2 = dot_product(v21,v21)
      if(dist2 > cutoff2) cycle
    
      ! -----------------------------------------------------------------

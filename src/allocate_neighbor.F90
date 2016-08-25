@@ -28,7 +28,10 @@ subroutine allocate_neighbor()
   ncharge_mpi = ncharge_l
 #endif
   
-  n_index = 2 + inperi%n_mirror_index
+  !n_index = 2 + inperi%n_mirror_index
+  n_index = 3
+  ! Regardless i_periodic, always use the third argument in iele2mp and iexv2mp.
+
   n_index_tail = 1 + inperi%n_mirror_index
   
   ! check

@@ -90,6 +90,8 @@ subroutine neighbor_list_ele(jrep)
      endif
   endif
 
+  ! iele2mp(3,:,:) is used in case of non-periodic boundary
+  iele2mp(3,:,irep) = 1
   iele = 0
 
 #ifdef MPI_PAR2

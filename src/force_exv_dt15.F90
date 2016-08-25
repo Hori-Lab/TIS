@@ -3,11 +3,11 @@
 
 subroutine force_exv_dt15(irep, force_mp)
 
-  use const_maxsize
-  use const_physical
-  use const_index
+  use const_maxsize, only : PREC
+  use const_physical,only : DE_MAX, SDIM
+  use const_index,   only : CLASS, E_TYPE
   use var_setp,   only : indtrna15, inperi
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, &
+  use var_struct, only : nmp_all, pxyz_mp_rep, &
                          lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
   use mpiconst
 
@@ -53,6 +53,7 @@ subroutine force_exv_dt15(irep, force_mp)
 
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
+     imirror = iexv2mp(3, iexv, irep)
 
      if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
         dij  = indtrna15%exv_dist
@@ -60,12 +61,11 @@ subroutine force_exv_dt15(irep, force_mp)
         dij  = exv_radius_mp(imp1)  + exv_radius_mp(imp2)
      endif
 
-     if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     else
-        imirror = iexv2mp(3, iexv, irep)
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !else
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     end if
+     !end if
 
      dist = sqrt(dot_product(v21,v21))
 

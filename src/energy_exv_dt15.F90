@@ -19,7 +19,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   use const_physical
   use const_index
   use var_setp,    only : indtrna15, inperi
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
+  use var_struct,  only : imp2unit, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp
   use mpiconst
 
@@ -73,12 +73,12 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
         dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
      endif
      
-     if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     else
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !else
         imirror = iexv2mp(3, iexv, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     end if
+     !end if
      
      dist = sqrt(dot_product(v21,v21))
 

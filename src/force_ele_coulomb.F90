@@ -7,7 +7,7 @@ subroutine force_ele_coulomb(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,   only : inele, inperi
-  use var_struct, only : xyz_mp_rep, pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
+  use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use mpiconst
 
   implicit none
@@ -57,15 +57,16 @@ subroutine force_ele_coulomb(irep, force_mp)
 
 !$omp do private(imp1,imp2,v21,dist2,dist1,dv_dr,for,imirror)
   do iele=ksta, kend
+
      imp1 = iele2mp(1, iele, irep)
      imp2 = iele2mp(2, iele, irep)
+     imirror = iele2mp(3, iele, irep)
 
-     if(inperi%i_periodic == 0) then
-        v21(1:SDIM) = xyz_mp_rep(1:SDIM, imp2, irep) - xyz_mp_rep(1:SDIM, imp1, irep)
-     else
-        imirror = iele2mp(3, iele, irep)
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:SDIM) = xyz_mp_rep(1:SDIM, imp2, irep) - xyz_mp_rep(1:SDIM, imp1, irep)
+     !else
         v21(1:SDIM) = pxyz_mp_rep(1:SDIM, imp2, irep) - pxyz_mp_rep(1:SDIM, imp1, irep) + inperi%d_mirror(1:SDIM, imirror)
-     end if
+     !end if
 
      dist2 = dot_product(v21,v21)
      if(dist2 > cutoff2) cycle

@@ -93,7 +93,7 @@ subroutine time_write( lunout )
   implicit none
   integer, intent(in) :: lunout
 
-  character(len=32),parameter :: fmt1 = '(a16,f16.4,f10.2)'
+  character(len=32),parameter :: fmt1 = '(a17,f16.4,f10.2)'
   character(len=32),parameter :: fmt2 = '(a36)'
 
   real(8) :: comm, ope, mloop, trate
@@ -112,14 +112,14 @@ subroutine time_write( lunout )
   write(lunout, fmt=fmt2) '-----------------------------------'
   write(lunout, fmt=fmt2) '                     time         %'
   write(lunout, fmt=fmt2) '-----------------------------------'
-  write(lunout, fmt=fmt1) 'force          ', total_time(tm_force), trate*total_time(tm_force)
-  write(lunout, fmt=fmt1) '_force(comm)   ', total_time(tmc_force), trate*total_time(tmc_force)
-  write(lunout, fmt=fmt1) '_force(local)  ', total_time(tm_force_local), trate*total_time(tm_force_local)
-  write(lunout, fmt=fmt1) '_force(go)     ', total_time(tm_force_go), trate*total_time(tm_force_go)
-  write(lunout, fmt=fmt1) '_force(exv)    ', total_time(tm_force_exv), trate*total_time(tm_force_exv)
+  write(lunout, fmt=fmt1) 'force           ', total_time(tm_force), trate*total_time(tm_force)
+  write(lunout, fmt=fmt1) '_force(comm)    ', total_time(tmc_force), trate*total_time(tmc_force)
+  write(lunout, fmt=fmt1) '_force(local)   ', total_time(tm_force_local), trate*total_time(tm_force_local)
+  write(lunout, fmt=fmt1) '_force(go)      ', total_time(tm_force_go), trate*total_time(tm_force_go)
+  write(lunout, fmt=fmt1) '_force(exv)     ', total_time(tm_force_exv), trate*total_time(tm_force_exv)
 
   if (inmisc%force_flag(INTERACT%ELE)) then
-     write(lunout, fmt=fmt1) '_force(ele)    ', total_time(tm_force_ele), trate*total_time(tm_force_ele)
+     write(lunout, fmt=fmt1) '_force(ele)     ', total_time(tm_force_ele), trate*total_time(tm_force_ele)
   end if
 
 !  if (inmisc%force_flag(INTERACT%HP)) then
@@ -127,22 +127,22 @@ subroutine time_write( lunout )
 !  end if
 
   if (inmisc%class_flag(CLASS%RNA)) then
-     write(lunout, fmt=fmt1) '_force(dtrna_hb)  ', total_time(tm_force_dtrna_hb), trate*total_time(tm_force_dtrna_hb)
-     write(lunout, fmt=fmt1) '_force(dtrna_st)  ', total_time(tm_force_dtrna_st), trate*total_time(tm_force_dtrna_st)
+     write(lunout, fmt=fmt1) '_force(dtrna_hb)', total_time(tm_force_dtrna_hb), trate*total_time(tm_force_dtrna_hb)
+     write(lunout, fmt=fmt1) '_force(dtrna_st)', total_time(tm_force_dtrna_st), trate*total_time(tm_force_dtrna_st)
   end if
 !  if (inmisc%force_flag(INTERACT%SASA)) then
 !     write(lunout, fmt=fmt1) '_force(sasa)   ', total_time(tm_force_sasa), trate*total_time(tm_force_sasa)
 !  end if
 
-  write(lunout, fmt=fmt1) 'random         ', total_time(tm_random), trate*total_time(tm_random)
-  write(lunout, fmt=fmt1) '_random(comm)  ', total_time(tmc_random), trate*total_time(tmc_random)
+  write(lunout, fmt=fmt1) 'random          ', total_time(tm_random), trate*total_time(tm_random)
+  write(lunout, fmt=fmt1) '_random(comm)   ', total_time(tmc_random), trate*total_time(tmc_random)
 
-  write(lunout, fmt=fmt1) 'neighbor       ', total_time(tm_neighbor), trate*total_time(tm_neighbor)
-  write(lunout, fmt=fmt1) '_neighbor(comm)', total_time(tmc_neighbor), trate*total_time(tmc_neighbor)
-  write(lunout, fmt=fmt1) '_neighbor(exv) ', total_time(tm_neighbor_exv), trate*total_time(tm_neighbor_exv)
+  write(lunout, fmt=fmt1) 'neighbor        ', total_time(tm_neighbor), trate*total_time(tm_neighbor)
+  write(lunout, fmt=fmt1) '_neighbor(comm) ', total_time(tmc_neighbor), trate*total_time(tmc_neighbor)
+  write(lunout, fmt=fmt1) '_neighbor(exv)  ', total_time(tm_neighbor_exv), trate*total_time(tm_neighbor_exv)
 
   if (inmisc%force_flag(INTERACT%ELE)) then
-     write(lunout, fmt=fmt1) '_neighbor(ele) ', total_time(tm_neighbor_ele), trate*total_time(tm_neighbor_ele)
+     write(lunout, fmt=fmt1) '_neighbor(ele)  ', total_time(tm_neighbor_ele), trate*total_time(tm_neighbor_ele)
   end if
 
 !  if (inmisc%force_flag(INTERACT%HP)) then
@@ -150,58 +150,58 @@ subroutine time_write( lunout )
 !  end if
 
   if (inmisc%i_dtrna_model == 2015) then
-     write(lunout, fmt=fmt1) '_neighbor(hb)  ', total_time(tm_neighbor_hb), trate*total_time(tm_neighbor_hb)
+     write(lunout, fmt=fmt1) '_neighbor(hb)   ', total_time(tm_neighbor_hb), trate*total_time(tm_neighbor_hb)
   end if
 
 !  if (inmisc%force_flag(INTERACT%SASA)) then
 !     write(lunout, fmt=fmt1) '_neighbor(sasa)', total_time(tm_neighbor_sasa), trate*total_time(tm_neighbor_sasa)
 !  end if
 
-  write(lunout, fmt=fmt1) 'update         ', total_time(tm_update), trate*total_time(tm_update)
-  write(lunout, fmt=fmt1) 'copyxyz        ', total_time(tm_copyxyz), trate*total_time(tm_copyxyz)
+  write(lunout, fmt=fmt1) 'update          ', total_time(tm_update), trate*total_time(tm_update)
+  write(lunout, fmt=fmt1) 'copyxyz         ', total_time(tm_copyxyz), trate*total_time(tm_copyxyz)
 !  write(lunout, fmt=fmt1) 'velocity       ', total_time(tm_velocity), trate*total_time(tm_velocity)
 
-  write(lunout, fmt=fmt1) 'energy         ', total_time(tm_energy), trate*total_time(tm_energy)
-  write(lunout, fmt=fmt1) '_energy(comm)  ', total_time(tmc_energy), trate*total_time(tmc_energy)
+  write(lunout, fmt=fmt1) 'energy          ', total_time(tm_energy), trate*total_time(tm_energy)
+  write(lunout, fmt=fmt1) '_energy(comm)   ', total_time(tmc_energy), trate*total_time(tmc_energy)
 !  write(lunout, fmt=fmt1) '_energy(velo)  ', total_time(tm_energy_velo), trate*total_time(tm_energy_velo)
 !  write(lunout, fmt=fmt1) '_energy(bond)  ', total_time(tm_energy_bond), trate*total_time(tm_energy_bond)
 !  write(lunout, fmt=fmt1) '_energy(bangle)', total_time(tm_energy_bangle), trate*total_time(tm_energy_bangle)
-  write(lunout, fmt=fmt1) '_energy(local) ', total_time(tm_energy_local), trate*total_time(tm_energy_local)
-  write(lunout, fmt=fmt1) '_energy(nlclgo)', total_time(tm_energy_nlocal_go), trate*total_time(tm_energy_nlocal_go)
-  write(lunout, fmt=fmt1) '_energy(enm)   ', total_time(tm_energy_enm), trate*total_time(tm_energy_enm)
-  write(lunout, fmt=fmt1) '_energy(order) ', total_time(tm_energy_orderpara), trate*total_time(tm_energy_orderpara)
-  write(lunout, fmt=fmt1) '_energy(exv)   ', total_time(tm_energy_exv), trate*total_time(tm_energy_exv)
-  write(lunout, fmt=fmt1) '_energy(unit)  ', total_time(tm_energy_unit), trate*total_time(tm_energy_unit)
-  write(lunout, fmt=fmt1) '_energy(total) ', total_time(tm_energy_total), trate*total_time(tm_energy_total)
-  write(lunout, fmt=fmt1) '_energy(rep)   ', total_time(tm_energy_replica), trate*total_time(tm_energy_replica)
+  write(lunout, fmt=fmt1) '_energy(local)  ', total_time(tm_energy_local), trate*total_time(tm_energy_local)
+  write(lunout, fmt=fmt1) '_energy(nlclgo) ', total_time(tm_energy_nlocal_go), trate*total_time(tm_energy_nlocal_go)
+  write(lunout, fmt=fmt1) '_energy(enm)    ', total_time(tm_energy_enm), trate*total_time(tm_energy_enm)
+  write(lunout, fmt=fmt1) '_energy(order)  ', total_time(tm_energy_orderpara), trate*total_time(tm_energy_orderpara)
+  write(lunout, fmt=fmt1) '_energy(exv)    ', total_time(tm_energy_exv), trate*total_time(tm_energy_exv)
+  write(lunout, fmt=fmt1) '_energy(unit)   ', total_time(tm_energy_unit), trate*total_time(tm_energy_unit)
+  write(lunout, fmt=fmt1) '_energy(total)  ', total_time(tm_energy_total), trate*total_time(tm_energy_total)
+  write(lunout, fmt=fmt1) '_energy(rep)    ', total_time(tm_energy_replica), trate*total_time(tm_energy_replica)
 
   if (i_run_mode == RUN%REPLICA) then
-     write(lunout, fmt=fmt1) 'replica        ', total_time(tm_replica), trate*total_time(tm_replica)
-     write(lunout, fmt=fmt1) '_replica(comm) ', total_time(tmc_replica), trate*total_time(tmc_replica)
+     write(lunout, fmt=fmt1) 'replica         ', total_time(tm_replica), trate*total_time(tm_replica)
+     write(lunout, fmt=fmt1) '_replica(comm)  ', total_time(tmc_replica), trate*total_time(tmc_replica)
 
 !     write(lunout, fmt=fmt1) 'stepadjust     ', total_time(tm_step_adj), trate*total_time(tm_step_adj)
 !     write(lunout, fmt=fmt1) '_stepadj(comm) ', total_time(tmc_step_adj), trate*total_time(tmc_step_adj)
   end if
 
-  write(lunout, fmt=fmt1) 'output         ', total_time(tm_output), trate*total_time(tm_output)
-  write(lunout, fmt=fmt1) 'radiusg_rmsd   ', total_time(tm_radiusg_rmsd), trate*total_time(tm_radiusg_rmsd)
+  write(lunout, fmt=fmt1) 'output          ', total_time(tm_output), trate*total_time(tm_output)
+  write(lunout, fmt=fmt1) 'radiusg_rmsd    ', total_time(tm_radiusg_rmsd), trate*total_time(tm_radiusg_rmsd)
 
 !  if(inmmc%i_modified_muca == 1)then
 !     write(lunout, fmt=fmt1) 'muca           ', total_time(tm_muca), trate*total_time(tm_muca)
 !  end if
 
   if (inmisc%i_implig==1) then
-     write(lunout, fmt=fmt1) 'implig         ', total_time(tm_implig), trate*total_time(tm_implig)
+     write(lunout, fmt=fmt1) 'implig          ', total_time(tm_implig), trate*total_time(tm_implig)
   end if
-  write(lunout, fmt=fmt1) 'others         ', total_time(tm_others), trate*total_time(tm_others)
+  write(lunout, fmt=fmt1) 'others          ', total_time(tm_others), trate*total_time(tm_others)
 
   write(lunout, fmt=fmt2) '-----------------------------------'
-  write(lunout, fmt=fmt1) 'ope'          , ope, trate*ope
-  write(lunout, fmt=fmt1) 'comm'         , comm, trate*comm
-  write(lunout, fmt=fmt1) 'main_loop'    , mloop, trate*mloop
+  write(lunout, fmt=fmt1) 'ope             ', ope, trate*ope
+  write(lunout, fmt=fmt1) 'comm            ', comm, trate*comm
+  write(lunout, fmt=fmt1) 'main_loop       ', mloop, trate*mloop
   write(lunout, fmt=fmt2) '-----------------------------------'
-  write(lunout, fmt=fmt1) 'tinte'        , total_time(tm_tinte), trate*total_time(tm_tinte)
-  write(lunout, fmt=fmt1) 'tinte_post'   , total_time(tm_tinte_post), trate*total_time(tm_tinte_post)
+  write(lunout, fmt=fmt1) 'tinte           ', total_time(tm_tinte), trate*total_time(tm_tinte)
+  write(lunout, fmt=fmt1) 'tinte_post      ', total_time(tm_tinte_post), trate*total_time(tm_tinte_post)
   write(lunout, fmt=fmt2) '-----------------------------------'
 
 end subroutine time_write

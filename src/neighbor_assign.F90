@@ -576,6 +576,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
         iexv2mp(3, iexv, irep) = imirror
      end do
 
+  else
+     iexv2mp(3, 1:nexv, irep) = 1
+
   end if
 
 end subroutine neighbor_assign

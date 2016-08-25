@@ -25,7 +25,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
   use const_physical
   use const_index
   use var_setp,    only : indtrna13, inperi
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
+  use var_struct,  only : imp2unit, pxyz_mp_rep, lexv, iexv2mp
   use mpiconst
 
   implicit none
@@ -73,12 +73,12 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
      
-     if(inperi%i_periodic == 0) then
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     else
+     !if(inperi%i_periodic == 0) then
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !else
         imirror = iexv2mp(3, iexv, irep)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     end if
+     !end if
      
      dist2 = dot_product(v21,v21)
 
