@@ -40,8 +40,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: for(3,6,1:ndtrna_hb)
 
   real(PREC) :: rnd
-  real(PREC) :: beta, delta
-  integer :: i,jhb, i_swap, i_save, ihbsite
+  real(PREC) :: beta, p(20), pmin
+  integer :: imin
+  integer :: i, ihbsite
   integer :: ihb_delete
   integer :: ihbsite_delete
   integer :: nhbsite_excess
@@ -288,7 +289,8 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
   do while (nhbsite_excess > 0)
      ! Randomely choose one "ihbsite" that will be deleted
-     rnd = genrand_double1(mts(0,0))  ! mts(istream,tn))
+     rnd = genrand_double4(mts(0,0))  ! mts(istream,tn))
+     ! rnd = (0,1]
 
      ihbsite_delete = ihbsitelist_excess( ceiling( rnd*nhbsite_excess ) )
      !   1 <= ihbsite_delete <= nhbsite_excess
@@ -305,32 +307,61 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         endif
      enddo
 
-     ! Shuffle
-     do i = 1, nhb_seq
-        rnd = genrand_double1(mts(0,0))
-        i_swap = ceiling( rnd * nhb_seq )
 
-        i_save = hb_seq(i)
-        hb_seq(i) = hb_seq(i_swap)
-        hb_seq(i_swap) = i_save
-     enddo
+!     ! Shuffle
+!     do i = 1, nhb_seq
+!        rnd = genrand_double1(mts(0,0))
+!        i_swap = ceiling( rnd * nhb_seq )
+!
+!        i_save = hb_seq(i)
+!        hb_seq(i) = hb_seq(i_swap)
+!        hb_seq(i_swap) = i_save
+!     enddo
+!
+!     ! Randomely choose one "ihb" that will be deleted, depending on their energies
+!     ihb_delete = hb_seq(1)
+!     do i = 2, nhb_seq
+!        jhb = hb_seq(i)
+!        delta = hb_energy(jhb,irep) - hb_energy(ihb_delete,irep)
+!        if (delta > 0.0e0_PREC) then
+!           ihb_delete = jhb
+!        else
+!           !ratio = exp( delta * beta )
+!           !rnd = genrand_double1(mts(0,0))
+!           !if (rnd < ratio) then
+!           if ( genrand_double1(mts(0,0)) < exp(delta * beta) ) then
+!              ihb_delete = jhb
+!           endif
+!        endif
+!     enddo
 
      ! Randomely choose one "ihb" that will be deleted, depending on their energies
-     ihb_delete = hb_seq(1)
-     do i = 2, nhb_seq
-        jhb = hb_seq(i)
-        delta = hb_energy(jhb,irep) - hb_energy(ihb_delete, irep)
-        if (delta > 0.0e0_PREC) then
-           ihb_delete = jhb
-        else
-           !ratio = exp( delta * beta )
-           !rnd = genrand_double1(mts(0,0))
-           !if (rnd < ratio) then
-           if ( genrand_double1(mts(0,0)) < exp(delta * beta) ) then
-              ihb_delete = jhb
-           endif
+     p(:) = 0.0e0_PREC
+     pmin = 1.0e30_PREC  ! To find the minimum energy one
+     imin = 1
+     do i = 1, nhb_seq
+        ihb = hb_seq(i)
+        p(i) = exp(-beta*hb_energy(ihb,irep))
+        if (p(i) < pmin) then
+           pmin = p(i)
+           imin = i
         endif
      enddo
+
+     p(:) = p(:) / sum(p)
+
+     if (p(imin) < rnd) then  ! First, try one that has the minimum energy
+        ihb_delete = hb_seq(imin)
+     else                     ! If not good, try others until hit
+        ihb_delete = hb_seq(1)
+        do i = 2, nhb_seq
+           rnd = genrand_double1(mts(0,0))
+           if (p(i) < rnd) then
+              ihb_delete = hb_seq(i)
+              exit
+           endif
+        enddo
+     endif
 
      ! Delete it
      hb_status( ihb_delete, irep ) = .False.
