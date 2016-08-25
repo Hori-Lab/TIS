@@ -63,6 +63,7 @@ integer,parameter :: tm_neighbor_hb       =  54
 
 ! for energy
 !integer,parameter :: tm_energy_sasa       = 100  !sasa
+integer,parameter :: tm_energy_local       = 100
 !integer,parameter :: tm_energy_velo       = 101
 !integer,parameter :: tm_energy_bond       = 102
 !integer,parameter :: tm_energy_bangle     = 103
@@ -92,7 +93,7 @@ subroutine time_write( lunout )
   implicit none
   integer, intent(in) :: lunout
 
-  character(len=32),parameter :: fmt1 = '(a16,f10.4,f10.2)'
+  character(len=32),parameter :: fmt1 = '(a16,f16.4,f10.2)'
   character(len=32),parameter :: fmt2 = '(a36)'
 
   real(8) :: comm, ope, mloop, trate
@@ -165,6 +166,7 @@ subroutine time_write( lunout )
 !  write(lunout, fmt=fmt1) '_energy(velo)  ', total_time(tm_energy_velo), trate*total_time(tm_energy_velo)
 !  write(lunout, fmt=fmt1) '_energy(bond)  ', total_time(tm_energy_bond), trate*total_time(tm_energy_bond)
 !  write(lunout, fmt=fmt1) '_energy(bangle)', total_time(tm_energy_bangle), trate*total_time(tm_energy_bangle)
+  write(lunout, fmt=fmt1) '_energy(local) ', total_time(tm_energy_local), trate*total_time(tm_energy_local)
   write(lunout, fmt=fmt1) '_energy(nlclgo)', total_time(tm_energy_nlocal_go), trate*total_time(tm_energy_nlocal_go)
   write(lunout, fmt=fmt1) '_energy(enm)   ', total_time(tm_energy_enm), trate*total_time(tm_energy_enm)
   write(lunout, fmt=fmt1) '_energy(order) ', total_time(tm_energy_orderpara), trate*total_time(tm_energy_orderpara)

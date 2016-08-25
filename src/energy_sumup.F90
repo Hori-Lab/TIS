@@ -109,10 +109,18 @@ subroutine energy_sumup(irep,          &
 
   call energy_velo(velo_mp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
+!$omp master
+  TIME_S( tm_energy_local)
+!$omp end master
+
   call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+
+!$omp master
+  TIME_E( tm_energy_local)
+!$omp end master
 
 !  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
 !      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
@@ -165,12 +173,16 @@ subroutine energy_sumup(irep,          &
 !     call energy_enm(irep, now_con, energy_l(:,tn), energy_unit_l(:,:,:,tn))
 !     TIME_E( tm_energy_enm) 
 !  else
+!$omp master
      TIME_S( tm_energy_nlocal_go) 
+!$omp end master
      call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!$omp master
      TIME_E( tm_energy_nlocal_go) 
+!$omp end master
 !  end if
 
 !$omp barrier
@@ -196,7 +208,9 @@ subroutine energy_sumup(irep,          &
   TIME_E( tm_energy_orderpara)
 !$omp end master
 
+!$omp master
   TIME_S( tm_energy_exv) 
+!$omp end master
   if (inmisc%i_residuenergy_radii == 0) then
      call energy_exv_rep12 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      call energy_exv_rep6 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -206,9 +220,11 @@ subroutine energy_sumup(irep,          &
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then 
      call energy_exv_wca (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
+!$omp master
   TIME_E( tm_energy_exv) 
 
   TIME_S( tm_energy_ele)
+!$omp end master
   if (inmisc%force_flag(INTERACT%ELE)) then
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
@@ -232,7 +248,9 @@ subroutine energy_sumup(irep,          &
         call energy_ele_coulomb_brute(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
      endif
   endif
+!$omp master
   TIME_E( tm_energy_ele)
+!$omp end master
 
 !  if (inmisc%force_flag(INTERACT%HP)) then
 !     TIME_S( tm_energy_hp) 

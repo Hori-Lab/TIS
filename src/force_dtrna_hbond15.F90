@@ -6,9 +6,8 @@
 subroutine force_dtrna_hbond15(irep, force_mp) 
 
   use mt_stream
-  use const_maxsize
-  use const_physical
-  use const_index
+  use const_maxsize, only : PREC
+  use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI
   use var_setp,    only : mts, indtrna15
   use var_struct,  only : xyz_mp_rep, nmp_all, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
@@ -116,7 +115,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      for(:,:,ihb) = 0.0e0_PREC
 
      ex = - coef_dtrna_hb(1, ihb) * d**2
-     f_i(:) = 2.0e0_PREC * coef_dtrna_hb(1,ihb) * d * v12(:) / a12
+     f_i(:) = (2.0e0_PREC * coef_dtrna_hb(1,ihb) * d / a12) * v12(:)
      for(:,1,ihb) = + f_i(:)
      for(:,2,ihb) = - f_i(:)
 
