@@ -23,9 +23,9 @@ subroutine setpara( xyz_mp_init )
   integer :: ipdb
   integer :: lunout, lunpdb
   integer :: npdb, input_status
-  integer,    allocatable :: iatomnum(:)
-  real(PREC), allocatable :: xyz(:, :, :)
-  character(4), allocatable :: cname_ha(:, :)  ! aicg
+!  integer,    allocatable :: iatomnum(:)
+!  real(PREC), allocatable :: xyz(:, :, :)
+!  character(4), allocatable :: cname_ha(:, :)  ! aicg
 !  character(1), allocatable :: dssp(:)  ! aicg
   character(72) :: char72
   character(CARRAY_MSG_ERROR) :: error_message
@@ -140,16 +140,16 @@ subroutine setpara( xyz_mp_init )
 
   ! -----------------------------------------------------------------------
   ! reading sequence
-  allocate( iatomnum(MXMP)                       )
-  allocate( xyz(SDIM, MXATOM_MP, MXMP)      )
-  allocate( cname_ha(MXATOM_MP, MXMP)            )    ! aicg
+!  allocate( iatomnum(MXMP)                       )
+!  allocate( xyz(SDIM, MXATOM_MP, MXMP)      )
+!  allocate( cname_ha(MXATOM_MP, MXMP)            )    ! aicg
 !  allocate( dssp(MXMP)                           )    ! aicg
 
   iontype_mp(1:MXMP) = 0
   if(i_seq_read_style == SEQREAD%PDB) then
      ! read xyz coordinate from PDB file
-     call read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)   ! aicg
-     xyz_ref_mp(1:SDIM, 1:MXMP) = xyz_mp_init(1:SDIM, 1:MXMP)
+!     call read_xyz(xyz_mp_init, iatomnum, xyz, cname_ha)   ! aicg
+!     xyz_ref_mp(1:SDIM, 1:MXMP) = xyz_mp_init(1:SDIM, 1:MXMP)
 
   else if(i_seq_read_style == SEQREAD%INPUT_SEQ) then
      ! read sequence from sequence field in input file
@@ -295,10 +295,10 @@ subroutine setpara( xyz_mp_init )
   !-----------------------------------------------------------------------
 
 
-  deallocate(iatomnum)
-  deallocate(xyz)
+!  deallocate(iatomnum)
+!  deallocate(xyz)
 !  deallocate(dssp)  ! aicg
-  deallocate(cname_ha)  ! aicg
+!  deallocate(cname_ha)  ! aicg
 
 !  ! fluctuation matching
 !  if (i_run_mode == RUN%FMAT     ) call setp_fmat_para()

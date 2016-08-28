@@ -80,6 +80,8 @@ LIB =
 #CPP = -cpp -DTIME
 #CPP = -cpp -DTIME -DPREC_INTEL16 -D_DEBUG_REP
 #INC =
+#OPT = -fast
+#OPT = -openmp -fast
 #OPT = -O3 -openmp
 #OPT = -O2 -i-static -traceback -fpe0 -check all
 #OPT = -O3 -i-static -xHost -ipo -vec-threshold=70
