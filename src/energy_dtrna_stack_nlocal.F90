@@ -231,7 +231,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
            write(outfile%st(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
         endif
      enddo
-     write(outfile%st(irep),*) ''
+     write(outfile%st(irep),*)
   endif
 
 !$omp end master

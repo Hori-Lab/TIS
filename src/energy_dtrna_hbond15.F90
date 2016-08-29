@@ -413,7 +413,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
             write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
         endif
      enddo
-     write(outfile%hb(irep),*) ''
+     write(outfile%hb(irep),*)
   endif
 !$omp end master
 #ifdef MPI_PAR3
