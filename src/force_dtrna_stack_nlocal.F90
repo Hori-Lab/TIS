@@ -56,7 +56,7 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   kend = ndtrna_tst
 #endif
 
-  st_status_l(:) = .True.
+  st_status_l(1:ndtrna_st) = .True.
 
 !$omp do private(f_i,f_k,f_l,for,pre,ediv,m,n,dmm,dnn,&
 !$omp&           d,cos_theta,dih,ist_2nd,&
@@ -251,11 +251,12 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
 !$omp barrier
 
 !$omp critical
-  do ist = 1, ndtrna_tst
-     if (.not. st_status_l(ist)) then
-        st_status(ist,irep) = .False.
-     endif
-  enddo
+  !do ist = 1, ndtrna_tst
+  !   if (.not. st_status_l(ist)) then
+  !      st_status(ist,irep) = .False.
+  !   endif
+  !enddo
+  st_status(1:ndtrna_st,irep) = st_status(1:ndtrna_st,irep) .and.  st_status_l(1:ndtrna_st)
 !$omp end critical
 #endif
 
