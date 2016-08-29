@@ -39,13 +39,14 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   real(PREC) :: dnn, dmm
   real(PREC) :: pre
   real(PREC) :: for(3,6), f_i(3), f_k(3), f_l(3), ediv
-  logical    :: st_status_l(1:ndtrna_st)
+  logical    :: st_status_l(1:ndtrna_st)   
+  !!! These all local variables are private in each thread
+  !!! if this subroutine called in parallel region.
 #ifdef MPI_PAR3
   integer :: klen
 #endif
 
   ! --------------------------------------------------------------------
-
 #ifdef MPI_PAR3
   klen=(ndtrna_tst-1+npar_mpi)/npar_mpi
   ksta=1+klen*local_rank_mpi
@@ -244,7 +245,20 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
                      MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
 #else
-  st_status(:,irep) = st_status_l(:)
+!$omp master
+  st_status(:,irep) = .True.
+!$omp end master
+!$omp barrier
+
+!$omp critical
+  do ist = 1, ndtrna_tst
+     if (.not. st_status_l(ist)) then
+        st_status(ist,irep) = .False.
+     endif
+  enddo
+!$omp end critical
 #endif
+
+!$omp barrier
 
 end subroutine force_dtrna_stack_nlocal
