@@ -169,12 +169,11 @@ subroutine force_sumup(force_mp, &  ! [ o]
         call force_dtrna_stack(irep, force_mp_l(1,1,tn))
 !$omp master
   TIME_E( tm_force_dtrna_st ) 
-!  TIME_S( tm_force_dtrna_hb ) 
-!!$omp end master
-!        call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
-!!!!!!!!!! dtrna_hbond15 can not be called in paralell region
-!!$omp master
-!  TIME_E( tm_force_dtrna_hb ) 
+  TIME_S( tm_force_dtrna_hb ) 
+!$omp end master
+        call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
+!$omp master
+  TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
      endif
   endif
@@ -306,14 +305,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
   force_mp(1:SDIM,1:nmp_all) = force_mp_l(1:SDIM,1:nmp_all,0) 
 #endif
   TIME_E( tmc_force )
-
-  if (inmisc%class_flag(CLASS%RNA)) then
-     if (inmisc%i_dtrna_model == 2015) then
-        TIME_S( tm_force_dtrna_hb ) 
-        call force_dtrna_hbond15(irep, force_mp)
-        TIME_E( tm_force_dtrna_hb ) 
-     endif
-  endif
 
   if(inmisc%i_bridge == 1) then
      call force_bridge(irep, force_mp)

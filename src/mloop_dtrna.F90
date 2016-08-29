@@ -6,9 +6,9 @@ subroutine mloop_dtrna()
   use var_setp,    only : inmisc, indtrna15, inpara
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
-                          dtrna_hb_nat, dtrna_hb_neigh_dist2
+                          dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite
   use var_replica, only : n_replica_mpi
-  use var_simu,    only : hb_energy, hb_status, flg_hb_energy, st_status
+  use var_simu,    only : hb_energy, hb_status, flg_hb_energy, st_status, hbsite_excess
 
   implicit none
   integer :: ier = 0
@@ -42,7 +42,10 @@ subroutine mloop_dtrna()
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
      hb_status(:,:) = .False.
 
-   
+     allocate( hbsite_excess(1:nhbsite), stat=ier)
+     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+     hbsite_excess(:) = 0
+
      ! Assign idtrna_tst2st
      do itst = 1, ndtrna_tst
    

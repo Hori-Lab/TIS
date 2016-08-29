@@ -12,7 +12,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   use var_struct,  only : xyz_mp_rep, nmp_all, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
                           list_hb_at_hbsite, num_hb_at_hbsite, nhbneigh, ineigh2hb
-  use var_simu,    only : tempk, hb_energy, flg_hb_energy, hb_status
+  use var_simu,    only : tempk, hb_energy, flg_hb_energy, hb_status, hbsite_excess
   use mpiconst
 
   implicit none
@@ -21,6 +21,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC), intent(inout) :: force_mp(3,nmp_all)
 
   integer :: ihb, ineigh
+  integer :: i, ihbsite
   integer :: ksta, kend
   real(PREC) :: d, cos_theta, dih
   real(PREC) :: v12(3), v13(3), v53(3), v42(3), v46(3)
@@ -38,28 +39,23 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: pre
   real(PREC) :: f_i(3), f_k(3), f_l(3), ex
   real(PREC) :: for(3,6,1:ndtrna_hb)
-
-  real(PREC) :: rnd
-  real(PREC) :: beta, p(20), pmin
-  integer :: imin
-  integer :: i, ihbsite
-  integer :: ihb_delete
-  integer :: ihbsite_delete
-  integer :: nhbsite_excess
-  integer :: hbsite_excess(1:nhbsite)
-  integer :: hbsite_excess_l(1:nhbsite)
-  integer :: ihbsitelist_excess(1:nhbsite)
-  integer :: nhb_seq
-  integer :: hb_seq(1:ndtrna_hb)
-  logical :: hb_status_l(1:ndtrna_hb)
+  integer    :: hbsite_excess_l(1:nhbsite)
   real(PREC) :: hb_energy_l(1:ndtrna_hb)
+  logical    :: hb_status_l(1:ndtrna_hb)
 #ifdef MPI_PAR3
   integer :: klen
 #endif 
+  real(PREC) :: rnd
+  real(PREC) :: beta, p(20), pmin
+  integer :: imin
+  integer :: ihb_delete
+  integer :: ihbsite_delete
+  integer :: nhbsite_excess
+  integer :: ihbsitelist_excess(1:nhbsite)
+  integer :: nhb_seq
+  integer :: hb_seq(1:ndtrna_hb)
 
   ! --------------------------------------------------------------------
-
-  beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL)
 
   !hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
   hbsite_excess_l(1:nhbsite) = 0
@@ -75,7 +71,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   kend = nhbneigh(irep)
 #endif
 
-!$omp parallel do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
+!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
 !$omp&           d,cos_theta,dih,&
 !$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
 !$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
@@ -99,14 +95,15 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,1,ihb)
            if (ihbsite > 0) then
-!$omp atomic
+!! hbsite_excess_l exists in each thread individually so does not have to be atomic
+!!!!$omp atomic   (commented out)  
               hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
            endif
         enddo
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,2,ihb)
            if (ihbsite > 0) then
-!$omp atomic
+!!!!$omp atomic   (commented out)
               hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
            endif
         enddo
@@ -259,8 +256,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
      for(:,:,ihb) = for(:,:,ihb) * hb_energy_l(ihb)
   end do
-!$omp end parallel do
-
+!$omp end do
 
 #ifdef MPI_PAR3
   call mpi_allreduce(hb_energy_l, hb_energy(1,irep), ndtrna_hb, &
@@ -270,11 +266,29 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   call mpi_allreduce(hbsite_excess_l, hbsite_excess, nhbsite, &
                      MPI_INTEGER, MPI_SUM, mpi_comm_local, ierr)
 #else
-  hb_energy(:,irep) = hb_energy_l(:)
-  hb_status(:,irep) = hb_status_l(:)
-  hbsite_excess(:)  = hbsite_excess_l(:)
+!$omp master
+  hb_energy(:,irep) = 0.0
+  hb_status(:,irep) = .False.
+  hbsite_excess(:) = 0
+!$omp end master
+
+! Wait until the master initializes the arrays
+!$omp barrier
+
+!$omp critical 
+  hb_energy(:,irep) = hb_energy(:,irep) + hb_energy_l(:)
+  do ihb = 1, ndtrna_hb
+     if (hb_status_l(ihb)) then
+        hb_status(ihb,irep) = .True.
+     endif
+  enddo
+  hbsite_excess(:) = hbsite_excess(:) + hbsite_excess_l(:)
+!$omp end critical
 #endif
 
+!$omp barrier
+
+!$omp master
   hbsite_excess(:)  = hbsite_excess(:) - nvalence_hbsite(:)
 
   nhbsite_excess = 0
@@ -286,6 +300,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      endif
   enddo
 
+  beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL)
 
   do while (nhbsite_excess > 0)
      ! Randomely choose one "ihbsite" that will be deleted
@@ -396,8 +411,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      enddo
 
   enddo
+!$omp end master
 
+! Wait until the master finishes deletions
+!$omp barrier
 
+!$omp do private(ihb)
   do ineigh=ksta,kend
 
      ihb = ineigh2hb(ineigh, irep)
@@ -413,7 +432,10 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      force_mp(1:3,idtrna_hb2mp(5,ihb)) = force_mp(1:3,idtrna_hb2mp(5,ihb)) + for(1:3,5,ihb)
      force_mp(1:3,idtrna_hb2mp(6,ihb)) = force_mp(1:3,idtrna_hb2mp(6,ihb)) + for(1:3,6,ihb)
   end do
+!$omp end do nowait
 
+!$omp master
   flg_hb_energy = .True.
+!$omp end master
 
 end subroutine force_dtrna_hbond15

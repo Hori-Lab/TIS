@@ -69,6 +69,7 @@ module var_simu
   real(PREC), allocatable, save :: sasa(:)          ! (E_TYPE%MAX, replica)
 
   ! DTRNA15
+  integer, allocatable, save  :: hbsite_excess(:)     ! (1:nhbsite)  ! used only in force_dtrna_hbond15
   real(PREC), allocatable, save :: hb_energy(:,:)     ! (1:ndtrna_hb, REPLICA)
   logical, allocatable, save :: hb_status(:,:)        ! (1:ndtrna_hb, REPLICA)
   logical, save :: flg_hb_energy
