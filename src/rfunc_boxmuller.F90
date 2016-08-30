@@ -11,9 +11,8 @@ function rfunc_boxmuller(istream, tn)
   use var_setp, only : insimu, mts
   use var_replica, only : n_replica_mpi
   use mt_stream
-#ifdef MPI_PAR
-  use mpiconst
-#endif
+  use mpiconst, only : nthreads
+
   implicit none
 
   integer, intent(in) :: istream, tn
@@ -30,8 +29,8 @@ function rfunc_boxmuller(istream, tn)
      iniflag = .false.
 
      if(insimu%i_rand_type == 0) then
-        allocate(istore(0:n_replica_mpi, 0:0))
-        allocate(rstore(0:n_replica_mpi, 0:0))
+        allocate(istore(0:n_replica_mpi, 0:nthreads-1))
+        allocate(rstore(0:n_replica_mpi, 0:nthreads-1))
      else
 #ifdef MPI_PAR
         allocate(istore(0:n_replica_mpi*npar_mpi, 0:nthreads-1))

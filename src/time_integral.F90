@@ -24,14 +24,14 @@ subroutine time_integral(flg_step_each_replica)
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, &
                           accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
-!                          e_md, fac_mmc, em_mid, em_depth, em_sigma, &
-!                          energy_muca, energy_unit_muca, &
                           rlan_const, &
                           ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor, dxyz_mp
-  use time, only : tm_random, tmc_random, &!, tm_copyxyz, tm_muca, &
+#ifdef TIME
+  use time, only : tm_random, tmc_random, &
                    tm_neighbor, tm_update, tm_force, &
                    time_s, time_e
+#endif
   use mpiconst
 
   implicit none
@@ -106,7 +106,6 @@ subroutine time_integral(flg_step_each_replica)
   if (i_simulate_type == SIM%LANGEVIN .OR. &
       i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
       i_simulate_type == SIM%PS_BROWNIAN ) then
-     !call get_random_number(r_boxmuller)
      call get_random_number()
   end if
   
@@ -421,13 +420,10 @@ subroutine time_integral(flg_step_each_replica)
 contains
 
   subroutine get_random_number()
-  !subroutine get_random_number(r_boxmuller)
 
     use mt_stream
     use mt_kind_defs
-#ifdef MPI_PAR
     use var_setp, only : mts
-#endif
     implicit none
 
     ! --------------------------------------------------------------------
@@ -439,14 +435,14 @@ contains
     
     ! --------------------------------------------------------------------
     integer :: irep, idimn, istream
-#ifdef MPI_PAR
     real(PREC) :: vx, vy, r2, rf
     integer :: klen, ksta, kend, tn
     real(PREC) :: r_boxmuller_l(SDIM, nmp_real, n_replica_mpi)
 
-    integer(INT32) :: umask,lmask,n,m,is
+#ifdef SUB_COPY
     integer(INT32) :: k,nm,n1
     real(REAL64)   :: a,b,rx,ry
+    integer(INT32) :: umask,lmask,n,m,is
     integer(INT32) :: ia,ib
 #endif
     
@@ -463,8 +459,6 @@ contains
        end do
        
     else
-       
-#ifdef MPI_PAR
 
        r_boxmuller_l(:, :, :) = 0.0
 
@@ -480,16 +474,21 @@ contains
 !$omp parallel private(tn,istream)
           tn = 0
 !$ tn = omp_get_thread_num()
+          istream = irep
+#ifdef MPI_PAR
           if(insimu%i_rand_type == 1) then
              istream = irep + local_rank_mpi*n_replica_mpi
-          else
-             istream = irep
           end if
+#endif
+
+#ifndef SUB_COPY
+!$omp do private(idimn,vx,vy,r2,rf)
+#else               
 !$omp do private(idimn,vx,vy,r2,rf,&
 !$omp&           n,m,lmask,umask,nm,n1,k,is,&
 !$omp&           ia,ib,a,b,rx,ry)
+#endif
           do imp = ksta, kend, 2
-!          do imp = ksta, kend
              do idimn = 1, 3
                 do
 #ifndef SUB_COPY
@@ -584,12 +583,12 @@ contains
                 end if
              end do
           end do
-
 !$omp end do
 !$omp end parallel
        end do
 
        TIME_S( tmc_random)
+#ifdef MPI_PAR
        if(insimu%i_rand_type == 1) then
           call mpi_allreduce(r_boxmuller_l, r_boxmuller, &
                SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
@@ -597,18 +596,11 @@ contains
        else
           r_boxmuller(:,:,:) = r_boxmuller_l(:,:,:)
        end if
+#else
+       r_boxmuller(:,:,:) = r_boxmuller_l(:,:,:)
+#endif
        TIME_E( tmc_random)
 
-#else
-       do irep = 1, n_replica_mpi
-          istream = irep
-          do imp = 1, nmp_real
-             do idimn = 1, SDIM
-                r_boxmuller(idimn, imp, irep) = rfunc_boxmuller(istream, 0)
-             end do
-          end do
-       end do
-#endif
     end if
     TIME_E( tm_random)
 

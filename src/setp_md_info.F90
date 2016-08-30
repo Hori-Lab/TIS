@@ -8,14 +8,10 @@ subroutine setp_md_info()
   use const_index
   use const_physical
   use var_io, only : infile, outfile, flg_rst, i_simulate_type
-  use var_setp, only: insimu, inmisc, irand, mts
-  use var_replica, only : exchange_step, flg_rep,&
-                          n_replica_mpi, irep2grep
-  use mt_stream
-  use mt_kind_defs
+  use var_setp, only: insimu, inmisc, irand
+  use var_replica, only : exchange_step, flg_rep
 #ifdef MPI_PAR
   use mpiconst
-  use var_replica, only: n_replica_all
 #endif
 
   implicit none
@@ -32,7 +28,6 @@ subroutine setp_md_info()
   integer       :: icol, isim
   integer       :: luninp, lunout
   integer       :: iline, nlines, iequa, nequat
-  integer       :: irep, grep, istream
   integer       :: clock
 
   character(4)  :: kfind
@@ -41,11 +36,6 @@ subroutine setp_md_info()
   character(CARRAY_MXCOLM)  :: csides(2, CARRAY_MXEQUA)
   character(CARRAY_MXCOLM) :: ctmp02
   character(CARRAY_MSG_ERROR) :: error_message
-
-  integer(INT32) :: idstream
-#ifdef MPI_PAR
-  integer :: tn
-#endif
 
   ! ---------------------------------------------------------------------
   luninp = infile%inp
@@ -609,64 +599,5 @@ subroutine setp_md_info()
   call MPI_Bcast (inmmc, inmmc%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (irand,      1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 #endif
-
-!  call sgrnd(irand)
-
-  if(insimu%i_rand_type == 0) then
-     allocate(mts(0:n_replica_mpi, 0:0))
-  else
-#ifdef MPI_PAR
-     allocate(mts(0:n_replica_mpi*npar_mpi, 0:nthreads-1))
-#else
-     allocate(mts(0:n_replica_mpi, 0:0))
-#endif
-  end if
-
-
-  call set_mt19937
-  call new(mts(0, 0))
-  call init(mts(0, 0),irand)  ! init by array
-  
-  do irep = 1, n_replica_mpi
-
-     if(insimu%i_rand_type == 0) then
-        istream = irep
-        grep = irep2grep(irep)
-        idstream = grep
-        if(idstream /= 0) then
-           call create_stream(mts(0, 0), mts(istream, 0), idstream)
-        end if
-     else
-#ifdef MPI_PAR
-!$omp parallel private(tn, grep, istream, idstream)
-        tn = 0
-!$  tn = omp_get_thread_num()
-        grep = irep2grep(irep)
-        istream = irep
-        idstream = (grep - 1)*nthreads + tn + 1
-        if(idstream /= 0) then
-           call create_stream(mts(0, 0), mts(istream, tn), idstream)
-        end if
-
-        if(insimu%i_rand_type == 1) then
-           istream = irep + local_rank_mpi*n_replica_mpi
-           idstream = ((grep - 1) + local_rank_mpi*n_replica_all)*nthreads + tn + 1
-           if(idstream /= 0) then
-              call create_stream(mts(0, 0), mts(istream, tn), idstream)
-           end if
-        end if
-
-!$omp end parallel
-#else
-        istream = irep
-        grep = irep2grep(irep)
-        idstream = grep
-        if(idstream /= 0) then
-           call create_stream(mts(0, 0), mts(istream, 0), idstream)
-        end if
-#endif
-     end if
-     
-  end do
 
 end subroutine setp_md_info

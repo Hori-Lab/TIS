@@ -114,6 +114,11 @@ subroutine setpara( xyz_mp_init )
 #endif
   call setp_md_info()
 
+  ! -----------------------------------------------------------------------
+  ! Set up the random number generators  
+  ! (Must be after setp_md_info since the seed is set/read there.)
+  call setp_random()
+
   ! Widom method
   if (i_run_mode == RUN%WIDOM    ) call setp_widom_para()
 

@@ -1,6 +1,6 @@
 .SUFFIXES: .F90 .o
-TARGET = ../md
-#TARGET = ../md.omp
+#TARGET = ../md
+TARGET = ../md.omp
 
 # .. utilites
 UTIL1 = ../crd2pdb
@@ -64,11 +64,11 @@ VERSION += -DVERDATE="\"$(DATESEQ)\""
 #------ gfortran
 FC = gfortran
 FC_UTIL = gfortran
-CPP = -cpp -DTIME 
+CPP = -cpp -DTIME -DSUB_COPY
 #CPP = -cpp -DTIME -D_DEBUG
 INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
@@ -202,7 +202,7 @@ FOBJ1 = \
 	setp_mapara.o setp_mapara_pro.o\
 	setp_mapara_ligand.o setp_mapara_ele.o\
 	setp_redef_para.o setp_mapara_rna.o\
-	setp_md_info.o setp_group.o setp_minimize_para.o\
+	setp_md_info.o setp_random.o setp_group.o setp_minimize_para.o\
 	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
 	setp_del_int.o setp_periodic.o\
 	setp_energy_unit.o setp_bridge_para.o setp_pulling_para.o\
