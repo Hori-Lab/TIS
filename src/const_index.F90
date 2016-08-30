@@ -103,25 +103,25 @@ module const_index
      integer :: GO            !<  6: Go
      integer :: EXV12         !<  7: Excluded volume
      integer :: ELE           !<  8: Electrostatic (Debye Huckel)
-     integer :: BOX           !<  9: Box baundary
+     !integer :: BOX           !<  9: Box baundary
      integer :: BRIDGE        !< 10: Bridge constraining
      integer :: PULLING       !< 11: Pulling
      integer :: ANCHOR        !< 12: Anchor constraining
      integer :: DIHE_HARMONIC !< 13: Harmonic dihedral angle
-     integer :: HPENE         !< 14: Hydrophobic interaction
-     integer :: IMPLIG        !< 15: Implicit ligand
-     integer :: MORSE         !< 16: Morse-type Go
-     integer :: STACK_RNA     !< 17: RNA base stacking (distance)
-     integer :: PAIR_RNA      !< 18: RNA base pairing
-     integer :: LJ_ION        !< 19: Ion LJ
+     !integer :: HPENE         !< 14: Hydrophobic interaction
+     !integer :: IMPLIG        !< 15: Implicit ligand
+     !integer :: MORSE         !< 16: Morse-type Go
+     !integer :: STACK_RNA     !< 17: RNA base stacking (distance)
+     !integer :: PAIR_RNA      !< 18: RNA base pairing
+     !integer :: LJ_ION        !< 19: Ion LJ
      integer :: REST1D        !< 20: 1D-restraint
-     integer :: CAP           !< 21: Cap boundary
+     !integer :: CAP           !< 21: Cap boundary
      integer :: WINDOW        !< 22: Window potential
-     integer :: SASA          !< 23: SASA potential !sasa
+     !integer :: SASA          !< 23: SASA potential !sasa
      integer :: EXV_WCA       !< 24: Excluded volume with Weeks-Chandler-Andersen potential
      integer :: STACK_DTRNA   !< 25: Denesyuk-Thirumalai RNA base stacking
      integer :: HBOND_DTRNA   !< 26: Denesyuk-Thirumalai RNA hydrogen bond
-     integer :: CYLINDER      !< 27: Cylindrical boundary
+     !integer :: CYLINDER      !< 27: Cylindrical boundary
      integer :: EXV_DT15      !< 28: excluded volume of DTRNA2015 model
      integer :: TSTACK_DTRNA  !< 29: Denesyuk-Thirumalai RNA base stacking
      integer :: THBOND_DTRNA  !< 30: Denesyuk-Thirumalai RNA hydrogen bond
@@ -129,25 +129,27 @@ module const_index
      integer :: MAX           !< Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
-     = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
-                   21,22,23,24,25,26,27,28,29,30,31,31)
+     != energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
+     !              21,22,23,24,25,26,27,28,29,30,31,31)
+     = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,21)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
      integer :: L_GO        !<  2: local Go interaction
-     integer :: L_AICG1     !<  3: local AICG1
-     integer :: L_AICG2     !<  4: local AICG2
-     integer :: L_FLP       !<  5: flexible local potential
+     !integer :: L_AICG1     !<  3: local AICG1
+     !integer :: L_AICG2     !<  4: local AICG2
+     !integer :: L_FLP       !<  5: flexible local potential
      integer :: L_BOND      !<  6: bond potential only
-     integer :: L_ENM       !<  7: local elastic network model(=NOTHING)
+     !integer :: L_ENM       !<  7: local elastic network model(=NOTHING)
      integer :: L_RIGID_LIG !<  8: ligand rigid interaction (not yet released)
-     integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
+     !integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
      integer :: L_DTRNA     !< 10: Denesyuk-Thirumalai RNA model
      integer :: L_FENE      !< 11: FENE
      integer :: MAX         !< Maximum value
   endtype local_interaction_type
   type(local_interaction_type), parameter :: LINTERACT  & 
-     = local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
+     != local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
+     = local_interaction_type(1,2,3,4,5,6,6)
 
 
   type interaction_type
@@ -156,13 +158,13 @@ module const_index
      integer :: EXV12     !<  3: (c/r)**12 repulsive interaction
      integer :: EXV6      !<  4: (c/r)**6 repulsive interaction
      integer :: ELE       !<  5: electrostatic interaction (Debye-Huckel form)
-     integer :: ENM       !<  6: elastic network model (protein)
-     integer :: HP        !<  7: hydrophobic interaction
-     integer :: MORSE     !<  8: Morse Go potential (not yet released)
-     integer :: PAIR_RNA  !<  9: RNA-RNA base pair (not yet released)
-     integer :: AICG1     !< 10: AICG1(protein)
-     integer :: AICG2     !< 11: AICG2(protein)
-     integer :: SASA      !< 12: SASA(protein) !sasa
+     !integer :: ENM       !<  6: elastic network model (protein)
+     !integer :: HP        !<  7: hydrophobic interaction
+     !integer :: MORSE     !<  8: Morse Go potential (not yet released)
+     !integer :: PAIR_RNA  !<  9: RNA-RNA base pair (not yet released)
+     !integer :: AICG1     !< 10: AICG1(protein)
+     !integer :: AICG2     !< 11: AICG2(protein)
+     !integer :: SASA      !< 12: SASA(protein) !sasa
      integer :: DTRNA     !< 13: Denesyuk-Thirumalai RNA model
      integer :: EXV_WCA   !< 14: Excluded volume with Weeks-Chandler-Andersen potential
      integer :: EXV_DT15  !< 15: Excluded volume with Weeks-Chandler-Andersen potential
@@ -170,7 +172,8 @@ module const_index
      integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
+     != interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
+     = interaction_type(1,2,3,4,5,6,7,8,9,9)
 
 
   type error_handling
@@ -333,35 +336,35 @@ module const_index
   type(con_type), parameter :: CONTYPE = con_type(0,1,2,3,4,5,6,7,8,9,10,11,12)
 
   
-  !#######################################
-  ! implicit ligand
-  !#######################################
-  type implig_ene_function_type
-     integer :: FUNC_LJ12_10     !< 0: LJ12-10 type 
-     integer :: FUNC_GAUSSIAN    !< 1: Gaussian type
-  endtype implig_ene_function_type
-  type(implig_ene_function_type), parameter :: IMPLIGENE_FUNCTYPE = implig_ene_function_type(0,1)
-  ! this constant is used for energy_implig, force_implig.
-
-
-  type implig_energy_type
-     integer :: FOR_MC       !< 0:   
-     integer :: FOR_NON_MC   !< 1:
-  endtype implig_energy_type
-  type(implig_energy_type), parameter :: IMPLIGENERGY_TYPE = implig_energy_type(0,1)
-  ! this constant is used especially for energy_implig.
-  ! energy FOR_NON_MC is calculated based on not only structure but also state of ligand.
-  ! energy FOR_NON_MC is for output (ts_file).
-  ! energy FOR_MC is calculated based on structre.
-  ! energy FOR_MC is for Monte Calro (simu_mc_implig). 
-  
-
-  type implig_bound_state
-     integer :: UN_BOUND  !< 0:
-     integer :: BOUND     !< 1:  
-  endtype implig_bound_state
-  type(implig_bound_state), parameter :: IMPLIGBOUND_STATE = implig_bound_state(0,1)
-  ! this constant is used for energy_implig, force_implig.
+!  !#######################################
+!  ! implicit ligand
+!  !#######################################
+!  type implig_ene_function_type
+!     integer :: FUNC_LJ12_10     !< 0: LJ12-10 type 
+!     integer :: FUNC_GAUSSIAN    !< 1: Gaussian type
+!  endtype implig_ene_function_type
+!  type(implig_ene_function_type), parameter :: IMPLIGENE_FUNCTYPE = implig_ene_function_type(0,1)
+!  ! this constant is used for energy_implig, force_implig.
+!
+!
+!  type implig_energy_type
+!     integer :: FOR_MC       !< 0:   
+!     integer :: FOR_NON_MC   !< 1:
+!  endtype implig_energy_type
+!  type(implig_energy_type), parameter :: IMPLIGENERGY_TYPE = implig_energy_type(0,1)
+!  ! this constant is used especially for energy_implig.
+!  ! energy FOR_NON_MC is calculated based on not only structure but also state of ligand.
+!  ! energy FOR_NON_MC is for output (ts_file).
+!  ! energy FOR_MC is calculated based on structre.
+!  ! energy FOR_MC is for Monte Calro (simu_mc_implig). 
+!  
+!
+!  type implig_bound_state
+!     integer :: UN_BOUND  !< 0:
+!     integer :: BOUND     !< 1:  
+!  endtype implig_bound_state
+!  type(implig_bound_state), parameter :: IMPLIGBOUND_STATE = implig_bound_state(0,1)
+!  ! this constant is used for energy_implig, force_implig.
   
 
   !#######################################
@@ -408,21 +411,21 @@ module const_index
   endtype potential_type
   type(potential_type), parameter :: POTTYPE = potential_type(1,2,2)
 
-  type multiscale
-     integer :: HOMO  !< 0: conventional homogeneous Go; (Default)
-     integer :: AUTO  !< 1: multiscale Go; parameters generated by CafeMol
-     integer :: USER  !< 2: multiscale Go; parameters given by users
-  endtype multiscale
-  type(multiscale), parameter :: AICG = multiscale(0,1,2)
+!  type multiscale
+!     integer :: HOMO  !< 0: conventional homogeneous Go; (Default)
+!     integer :: AUTO  !< 1: multiscale Go; parameters generated by CafeMol
+!     integer :: USER  !< 2: multiscale Go; parameters given by users
+!  endtype multiscale
+!  type(multiscale), parameter :: AICG = multiscale(0,1,2)
 
-  type fluctuation_matching_type
-     integer :: VOID    !< 0:
-     integer :: HOMO    !< 1:
-     integer :: HETERO  !< 2:
-     integer :: MAX
-  endtype fluctuation_matching_type
-  type(fluctuation_matching_type), parameter :: FMATTYPE &
-                                                = fluctuation_matching_type(0,1,2,2)
+!  type fluctuation_matching_type
+!     integer :: VOID    !< 0:
+!     integer :: HOMO    !< 1:
+!     integer :: HETERO  !< 2:
+!     integer :: MAX
+!  endtype fluctuation_matching_type
+!  type(fluctuation_matching_type), parameter :: FMATTYPE &
+!                                                = fluctuation_matching_type(0,1,2,2)
 
   type rst_block
      integer :: STEP

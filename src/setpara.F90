@@ -233,9 +233,9 @@ subroutine setpara( xyz_mp_init )
 !  ! cylinder
 !  if(inmisc%i_cylinder == 1) call setp_cylinder_para()
   
-  ! -----------------------------------------------------------------------
-  ! parameter setting for elastic network model (enm)
-  if (inmisc%force_flag(INTERACT%ENM))  call setp_para_enm()
+!  ! -----------------------------------------------------------------------
+!  ! parameter setting for elastic network model (enm)
+!  if (inmisc%force_flag(INTERACT%ENM))  call setp_para_enm()
  
 !  ! -----------------------------------------------------------------------
 !  ! parameter setting for multiple-Go model (mgo)

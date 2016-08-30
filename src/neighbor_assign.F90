@@ -87,6 +87,10 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: nexv_l
 #endif
 
+#ifdef _DEBUG
+  write(6,*) '####### start neighbor_assign'
+#endif
+
   ! -------------------------------------------------------------------
   isep_nlocal  = inpro%n_sep_nlocal
 
@@ -580,5 +584,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      iexv2mp(3, 1:nexv, irep) = 1
 
   end if
+
+#ifdef _DEBUG
+  write(6,*) '####### start neighbor_assign'
+#endif
 
 end subroutine neighbor_assign

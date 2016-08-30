@@ -24,7 +24,6 @@ subroutine energy_sumup(irep,          &
   use const_index
   use var_setp,    only : inmisc, inele !,inflp
   use var_struct,  only : nunit_all, ncon, nLJ !, nmorse, nrna_bp
-!  use var_mgo,     only : inmgo
   use time
   use mpiconst
 

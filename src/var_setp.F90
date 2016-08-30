@@ -391,18 +391,18 @@ module var_setp
      ! redefine_parameter
      integer    :: i_redef_para
 
-     ! box interaction
-     integer    :: i_in_box
-     real(PREC) :: xbox
-     real(PREC) :: ybox
-     real(PREC) :: zbox
-     real(PREC) :: boxsigma
+!     ! box interaction
+!     integer    :: i_in_box
+!     real(PREC) :: xbox
+!     real(PREC) :: ybox
+!     real(PREC) :: zbox
+!     real(PREC) :: boxsigma
 
-     ! cap interaction
-     integer    :: i_in_cap
-     real(PREC) :: rcap
-     real(PREC) :: kcap
-     real(PREC) :: center_cap(3)
+!     ! cap interaction
+!     integer    :: i_in_cap
+!     real(PREC) :: rcap
+!     real(PREC) :: kcap
+!     real(PREC) :: center_cap(3)
 
      ! delete interaction
      integer    :: i_del_int
@@ -500,8 +500,8 @@ module var_setp
      ! fix
      integer    :: i_fix
 
-     ! implicit_ligand
-     integer    :: i_implig
+!     ! implicit_ligand
+!     integer    :: i_implig
 
      ! Window exchange simulation
      integer    :: i_window
@@ -510,12 +510,12 @@ module var_setp
      ! Tensor type of hydrodynamic interaction in Brownian dynamics
      integer    :: i_hydro_tensor
 
-     ! cylinder
-     integer    :: i_cylinder
-     real(PREC) :: cylinder_bgn
-     real(PREC) :: cylinder_end
-     real(PREC) :: cylinder_radi
-     real(PREC) :: cylinder_coef
+!     ! cylinder
+!     integer    :: i_cylinder
+!     real(PREC) :: cylinder_bgn
+!     real(PREC) :: cylinder_end
+!     real(PREC) :: cylinder_radi
+!     real(PREC) :: cylinder_coef
      
      integer    :: sz
   end type input_miscellaneous
@@ -680,13 +680,13 @@ module var_setp
   endtype periodic_boundary
   type(periodic_boundary), save :: inperi
 
-  ! elastic network
-  type input_enmparameter
-     real(PREC) :: cenm !< constant coefficient of the energy function for elastic network model
-     real(PREC) :: dfcontact_enm !< cutoff distance to define the native contact for elastic network model
-     integer    :: i_enm !< flag variable for elastic network model
-     integer    :: sz !< size of the structure
-  end type input_enmparameter
+!  ! elastic network
+!  type input_enmparameter
+!     real(PREC) :: cenm !< constant coefficient of the energy function for elastic network model
+!     real(PREC) :: dfcontact_enm !< cutoff distance to define the native contact for elastic network model
+!     integer    :: i_enm !< flag variable for elastic network model
+!     integer    :: sz !< size of the structure
+!  end type input_enmparameter
+!  type(input_enmparameter), save :: inenm
 
-  type(input_enmparameter), save :: inenm
 end module var_setp

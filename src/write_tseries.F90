@@ -162,9 +162,9 @@ subroutine write_tseries(ibefore_time, istep, &
            write (lunout, _FMT_TS_ELECT_T_,   ADVANCE = "NO") 'elect'
         end if
    
-        if(inmisc%force_flag(INTERACT%HP)) then
-           write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
-        end if
+!        if(inmisc%force_flag(INTERACT%HP)) then
+!           write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
+!        end if
    
 !        if(inmisc%i_in_box == 1) then
 !           write (lunout, _FMT_TS_BOX_T_,     ADVANCE = "NO") 'box'
@@ -423,9 +423,11 @@ contains
 !    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
     erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
     if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
-    estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
+    !estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
+    estack_rna = tenergy(E_TYPE%STACK_DTRNA)
     if (estack_rna > HIGH_ENERGY_JUDGE) estack_rna = HIGH_ENERGY_OUT
-    ehbond_rna = tenergy(E_TYPE%PAIR_RNA)  + tenergy(E_TYPE%HBOND_DTRNA)
+    !ehbond_rna = tenergy(E_TYPE%PAIR_RNA)  + tenergy(E_TYPE%HBOND_DTRNA)
+    ehbond_rna = tenergy(E_TYPE%HBOND_DTRNA)
     if (ehbond_rna > HIGH_ENERGY_JUDGE) ehbond_rna = HIGH_ENERGY_OUT
     eelect  = tenergy(E_TYPE%ELE)
     if (eelect > HIGH_ENERGY_JUDGE) eelect = HIGH_ENERGY_OUT

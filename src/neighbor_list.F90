@@ -33,6 +33,10 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
   character(CARRAY_MSG_ERROR) :: error_message
   integer :: imp_l
 
+#ifdef _DEBUG
+  write(6,*) '####### start neighbor_list'
+#endif
+
   ! -------------------------------------------------------------------
   ! calc neigh_unit
   call neighbor_pre(xyz_mp_rep(:,:,irep), ineigh_unit)
@@ -89,4 +93,7 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
+#ifdef _DEBUG
+  write(6,*) '####### end neighbor_list'
+#endif
 end subroutine neighbor_list

@@ -28,24 +28,27 @@ subroutine neighbor(irep)
   integer :: ineigh2mp(MXMPNEIGHBOR*nmp_all/nthreads,0:nthreads-1)
 
   ! -------------------------------------------------------------------
+#ifdef _DEBUG
+  write(6,*) '####### start neighbor'
+#endif
 
   if(inperi%i_periodic == 1) then
      call util_periodic(irep)
   end if
 
-  if (inmisc%force_flag(INTERACT%ENM)) then
-     lexv(1, 1:E_TYPE%MAX,:) = 1
-     lexv(2, 1:E_TYPE%MAX,:) = 0
-     return
-  end if
+!  if (inmisc%force_flag(INTERACT%ENM)) then
+!     lexv(1, 1:E_TYPE%MAX,:) = 1
+!     lexv(2, 1:E_TYPE%MAX,:) = 0
+!     return
+!  end if
 
   TIME_S( tm_neighbor_exv )
   if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
       inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
-      inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%GO) .OR.&
-      inmisc%force_flag(INTERACT%PAIR_RNA) .OR.&! inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
-      inmisc%force_flag(INTERACT%LJ) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
-      inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
+      inmisc%force_flag(INTERACT%GO) .OR. inmisc%force_flag(INTERACT%LJ) ) then
+      !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
+      !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
+      !inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
      ! make neighborlist
      call neighbor_list(irep, ineigh2mp, lmp2neigh)
 
@@ -93,4 +96,7 @@ subroutine neighbor(irep)
      write(outfile%neigh, *) ''
   endif
 
+#ifdef _DEBUG
+  write(6,*) '####### end neighbor'
+#endif
 end subroutine neighbor

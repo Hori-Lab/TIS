@@ -7,18 +7,14 @@ subroutine mloop_nativeinfo(istep_sim)
   use const_maxsize
   use const_index
   use var_io,    only : iopen_lunnum
-  use var_setp,   only : inpro, inmisc, inenm !, inrna, inligand
+  use var_setp,   only : inpro
   use var_struct, only : nunit_all, &
                          nbd, nfene, nba, ndih, ncon, nLJ,&
                          ncon_unit, iallcon2unit,&
                          ndtrna_st, ndtrna_hb, icon2unit, iLJ2unit
-!                         nmorse, imorse2unit, 
-!                         imp2unit, iclass_unit, &
-!                         get_icon_type, &
-!                         nrna_bp, irna_bp2unit, factor_rna_bp, nhb_bp, coef_rna_bp, &
-!                         nrna_st, factor_rna_st, coef_rna_st, rna_base_type, &
   use mpiconst
 #ifdef MPI_PAR
+  use var_setp,   only : inmisc
   use var_replica,only : n_replica_all
   use var_struct, only : nmp_all, imp2type, &
 !                         imorse2mp, imorse_dummy_mgo, &
@@ -292,13 +288,13 @@ subroutine mloop_nativeinfo(istep_sim)
      
   ! ------------------------------------------------------------
   ! calc coef_go and ncon_unit
-  if (inmisc%force_flag(INTERACT%ENM)) then
-     cgo_pro     = inenm%cenm
-     flg_enm = .true.
-  else
+!  if (inmisc%force_flag(INTERACT%ENM)) then
+!     cgo_pro     = inenm%cenm
+!     flg_enm = .true.
+!  else
      cgo_pro     = inpro%cgo1210
      flg_enm = .false.
-  endif
+!  endif
 
   ncon_unit(1:nunit_all, 1:nunit_all) = 0
   do icon = 1, ncon

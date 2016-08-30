@@ -6,8 +6,7 @@
 subroutine force_fene(irep, force_mp)
 
   use const_maxsize
-  use var_struct, only : xyz_mp_rep, nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
-                         nunit_all, nmp_all
+  use var_struct, only : xyz_mp_rep, nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, nmp_all
   use mpiconst
 
   implicit none

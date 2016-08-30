@@ -9,7 +9,6 @@ subroutine setp_md_info()
   use const_physical
   use var_io, only : infile, outfile, flg_rst, i_simulate_type
   use var_setp, only: insimu, inmisc, irand, mts
-!                      inmmc   !mcanonical
   use var_replica, only : exchange_step, flg_rep,&
                           n_replica_mpi, irep2grep
   use mt_stream
@@ -71,9 +70,9 @@ subroutine setp_md_info()
   insimu%n_seed           = 0
 
   inmisc%i_redef_para     = 0
-  inmisc%i_in_box         = 0
-  inmisc%i_in_cap         = 0
-  inmisc%i_cylinder       = 0
+!  inmisc%i_in_box         = 0
+!  inmisc%i_in_cap         = 0
+!  inmisc%i_cylinder       = 0
   inmisc%i_del_int        = 0
   inmisc%i_energy_para    = 0
   inmisc%i_neigh_dist     = 0
@@ -88,7 +87,7 @@ subroutine setp_md_info()
   inmisc%i_anchor         = 0
   inmisc%i_rest1d         = 0
   inmisc%i_fix            = 0
-  inmisc%i_implig         = 0
+!  inmisc%i_implig         = 0
   inmisc%i_reset_struct   = 0
   inmisc%i_hydro_tensor   = 0
 
@@ -182,17 +181,17 @@ subroutine setp_md_info()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              insimu%i_no_trans_rot, cvalue)
 
-        cvalue = 'i_in_box'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_in_box, cvalue)
+!        cvalue = 'i_in_box'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inmisc%i_in_box, cvalue)
 
-        cvalue = 'i_in_cap'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_in_cap, cvalue)
+!        cvalue = 'i_in_cap'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inmisc%i_in_cap, cvalue)
 
-        cvalue = 'i_cylinder'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_cylinder, cvalue)
+!        cvalue = 'i_cylinder'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inmisc%i_cylinder, cvalue)
 
         cvalue = 'i_del_int'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -248,9 +247,9 @@ subroutine setp_md_info()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_fix, cvalue)
         
-        cvalue = 'i_implig'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_implig, cvalue)
+!        cvalue = 'i_implig'
+!        call ukoto_ivalue2(lunout, csides(1, iequa), &
+!             inmisc%i_implig, cvalue)
 
 !        cvalue = 'i_modified_muca'
 !        call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -375,25 +374,25 @@ subroutine setp_md_info()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-  ! -----------------------------------------------------------------
-  ! using box, inmisc%i_in_box
-  if(inmisc%i_in_box == 0) then
-  else if(inmisc%i_in_box == 1) then
-     write(lunout, *) 'using box: i_in_box = 1'
-  else
-     error_message = 'Error: invalid value for i_in_box'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+!  ! -----------------------------------------------------------------
+!  ! using box, inmisc%i_in_box
+!  if(inmisc%i_in_box == 0) then
+!  else if(inmisc%i_in_box == 1) then
+!     write(lunout, *) 'using box: i_in_box = 1'
+!  else
+!     error_message = 'Error: invalid value for i_in_box'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
 
-  ! -----------------------------------------------------------------
-  ! using cap, inmisc%i_in_cap
-  if(inmisc%i_in_cap == 0) then
-  else if(inmisc%i_in_cap == 1) then
-     write(lunout, *) 'using cap: i_in_cap = 1'
-  else
-     error_message = 'Error: invalid value for i_in_cap'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+!  ! -----------------------------------------------------------------
+!  ! using cap, inmisc%i_in_cap
+!  if(inmisc%i_in_cap == 0) then
+!  else if(inmisc%i_in_cap == 1) then
+!     write(lunout, *) 'using cap: i_in_cap = 1'
+!  else
+!     error_message = 'Error: invalid value for i_in_cap'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
 
   ! -----------------------------------------------------------------
   ! delete interaction, inmisc%i_del_int
@@ -530,17 +529,15 @@ subroutine setp_md_info()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-  ! -----------------------------------------------------------------
-  ! applying implicit_ligand option, inmisc%i_implig
-  if(inmisc%i_implig == 0) then
-  else if(inmisc%i_implig == 1) then
-     write(lunout, *) 'applying implicit_ligand (with MD-MC) option: i_implig = 1'
-  else
-     error_message = 'Error: invalid value for i_implig'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  
+!  ! -----------------------------------------------------------------
+!  ! applying implicit_ligand option, inmisc%i_implig
+!  if(inmisc%i_implig == 0) then
+!  else if(inmisc%i_implig == 1) then
+!     write(lunout, *) 'applying implicit_ligand (with MD-MC) option: i_implig = 1'
+!  else
+!     error_message = 'Error: invalid value for i_implig'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
 
 !  ! -----------------------------------------------------------------
 !  ! applying modified-multicanonical sampling, inmmc%i_modified_muca

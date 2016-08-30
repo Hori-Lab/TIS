@@ -235,14 +235,14 @@ subroutine inp_energy_func()
 
   ! ----------------------------------------------------------------------
   ! for enm
-  if(inmisc%force_flag(INTERACT%ENM)) then
-     do inum = 1, INTERACT%MAX
-        if(inmisc%force_flag(inum) .and. inum /= INTERACT%ENM .and. inum /= INTERACT%NOTHING) then
-           error_message = 'Error: elastic network model cannot be mixed'
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
-     end do
-  end if
+!  if(inmisc%force_flag(INTERACT%ENM)) then
+!     do inum = 1, INTERACT%MAX
+!        if(inmisc%force_flag(inum) .and. inum /= INTERACT%ENM .and. inum /= INTERACT%NOTHING) then
+!           error_message = 'Error: elastic network model cannot be mixed'
+!           call util_error(ERROR%STOP_ALL, error_message)
+!        end if
+!     end do
+!  end if
 
 
 !  ! ----------------------------------------------------------------------
@@ -605,23 +605,23 @@ contains
     else if(char00(i1:i2) == 'L_FENE') then
        itype = LINTERACT%L_FENE
 
-    else if(char00(i1:i2) == 'L_AICG1') then
-       itype = LINTERACT%L_AICG1
+!    else if(char00(i1:i2) == 'L_AICG1') then
+!       itype = LINTERACT%L_AICG1
 
-    else if(char00(i1:i2) == 'L_AICG2') then
-       itype = LINTERACT%L_AICG2
+!    else if(char00(i1:i2) == 'L_AICG2') then
+!       itype = LINTERACT%L_AICG2
 
-    else if(char00(i1:i2) == 'L_AICG2_PLUS') then
-       itype = LINTERACT%L_AICG2_PLUS
+!    else if(char00(i1:i2) == 'L_AICG2_PLUS') then
+!       itype = LINTERACT%L_AICG2_PLUS
 
-    else if(char00(i1:i2) == 'L_FLP') then
-       itype = LINTERACT%L_FLP
+!    else if(char00(i1:i2) == 'L_FLP') then
+!       itype = LINTERACT%L_FLP
 
     else if(char00(i1:i2) == 'L_BOND') then
        itype = LINTERACT%L_BOND
 
-    else if(char00(i1:i2) == 'L_ENM') then
-       itype = LINTERACT%L_ENM
+!    else if(char00(i1:i2) == 'L_ENM') then
+!       itype = LINTERACT%L_ENM
 
     else if(char00(i1:i2) == 'L_RIGID_LIG') then
        itype = LINTERACT%L_RIGID_LIG
@@ -663,26 +663,26 @@ contains
     else if(char00(i1:i2) == 'ELE') then
        itype = INTERACT%ELE
 
-    else if(char00(i1:i2) == 'ENM') then
-       itype = INTERACT%ENM
+!    else if(char00(i1:i2) == 'ENM') then
+!       itype = INTERACT%ENM
 
-    else if(char00(i1:i2) == 'HP') then
-       itype = INTERACT%HP
+!    else if(char00(i1:i2) == 'HP') then
+!       itype = INTERACT%HP
 
-    else if(char00(i1:i2) == 'MORSE') then
-       itype = INTERACT%MORSE
+!    else if(char00(i1:i2) == 'MORSE') then
+!       itype = INTERACT%MORSE
 
-    else if(char00(i1:i2) == 'PAIR_RNA') then
-       itype = INTERACT%PAIR_RNA
+!    else if(char00(i1:i2) == 'PAIR_RNA') then
+!       itype = INTERACT%PAIR_RNA
+!
+!    else if(char00(i1:i2) == 'AICG1') then
+!       itype = INTERACT%AICG1
 
-    else if(char00(i1:i2) == 'AICG1') then
-       itype = INTERACT%AICG1
+!    else if(char00(i1:i2) == 'AICG2') then
+!       itype = INTERACT%AICG2
 
-    else if(char00(i1:i2) == 'AICG2') then
-       itype = INTERACT%AICG2
-
-    else if(char00(i1:i2) == 'SASA') then
-       itype = INTERACT%SASA
+!    else if(char00(i1:i2) == 'SASA') then
+!       itype = INTERACT%SASA
 
     else if(char00(i1:i2) == 'DTRNA') then
        itype = INTERACT%DTRNA
@@ -719,30 +719,32 @@ contains
                 cycle
              end if
              
-             if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ .or. &
-                iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
+             !if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ .or. &
+             !   iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
+             if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ) then
                 n_go = n_go + 1
              endif
                 
-             if(iforce == INTERACT%ENM) then
-                if(iclass_unit(iunit) /= CLASS%PRO) then
-                   error_message = 'Error: ENM interaction is only applicable for protein'
-                   call util_error(ERROR%STOP_ALL, error_message)
-                end if
+!             if(iforce == INTERACT%ENM) then
+!                if(iclass_unit(iunit) /= CLASS%PRO) then
+!                   error_message = 'Error: ENM interaction is only applicable for protein'
+!                   call util_error(ERROR%STOP_ALL, error_message)
+!                end if
                 
-             else if(iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
-                if(iclass_unit(iunit) /= CLASS%PRO) then
-                   error_message = 'Error: AICG interaction is only applicable for protein'
-                   call util_error(ERROR%STOP_ALL, error_message)
-                end if
+!             else if(iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
+!                if(iclass_unit(iunit) /= CLASS%PRO) then
+!                   error_message = 'Error: AICG interaction is only applicable for protein'
+!                   call util_error(ERROR%STOP_ALL, error_message)
+!                end if
                 
-             else if(iforce == INTERACT%PAIR_RNA) then
-                if(iclass_unit(iunit) /= CLASS%RNA) then
-                   error_message = 'Warning: PAIR_RNA interaction is only applicable for RNA'
-                   call util_error(ERROR%WARN_ALL, error_message)
-                end if
+!             else if(iforce == INTERACT%PAIR_RNA) then
+!                if(iclass_unit(iunit) /= CLASS%RNA) then
+!                   error_message = 'Warning: PAIR_RNA interaction is only applicable for RNA'
+!                   call util_error(ERROR%WARN_ALL, error_message)
+!                end if
                 
-             else if(iforce == INTERACT%DTRNA) then
+             !else if(iforce == INTERACT%DTRNA) then
+             if(iforce == INTERACT%DTRNA) then
                 if(iclass_unit(iunit) /= CLASS%RNA) then
                    error_message = 'Error: DTRNA interactions are only applicable for RNA'
                    call util_error(ERROR%STOP_ALL, error_message)
@@ -833,13 +835,13 @@ contains
           
        end if
 
-       ! add flp to local AICG2
-       if(iclass_unit(iunit) == CLASS%PRO) then  !AICG2
-          if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) .OR. &
-             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS)) then !AICG2
-             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_FLP) = .TRUE.  !AICG2
-          end if !AICG2
-       end if !AICG2
+!       ! add flp to local AICG2
+!       if(iclass_unit(iunit) == CLASS%PRO) then  !AICG2
+!          if(inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2) .OR. &
+!             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_AICG2_PLUS)) then !AICG2
+!             inmisc%flag_local_unit(iunit, iunit, LINTERACT%L_FLP) = .TRUE.  !AICG2
+!          end if !AICG2
+!       end if !AICG2
 
     end do
 

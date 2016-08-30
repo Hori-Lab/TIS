@@ -6,7 +6,7 @@ subroutine simu_initial_xyz()
 
   use const_maxsize
   use const_index
-  use if_readpdb
+!  use if_readpdb
   use var_io,    only : ifile_ini, num_file, i_initial_state, pdbatom
   use var_struct, only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep, cmp2seq, imp2type
   use mpiconst
@@ -17,14 +17,14 @@ subroutine simu_initial_xyz()
   integer :: lunini, iclass, nunit_atom(2)
   integer :: nini, nmpini, nunitini, nunitini_old, nresini
   integer :: lunit2mpini(2, MXUNIT), iresini_mp(MXMP)
-  integer :: lunit2atom(2, MXUNIT)
-  integer,    allocatable :: iatomnum(:)
-  real(PREC), allocatable :: xyz(:, :, :)
+!  integer :: lunit2atom(2, MXUNIT)
+!  integer,    allocatable :: iatomnum(:)
+!  real(PREC), allocatable :: xyz(:, :, :)
   character(3) :: cini2seq(MXMP)
   character(4) :: cini2atom(MXMP)
   character(CARRAY_MSG_ERROR) :: error_message
-  character(4) :: cname_ha(MXATOM_MP, MXMP)  ! aicg
-  type(pdbatom),allocatable :: pdb_atom(:)
+!  character(4) :: cname_ha(MXATOM_MP, MXMP)  ! aicg
+!  type(pdbatom),allocatable :: pdb_atom(:)
 
   ! ----------------------------------------------------------------------
   !  lunout = outfile%data
@@ -41,8 +41,8 @@ subroutine simu_initial_xyz()
   nini = num_file%ini
 
   ! ----------------------------------------------------------------------
-  allocate(iatomnum(MXMP), xyz(3, MXATOM_MP, MXMP))
-  allocate(pdb_atom(MXPDBATOM))
+!  allocate(iatomnum(MXMP), xyz(3, MXATOM_MP, MXMP))
+!  allocate(pdb_atom(MXPDBATOM))
 
   do i = 1, nini
      nunitini_old = nunitini
@@ -52,27 +52,30 @@ subroutine simu_initial_xyz()
      nunit_atom(1) = ifile_ini(3, i)
      nunit_atom(2) = ifile_ini(4, i)
 
-     call read_pdbatom(lunini, nunit_atom, lunit2atom, pdb_atom)
+     !call read_pdbatom(lunini, nunit_atom, lunit2atom, pdb_atom)
 
      if(i_initial_state == INISTAT%CG) then
         call read_pdb_cg(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
                          xyz_mp_rep(:,:,1), cini2seq, cini2atom, imp2type)
 
-     else if (iclass == CLASS%PRO) then
-!        call read_pdb_pro(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
-!                          cini2seq, imp2type, iatomnum, xyz, cname_ha) ! aicg
-        call read_pdbatom_pro(pdb_atom, lunit2atom, nunit_atom, &
-             nmpini, nresini, lunit2mpini, iresini_mp, &
-             cini2seq, imp2type, iatomnum, xyz, cname_ha)
-        nunitini = nunit_atom(2)
-
-     else if(iclass == CLASS%RNA) then
-        call read_pdb_rna(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
-                          cini2seq, cini2atom, imp2type, iatomnum, xyz)
-
-     elseif(iclass == CLASS%LIG) then
-        call read_pdb_ligand(lunini, nunitini, lunit2mpini, nmpini, nresini, iresini_mp, &
-                             xyz_mp_rep(:,:,1), cini2seq, cini2atom, iatomnum, xyz)
+!     else if (iclass == CLASS%PRO) then
+!!        call read_pdb_pro(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
+!!                          cini2seq, imp2type, iatomnum, xyz, cname_ha) ! aicg
+!        call read_pdbatom_pro(pdb_atom, lunit2atom, nunit_atom, &
+!             nmpini, nresini, lunit2mpini, iresini_mp, &
+!             cini2seq, imp2type, iatomnum, xyz, cname_ha)
+!        nunitini = nunit_atom(2)
+!
+!     else if(iclass == CLASS%RNA) then
+!        call read_pdb_rna(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
+!                          cini2seq, cini2atom, imp2type, iatomnum, xyz)
+!
+!     elseif(iclass == CLASS%LIG) then
+!        call read_pdb_ligand(lunini, nunitini, lunit2mpini, nmpini, nresini, iresini_mp, &
+!                             xyz_mp_rep(:,:,1), cini2seq, cini2atom, iatomnum, xyz)
+     else
+        error_message = 'Error: i_initial_state must be INISTAT%CG'
+        call util_error(ERROR%STOP_ALL, error_message)
      end if
 
      if (nunitini_old + 1 /= nunit_atom(1) .or. nunitini /= nunit_atom(2)) then
@@ -82,12 +85,12 @@ subroutine simu_initial_xyz()
 
   end do
 
-  if(i_initial_state /= INISTAT%CG) then
-     call util_posmass(nunit_real, xyz, xyz_mp_rep(:,:,1), cname_ha, cini2atom)
-  end if
+!  if(i_initial_state /= INISTAT%CG) then
+!     call util_posmass(nunit_real, xyz, xyz_mp_rep(:,:,1), cname_ha, cini2atom)
+!  end if
 
-  deallocate(iatomnum, xyz)
-  deallocate(pdb_atom)
+!  deallocate(iatomnum, xyz)
+!  deallocate(pdb_atom)
 
   ! ----------------------------------------------------------------------
   ! check the consitent between ini and pdb

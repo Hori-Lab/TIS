@@ -25,7 +25,7 @@ integer,parameter :: tm_energy            =  11
 integer,parameter :: tm_output            =  12
 integer,parameter :: tm_radiusg_rmsd      =  13
 integer,parameter :: tm_replica           =  14
-integer,parameter :: tm_implig            =  15
+!integer,parameter :: tm_implig            =  15
 !integer,parameter :: tm_step_adj          =  16
 integer,parameter :: tm_others            =  17
 integer,parameter :: tm_end               =  20  ! use for aggreagte time
@@ -190,9 +190,9 @@ subroutine time_write( lunout )
 !     write(lunout, fmt=fmt1) 'muca           ', total_time(tm_muca), trate*total_time(tm_muca)
 !  end if
 
-  if (inmisc%i_implig==1) then
-     write(lunout, fmt=fmt1) 'implig          ', total_time(tm_implig), trate*total_time(tm_implig)
-  end if
+!  if (inmisc%i_implig==1) then
+!     write(lunout, fmt=fmt1) 'implig          ', total_time(tm_implig), trate*total_time(tm_implig)
+!  end if
   write(lunout, fmt=fmt1) 'others          ', total_time(tm_others), trate*total_time(tm_others)
 
   write(lunout, fmt=fmt2) '-----------------------------------'

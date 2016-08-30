@@ -5,7 +5,7 @@ subroutine neighbor_list_hb(irep)
   
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, indtrna15
+  use var_setp,    only : inmisc
   use var_struct,  only : ndtrna_hb, idtrna_hb2mp, nhbneigh, ineigh2hb, nhbsite, & 
                           idtrna_hb2hbsite, list_hb_at_hbsite, num_hb_at_hbsite, &
                           xyz_mp_rep, nmp_all, dtrna_hb_neigh_dist2

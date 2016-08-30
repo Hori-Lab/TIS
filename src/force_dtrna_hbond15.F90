@@ -282,7 +282,11 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   !      hb_status(ihb,irep) = .True.
   !   endif
   !enddo
+!$omp end critical
+!$omp critical 
   hb_status(1:ndtrna_hb,irep) = hb_status(1:ndtrna_hb,irep) .or. hb_status_l(1:ndtrna_hb)
+!$omp end critical
+!$omp critical 
   hbsite_excess(1:nhbsite) = hbsite_excess(1:nhbsite) + hbsite_excess_l(1:nhbsite)
 !$omp end critical
 #endif

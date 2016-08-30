@@ -86,12 +86,12 @@ module const_physical
   real(PREC), parameter :: MASS_PHOS     = MASS_P * 1 &
                                          + MASS_O * 2
 
-  ! Flexible_local_potential
-  real(PREC), parameter :: FBA_MIN_ANG = 1.31e0_PREC
-  real(PREC), parameter :: FBA_MAX_ANG = 2.87e0_PREC
-  real(PREC), parameter :: FBA_MIN_ANG_FORCE = -30.0e0_PREC
-  real(PREC), parameter :: FBA_MAX_ANG_FORCE = 30.0e0_PREC
-  real(PREC), parameter :: FDIH_DEL_MIN_ANG = 2.88e0_PREC ! 2.88 rad = 165 degree
-  real(PREC), parameter :: FDIH_DEL_MAX_ANG = 3.05e0_PREC ! 3.05 rad = 175 degree
+!  ! Flexible_local_potential
+!  real(PREC), parameter :: FBA_MIN_ANG = 1.31e0_PREC
+!  real(PREC), parameter :: FBA_MAX_ANG = 2.87e0_PREC
+!  real(PREC), parameter :: FBA_MIN_ANG_FORCE = -30.0e0_PREC
+!  real(PREC), parameter :: FBA_MAX_ANG_FORCE = 30.0e0_PREC
+!  real(PREC), parameter :: FDIH_DEL_MIN_ANG = 2.88e0_PREC ! 2.88 rad = 165 degree
+!  real(PREC), parameter :: FDIH_DEL_MAX_ANG = 3.05e0_PREC ! 3.05 rad = 175 degree
 
 endmodule const_physical

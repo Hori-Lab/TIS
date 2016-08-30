@@ -5,7 +5,7 @@ subroutine write_nativeinfo(lunout)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inenm
+  use var_setp,   only : inpro
   use var_struct, only : nunit_all, imp2unit, lunit2mp, &
                          nbd, ibd2mp, bd_nat, cmp2atom, &
                          factor_bd, coef_bd, correct_bd_mgo,  &
@@ -289,7 +289,7 @@ subroutine write_nativeinfo(lunout)
   ! write the go interaction
   if (ncon > 0) then
      dfcontact = inpro%dfcontact
-     if(inenm%i_enm == 1) dfcontact = inenm%dfcontact_enm
+!     if(inenm%i_enm == 1) dfcontact = inenm%dfcontact_enm
 
      write (lunout, '(a)') '<<<< native contact '
      write (lunout, '(a, i6)') '** total_contact = ', ncon

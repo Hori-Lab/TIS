@@ -72,11 +72,11 @@ subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
      call sort( E_TYPE%EXV_DT15 )
   end if
 
-  !-------------------------------------------------------------
-  !sasa
-  if(inmisc%force_flag(INTERACT%SASA)) then
-     call sort( E_TYPE%SASA )
-  end if
+!  !-------------------------------------------------------------
+!  !sasa
+!  if(inmisc%force_flag(INTERACT%SASA)) then
+!     call sort( E_TYPE%SASA )
+!  end if
 
   ! ------------------------------------------------------------
   if(iexv2 /= nexv) then
