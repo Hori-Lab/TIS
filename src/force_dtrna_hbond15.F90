@@ -370,6 +370,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      p(:) = p(:) / sum(p)
 
+     rnd = genrand_double1(mts(0,0))
      if (p(imin) < rnd) then  ! First, try one that has the minimum energy
         ihb_delete = hb_seq(imin)
      else                     ! If not good, try others until hit
