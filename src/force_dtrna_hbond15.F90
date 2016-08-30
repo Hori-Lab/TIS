@@ -39,12 +39,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: pre
   real(PREC) :: f_i(3), f_k(3), f_l(3), ex
   real(PREC) :: for(3,6,1:ndtrna_hb)
-  integer    :: hbsite_excess_l(1:nhbsite)
-  real(PREC) :: hb_energy_l(1:ndtrna_hb)
-  logical    :: hb_status_l(1:ndtrna_hb)
-#ifdef MPI_PAR3
-  integer :: klen
-#endif 
+  !integer    :: hbsite_excess_l(1:nhbsite)
+  !real(PREC) :: hb_energy_l(1:ndtrna_hb)
+  !logical    :: hb_status_l(1:ndtrna_hb)
+!#ifdef MPI_PAR3
+!  integer :: klen
+!#endif 
   real(PREC) :: rnd
   real(PREC) :: beta, p(20), pmin
   integer :: imin
@@ -56,20 +56,28 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   integer :: hb_seq(1:ndtrna_hb)
 
   ! --------------------------------------------------------------------
+  !!!!!!hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
+  !hbsite_excess_l(1:nhbsite) = 0
+  !hb_status_l(1:ndtrna_hb) = .False.
+  !hb_energy_l(1:ndtrna_hb) = 0.0e0_PREC
 
-  !hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
-  hbsite_excess_l(1:nhbsite) = 0
-  hb_status_l(1:ndtrna_hb) = .False.
-  hb_energy_l(1:ndtrna_hb) = 0.0e0_PREC
-
-#ifdef MPI_PAR3
-  klen=(nhbneigh(irep)-1+npar_mpi)/npar_mpi
-  ksta=1+klen*local_rank_mpi
-  kend=min(ksta+klen-1,nhbneigh(irep))
-#else
+!#ifdef MPI_PAR3
+!  klen=(nhbneigh(irep)-1+npar_mpi)/npar_mpi
+!  ksta=1+klen*local_rank_mpi
+!  kend=min(ksta+klen-1,nhbneigh(irep))
+!#else
   ksta = 1
   kend = nhbneigh(irep)
-#endif
+!#endif
+
+!$omp master
+  hb_energy(1:ndtrna_hb,irep) = 0.0
+  hb_status(1:ndtrna_hb,irep) = .False.
+  hbsite_excess(1:nhbsite) = 0
+!$omp end master
+
+! Wait until the master initializes the arrays
+!$omp barrier
 
 !$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
 !$omp&           d,cos_theta,dih,&
@@ -91,20 +99,25 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      if (abs(d) > indtrna15%hb_cutoff_dist) then  ! 2.0 Angstrom
         cycle
      else
-        hb_status_l(ihb) = .True.
+        !hb_status_l(ihb) = .True.
+        hb_status(ihb,irep) = .True.
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,1,ihb)
            if (ihbsite > 0) then
 !! hbsite_excess_l exists in each thread individually so does not have to be atomic
-!!!!$omp atomic   (commented out)  
-              hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!!!!!!!$omp atomic   (commented out)  
+              !hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!$omp atomic
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) + 1
            endif
         enddo
         do i = 1, 3
            ihbsite = idtrna_hb2hbsite(i,2,ihb)
            if (ihbsite > 0) then
-!!!!$omp atomic   (commented out)
-              hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!!!!!!!$omp atomic   (commented out)
+!              hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!$omp atomic
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) + 1
            endif
         enddo
      endif
@@ -253,48 +266,38 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      for(:,6,ihb) = for(:,6,ihb) + f_l(:)
 
      !===== Total =====
-     hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
-     for(:,:,ihb) = for(:,:,ihb) * hb_energy_l(ihb)
+     !hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
+     !for(:,:,ihb) = for(:,:,ihb) * hb_energy_l(ihb)
+     hb_energy(ihb,irep) = coef_dtrna_hb(0,ihb) * exp(ex)
+     for(:,:,ihb) = for(:,:,ihb) * hb_energy(ihb,irep)
   end do
 !$omp end do
 
-#ifdef MPI_PAR3
-  call mpi_allreduce(hb_energy_l, hb_energy(1,irep), ndtrna_hb, &
-                     PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
-  call mpi_allreduce(hb_status_l, hb_status(1,irep), ndtrna_hb, &
-                     MPI_LOGICAL, MPI_LOR, mpi_comm_local, ierr)
-  call mpi_allreduce(hbsite_excess_l, hbsite_excess, nhbsite, &
-                     MPI_INTEGER, MPI_SUM, mpi_comm_local, ierr)
-#else
-!$omp master
-  hb_energy(1:ndtrna_hb,irep) = 0.0
-  hb_status(1:ndtrna_hb,irep) = .False.
-  hbsite_excess(1:nhbsite) = 0
-!$omp end master
+!#ifdef MPI_PAR3
+!  call mpi_allreduce(hb_energy_l, hb_energy(1,irep), ndtrna_hb, &
+!                     PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
+!  call mpi_allreduce(hb_status_l, hb_status(1,irep), ndtrna_hb, &
+!                     MPI_LOGICAL, MPI_LOR, mpi_comm_local, ierr)
+!  call mpi_allreduce(hbsite_excess_l, hbsite_excess, nhbsite, &
+!                     MPI_INTEGER, MPI_SUM, mpi_comm_local, ierr)
+!#else
 
-! Wait until the master initializes the arrays
-!$omp barrier
+!!!!$omp critical 
+  !hb_energy(1:ndtrna_hb,irep) = hb_energy(1:ndtrna_hb,irep) + hb_energy_l(1:ndtrna_hb)
+  !hb_status(1:ndtrna_hb,irep) = hb_status(1:ndtrna_hb,irep) .or. hb_status_l(1:ndtrna_hb)
+  !hbsite_excess(1:nhbsite) = hbsite_excess(1:nhbsite) + hbsite_excess_l(1:nhbsite)
+!!!$omp end critical
+!#endif
+!!!$omp barrier
 
-!$omp critical 
-  hb_energy(1:ndtrna_hb,irep) = hb_energy(1:ndtrna_hb,irep) + hb_energy_l(1:ndtrna_hb)
-  !do ihb = 1, ndtrna_hb
-  !   if (hb_status_l(ihb)) then
-  !      hb_status(ihb,irep) = .True.
-  !   endif
-  !enddo
-!$omp end critical
-!$omp critical 
-  hb_status(1:ndtrna_hb,irep) = hb_status(1:ndtrna_hb,irep) .or. hb_status_l(1:ndtrna_hb)
-!$omp end critical
-!$omp critical 
-  hbsite_excess(1:nhbsite) = hbsite_excess(1:nhbsite) + hbsite_excess_l(1:nhbsite)
-!$omp end critical
-#endif
-
-!$omp barrier
+  !hbsite_excess(1:nhbsite)  = hbsite_excess(1:nhbsite) - nvalence_hbsite(1:nhbsite)
+!$omp do
+  do ihbsite = 1, nhbsite
+     hbsite_excess(ihbsite)  = hbsite_excess(ihbsite) - nvalence_hbsite(ihbsite)
+  enddo
+!$omp end do
 
 !$omp master
-  hbsite_excess(1:nhbsite)  = hbsite_excess(1:nhbsite) - nvalence_hbsite(1:nhbsite)
 
   nhbsite_excess = 0
   ihbsitelist_excess(1:nhbsite) = 0
