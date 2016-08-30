@@ -7,7 +7,7 @@
 ! ***********************************************************************
 function rfunc_boxmuller(istream, tn)
 
-  use const_maxsize
+  use const_maxsize, only : PREC
   use var_setp, only : insimu, mts
   use var_replica, only : n_replica_mpi
   use mt_stream
@@ -16,23 +16,19 @@ function rfunc_boxmuller(istream, tn)
 #endif
   implicit none
 
-  ! -----------------------------------------------------------------
   integer, intent(in) :: istream, tn
 
-  ! --------------------------------------------------------------------
   real(PREC) :: rfunc_boxmuller
 
-  ! --------------------------------------------------------------------
-  ! local variables
-  integer, save :: iniflag = 0
-!  integer, save :: istore(0:MXREPLICA) = 0
-  integer, allocatable, save :: istore(:,:)
-!  real(PREC), save :: rstore(0:MXREPLICA) = 0.0e0_PREC
+  logical, save :: iniflag = .true.
+  logical, allocatable, save :: istore(:,:)
   real(PREC), allocatable, save :: rstore(:,:)
   real(PREC) :: vx, vy, r2, rf
   
   ! --------------------------------------------------------------------
-  if(iniflag == 0) then
+  if(iniflag) then
+     iniflag = .false.
+
      if(insimu%i_rand_type == 0) then
         allocate(istore(0:n_replica_mpi, 0:0))
         allocate(rstore(0:n_replica_mpi, 0:0))
@@ -46,17 +42,15 @@ function rfunc_boxmuller(istream, tn)
 #endif
      end if
 
-     istore(:,:) = 0
+     istore(:,:) = .false.
      rstore(:,:) = 0.0
-     iniflag = 1
   end if
 
-  rfunc_boxmuller = 0.0e0_PREC
 
-  if(istore(istream, tn) == 0) then
+  if(.not. istore(istream, tn)) then
+     istore(istream, tn) = .true.
+
      do
-!        vx = 2.0e0_PREC * grnd() - 1.0e0_PREC
-!        vy = 2.0e0_PREC * grnd() - 1.0e0_PREC
         vx = 2.0e0_PREC * genrand_double1(mts(istream, tn)) - 1.0e0_PREC
         vy = 2.0e0_PREC * genrand_double1(mts(istream, tn)) - 1.0e0_PREC
 
@@ -67,11 +61,10 @@ function rfunc_boxmuller(istream, tn)
      rf = sqrt(-2.0e0_PREC * log(r2) / r2)
      rstore(istream, tn) = vx * rf
      rfunc_boxmuller = vy * rf
-     istore(istream, tn) = 1
 
   else
+     istore(istream, tn) = .false.
      rfunc_boxmuller = rstore(istream, tn)
-     istore(istream, tn) = 0
   end if
   
 end function rfunc_boxmuller
