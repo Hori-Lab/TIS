@@ -9,7 +9,8 @@
 #define TIME_E(x) !
 #endif
 
-subroutine time_integral_pre(flg_step_each_replica)
+!subroutine time_integral_pre(flg_step_each_replica)
+subroutine time_integral_pre()
 
   use const_maxsize
   use const_physical
@@ -36,7 +37,7 @@ subroutine time_integral_pre(flg_step_each_replica)
   implicit none
 
   ! -----------------------------------------------------------------
-  logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
+  !logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
 
   ! --------------------------------------------------------------------
   ! function
@@ -260,7 +261,7 @@ subroutine time_integral_pre(flg_step_each_replica)
   
   call write_record_file(istep_dummy)
   
-  flg_step_each_replica(1:n_replica_mpi)  = .false. 
+  !flg_step_each_replica(1:n_replica_mpi)  = .false. 
 
   if (inmisc%nbrid_ppr > 0) then
      call simu_ppr()

@@ -28,7 +28,7 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
   integer :: imp, jmp, iunit, junit
   integer :: imirror
   integer :: ineighbor(0:nthreads-1)
-  integer :: ineigh_unit(MXUNIT, MXUNIT)
+  !integer :: ineigh_unit(MXUNIT, MXUNIT)
   real(PREC) :: dist2, v21(3)
   character(CARRAY_MSG_ERROR) :: error_message
   integer :: imp_l
@@ -39,7 +39,7 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! calc neigh_unit
-  call neighbor_pre(xyz_mp_rep(:,:,irep), ineigh_unit)
+  !call neighbor_pre(xyz_mp_rep(:,:,irep), ineigh_unit)
 
   ! -------------------------------------------------------------------
   ! calc ineigh2mp
@@ -60,14 +60,14 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
      do while (jmp <= nmp_real)
         junit = imp2unit(jmp)
 
-        if(ineigh_unit(iunit, junit) == 1) then
+        !if(ineigh_unit(iunit, junit) == 1) then
 
-           if(inperi%i_periodic == 0) then
-              v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)
-           else
+           !if(inperi%i_periodic == 0) then
+           !   v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)
+           !else
               v21(1:3) = pxyz_mp_rep(1:3, jmp, irep) - pxyz_mp_rep(1:3, imp, irep)
               call util_pbneighbor(v21, imirror)
-           end if
+           !end if
 
            dist2 = v21(1)**2 + v21(2)**2 + v21(3)**2
 
@@ -75,10 +75,10 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
               ineighbor(n) = ineighbor(n) + 1
               ineigh2mp(ineighbor(n),n) = jmp
            end if
-        else
-           ! jump to last point of 'junit'
-           jmp = lunit2mp(2, junit)
-        endif
+        !else
+        !   ! jump to last point of 'junit'
+        !   jmp = lunit2mp(2, junit)
+        !endif
 
         jmp = jmp + 1
      end do

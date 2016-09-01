@@ -32,9 +32,9 @@ subroutine neighbor(irep)
   write(6,*) '####### start neighbor'
 #endif
 
-  if(inperi%i_periodic == 1) then
+!  if(inperi%i_periodic == 1) then
      call util_periodic(irep)
-  end if
+!  end if
 
 !  if (inmisc%force_flag(INTERACT%ENM)) then
 !     lexv(1, 1:E_TYPE%MAX,:) = 1
@@ -43,9 +43,9 @@ subroutine neighbor(irep)
 !  end if
 
   TIME_S( tm_neighbor_exv )
-  if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
-      inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
-      inmisc%force_flag(INTERACT%GO) .OR. inmisc%force_flag(INTERACT%LJ) ) then
+!  if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
+!      inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
+!      inmisc%force_flag(INTERACT%GO) .OR. inmisc%force_flag(INTERACT%LJ) ) then
       !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
       !inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
@@ -55,14 +55,14 @@ subroutine neighbor(irep)
      ! assign iconcal2con and iexv2mp
      call neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
-  else
-     lexv(1, 1:E_TYPE%MAX,:) = 1
-     lexv(2, 1:E_TYPE%MAX,:) = 0
-  endif
+!  else
+!     lexv(1, 1:E_TYPE%MAX,:) = 1
+!     lexv(2, 1:E_TYPE%MAX,:) = 0
+!  endif
   TIME_E( tm_neighbor_exv )
   
   TIME_S( tm_neighbor_ele )
-  if (inmisc%force_flag(INTERACT%ELE)) then
+!  if (inmisc%force_flag(INTERACT%ELE)) then
      ! make neighborlist for electrostatic interaction
      call neighbor_list_ele(irep)
      !if(inele%i_calc_method == 0) then
@@ -70,7 +70,7 @@ subroutine neighbor(irep)
      !else if(inele%i_calc_method == 1) then
      !   call neighbor_list_ele2(irep)
      !end if
-  endif
+!  endif
   TIME_E( tm_neighbor_ele )
 
 !  TIME_S( tm_neighbor_hp )
@@ -80,11 +80,11 @@ subroutine neighbor(irep)
 !  endif
 !  TIME_E( tm_neighbor_hp )
 
-  if (inmisc%i_dtrna_model == 2015) then
+!  if (inmisc%i_dtrna_model == 2015) then
      TIME_S( tm_neighbor_hb )
      call neighbor_list_hb(irep)
      TIME_E( tm_neighbor_hb )
-  endif
+!  endif
 
   if (flg_file_out%neigh) then
      if (inmisc%force_flag(INTERACT%EXV12)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1

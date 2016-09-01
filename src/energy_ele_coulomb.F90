@@ -23,25 +23,25 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   real(PREC) :: dist1, dist2
   real(PREC) :: ene, cutoff2
   real(PREC) :: v21(SDIM)
-#ifdef MPI_PAR3
-  integer :: klen
-#endif
+!#ifdef MPI_PAR3
+!  integer :: klen
+!#endif
 
   cutoff2 = inele%cutoff_ele ** 2
 
-#ifdef MPI_PAR3
-#ifdef SHARE_NEIGH
-  klen=(lele(irep)-1+npar_mpi)/npar_mpi
-  ksta=1+klen*local_rank_mpi
-  kend=min(ksta+klen-1,lele(irep))
-#else
+!#ifdef MPI_PAR3
+!#ifdef SHARE_NEIGH
+!  klen=(lele(irep)-1+npar_mpi)/npar_mpi
+!  ksta=1+klen*local_rank_mpi
+!  kend=min(ksta+klen-1,lele(irep))
+!#else
+!  ksta = 1
+!  kend = lele(irep)
+!#endif
+!#else
   ksta = 1
   kend = lele(irep)
-#endif
-#else
-  ksta = 1
-  kend = lele(irep)
-#endif
+!#endif
 !$omp do private(imp1,imp2,v21,dist2,dist1,ene,iunit,junit,imirror)
   do iele=ksta, kend
 

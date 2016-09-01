@@ -27,40 +27,40 @@ subroutine neighbor_list_ele(jrep)
   integer, intent(in) :: jrep
 
   integer :: imp, jmp, iunit, junit, irep, grep
-  integer :: icharge, jcharge, iele, imirror, n_index
-  integer :: icalc(MXUNIT, MXUNIT)
+  integer :: icharge, jcharge, iele, imirror !, n_index
+!  integer :: icalc(MXUNIT, MXUNIT)
   real(PREC) :: dist2, rneighbor2_ele, v21(3)
   character(CARRAY_MSG_ERROR) :: error_message
-#ifdef MPI_PAR2
-  integer :: icharge_l
-#ifdef SHARE_NEIGH
-  integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
-  real(PREC) :: coef_ele_l(MXMPELE*ncharge)
-  integer :: nele_l, n
-  integer :: nele_lall(0:npar_mpi-1)
-  integer :: disp(0:npar_mpi-1), count(0:npar_mpi-1)
-#endif
-#endif
+!#ifdef MPI_PAR2
+!  integer :: icharge_l
+!#ifdef SHARE_NEIGH
+!  integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
+!  real(PREC) :: coef_ele_l(MXMPELE*ncharge)
+!  integer :: nele_l, n
+!  integer :: nele_lall(0:npar_mpi-1)
+!  integer :: disp(0:npar_mpi-1), count(0:npar_mpi-1)
+!#endif
+!#endif
 
   ! -------------------------------------------------------------------
-  n_index = 2 + inperi%n_mirror_index
+  !n_index = 2 + inperi%n_mirror_index
 
-  if(inmisc%force_flag(INTERACT%ELE)) then
-     continue
-  else
-     lele(:) = 0
-     return
-  end if
+!  if(inmisc%force_flag(INTERACT%ELE)) then
+!     continue
+!  else
+!     lele(:) = 0
+!     return
+!  end if
 
   ! -------------------------------------------------------------------
-  icalc(1:nunit_real, 1:nunit_real) = 0
-  do iunit = 1, nunit_real
-     do junit = iunit, nunit_real
-        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ELE)) then
-           icalc(iunit, junit) = 1
-        end if
-     end do
-  end do
+!  icalc(1:nunit_real, 1:nunit_real) = 0
+!  do iunit = 1, nunit_real
+!     do junit = iunit, nunit_real
+!        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%ELE)) then
+!           icalc(iunit, junit) = 1
+!        end if
+!     end do
+!  end do
 
   ! --------------------------------------------------------------------
 
@@ -91,7 +91,7 @@ subroutine neighbor_list_ele(jrep)
   endif
 
   ! iele2mp(3,:,:) is used in case of non-periodic boundary
-  iele2mp(3,:,irep) = 1
+  !iele2mp(3,:,irep) = 1
   iele = 0
 
 #ifdef MPI_PAR2
@@ -102,59 +102,60 @@ subroutine neighbor_list_ele(jrep)
 #endif
 
      imp = icharge2mp(icharge)
-     iunit = imp2unit(imp)
+     !iunit = imp2unit(imp)
 
-     jcharge = icharge + 1
+     !jcharge = icharge + 1
 
-     if(jcharge > ncharge) cycle
+     !if(jcharge > ncharge) cycle
 
-     do while(jcharge <= ncharge)
+     !do while(jcharge <= ncharge)
+     do jcharge = icharge+1, ncharge
         jmp = icharge2mp(jcharge)
-        junit = imp2unit(jmp)
+        !junit = imp2unit(jmp)
 
-        if(icalc(iunit, junit) == 1) then
+        !if(icalc(iunit, junit) == 1) then
 
-           if(inperi%i_periodic == 0) then
-              v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)
-           else
+           !if(inperi%i_periodic == 0) then
+           !   v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)
+           !else
               v21(1:3) = pxyz_mp_rep(1:3, jmp, irep) - pxyz_mp_rep(1:3, imp, irep)
               call util_pbneighbor(v21, imirror)
-           end if
+           !end if
 
            dist2 = v21(1)**2 + v21(2)**2 + v21(3)**2
 
            if(dist2 < rneighbor2_ele) then
               iele = iele + 1
-#ifdef MPI_PAR2
-
-#ifdef SHARE_NEIGH
-              iele2mp_l(1, iele) = imp
-              iele2mp_l(2, iele) = jmp
-              if(inperi%i_periodic == 1) then
-                 iele2mp_l(3, iele) = imirror
-              end if
-              coef_ele_l(iele) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
-#else
+!#ifdef MPI_PAR2
+!
+!#ifdef SHARE_NEIGH
+!              iele2mp_l(1, iele) = imp
+!              iele2mp_l(2, iele) = jmp
+!              if(inperi%i_periodic == 1) then
+!                 iele2mp_l(3, iele) = imirror
+!              end if
+!              coef_ele_l(iele) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
+!#else
+!              iele2mp(1, iele, irep) = imp
+!              iele2mp(2, iele, irep) = jmp
+!              if(inperi%i_periodic == 1) then
+!                 iele2mp(3, iele, irep) = imirror
+!              end if
+!              coef_ele(iele, irep) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
+!#endif
+!
+!#else
               iele2mp(1, iele, irep) = imp
               iele2mp(2, iele, irep) = jmp
-              if(inperi%i_periodic == 1) then
+              !if(inperi%i_periodic == 1) then
                  iele2mp(3, iele, irep) = imirror
-              end if
+              !end if
               coef_ele(iele, irep) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
-#endif
-
-#else
-              iele2mp(1, iele, irep) = imp
-              iele2mp(2, iele, irep) = jmp
-              if(inperi%i_periodic == 1) then
-                 iele2mp(3, iele, irep) = imirror
-              end if
-              coef_ele(iele, irep) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
-#endif
+!#endif
            end if
-        end if
+        !end if
 
-        jcharge = jcharge + 1
+        !jcharge = jcharge + 1
      end do
   end do
 

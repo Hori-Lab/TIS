@@ -46,8 +46,8 @@ subroutine mloop_simulator()
 
   ! -----------------------------------------------------------------
   ! local variables
-  logical :: flg_step_each_replica(n_replica_mpi)
-  logical :: flg_exit_loop_mstep
+  !logical :: flg_step_each_replica(n_replica_mpi)
+  !logical :: flg_exit_loop_mstep
 
 
   ! -----------------------------------------------------------------
@@ -106,7 +106,8 @@ subroutine mloop_simulator()
      ! -----------------------------------------------------------------
      ! preparing time integral
      ! -----------------------------------------------------------------
-     call time_integral_pre(flg_step_each_replica)
+     !call time_integral_pre(flg_step_each_replica)
+     call time_integral_pre()
 
      ! #################################################################
      !  time integral
@@ -120,32 +121,34 @@ subroutine mloop_simulator()
      TIME_S( tm_main_loop )
 
      do istep = insimu%i_tstep_init, ntstep
-        flg_exit_loop_mstep = .FALSE.
+        !flg_exit_loop_mstep = .FALSE.
 
         TIME_S( tm_tinte )
-        if (i_run_mode == RUN%EMIN) then
+        !if (i_run_mode == RUN%EMIN) then
            ! -----------------------------------------------------------------
            ! 1-step of energy minimization
            ! -----------------------------------------------------------------
-           call simu_minimize(flg_exit_loop_mstep)
-        else
+        !   call simu_minimize(flg_exit_loop_mstep)
+        !else
            ! -----------------------------------------------------------------
            ! time integral
            ! -----------------------------------------------------------------
-           call time_integral(flg_step_each_replica)
-        endif
+           !call time_integral(flg_step_each_replica)
+           call time_integral()
+        !endif
         TIME_E( tm_tinte )
 
         ! -----------------------------------------------------------------
         ! treatment after time integral
         ! -----------------------------------------------------------------
         TIME_S( tm_tinte_post )
-        call time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
+        !call time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
+        call time_integral_post()
         TIME_E( tm_tinte_post )
-        if(flg_exit_loop_mstep) then
-           TIME_E( tm_main_loop )
-           exit loop_mstep
-        endif
+        !if(flg_exit_loop_mstep) then
+        !   TIME_E( tm_main_loop )
+        !   exit loop_mstep
+        !endif
 
      end do ! for ntstep
      TIME_E( tm_main_loop )

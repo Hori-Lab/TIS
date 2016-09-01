@@ -113,7 +113,7 @@ subroutine energy_sumup(irep,          &
 !$omp end master
 
   call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
@@ -152,15 +152,15 @@ subroutine energy_sumup(irep,          &
 
 !  call energy_rna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
-  if (inmisc%i_dtrna_model == 2013) then
-     call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  else if (inmisc%i_dtrna_model == 2015) then
+!  if (inmisc%i_dtrna_model == 2013) then
+!     call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  else if (inmisc%i_dtrna_model == 2015) then
      call energy_dtrna_stack_nlocal(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      call energy_dtrna_hbond15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  endif
+!  endif
 
 !  if(inmgo%i_multi_mgo >= 1) then
 !     TIME_S( tm_energy_nlocal_mgo) 
@@ -175,7 +175,7 @@ subroutine energy_sumup(irep,          &
 !$omp master
      TIME_S( tm_energy_nlocal_go) 
 !$omp end master
-     call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -210,43 +210,43 @@ subroutine energy_sumup(irep,          &
 !$omp master
   TIME_S( tm_energy_exv) 
 !$omp end master
-  if (inmisc%i_residuenergy_radii == 0) then
-     call energy_exv_rep12 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-     call energy_exv_rep6 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  else if (inmisc%i_residuenergy_radii == 1) then
-     call energy_exv_restype(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  endif
-  if (inmisc%force_flag(INTERACT%EXV_WCA)) then 
-     call energy_exv_wca (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-  endif
+!  if (inmisc%i_residuenergy_radii == 0) then
+!     call energy_exv_rep12 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!     call energy_exv_rep6 (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  else if (inmisc%i_residuenergy_radii == 1) then
+!     call energy_exv_restype(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  endif
+!  if (inmisc%force_flag(INTERACT%EXV_WCA)) then 
+!     call energy_exv_wca (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!  endif
 !$omp master
   TIME_E( tm_energy_exv) 
 
   TIME_S( tm_energy_ele)
 !$omp end master
-  if (inmisc%force_flag(INTERACT%ELE)) then
-
-     if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
-
-        call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        !if(inele%i_calc_method == 0) then         ! neighboring list (default)
-        !   call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
-        !   call energy_ele2(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        !else                                      ! direct calculation for K computer
-        !   call energy_ele3(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-        !end if
-
-     elseif (inele%i_function_form == 1) then ! Coulomb potential
+!  if (inmisc%force_flag(INTERACT%ELE)) then
+!
+!     if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
+!
+!        call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!        !if(inele%i_calc_method == 0) then         ! neighboring list (default)
+!        !   call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!        !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
+!        !   call energy_ele2(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!        !else                                      ! direct calculation for K computer
+!        !   call energy_ele3(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!        !end if
+!
+!     elseif (inele%i_function_form == 1) then ! Coulomb potential
         call energy_ele_coulomb(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
 
-     elseif (inele%i_function_form == 2) then ! Coulomb potential (Ewald)
-        call energy_ele_coulomb_ewld(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-
-     elseif (inele%i_function_form == 3) then ! Coulomb potential (Brute-force to check Ewald results)
-        call energy_ele_coulomb_brute(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
-     endif
-  endif
+!     elseif (inele%i_function_form == 2) then ! Coulomb potential (Ewald)
+!        call energy_ele_coulomb_ewld(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!
+!     elseif (inele%i_function_form == 3) then ! Coulomb potential (Brute-force to check Ewald results)
+!        call energy_ele_coulomb_brute(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+!     endif
+!  endif
 !$omp master
   TIME_E( tm_energy_ele)
 !$omp end master
@@ -318,25 +318,25 @@ subroutine energy_sumup(irep,          &
 !     call energy_cylinder(irep, energy_unit, energy)
 !  end if
 
-  if(inmisc%i_bridge == 1) then
-     call energy_bridge(irep, energy_unit, energy)
-  end if
-
-  if(inmisc%i_pulling == 1) then
-     call energy_pulling(irep, energy_unit, energy)
-  end if
-
-  if(inmisc%i_anchor == 1) then
-     call energy_anchor(irep, energy_unit, energy)
-  end if
-
-  if(inmisc%i_rest1d == 1) then
-     call energy_rest1d(irep, energy_unit, energy)
-  end if
-
-  if(inmisc%i_window == 1) then
-     call energy_window(irep, energy_unit, energy)
-  end if
+!  if(inmisc%i_bridge == 1) then
+!     call energy_bridge(irep, energy_unit, energy)
+!  end if
+!
+!  if(inmisc%i_pulling == 1) then
+!     call energy_pulling(irep, energy_unit, energy)
+!  end if
+!
+!  if(inmisc%i_anchor == 1) then
+!     call energy_anchor(irep, energy_unit, energy)
+!  end if
+!
+!  if(inmisc%i_rest1d == 1) then
+!     call energy_rest1d(irep, energy_unit, energy)
+!  end if
+!
+!  if(inmisc%i_window == 1) then
+!     call energy_window(irep, energy_unit, energy)
+!  end if
   
 !  if(inmisc%i_winz == 1) then
 !     call energy_winz(irep, energy_unit, energy)

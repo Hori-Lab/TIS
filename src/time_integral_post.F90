@@ -24,7 +24,8 @@
 !           = 1 Langevin dynamics (recommended)
 !           = 2 Newtonian dynamics (velocity Verlet) with Berendsen thermostat
 ! **********************************************************************
-subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
+!subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
+subroutine time_integral_post()
   
   use const_maxsize
   use const_physical
@@ -56,10 +57,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   implicit none
 
-  logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
-  logical, intent(inout) :: flg_exit_loop_mstep
+  !logical, intent(inout) :: flg_step_each_replica(n_replica_mpi)
+  !logical, intent(inout) :: flg_exit_loop_mstep
 
-  logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
+  logical :: flg_step_save, flg_step_rep_exc !, flg_step_rep_save!, flg_step_rep_opt
   logical :: flg_step_rst, flg_step_widom !,flg_step_implig
   integer :: imp1, imp2
   integer :: imp, irep, grep
@@ -72,19 +73,19 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   TIME_S( tm_others )
   flg_step_save     = .false. 
   flg_step_rep_exc  = .false.
-  flg_step_rep_save = .false.
-  flg_step_rep_opt  = .false.
+!  flg_step_rep_save = .false.
+!  flg_step_rep_opt  = .false.
 !  flg_step_implig   = .false.
   flg_step_rst      = .false.
   flg_step_widom    = .false.
 
   if (mod(istep, insimu%n_step_save)   == 0) flg_step_save = .true.
 
-  if (i_run_mode == RUN%REPLICA) then
-     if (n_replica_mpi == count(flg_step_each_replica))    flg_step_rep_exc  = .true.
-     if (mod(istep, inrep%n_step_save) == 0)               flg_step_rep_save = .true.
-     if (inrep%flg_opt_temp .and. istep == nstep_opt_temp) flg_step_rep_opt  = .true.
-  endif
+!  if (i_run_mode == RUN%REPLICA) then
+!     if (n_replica_mpi == count(flg_step_each_replica))    flg_step_rep_exc  = .true.
+!     if (mod(istep, inrep%n_step_save) == 0)               flg_step_rep_save = .true.
+!     if (inrep%flg_opt_temp .and. istep == nstep_opt_temp) flg_step_rep_opt  = .true.
+!  endif
   
 !  if (inmisc%i_implig==1) then
 !     if (inimplig%iexe_implig==1) then
@@ -98,19 +99,21 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      endif
   endif
 
-  if (i_run_mode == RUN%WIDOM) then
-     if (istep >= inwidom%n_step_skip .and. mod(istep, inwidom%n_step_interval) == 0) then
-        flg_step_widom = .true.
-     endif
-  endif
+!  if (i_run_mode == RUN%WIDOM) then
+!     if (istep >= inwidom%n_step_skip .and. mod(istep, inwidom%n_step_interval) == 0) then
+!        flg_step_widom = .true.
+!     endif
+!  endif
   
   TIME_E( tm_others )
 
   ! --------------------------------------------------------------
   ! energy calculation
   ! --------------------------------------------------------------
-  if(     flg_step_rep_exc   &     ! to exchange replica
-     .OR. flg_step_save      &     ! to save
+  !if(     flg_step_rep_exc   &     ! to exchange replica
+  !   .OR. flg_step_save      &     ! to save
+  !   .OR. istep == 1       ) then  ! to save 1st step
+  if( flg_step_save      &     ! to save
      .OR. istep == 1       ) then  ! to save 1st step
      
      ! calc energy and radius
@@ -150,19 +153,19 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                         rmsd_unit, rmsd,              &
                         energy_unit, energy, tempk)
 
-     if (flg_file_out%opt) then
-        ! something to write to opt file
-     endif
-     if (flg_file_out%ee) then
-        irep = 1
-        !imp1 = 1
-        !imp2 = nmp_real
-        imp1 = 1
-        imp2 = 118
-        v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-        dee = sqrt(dot_product(v21,v21))
-        write(outfile%ee, *) istep, dee
-     endif
+     !if (flg_file_out%opt) then
+     !   ! something to write to opt file
+     !endif
+     !if (flg_file_out%ee) then
+     !   irep = 1
+     !   !imp1 = 1
+     !   !imp2 = nmp_real
+     !   imp1 = 1
+     !   imp2 = 118
+     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     !   dee = sqrt(dot_product(v21,v21))
+     !   write(outfile%ee, *) istep, dee
+     !endif
 
 #ifdef MPI_PAR
      end if
@@ -228,91 +231,91 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! ------------------------
   TIME_E( tm_others )
   TIME_S( tm_replica )
-  if (i_run_mode == RUN%REPLICA) then
-     
-     ! write trajectory
-     if (flg_file_out%rep .AND. (istep == insimu%i_tstep_init .OR. flg_step_rep_save)) then
-        call write_rep_traject(istep)
-     endif
-     
-     if (flg_step_rep_exc) then
-        
-        !              write(6,*) ' << Replica Exchange istep >> ', istep, n_exchange
-        
-        flg_step_each_replica(1:n_replica_mpi)  = .false. 
-#ifdef MPI_PAR
-        TIME_S( tmc_replica )
-        replica_energy_l(:,:) = replica_energy(:,:)
-        call mpi_allreduce(replica_energy_l, replica_energy, 2*n_replica_all, PREC_MPI, &
-             MPI_SUM, mpi_comm_rep, ierr)
-        
-        TIME_E( tmc_replica )
-#endif
-        
-        n_exchange = n_exchange + 1
-!              write(6,*) ' << Replica Exchange istep >> ', istep, n_exchange
-        call simu_replica_exchange(velo_mp, replica_energy, tempk)
-! DBGs
-!             do irep=1, n_replica_all
-!               write(6,*) irep,replica_energy(1,irep)
-!             enddo
-! DBGe
-        if (flg_rep(REPTYPE%TEMP)) then
-           ! update rlan_const (depend on temperature)
-           if(i_simulate_type == SIM%LANGEVIN) then
-              
-              do irep = 1, n_replica_mpi
-                 grep  = irep2grep(irep)
-                 tempk = rep2val(grep, REPTYPE%TEMP)
-                 do imp   = 1, nmp_real
-                    rlan_const(1, imp, irep)  &
-                         = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk & 
-                                     / (tstep * cmass_mp(imp)) )
-                 enddo
-              enddo
-           endif ! LANGEVIN
-        endif
-        
-        if (flg_rep(REPTYPE%TEMP) .OR. flg_rep(REPTYPE%ION) .OR. &
-            flg_rep(REPTYPE%WIND) .OR. flg_rep(REPTYPE%PULL)) then
-
-           call simu_para2(tempk, inele%ionic_strength)
-
-        end if
-        
-        !if (inrep%i_loadbalance >= 1) then
-        !   if (mod(n_exchange, inrep%n_adjust_interval) == 0) then
-        !      
-        !      TIME_S(tm_step_adj)
-        !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
-        !      TIME_E(tm_step_adj)
-        !
-        !   end if
-        !endif
-        
-        do irep = 1, n_replica_mpi
-           grep = irep2grep(irep)
-           exchange_step(grep) = istep + rep2step(grep)
-!#ifdef _DEBUG
-!                write(6,'(a,4i5)') ' - irep,grep,exchange_step(grep),rep2step(grep) - ' ,&
-!                                       irep,grep,exchange_step(grep),rep2step(grep)
+!  if (i_run_mode == RUN%REPLICA) then
+!     
+!     ! write trajectory
+!     if (flg_file_out%rep .AND. (istep == insimu%i_tstep_init .OR. flg_step_rep_save)) then
+!        call write_rep_traject(istep)
+!     endif
+!     
+!     if (flg_step_rep_exc) then
+!        
+!        !              write(6,*) ' << Replica Exchange istep >> ', istep, n_exchange
+!        
+!        flg_step_each_replica(1:n_replica_mpi)  = .false. 
+!#ifdef MPI_PAR
+!        TIME_S( tmc_replica )
+!        replica_energy_l(:,:) = replica_energy(:,:)
+!        call mpi_allreduce(replica_energy_l, replica_energy, 2*n_replica_all, PREC_MPI, &
+!             MPI_SUM, mpi_comm_rep, ierr)
+!        
+!        TIME_E( tmc_replica )
 !#endif
-        enddo
-
-     endif ! flg_step_rep_exc
-     
-     if (flg_step_rep_opt) then
-        call simu_replica_opt_temp(iopt_stage)
-        call write_rep_table()
-        nstep_opt_temp = nstep_opt_temp + inrep%n_step_opt_temp
-        
-        if (iopt_stage >= inrep%n_stage_opt_temp) then
-           flg_exit_loop_mstep = .TRUE.
-           return
-        endif
-     endif
-     
-  endif ! Replica exchange
+!        
+!        n_exchange = n_exchange + 1
+!!              write(6,*) ' << Replica Exchange istep >> ', istep, n_exchange
+!        call simu_replica_exchange(velo_mp, replica_energy, tempk)
+!! DBGs
+!!             do irep=1, n_replica_all
+!!               write(6,*) irep,replica_energy(1,irep)
+!!             enddo
+!! DBGe
+!        if (flg_rep(REPTYPE%TEMP)) then
+!           ! update rlan_const (depend on temperature)
+!           if(i_simulate_type == SIM%LANGEVIN) then
+!              
+!              do irep = 1, n_replica_mpi
+!                 grep  = irep2grep(irep)
+!                 tempk = rep2val(grep, REPTYPE%TEMP)
+!                 do imp   = 1, nmp_real
+!                    rlan_const(1, imp, irep)  &
+!                         = sqrt( 2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk & 
+!                                     / (tstep * cmass_mp(imp)) )
+!                 enddo
+!              enddo
+!           endif ! LANGEVIN
+!        endif
+!        
+!        if (flg_rep(REPTYPE%TEMP) .OR. flg_rep(REPTYPE%ION) .OR. &
+!            flg_rep(REPTYPE%WIND) .OR. flg_rep(REPTYPE%PULL)) then
+!
+!           call simu_para2(tempk, inele%ionic_strength)
+!
+!        end if
+!        
+!        !if (inrep%i_loadbalance >= 1) then
+!        !   if (mod(n_exchange, inrep%n_adjust_interval) == 0) then
+!        !      
+!        !      TIME_S(tm_step_adj)
+!        !      call step_adjustment(istep, n_exchange, inrep%i_loadbalance)
+!        !      TIME_E(tm_step_adj)
+!        !
+!        !   end if
+!        !endif
+!        
+!        do irep = 1, n_replica_mpi
+!           grep = irep2grep(irep)
+!           exchange_step(grep) = istep + rep2step(grep)
+!!#ifdef _DEBUG
+!!                write(6,'(a,4i5)') ' - irep,grep,exchange_step(grep),rep2step(grep) - ' ,&
+!!                                       irep,grep,exchange_step(grep),rep2step(grep)
+!!#endif
+!        enddo
+!
+!     endif ! flg_step_rep_exc
+!     
+!     if (flg_step_rep_opt) then
+!        call simu_replica_opt_temp(iopt_stage)
+!        call write_rep_table()
+!        nstep_opt_temp = nstep_opt_temp + inrep%n_step_opt_temp
+!        
+!        if (iopt_stage >= inrep%n_stage_opt_temp) then
+!           flg_exit_loop_mstep = .TRUE.
+!           return
+!        endif
+!     endif
+!     
+!  endif ! Replica exchange
   TIME_E( tm_replica )
   TIME_S( tm_others )
   
@@ -367,9 +370,9 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   !   endif
   !endif
 
-  if (inmisc%nbrid_ppr > 0) then
-     call simu_ppr()
-  endif
+!  if (inmisc%nbrid_ppr > 0) then
+!     call simu_ppr()
+!  endif
   TIME_E( tm_others )
 
 end subroutine time_integral_post
