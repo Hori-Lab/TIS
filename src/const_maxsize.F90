@@ -45,7 +45,7 @@ module const_maxsize
   integer, parameter :: MXSIM = 10     !< maximum # of simulation stages
 !  integer, parameter :: MXSEARCHINGTF = 1000  !< maximum # of cycles for simulated searching TF
   integer, parameter :: MX_REP_OPT_STAGE = 10000 !< maximum # of cycles for Feedback-optimized REM
-  integer(L_INT), parameter :: MX_NTSTEP = 2000000000
+  integer(L_INT), parameter :: MX_NTSTEP = 50000000000
 
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 1     !< maximum # of atoms for each mass point
