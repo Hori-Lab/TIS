@@ -6,6 +6,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   use if_write
   use var_io,     only : flg_file_out
   use var_replica, only : n_replica_mpi
+  use var_setp,    only : insimu
   use var_simu,    only : ibefore_time, tempk, velo_mp, energy, energy_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, replica_energy
 #ifdef MPI_PAR
@@ -46,6 +47,15 @@ subroutine simu_calc_energy_dcd(istep_write)
   call write_tseries(ibefore_time, istep_write, &
                      rg_unit, rg, rmsd_unit, rmsd, &
                      energy_unit, energy, tempk, flg_header)
+
+  if(insimu%i_com_zeroing == 1) then
+     call simu_xyz_adjst()
+  end if
+
+  if (flg_file_out%dcd) then
+     call write_traject_file(ibefore_time, istep_write, tempk, velo_mp)
+  endif
+
   if (flg_file_out%opt) then
      ! something to write to opt file
 
