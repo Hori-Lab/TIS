@@ -47,7 +47,9 @@ subroutine input()
 
   iarg = iargc()
   ! exception
-  if (iarg < 1 .OR. iarg > 2) then
+  if (iarg < 1 .or. 2 < iarg) then
+     write(6,*)
+     call write_version(6)
      error_message = 'Usage: % PROGRAM (INPUT_FILE) [(restart file)]'
      call util_error(ERROR%STOP_STD, error_message)
   end if
