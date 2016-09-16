@@ -205,6 +205,10 @@ contains
          i_class = CLASS%ION
          i_type  = MPTYPE%ION_CL
          c_res = 'Cl '
+      elseif (c_res == 'CA2' .OR. c_res == 'Ca2') then
+         i_class = CLASS%ION
+         i_type  = MPTYPE%ION_CA2
+         c_res = 'Ca2'
 
       ! Ligands
       elseif (c_atom == ' X1 ') then

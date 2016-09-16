@@ -55,6 +55,7 @@ module var_setp
      integer :: num_k_ion
      integer :: num_cl_ion
      integer :: num_mg_ion
+     integer :: num_ca_ion
      integer :: num_ion(IONTYPE%MAX_ION)
      character(3) :: char_ion(IONTYPE%MAX_ION)
 

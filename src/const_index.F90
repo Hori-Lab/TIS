@@ -221,12 +221,13 @@ module const_index
      integer :: RNA_BASE   !<  3: Base of RNA
      integer :: RNA_SUGAR  !<  4: Sugar of RNA
      integer :: ION_MG     !<  5
-     integer :: ION_NA     !<  6
-     integer :: ION_K      !<  7
-     integer :: ION_CL     !<  8
-     integer :: LIG_X1     !<  9
+     integer :: ION_CA2    !<  6
+     integer :: ION_NA     !<  7
+     integer :: ION_K      !<  8
+     integer :: ION_CL     !<  9
+     integer :: LIG_X1     !<  10
   endtype mp_type
-  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9)
+  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9,10)
 
   type chemical_type
      integer :: UNKNOWN !<  0: Default value is stored here
@@ -274,11 +275,12 @@ module const_index
      integer :: K         !< 2: K+
      integer :: CL        !< 3: Cl- of DNA
      integer :: MG        !< 4: Mg2+ of DNA
-     integer :: MAX_ION   !< 4: Max number of ion
-     integer :: P         !< 5: Phosphate of DNA
-     integer :: MAX_ALL   !< 5: Max number of ion and phosphate
+     integer :: CA2       !< 5: Ca2+ of DNA
+     integer :: MAX_ION   !< 5: Max number of ion
+     integer :: P         !< 6: Phosphate of DNA
+     integer :: MAX_ALL   !< 6: Max number of ion and phosphate
   endtype ion_type
-  type(ion_type), parameter :: IONTYPE = ion_type(0,1,2,3,4,4,5,5)
+  type(ion_type), parameter :: IONTYPE = ion_type(0,1,2,3,4,5,5,6,6)
 
   ! categories for RNA's bond
   type bd_type
@@ -508,24 +510,25 @@ module const_index
      integer :: P    !< 22
      integer :: P2   !< 23
      integer :: MG   !< 24
-     integer :: K    !< 25
-     integer :: NA   !< 26
-     integer :: CL   !< 27
-     integer :: RA   !< 28
-     integer :: RC   !< 29
-     integer :: RG   !< 30
-     integer :: RT   !< 31
-     integer :: RU   !< 32
-     integer :: RI   !< 33
-     integer :: DA   !< 34
-     integer :: DC   !< 35
-     integer :: DG   !< 36
-     integer :: DT   !< 37
-     integer :: DU   !< 38
-     integer :: DI   !< 39
-     integer :: MAX  !< 39
+     integer :: CA2  !< 25
+     integer :: K    !< 26
+     integer :: NA   !< 27
+     integer :: CL   !< 28
+     integer :: RA   !< 29
+     integer :: RC   !< 20
+     integer :: RG   !< 31
+     integer :: RT   !< 32
+     integer :: RU   !< 33
+     integer :: RI   !< 34
+     integer :: DA   !< 35
+     integer :: DC   !< 36
+     integer :: DG   !< 37
+     integer :: DT   !< 38
+     integer :: DU   !< 39
+     integer :: DI   !< 40
+     integer :: MAX  !< 40
   endtype seq2id
   type(seq2id), parameter :: SEQID = seq2id(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,&
-                             20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,39)
+                             20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,40)
   
 endmodule const_index

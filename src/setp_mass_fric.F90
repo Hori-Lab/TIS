@@ -282,6 +282,8 @@ contains
       ! ------ ions ------
       else if (cmp2seq(imp) == 'Mg ') then
          imp2chemicaltype = CHEMICALTYPE%MG
+      else if (cmp2seq(imp) == 'Ca2') then
+         imp2chemicaltype = CHEMICALTYPE%CA2
       else if (cmp2seq(imp) == 'K  ') then
          imp2chemicaltype = CHEMICALTYPE%K
       else if (cmp2seq(imp) == 'Na ') then

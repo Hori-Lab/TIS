@@ -64,6 +64,8 @@ character(3) function cfunc_id2seq(id)
         cfunc_id2seq = 'P2 '
      case (SEQID%MG)
         cfunc_id2seq = 'MG '
+     case (SEQID%CA2)
+        cfunc_id2seq = 'CA2'
      case (SEQID%K)
         cfunc_id2seq = 'K  '
      case (SEQID%CL)

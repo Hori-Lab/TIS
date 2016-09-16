@@ -76,6 +76,9 @@ subroutine setp_para_ion()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inion%num_mg_ion, cvalue)
 
+        cvalue = 'num_ca_ion'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inion%num_ca_ion, cvalue)
      end do
   end do
 
@@ -109,6 +112,13 @@ subroutine setp_para_ion()
      write (lunout, *) "number of Mg2+ ion = ", inion%num_mg_ion
   end if
 
+  if(inion%num_ca_ion < 0) then
+     error_message = 'Error: invalid value for num_ca_ion'
+     call util_error(ERROR%STOP_ALL, error_message)
+  else
+     write (lunout, *) "number of Ca2+ ion = ", inion%num_ca_ion
+  end if
+
 #ifdef MPI_PAR
   end if
 
@@ -119,10 +129,12 @@ subroutine setp_para_ion()
   inion%num_ion(IONTYPE%K)  = inion%num_k_ion
   inion%num_ion(IONTYPE%CL) = inion%num_cl_ion
   inion%num_ion(IONTYPE%MG) = inion%num_mg_ion
+  inion%num_ion(IONTYPE%CA2)= inion%num_ca_ion
 
-  inion%char_ion(IONTYPE%NA) = 'NA'
-  inion%char_ion(IONTYPE%K ) = 'K '
-  inion%char_ion(IONTYPE%CL) = 'CL'
-  inion%char_ion(IONTYPE%MG) = 'MG'
+! CURRENTLY NOT USED
+  !inion%char_ion(IONTYPE%NA) = 'NA'
+  !inion%char_ion(IONTYPE%K ) = 'K '
+  !inion%char_ion(IONTYPE%CL) = 'CL'
+  !inion%char_ion(IONTYPE%MG) = 'MG'
 
 end subroutine setp_para_ion

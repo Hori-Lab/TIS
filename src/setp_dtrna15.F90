@@ -90,6 +90,9 @@ subroutine setp_dtrna15()
         else if (cmp2seq(imp) == 'Cl ') then
            exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%CL))
            exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%CL)
+        else if (cmp2seq(imp) == 'Ca2') then
+           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%CA2))
+           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%CA2)
         endif
 
      else if (iclass_mp(imp) == CLASS%RNA) then
