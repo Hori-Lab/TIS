@@ -1,0 +1,59 @@
+<<<< filenames
+path = ./data
+filename = collapse
+OUTPUT pdb dcd psf rst
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 2
+i_simulate_type = 1
+i_initial_state = 6
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    protein  1vii.a.pdb
+>>>>
+
+<<<< initial_struct
+1           1vii.a.pdb
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all) collapse_1vii.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 10000
+tstep_size = 0.05
+n_step_save = 100
+n_step_neighbor = 1
+n_step_rst = 100
+i_com_zeroing = 1
+i_no_trans_rot = 0
+tempk  = 323.15
+n_seed = 3
+i_fric = 1
+i_mass = 1
+i_redef_para = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_ROUSE
+NLOCAL(1/1)   EXV_GAUSS CON_GAUSS
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000010
+>>>>
