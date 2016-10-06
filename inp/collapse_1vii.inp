@@ -30,14 +30,15 @@ NINFO(all/all) collapse_1vii.ninfo
 
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 10000
+n_tstep(1) = 100000
+#n_tstep(1) = 10000000
 tstep_size = 0.05
 n_step_save = 100
 n_step_neighbor = 1
 n_step_rst = 100
 i_com_zeroing = 1
 i_no_trans_rot = 0
-tempk  = 323.15
+tempk  = 300.15
 n_seed = 3
 i_fric = 1
 i_mass = 1
