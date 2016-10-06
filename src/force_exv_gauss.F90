@@ -5,6 +5,7 @@ subroutine force_exv_gauss(irep, force_mp)
   use const_index
   use var_setp,   only : inperi
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
+  use var_simu, only : tempk
   use mpiconst
 
   implicit none
@@ -14,7 +15,7 @@ subroutine force_exv_gauss(irep, force_mp)
 
   integer :: ksta, kend
   integer :: imp1, imp2,iexv, imirror
-  real(PREC) :: a0, denom, v, coef, dist2
+  real(PREC) :: a0, denom, v, coef, dist2, kT
   real(PREC) :: v21(SDIM), for(SDIM)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
@@ -25,7 +26,8 @@ subroutine force_exv_gauss(irep, force_mp)
   a0 = 3.8
   denom = 2 * (a0 ** 2)
   v = 4.0/3.0 * F_PI * (a0 ** 3)
-  coef = v / (((2 * F_PI) ** 1.5) * (a0 ** 5))
+  kT = tempk * BOLTZ_KCAL_MOL
+  coef = kT * v / (((2 * F_PI) ** 1.5) * (a0 ** 5))
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL

@@ -5,6 +5,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   use const_index
   use var_setp,    only : inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
+  use var_simu, only : tempk
   use mpiconst
 
   implicit none
@@ -17,7 +18,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
   real(PREC) :: dist2
-  real(PREC) :: a0, v, coef, denom
+  real(PREC) :: a0, v, coef, denom, kT
   real(PREC) :: ene 
   real(PREC) :: v21(SDIM)
 #ifdef SHARE_NEIGH_PNL
@@ -29,7 +30,8 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   a0 = 3.8
   denom = 2 * (a0 ** 2)
   v = 4.0/3.0 * F_PI * (a0 ** 3)
-  coef = v / ((2 * F_PI * (a0**2)) ** 1.5)
+  kT = tempk * BOLTZ_KCAL_MOL
+  coef = kT * v / ((2 * F_PI * (a0**2)) ** 1.5)
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH_PNL
