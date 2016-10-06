@@ -183,8 +183,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_S( tm_force_exv ) 
 !$omp end master
 
-  ! Also used in ion-only simulations
   if (inmisc%force_flag(INTERACT%EXV_DT15)) then
+        ! Also used in ion-only simulations
         call force_exv_dt15 (irep, force_mp_l(1,1,tn))
   else
      if (inmisc%i_residuenergy_radii == 0) then
@@ -195,6 +195,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
      endif
      if (inmisc%force_flag(INTERACT%EXV_WCA)) then
         call force_exv_wca (irep, force_mp_l(1,1,tn))
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then
+        call force_exv_gauss (irep, force_mp_l(1,1,tn))
      endif
   endif
 

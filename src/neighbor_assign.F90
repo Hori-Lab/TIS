@@ -51,7 +51,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !  integer :: isearch_rna_bp, isearch_rna_st, isearch_morse
   integer :: i_exvol
 !  integer :: i_sasa
-  integer :: i_exv_wca, i_exv_dt15
+  integer :: i_exv_wca, i_exv_dt15, i_exv_gauss
   integer :: iexv2mp_l  (3, MXMPNEIGHBOR*nmp_all)
   integer :: iexv2mp_pre(3, MXMPNEIGHBOR*nmp_all)
   integer :: nexv_lall(0:npar_mpi-1)
@@ -70,11 +70,12 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !     integer :: AICG2
 !     integer :: SASA   !sasa
      integer :: EXV_WCA
+     integer :: EXV_GAUSS
      integer :: EXV_DT15
      integer :: MAX
   endtype calc_type
   !type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,12)
-  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,6)
+  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,7)
   integer :: icalc(CALC%MAX, nunit_real, nunit_real)
 
   character(CARRAY_MSG_ERROR) :: error_message
@@ -142,6 +143,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
         endif
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_DT15)) then
            icalc(CALC%EXV_DT15, iunit, junit) = 1
+        endif
+        if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_GAUSS)) then
+           icalc(CALC%EXV_GAUSS, iunit, junit) = 1
         endif
 
      end do
@@ -475,6 +479,26 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end if
         end if
         
+
+        ! -----------------------------------------------------------------
+        ! excluded volume with Gaussian function
+        if(icalc(CALC%EXV_GAUSS, iunit, junit) == 1) then
+           i_exv_gauss = 1 
+           if(iunit == junit) then
+              if (jmp < imp + 1) then
+                 i_exv_gauss = 0
+              end if
+
+           end if ! (iunit==junit)
+
+           if(i_exv_gauss == 1) then
+              iexv = iexv + 1
+              iexv2mp_l(1, iexv) = imp 
+              iexv2mp_l(2, iexv) = jmp
+              iexv2mp_l(3, iexv) = E_TYPE%EXV_GAUSS
+           end if
+        end if
+
 !        ! -----------------------------------------------------------------
 !        ! SASA
 !        if(icalc(CALC%SASA, iunit, junit) == 1) then

@@ -240,6 +240,14 @@ interface
       real(PREC), intent(out) :: energy_unit(:,:,:)
    endsubroutine energy_exv_restype
    
+   subroutine energy_exv_gauss (irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)  :: irep
+      real(PREC), intent(out) :: energy(:)
+      real(PREC), intent(out) :: energy_unit(:,:,:)
+   endsubroutine energy_exv_gauss
+
    subroutine energy_ele(irep, energy, energy_unit)
       use const_maxsize
       implicit none

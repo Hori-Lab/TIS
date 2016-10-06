@@ -421,7 +421,8 @@ contains
     if (ego > HIGH_ENERGY_JUDGE) ego = HIGH_ENERGY_OUT
 !    emorse  = tenergy(E_TYPE%MORSE)
 !    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
-    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
+    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) &
+             +tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15) + tenergy(E_TYPE%EXV_GAUSS)
     if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
     !estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
     estack_rna = tenergy(E_TYPE%STACK_DTRNA)

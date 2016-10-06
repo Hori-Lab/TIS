@@ -45,6 +45,7 @@ subroutine neighbor(irep)
   TIME_S( tm_neighbor_exv )
   if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
       inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
+      inmisc%force_flag(INTERACT%EXV_GAUSS) .OR. &
       inmisc%force_flag(INTERACT%GO) .OR. inmisc%force_flag(INTERACT%LJ) ) then
       !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&

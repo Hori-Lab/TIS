@@ -126,12 +126,13 @@ module const_index
      integer :: TSTACK_DTRNA  !< 29: Denesyuk-Thirumalai RNA base stacking
      integer :: THBOND_DTRNA  !< 30: Denesyuk-Thirumalai RNA hydrogen bond
      integer :: EXV6          !< 31: Excluded volume
+     integer :: EXV_GAUSS     !< 32: Excluded volume
      integer :: MAX           !< Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      != energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
      !              21,22,23,24,25,26,27,28,29,30,31,31)
-     = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,21)
+     = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,22)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -170,11 +171,12 @@ module const_index
      integer :: EXV_WCA   !< 14: Excluded volume with Weeks-Chandler-Andersen potential
      integer :: EXV_DT15  !< 15: Excluded volume with Weeks-Chandler-Andersen potential
      integer :: LJ        !< 16: Lenard-Jones
+     integer :: EXV_GAUSS !< 17: Excluded volume with Gaussian function
      integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
      != interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
-     = interaction_type(1,2,3,4,5,6,7,8,9,9)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,10)
 
 
   type error_handling

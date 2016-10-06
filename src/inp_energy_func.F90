@@ -663,6 +663,9 @@ contains
     else if(char00(i1:i2) == 'EXV6') then
        itype = INTERACT%EXV6
 
+    else if(char00(i1:i2) == 'EXV_GAUSS') then
+       itype = INTERACT%EXV_GAUSS
+
     else if(char00(i1:i2) == 'ELE') then
        itype = INTERACT%ELE
 

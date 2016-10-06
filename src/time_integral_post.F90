@@ -155,13 +155,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      endif
      if (flg_file_out%ee) then
         irep = 1
-        !imp1 = 1
-        !imp2 = nmp_real
         imp1 = 1
-        imp2 = 118
+        imp2 = nmp_real
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
         dee = sqrt(dot_product(v21,v21))
-        write(outfile%ee, *) istep, dee
+        write(outfile%ee, *) istep, dee, v21(1),v21(2),v21(3)
      endif
 
 #ifdef MPI_PAR

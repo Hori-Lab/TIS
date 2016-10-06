@@ -72,6 +72,12 @@ subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
      call sort( E_TYPE%EXV_DT15 )
   end if
 
+  ! ------------------------------------------------------------
+  ! exvol Gaussian
+  if(inmisc%force_flag(INTERACT%EXV_GAUSS)) then
+     call sort( E_TYPE%EXV_GAUSS )
+  end if
+
 !  !-------------------------------------------------------------
 !  !sasa
 !  if(inmisc%force_flag(INTERACT%SASA)) then
