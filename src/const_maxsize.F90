@@ -58,6 +58,8 @@ module const_maxsize
   integer, parameter :: MXBD = MXMPBD * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPFENE = 1
   integer, parameter :: MXFENE = MXMPFENE * MXMP        !< maximum # of bonds
+  integer, parameter :: MXMPROUSE = 1
+  integer, parameter :: MXROUSE = MXMPROUSE * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPBA = 2
   integer, parameter :: MXBA = MXMPBA * MXMP    !< maximum # of bond angles
   integer, parameter :: MXMPDIH = 2

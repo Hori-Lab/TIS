@@ -51,6 +51,14 @@ interface
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_fene
+
+   subroutine energy_rouse  (irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_rouse
    
 !   subroutine energy_box(irep, energy_unit, energy)
 !     use const_maxsize

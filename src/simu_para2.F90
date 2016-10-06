@@ -71,6 +71,11 @@ subroutine simu_para2(tempk_in, ionic_strength_in)
         call simu_set_dtrna(grep, tempk)
      endif
 
+     ! ----------------------------------------------------------------------
+     if (inmisc%force_flag_local(LINTERACT%L_ROUSE)) then
+        call simu_set_rouse(grep, tempk)
+     endif
+
   enddo
 
 

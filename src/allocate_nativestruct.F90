@@ -10,6 +10,7 @@ subroutine allocate_nativestruct()
    use var_struct,  only : nmp_all, &
                            ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
                            ifene2mp, fene_nat, dist2_fene, coef_fene, &
+                           irouse2mp, coef_rouse, &
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba, &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
@@ -92,6 +93,14 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_fene(:) = 0.0e0_PREC
 
+   ! rouse
+   allocate( irouse2mp(2, MXMPROUSE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   irouse2mp(:,:) = 0
+
+   allocate( coef_rouse(2, MXMPROUSE*nmp_all, n_replica_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_rouse(:,:,:) = 0.0e0_PREC
 
    ! bond angle
    allocate( iba2mp(3, MXMPBA*nmp_all), stat=ier)
@@ -672,6 +681,7 @@ subroutine deallocate_nativestruct
 
    use var_struct,  only : ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
                            ifene2mp, fene_nat, dist2_fene, coef_fene, &
+                           irouse2mp, coef_rouse,&
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba,       &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
@@ -713,6 +723,10 @@ subroutine deallocate_nativestruct
    if (allocated(fene_nat))             deallocate(fene_nat)
    if (allocated(dist2_fene))           deallocate(dist2_fene)
    if (allocated(coef_fene))            deallocate(coef_fene)
+
+   ! Rouse
+   if (allocated(irouse2mp))             deallocate(irouse2mp)
+   if (allocated(coef_rouse))            deallocate(coef_rouse)
 
    ! bond angle
    if (allocated(iba2mp))             deallocate(iba2mp)

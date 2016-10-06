@@ -81,6 +81,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
                          !ene_unit_l(1,1,tn))
 
   call force_fene  (irep, force_mp_l(1,1,tn)) !, ene_unit_l(1,1,tn))
+  call force_rouse (irep, force_mp_l(1,1,tn))
 
   call force_bangle(irep, force_mp_l(1,1,tn))
                          !force_mp_mgo(1,1,1,1,tn), &

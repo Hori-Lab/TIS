@@ -114,6 +114,7 @@ subroutine energy_sumup(irep,          &
 
   call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  call energy_rouse (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 

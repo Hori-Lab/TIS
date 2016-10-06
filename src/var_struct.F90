@@ -69,6 +69,14 @@ module var_struct
   real(PREC), allocatable, save :: dist2_fene(:)   !(MXFENE)
   !real(PREC), allocatable, save :: correct_bd_mgo(:) !(MXFENE)
 
+  !> parameters for Rouse potential
+  integer,    save :: nrouse = 0
+  integer,    allocatable, save :: irouse2mp(:,:)       !(2, MXROUSE)
+  real(PREC), allocatable, save :: coef_rouse(:,:,:)    !(2, MXROUSE, n_replica_all)
+                                   ! 1: a0
+                                   ! 2: 3kT/a0^2  (for force calculation)
+                                   !    should be divided by 2 to calculate energy term (3kT/(2*a0^2))
+
   !> parameters for bond angle potential
   integer,    save :: nba = 0
 !  integer,    save :: nfba = 0

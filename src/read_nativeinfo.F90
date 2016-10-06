@@ -14,6 +14,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   use var_struct, only : lunit2mp, imp2unit, cmp2seq,&
        nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
        nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
+       nrouse, irouse2mp, coef_rouse, &
        nba, iba2mp, ba_nat, factor_ba, coef_ba, &
 !       ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, idih2type, &
        ncon, icon2mp, icon2unit, go_nat, go_nat2, factor_go, icon_dummy_mgo, coef_go, &
@@ -46,7 +47,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: input_status
   integer :: ii, jj, imp1, imp2, imp3, imp4, iunit1, iunit2, imp_tmp
   integer :: imp1un, imp2un, imp3un, imp4un, kunit1
-  integer :: ibd, ifene, iba, icon, iLJ
+  integer :: ibd, ifene, irouse, iba, icon, iLJ
 !  integer :: idih
 !  integer :: iba_aicg2, idih_aicg2, idih_aicg2p
   integer :: ibd_read, iba_read, idih_read
@@ -75,6 +76,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
   ibd = nbd 
   ifene = nfene
+  irouse = nrouse
   iba = nba 
 !  idih = ndih
 !  iba_aicg2 = nba
@@ -168,6 +170,33 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         !if (ctype2 /= '  ') then
         !   ibd2type(ibd) = str2bondtype(ctype2)
         !endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read the Rouse spring (bond)
+     if(cline(1:5) == 'rouse') then
+        read (cline, *, iostat = input_status)     &
+             cline_head, ibd_read, iunit1, iunit2, &
+             imp1, imp2, imp1un, imp2un, coef
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        irouse = irouse + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           irouse2mp(1, irouse) = imp1 + ii
+           irouse2mp(2, irouse) = imp2 + ii
+           kunit1 = iunit1
+        else ! NATIVEINFO%ONE_BY_ONE
+           irouse2mp(1, irouse) = imp1un + ii
+           irouse2mp(2, irouse) = imp2un + ii
+           kunit1 = iunit
+        end if
+        !if (inmisc%flg_coef_from_ninfo) then
+           coef_rouse(1,irouse,:) = coef
+        !endif
+
      end if
 
      ! ------------------------------------------------------------------
@@ -723,6 +752,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   ! ---------------------------------------------------------------------
   nbd = ibd 
   nfene = ifene
+  nrouse = irouse
   nba = iba 
 !  ndih = idih
   ncon = icon

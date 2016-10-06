@@ -145,11 +145,12 @@ module const_index
      !integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
      integer :: L_DTRNA     !< 10: Denesyuk-Thirumalai RNA model
      integer :: L_FENE      !< 11: FENE
+     integer :: L_ROUSE     !< 12: Rouse
      integer :: MAX         !< Maximum value
   endtype local_interaction_type
   type(local_interaction_type), parameter :: LINTERACT  & 
      != local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
-     = local_interaction_type(1,2,3,4,5,6,6)
+     = local_interaction_type(1,2,3,4,5,6,7,7)
 
 
   type interaction_type

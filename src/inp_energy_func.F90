@@ -620,6 +620,9 @@ contains
     else if(char00(i1:i2) == 'L_BOND') then
        itype = LINTERACT%L_BOND
 
+    else if(char00(i1:i2) == 'L_ROUSE') then
+       itype = LINTERACT%L_ROUSE
+
 !    else if(char00(i1:i2) == 'L_ENM') then
 !       itype = LINTERACT%L_ENM
 

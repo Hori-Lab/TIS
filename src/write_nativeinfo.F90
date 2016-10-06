@@ -10,6 +10,7 @@ subroutine write_nativeinfo(lunout)
                          nbd, ibd2mp, bd_nat, cmp2atom, &
                          factor_bd, coef_bd, correct_bd_mgo,  &
                          nfene, ifene2mp, fene_nat, coef_fene, dist2_fene,  &
+                         nrouse, irouse2mp, coef_rouse, &
                          nba, iba2mp, ba_nat, factor_ba, coef_ba, correct_ba_mgo,&
 !                         ndih, idih2mp, dih_nat,    &
 !                         factor_dih, coef_dih, correct_dih_mgo, &
@@ -98,6 +99,27 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! nfene > 0
+
+
+  ! -------------------------------------------------------------------
+  ! write the Rouse
+  if (nrouse > 0) then
+     write (lunout, '(a)') '<<<< Rouse '
+       
+     do ibd = 1, nrouse
+        imp1 = irouse2mp(1, ibd)
+        imp2 = irouse2mp(2, ibd)
+        iunit1 = imp2unit(imp1)
+        iunit2 = iunit1
+        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+        write (lunout, "(a5, 7(1xi6), 1(1xf12.4))") &
+             'rouse', ibd, iunit1, iunit2, imp1, imp2, imp1un, imp2un, coef_rouse(1, ibd, IREP)
+     end do
+        
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! nrouse > 0
 
   
   ! -------------------------------------------------------------------
