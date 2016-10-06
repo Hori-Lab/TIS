@@ -140,6 +140,12 @@ module var_struct
   !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
   real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
 
+  !> parameters for con_gauss potential
+  integer,    save :: ncon_gauss = 0
+  integer,    allocatable, save :: icon_gauss2mp(:,:)      !(2, MXcon_gauss)
+  !integer,    allocatable, save :: lmp2con_gauss(:)        !(MXMP)
+  integer,    allocatable, save :: icon_gauss2unit(:,:)    !(2, MXcon_gauss)
+
 !  !> parameter for go (morse) potential
 !  integer,    save :: nmorse = 0
 !  integer,    allocatable, save :: imorse2mp(:,:)      !(2, MXMORSE)

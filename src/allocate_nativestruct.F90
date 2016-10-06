@@ -18,6 +18,7 @@ subroutine allocate_nativestruct()
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
                            iLJ2mp, lmp2LJ, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,           &
+                           icon_gauss2mp, icon_gauss2unit, &
 !                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
 !                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
 !                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
@@ -278,6 +279,15 @@ subroutine allocate_nativestruct()
    allocate( coef_LJ(nmp_all*MXMPLJ), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ(:) = 0.0e0_PREC
+
+   ! con_gauss
+   allocate( icon_gauss2mp(2, nmp_all*MXMPCONGAUSS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   icon_gauss2mp(:,:) = 0
+
+   allocate( icon_gauss2unit(2, nmp_all*MXMPCONGAUSS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   icon_gauss2unit(:,:) = 0
 
 !   ! go (morse)
 !   allocate( imorse2mp(2, MXMPMORSE*nmp_all),     stat=ier)

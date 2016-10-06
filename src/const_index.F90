@@ -172,11 +172,12 @@ module const_index
      integer :: EXV_DT15  !< 15: Excluded volume with Weeks-Chandler-Andersen potential
      integer :: LJ        !< 16: Lenard-Jones
      integer :: EXV_GAUSS !< 17: Excluded volume with Gaussian function
+     integer :: CON_GAUSS !< 
      integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
      != interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,10)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
 
 
   type error_handling

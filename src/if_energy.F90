@@ -182,6 +182,14 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_LJ
    
+   subroutine energy_con_gauss(irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_con_gauss
+   
 !   subroutine energy_nlocal_morse(irep, now_morse, energy_unit, energy)
 !      use const_maxsize
 !      implicit none
