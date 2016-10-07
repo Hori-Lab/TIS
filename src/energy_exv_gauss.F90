@@ -28,7 +28,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   ! ------------------------------------------------------------------------
   !! Currently this potential is available noly for collapse calculation
   a0 = 3.8
-  denom = 2 * (a0 ** 2)
+  denom = 1.0 / (2.0 * (a0 ** 2))
   v = 4.0/3.0 * F_PI * (a0 ** 3)
   kT = tempk * BOLTZ_KCAL_MOL
   coef = kT * v / ((2 * F_PI * (a0**2)) ** 1.5)
@@ -62,7 +62,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
      
      dist2 = dot_product(v21,v21)
 
-     ene = coef * exp(-dist2/denom)
+     ene = coef * exp(-dist2*denom)
 
      energy(E_TYPE%EXV_GAUSS) = energy(E_TYPE%EXV_GAUSS) + ene
    

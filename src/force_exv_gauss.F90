@@ -24,7 +24,7 @@ subroutine force_exv_gauss(irep, force_mp)
   ! --------------------------------------------------------------------
   !! Currently this potential is available noly for RNA.
   a0 = 3.8
-  denom = 2 * (a0 ** 2)
+  denom = 1.0 / (2.0 * (a0 ** 2))
   v = 4.0/3.0 * F_PI * (a0 ** 3)
   kT = tempk * BOLTZ_KCAL_MOL
   coef = kT * v / (((2 * F_PI) ** 1.5) * (a0 ** 5))
@@ -60,7 +60,7 @@ subroutine force_exv_gauss(irep, force_mp)
 
      dist2 = dot_product(v21,v21)
 
-     for(1:3) = coef * exp(-dist2/denom) * v21(1:3)
+     for(1:3) = coef * exp(-dist2*denom) * v21(1:3)
 
      force_mp(1:3, imp2) = force_mp(1:3, imp2) + for(1:3)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - for(1:3)
