@@ -497,7 +497,14 @@ module var_setp
      integer    :: rest1d_center_init_flag(MXREST1D)
      real(PREC) :: rest1d_center_v(MXREST1D, 3)
      real(PREC) :: rest1d_center_origin(MXREST1D, 3)
+
+     ! EXV_GAUSS
+     real(PREC) :: exv_gauss_a0
      
+     ! CON_GAUSS
+     real(PREC) :: con_gauss_sigma
+     real(PREC) :: con_gauss_k
+
      ! fix
      integer    :: i_fix
 

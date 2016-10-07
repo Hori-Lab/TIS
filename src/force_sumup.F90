@@ -142,6 +142,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !     call force_nlocal_go(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
+     call force_con_gauss(irep, force_mp_l(1,1,tn))
 !  end if
 
 !$omp master

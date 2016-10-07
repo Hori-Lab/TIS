@@ -107,6 +107,12 @@ subroutine setpara( xyz_mp_init )
   if (inmisc%force_flag(INTERACT%EXV12)) then
      call setp_mapara_exv()
   endif
+
+  if (inmisc%force_flag(INTERACT%EXV_GAUSS) .or. &
+      inmisc%force_flag(INTERACT%CON_GAUSS)) then
+     call setp_twobody_gauss()
+  endif
+
   ! -----------------------------------------------------------------------
   ! reading simu parameters from input file
 #ifdef _DEBUG

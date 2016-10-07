@@ -3,7 +3,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inperi
+  use var_setp,    only : inperi, inmisc
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
   use var_simu, only : tempk
   use mpiconst
@@ -27,7 +27,7 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
 
   ! ------------------------------------------------------------------------
   !! Currently this potential is available noly for collapse calculation
-  a0 = 3.8
+  a0 = inmisc%exv_gauss_a0   ! 3.8 A
   denom = 1.0 / (2.0 * (a0 ** 2))
   v = 4.0/3.0 * F_PI * (a0 ** 3)
   kT = tempk * BOLTZ_KCAL_MOL

@@ -9,7 +9,7 @@ subroutine mloop_nativeinfo(istep_sim)
   use var_io,    only : iopen_lunnum
   use var_setp,   only : inpro
   use var_struct, only : nunit_all, &
-                         nbd, nfene, nba, ndih, ncon, nLJ,&
+                         nbd, nfene, nba, ndih, ncon, nLJ, nrouse, ncon_gauss,&
                          ncon_unit, iallcon2unit,&
                          ndtrna_st, ndtrna_hb, icon2unit, iLJ2unit
   use mpiconst
@@ -80,6 +80,8 @@ subroutine mloop_nativeinfo(istep_sim)
   ndih = 0
   ncon = 0
   nLJ = 0
+  nrouse = 0
+  ncon_gauss = 0
 !  nmorse = 0
 !  nrna_bp = 0
 !  nrna_st = 0

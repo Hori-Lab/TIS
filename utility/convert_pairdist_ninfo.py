@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 
+import sys
+
+if len(sys.argv) != 2:
+    print 'Usage: SCRIPT [pairdist file]'
+    sys.exit(2)
+
 i_id = 0
-for l in open('1vii.a.pairdist.dat','r'):
+for l in open(sys.argv[1],'r'):
     lsp = l.split()
     i = int(lsp[0])
     j = int(lsp[1])

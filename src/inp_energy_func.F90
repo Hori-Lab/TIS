@@ -22,7 +22,7 @@ subroutine inp_energy_func()
   integer :: i1 = 1
   integer :: i2 = 1
   integer :: isw, itype, icol, jcol, i_ninfo
-  integer :: iu, ju, iunit, junit, i_local_type
+  integer :: iu, ju, iunit, junit, i_local_type, iint
 !  integer :: isys, istat, iactnum, iact, isw2
   integer :: inunit(2), jnunit(2), instate, instate2
   integer :: inum
@@ -472,28 +472,52 @@ subroutine inp_energy_func()
 
   ! -----------------------------------------------------------------
   ! output energy function
-!  write (lunout, '(72(1H*))')
-!  write (lunout, '(a)') &
-!       '**** interaction type and coefficient between units ****'
-!  write (lunout, '(a)') '<type>'
-!  write (lunout, '(a)') '--------------------------------------------'
-!  write (lunout, '(a4, a2, 200i4)') 'unit','|', (i , i = 1, nunit_all)
-!  write (lunout, '(a)') '--------------------------------------------'
-!  do iunit = 1, nunit_all
-!     write (lunout, '(i4, a2, 200i4)') &
-!          iunit, '|', (itype_nlocal(junit, iunit), junit = 1, iunit)
-!  end do
-!
-!
-!  write (lunout, '(a)') '--------------------------------------------'
-!  write (lunout, '(i2, a)') 1, ' : no interation'
-!  write (lunout, '(i2, a)') INTERACT%GO, ' : 12-10 Go potential'
-!  write (lunout, '(i2, a)') INTERACT%EXV, ' : (c/r)**12 repulsion'
-!  write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
-!  write (lunout, '(i2, a)') INTERACT%ENM, ' : elastic network model'
-!  write (lunout, '(i2, a)') INTERACT%HP, ' : hydrophobic interaction'
-!  write (lunout, '(i2, a)') INTERACT%SASA, ' : sasa interaction'  !sasa
-!  write (lunout, '(a)') ''
+  write (lunout, '(72(1H*))')
+  write(lunout, *) '*** Local interactions'
+  do iunit = 1, nunit_all
+     do junit = 1, nunit_all
+        do iint = 1, LINTERACT%MAX
+           if (inmisc%flag_local_unit(iunit,junit,iint)) then
+              write(lunout, '(i4, 1x, i4, 1x, i4)') iunit, junit, iint
+           endif
+        enddo
+     enddo
+  end do
+  write (lunout, '(a)') '--------------------------------------------'
+  write (lunout, '(i2, a)') LINTERACT%NOTHING, ' : no interation'
+  write (lunout, '(i2, a)') LINTERACT%L_GO, ' : local Go potential'
+  write (lunout, '(i2, a)') LINTERACT%L_BOND, ' : bond potential only'
+  write (lunout, '(i2, a)') LINTERACT%L_RIGID_LIG, ' : rigid ligand potential'
+  write (lunout, '(i2, a)') LINTERACT%L_DTRNA, ' : DTRNA'
+  write (lunout, '(i2, a)') LINTERACT%L_FENE, ' : FENE'
+  write (lunout, '(i2, a)') LINTERACT%L_ROUSE, ' : Rouse'
+  write (lunout, '(a)') ''
+
+  write (lunout, '(72(1H*))')
+  write(lunout, *) '*** Nonlocal interactions'
+  do iunit = 1, nunit_all
+     do junit = 1, nunit_all
+        do iint = 1, INTERACT%MAX
+           if (inmisc%flag_nlocal_unit(iunit,junit,iint)) then
+              write(lunout, '(i4, 1x, i4, 1x, i4)') iunit, junit, iint
+           endif
+        enddo
+     enddo
+  end do
+
+  write (lunout, '(a)') '--------------------------------------------'
+  write (lunout, '(i2, a)') 1, ' : no interation'
+  write (lunout, '(i2, a)') INTERACT%GO, ' : 12-10 Go potential'
+  write (lunout, '(i2, a)') INTERACT%EXV12, ' : EXV12'
+  write (lunout, '(i2, a)') INTERACT%EXV6, ' : EXV6'
+  write (lunout, '(i2, a)') INTERACT%EXV_WCA, ' : EXV_WCA'
+  write (lunout, '(i2, a)') INTERACT%EXV_DT15, ' : EXV_DT15'
+  write (lunout, '(i2, a)') INTERACT%DTRNA, ' : DTRNA'
+  write (lunout, '(i2, a)') INTERACT%LJ, ' : LJ'
+  write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
+  write (lunout, '(i2, a)') INTERACT%EXV_GAUSS, ' : EXV_GAUSS'
+  write (lunout, '(i2, a)') INTERACT%CON_GAUSS, ' : CON_GAUSS'
+  write (lunout, '(a)') ''
 
 
 !  ! -----------------------------------------------------------------
@@ -656,6 +680,9 @@ contains
 
     else if(char00(i1:i2) == 'LJ') then
        itype = INTERACT%LJ
+
+    else if(char00(i1:i2) == 'CON_GAUSS') then
+       itype = INTERACT%CON_GAUSS
 
     else if(char00(i1:i2) == 'EXV12') then
        itype = INTERACT%EXV12

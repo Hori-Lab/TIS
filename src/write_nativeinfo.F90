@@ -17,6 +17,7 @@ subroutine write_nativeinfo(lunout)
                          ncon, icon2mp, factor_go,       &
                          coef_go, icon_dummy_mgo, go_nat, ncon_unit, &
                          nLJ, iLJ2mp, coef_LJ, LJ_nat,  &
+                         ncon_gauss, icon_gauss2mp, &
                          iclass_unit, ibd2type, iba2type, idih2type, icon2type, &
 !                         nrna_bp,nrna_bp_unit, nrna_st, rna_bp_nat, &
 !                         irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
@@ -397,6 +398,35 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! nLJ > 0
+
+
+  ! ------------------------------------------------------------------
+  ! CON_GAUSS
+  if (ncon_gauss > 0) then
+     write (lunout, '(a)') '<<<< con_gauss'
+     write (lunout, '(a, i6)') '** total_contact = ', ncon_gauss
+     
+     do iunit = 1, nunit_all
+        do junit = iunit, nunit_all
+           do icon = 1, ncon_gauss
+              imp1 = icon_gauss2mp(1, icon)
+              imp2 = icon_gauss2mp(2, icon)
+              iunit1 = imp2unit(imp1)
+              iunit2 = imp2unit(imp2)
+              imp1un = imp1 - lunit2mp(1, iunit1) + 1
+              imp2un = imp2 - lunit2mp(1, iunit2) + 1
+                 
+              if(iunit == iunit1 .and. junit == iunit2) then
+                 write (lunout, "(a10, 7(1xi6))") &
+                      'ncon_gauss', icon, iunit1, iunit2, imp1, imp2, imp1un, imp2un
+              end if
+           end do
+        end do
+     end do
+   
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! ncon_gauss > 0
 
 
 !  ! ------------------------------------------------------------------

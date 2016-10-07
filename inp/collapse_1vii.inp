@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./data
 filename = collapse
-OUTPUT pdb dcd psf rst
+OUTPUT pdb dcd psf rst neigh
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -30,9 +30,11 @@ NINFO(all/all) collapse_1vii.ninfo
 
 <<<< md_information
 n_step_sim = 1
+#n_tstep(1) = 10000
 n_tstep(1) = 100000
 #n_tstep(1) = 10000000
 tstep_size = 0.05
+#n_step_save = 1
 n_step_save = 100
 n_step_neighbor = 1
 n_step_rst = 100
@@ -53,6 +55,12 @@ i_triple_angle_term = 0
 i_use_atom_protein = 0
 i_use_atom_dna = 0
 i_coef_from_ninfo = 1
+>>>>
+
+<<<< twobody_gauss
+exv_gauss_a0 = 3.8
+con_gauss_sigma = 6.3
+con_gauss_k = 0.0
 >>>>
 
 <<<< redefine_para

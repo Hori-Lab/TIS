@@ -3,7 +3,7 @@ subroutine force_exv_gauss(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inperi
+  use var_setp,   only : inperi, inmisc
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
   use var_simu, only : tempk
   use mpiconst
@@ -22,8 +22,8 @@ subroutine force_exv_gauss(irep, force_mp)
 #endif
 
   ! --------------------------------------------------------------------
-  !! Currently this potential is available noly for RNA.
-  a0 = 3.8
+  !! Currently this potential is available noly for collapse calculation
+  a0 = inmisc%exv_gauss_a0   ! 3.8 A
   denom = 1.0 / (2.0 * (a0 ** 2))
   v = 4.0/3.0 * F_PI * (a0 ** 3)
   kT = tempk * BOLTZ_KCAL_MOL

@@ -9,7 +9,7 @@ subroutine energy_con_gauss(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inperi
+  use var_setp,   only : inperi, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, imp2unit, ncon_gauss, icon_gauss2mp
   use var_simu,   only : tempk
   use mpiconst
@@ -32,9 +32,9 @@ subroutine energy_con_gauss(irep, energy_unit, energy)
 #endif
 
   ! --------------------------------------------------------------------
-  k = 0.2
+  sigma = inmisc%con_gauss_sigma   ! 6.3 [A]
+  k = inmisc%con_gauss_k  ! 1.0 [kT]
   kT = tempk * BOLTZ_KCAL_MOL
-  sigma = 6.3
   denom = 1.0 / (2 * (sigma ** 2))
   !kappa = (2 * F_PI * sigma**2) ** 1.5 * k
   !coef = kT * kappa / ((2 * F_PI * sigma**2) ** 1.5) 

@@ -9,7 +9,7 @@ subroutine force_con_gauss(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inperi
+  use var_setp,   only : inperi, inmisc
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
                          ncon_gauss, icon_gauss2mp, nmp_all
   use var_simu, only : tempk
@@ -23,16 +23,16 @@ subroutine force_con_gauss(irep, force_mp)
   integer :: imp1, imp2
   integer :: icon, imirror
   integer :: ksta, kend
-  real(PREC) :: dist2, denom, coef, kT, k
+  real(PREC) :: dist2, denom, coef, kT, k, sigma
   real(PREC) :: v21(3), for(3)
 #ifdef MPI_PAR
   integer :: klen
 #endif
 
-  ! ---------------------------------------------------------------------
+  ! --------------------------------------------------------------------
+  sigma = inmisc%con_gauss_sigma   ! 6.3 [A]
+  k = inmisc%con_gauss_k  ! 1.0 [kT]
   kT = tempk * BOLTZ_KCAL_MOL
-  k = 0.2
-
   denom = 1.0 / (2 * sigma**2)
   coef = - k * kT / (sigma**2)
 
@@ -48,7 +48,7 @@ subroutine force_con_gauss(irep, force_mp)
   ksta = 1
   kend = ncon_gauss
 #endif
-!$omp do private(imp1,imp2,rcut_off2,v21,dist2,for,imirror)
+!$omp do private(imp1,imp2,v21,dist2,for,imirror)
   do icon=ksta,kend
 
      imp1 = icon_gauss2mp(1, icon)
