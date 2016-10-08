@@ -58,7 +58,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
    ksta = 1
    kend = nLJ
 #endif
-!$omp do private(imp1,imp2,iunit,junit,rcut_off2,v21,dist2,roverdist2,roverdist6, &
+!$omp do private(imp1,imp2,iunit,junit,v21,dist2,roverdist2,roverdist6, &
 !$omp&           roverdist12,rjudge,efull,imirror)
    do iLJ=ksta,kend
    
