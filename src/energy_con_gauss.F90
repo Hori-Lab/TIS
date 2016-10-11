@@ -38,7 +38,7 @@ subroutine energy_con_gauss(irep, energy_unit, energy)
   denom = 1.0 / (2 * (sigma ** 2))
   !kappa = (2 * F_PI * sigma**2) ** 1.5 * k
   !coef = kT * kappa / ((2 * F_PI * sigma**2) ** 1.5) 
-  coef = k * kT
+  coef = - k * kT
 
 #ifdef MPI_PAR3
    klen=(ncon_gauss-1+npar_mpi)/npar_mpi
