@@ -14,7 +14,7 @@ subroutine simu_checkforce()
   use var_setp,    only : inele, insimu
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
-  use var_simu,    only : flg_hb_energy
+  use var_simu,    only : flg_hb_energy, tempk
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -31,7 +31,7 @@ subroutine simu_checkforce()
   integer :: lunout
   integer :: i, imp, idimn
   integer :: ier = 0
-  real(PREC) :: af_ene, xyz_save, tempk, ddrand
+  real(PREC) :: af_ene, xyz_save, ddrand
   real(PREC) :: force_mp(SDIM, MXMP), ff(SDIM), zure(3)
   character(CARRAY_MSG_ERROR) :: error_message
   ! -----------------------------------------------------------------
