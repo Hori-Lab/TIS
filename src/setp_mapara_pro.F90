@@ -32,6 +32,7 @@ subroutine setp_mapara_pro(lunpara, lunout)
   inpro%n_sep_contact       = -1
   inpro%cutoff_go           = -1.0
   inpro%cutoff_exvol        = -1.0
+  inpro%cutoff_exv_gauss    = -1.0
   inpro%dfcontact           = -1.0
   inpro%cgo1210             = -1.0
   inpro%cdist_rep12         = -1.0 
@@ -100,6 +101,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpro%cutoff_exvol, cvalue)
 
+        cvalue = 'cutoff_exv_gauss'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpro%cutoff_exv_gauss, cvalue)
+
         cvalue = 'dfcontact'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpro%dfcontact, cvalue)
@@ -165,6 +170,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
 
   else if(inpro%cutoff_exvol < 0.0) then
      error_message = 'Error: invalid value for cutoff_exvol'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  else if(inpro%cutoff_exv_gauss < 0.0) then
+     error_message = 'Error: invalid value for cutoff_exv_gauss'
      call util_error(ERROR%STOP_ALL, error_message)
 
   else if(inpro%dfcontact < 0.0) then

@@ -36,6 +36,7 @@ module var_setp
      real(PREC) :: cutoff_go !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_LJ !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_exvol !< truncation distance for computing nonlocal non-native repulsion
+     real(PREC) :: cutoff_exv_gauss
      real(PREC) :: dfcontact !< the cutoff distance to define the native contact
      real(PREC) :: cgo1210 !< constant coefficient "go of the energy function for non-local Go interaction
      real(PREC) :: cdist_rep6  !< reference distance d in the non-native repulsive interaction

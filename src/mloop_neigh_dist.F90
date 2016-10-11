@@ -59,6 +59,12 @@ subroutine mloop_neigh_dist()
            endif
         endif
 
+        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_GAUSS)) then
+           if (inpro%cutoff_exv_gauss > max_cut) then
+              max_cut = inpro%cutoff_exv_gauss
+           endif
+        endif
+
         if (inmisc%i_residuenergy_radii == 0) then
            if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV12)) then
               !if (iclass == CLASS%RNA .AND. jclass == CLASS%RNA) then
