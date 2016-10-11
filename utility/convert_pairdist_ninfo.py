@@ -12,7 +12,7 @@ for l in open(sys.argv[1],'r'):
     i = int(lsp[0])
     j = int(lsp[1])
     d = float(lsp[2])
-    if abs(i-j) > 2 and d <= 8.5:
+    if abs(i-j) > 2 and d < 8.0:
         i_id += 1
         print 'con_gauss  %i 1 1 %i %i %i %i' % (i_id, i,j,i,j)
 
