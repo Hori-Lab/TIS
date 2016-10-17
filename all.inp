@@ -345,6 +345,11 @@ i_output_energy_style = 0
 
 **i_dtrna_model = 2013 (default)
 **              = 2015
+
+**       = 0 : EXV is not applied to native-contact pairs (default)
+**       = 1 : EXV is applied to any pairs including native-contact pairs
+** (This flag will not be applied to excluded volume in DTRNA model)
+**i_exv_all = 1
 >>>>
 
 

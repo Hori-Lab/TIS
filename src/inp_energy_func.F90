@@ -57,6 +57,7 @@ subroutine inp_energy_func()
   inmisc%flg_coef_from_ninfo = .true.  ! default
   inmisc%i_temp_independent = 0   ! default
   inmisc%i_dtrna_model = 2013  ! default
+  inmisc%i_exv_all = 0 !default
 
   ! ----------------------------------------------------------------------
   ! read energy function
@@ -401,6 +402,10 @@ subroutine inp_energy_func()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_dtrna_model, cvalue)
 
+        cvalue = 'i_exv_all'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_exv_all, cvalue)
+
      end do
   end do
 
@@ -602,6 +607,11 @@ subroutine inp_energy_func()
   else
      error_message = 'Error: invalid value for inmisc%i_dtrna_model'
      call util_error(ERROR%STOP_ALL, error_message)
+  endif
+
+  ! -----------------------------------------------------------------
+  if (inmisc%i_exv_all == 1) then
+     write(lunout, *) 'i_exv_all = 1'
   endif
 
 #ifdef MPI_PAR

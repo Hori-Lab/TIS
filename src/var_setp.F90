@@ -389,6 +389,7 @@ module var_setp
      integer    :: i_reset_struct
      integer    :: i_temp_independent
      logical    :: flg_coef_from_ninfo
+     integer    :: i_exv_all
 
      ! redefine_parameter
      integer    :: i_redef_para

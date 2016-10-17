@@ -319,7 +319,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               endif
            end if ! (iunit==junit)
 
-           if(i_exvol == 1) then
+           if(i_exvol == 1 .or. inmisc%i_exv_all > 0) then
               iexv = iexv + 1
               iexv2mp_l(1, iexv) = imp 
               iexv2mp_l(2, iexv) = jmp
@@ -367,7 +367,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               endif
            end if ! (iunit==junit)
 
-           if(i_exvol == 1) then
+           if(i_exvol == 1 .or. inmisc%i_exv_all > 0) then
               iexv = iexv + 1
               iexv2mp_l(1, iexv) = imp 
               iexv2mp_l(2, iexv) = jmp
