@@ -139,6 +139,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !     call force_enm(irep, force_mp_l(1,1,tn))
 !  else
      call force_LJ(irep, force_mp_l(1,1,tn))
+     call force_wca(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_go(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))

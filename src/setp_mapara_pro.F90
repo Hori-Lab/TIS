@@ -40,6 +40,7 @@ subroutine setp_mapara_pro(lunpara, lunout)
   inpro%crep12              = -1.0
   inpro%crep6               = -1.0
   inpro%cutoff_LJ           = -1.0
+  inpro%cutoff_wca          = -1.0
 
   ! ------------------------------------------------------------------- 
 
@@ -96,6 +97,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
         cvalue = 'cutoff_LJ'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inpro%cutoff_LJ, cvalue)
+
+        cvalue = 'cutoff_wca'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inpro%cutoff_wca, cvalue)
 
         cvalue = 'cutoff_exvol'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
@@ -166,6 +171,10 @@ subroutine setp_mapara_pro(lunpara, lunout)
 
   else if(inpro%cutoff_LJ < 0.0) then
      error_message = 'Error: invalid value for cutoff_LJ'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  else if(inpro%cutoff_wca < 0.0) then
+     error_message = 'Error: invalid value for cutoff_wca'
      call util_error(ERROR%STOP_ALL, error_message)
 
   else if(inpro%cutoff_exvol < 0.0) then

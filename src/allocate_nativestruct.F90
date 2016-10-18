@@ -18,6 +18,7 @@ subroutine allocate_nativestruct()
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
                            iLJ2mp, lmp2LJ, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,           &
+                           iwca2mp, lmp2wca, iwca2unit, wca_nat, wca_nat2, coef_wca,     &
                            icon_gauss2mp, icon_gauss2unit, &
 !                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
 !                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
@@ -279,6 +280,33 @@ subroutine allocate_nativestruct()
    allocate( coef_LJ(nmp_all*MXMPLJ), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ(:) = 0.0e0_PREC
+
+   if (inmisc%force_flag(INTERACT%WCA)) then
+      ! wca
+      allocate( iwca2mp(2, nmp_all*MXMPWCA), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      iwca2mp(:,:) = 0
+   
+      allocate( lmp2wca(nmp_all), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      lmp2wca(:) = 0
+   
+      allocate( iwca2unit(2, nmp_all*MXMPWCA), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      iwca2unit(:,:) = 0
+   
+      allocate( wca_nat(nmp_all*MXMPWCA), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      wca_nat(:) = 0.0e0_PREC
+   
+      allocate( wca_nat2(nmp_all*MXMPWCA), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      wca_nat2(:) = 0.0e0_PREC
+   
+      allocate( coef_wca(nmp_all*MXMPWCA,2), stat=ier)
+      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+      coef_wca(:,:) = 0.0e0_PREC
+   endif
 
    ! con_gauss
    allocate( icon_gauss2mp(2, nmp_all*MXMPCONGAUSS), stat=ier)

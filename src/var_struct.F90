@@ -140,6 +140,15 @@ module var_struct
   !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
   real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
 
+  !> parameters for WCA potential
+  integer,    save :: nwca = 0
+  integer,    allocatable, save :: iwca2mp(:,:)      !(2, MXwca)
+  integer,    allocatable, save :: lmp2wca(:)        !(MXMP)
+  integer,    allocatable, save :: iwca2unit(:,:)    !(2, MXwca)
+  real(PREC), allocatable, save :: wca_nat(:)        !(MXwca)
+  real(PREC), allocatable, save :: wca_nat2(:)       !(MXwca)
+  real(PREC), allocatable, save :: coef_wca(:,:)     !(MXwca,2)  ! 1:repulsion 2:attraction
+
   !> parameters for con_gauss potential
   integer,    save :: ncon_gauss = 0
   integer,    allocatable, save :: icon_gauss2mp(:,:)      !(2, MXcon_gauss)

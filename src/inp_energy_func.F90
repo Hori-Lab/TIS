@@ -519,6 +519,7 @@ subroutine inp_energy_func()
   write (lunout, '(i2, a)') INTERACT%EXV_DT15, ' : EXV_DT15'
   write (lunout, '(i2, a)') INTERACT%DTRNA, ' : DTRNA'
   write (lunout, '(i2, a)') INTERACT%LJ, ' : LJ'
+  write (lunout, '(i2, a)') INTERACT%WCA, ' : WCA'
   write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
   write (lunout, '(i2, a)') INTERACT%EXV_GAUSS, ' : EXV_GAUSS'
   write (lunout, '(i2, a)') INTERACT%CON_GAUSS, ' : CON_GAUSS'
@@ -691,6 +692,9 @@ contains
     else if(char00(i1:i2) == 'LJ') then
        itype = INTERACT%LJ
 
+    else if(char00(i1:i2) == 'WCA') then
+       itype = INTERACT%WCA
+
     else if(char00(i1:i2) == 'CON_GAUSS') then
        itype = INTERACT%CON_GAUSS
 
@@ -764,7 +768,8 @@ contains
              
              !if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ .or. &
              !   iforce == INTERACT%AICG1 .or. iforce == INTERACT%AICG2) then
-             if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ) then
+             if(iforce == INTERACT%GO .or. iforce == INTERACT%LJ .or. &
+                iforce == INTERACT%WCA) then
                 n_go = n_go + 1
              endif
                 

@@ -68,6 +68,8 @@ module const_maxsize
   integer, parameter :: MXCON = MXMPCON * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPLJ = 20       !< maximum # of Go-type contacts per residue 
   integer, parameter :: MXLJ = MXMPLJ * MXMP  !< maximum # of total contacts
+  integer, parameter :: MXMPWCA = 20       !< maximum # of Go-type contacts per residue 
+  integer, parameter :: MXWCA = MXMPWCA * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPCONGAUSS = 20       !< maximum # of Go-type contacts per residue 
   integer, parameter :: MXCONGAUSS = MXMPCONGAUSS * MXMP  !< maximum # of total contacts
 !  integer, parameter :: MXMPRNABP = 2

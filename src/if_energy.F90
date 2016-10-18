@@ -182,6 +182,16 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_LJ
    
+   !subroutine energy_wca(irep, now_wca, energy_unit, energy)
+   subroutine energy_wca(irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      !integer,    intent(out)   :: now_wca(:,:)
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_wca
+   
    subroutine energy_con_gauss(irep, energy_unit, energy)
       use const_maxsize
       implicit none

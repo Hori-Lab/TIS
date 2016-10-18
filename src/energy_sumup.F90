@@ -177,6 +177,7 @@ subroutine energy_sumup(irep,          &
      TIME_S( tm_energy_nlocal_go) 
 !$omp end master
      call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_wca(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))

@@ -35,6 +35,7 @@ module var_setp
      integer :: n_sep_contact !< the minimum number of amino acids that separate a contact pair
      real(PREC) :: cutoff_go !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_LJ !< truncation distance for computing non-local Go interaction
+     real(PREC) :: cutoff_wca !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_exvol !< truncation distance for computing nonlocal non-native repulsion
      real(PREC) :: cutoff_exv_gauss
      real(PREC) :: dfcontact !< the cutoff distance to define the native contact
