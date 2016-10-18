@@ -104,7 +104,7 @@ subroutine energy_wca(irep, energy_unit, energy)
      roverdist6 = roverdist2 ** 3
      roverdist12 = roverdist6 ** 2
 
-     if (roverdist2 < 1.0e0_PREC) then
+     if (roverdist2 >= 1.0e0_PREC) then
         e_rep = coef_wca(iwca,1) * (roverdist12 - 2.0e0_PREC * roverdist6 + 1.0e0_PREC) 
         e_att = - coef_wca(iwca,2)
      else

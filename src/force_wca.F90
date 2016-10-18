@@ -77,7 +77,7 @@ subroutine force_wca(irep, force_mp)
      roverdist14 = roverdist2 ** 7
      roverdist8 = roverdist2 ** 4
 
-     if (roverdist2 < 1.0e0_PREC) then
+     if (roverdist2 > 1.0e0_PREC) then
         coef = coef_wca(iwca,1)
      else
         coef = coef_wca(iwca,2)
