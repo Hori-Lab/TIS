@@ -149,7 +149,7 @@ subroutine read_dcd()
         !read (title, *) tempk
         !read (title, *) tempk_l
         read (ifile(grep)) title
-        read (ifile(grep)) title
+        !read (ifile(grep)) title
         !do iunit = 1, nunit_real
            !read (title, '(i6)') lunit2mp(2, iunit)
         !   read (ifile(grep)) title
