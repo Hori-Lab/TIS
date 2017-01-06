@@ -49,8 +49,10 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
+  use var_io,      only : flg_file_out, outfile
   use var_setp,    only : inmisc !, inperi
   use var_struct,  only : xyz_mp_rep, imp2unit, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb
+  use var_simu,    only : tempk
 #ifdef MPI_PAR3
   use mpiconst
 #endif
@@ -73,6 +75,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
   real(PREC) :: d1212
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
+  real(PREC) :: hb_energy(ndtrna_hb)
   integer :: ksta, kend
 #ifdef MPI_PAR3
   integer :: klen
@@ -186,6 +189,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
 
       !===== Total =====
       efull = coef_dtrna_hb(0,ihb) / ediv
+      hb_energy(ihb) = efull
 
       energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + efull
 
@@ -193,5 +197,22 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
                 energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + efull
    end do
 !$omp end do nowait
+
+#ifdef MPI_PAR3
+  if( myrank == 0 ) then
+#endif
+!$omp master
+  if (flg_file_out%hb) then
+     do ihb = 1, ndtrna_hb
+        if (hb_energy(ihb) < -(tempk * BOLTZ_KCAL_MOL)) then
+            write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb)
+        endif
+     enddo
+     write(outfile%hb(irep),*)
+  endif
+!$omp end master
+#ifdef MPI_PAR3
+  endif
+#endif
 
 end subroutine energy_dtrna_hbond13
