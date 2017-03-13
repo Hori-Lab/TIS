@@ -17,7 +17,8 @@ subroutine inp_filename()
   integer :: iopen_status 
   integer :: irep       ! index for replica
   integer :: iline, nlines, iequa, nequat
-  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee, ist, ihb
+  integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee
+  integer :: ist, istall, itst, itstall, ihb, ihball
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -35,7 +36,11 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: filename_neigh
   character(CARRAY_MXFILE) :: filename_ee
   character(CARRAY_MXFILE) :: filename_st
+  character(CARRAY_MXFILE) :: filename_stall
+  character(CARRAY_MXFILE) :: filename_tst
+  character(CARRAY_MXFILE) :: filename_tstall
   character(CARRAY_MXFILE) :: filename_hb
+  character(CARRAY_MXFILE) :: filename_hball
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: ctmp00
@@ -80,6 +85,12 @@ subroutine inp_filename()
   filename_chp      = "./md.chp"
   filename_neigh    = "./md.neigh"
   filename_ee       = "./md.ee"
+  filename_st       = "./md.st"
+  filename_stall    = "./md.stall"
+  filename_tst       = "./md.tst"
+  filename_tstall    = "./md.tstall"
+  filename_hb       = "./md.hb"
+  filename_hball    = "./md.hball"
 
   imovie = 0
   ivelo  = 0
@@ -92,8 +103,12 @@ subroutine inp_filename()
   ichp   = 0
   ineigh = 0
   iee    = 0
-  ihb    = 0
   ist    = 0
+  istall = 0
+  itst   = 0
+  itstall= 0
+  ihb    = 0
+  ihball = 0
 
   ! -----------------------------------------------------------------------
   ! read input file
@@ -192,10 +207,26 @@ subroutine inp_filename()
                  filename_ee = filename_header
                  filename_ee(n:n+2) = '.ee'
                  iee = 1
+              else if (char7 == 'stall') then
+                 filename_stall = filename_header
+                 filename_stall(n:n+5) = '.stall'
+                 istall = 1
               else if (char7 == 'st') then
                  filename_st = filename_header
                  filename_st(n:n+2) = '.st'
                  ist = 1
+              else if (char7 == 'tstall') then
+                 filename_tstall = filename_header
+                 filename_tstall(n:n+6) = '.tstall'
+                 itstall = 1
+              else if (char7 == 'tst') then
+                 filename_tst = filename_header
+                 filename_tst(n:n+3) = '.tst'
+                 itst = 1
+              else if (char7 == 'hball') then
+                 filename_hball = filename_header
+                 filename_hball(n:n+5) = '.hball'
+                 ihball = 1
               else if (char7 == 'hb') then
                  filename_hb = filename_header
                  filename_hb(n:n+2) = '.hb'
@@ -233,6 +264,12 @@ subroutine inp_filename()
   call MPI_Bcast(filename_chp,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_neigh, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_ee,    CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_st,    CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_stall, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_tst,   CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_tstall,CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_hb,    CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_hball, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
 ! --------------------------------------------------------------------------
   call MPI_Bcast(ipdb,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ipsf,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
@@ -246,7 +283,11 @@ subroutine inp_filename()
   call MPI_Bcast(ineigh, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iee,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ist,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(istall, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(itst,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(itstall,1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ihb,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ihball, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
 #endif
   
   ! -----------------------------------------------------------------------
@@ -958,6 +999,162 @@ subroutine inp_filename()
   end if
 
   ! -----------------------------------------------------------------------
+  ! open stall file 
+  ! -----------------------------------------------------------------------
+  if(istall == 1) then
+     flg_file_out%stall = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_stall, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_stall(1:m-1)
+     else
+        filename = filename_stall
+     end if
+  
+     filename_stall = filename
+     i_cend_save     = index(filename_stall, '.stall') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%stall(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.stall'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open stall file(",outfile%stall(irep),"): ", trim(filename)
+        open(outfile%stall(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%stall = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open tst file 
+  ! -----------------------------------------------------------------------
+  if(itst == 1) then
+     flg_file_out%tst = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_tst, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_tst(1:m-1)
+     else
+        filename = filename_tst
+     end if
+  
+     filename_tst = filename
+     i_cend_save     = index(filename_tst, '.tst') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%tst(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.tst'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open tst file(",outfile%tst(irep),"): ", trim(filename)
+        open(outfile%tst(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%tst = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open tstall file 
+  ! -----------------------------------------------------------------------
+  if(itstall == 1) then
+     flg_file_out%tstall = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_tstall, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_tstall(1:m-1)
+     else
+        filename = filename_tstall
+     end if
+  
+     filename_tstall = filename
+     i_cend_save     = index(filename_tstall, '.tstall') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%tstall(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.tstall'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open tstall file(",outfile%tstall(irep),"): ", trim(filename)
+        open(outfile%tstall(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%tstall = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
   ! open hb file 
   ! -----------------------------------------------------------------------
   if(ihb == 1) then
@@ -1007,6 +1204,58 @@ subroutine inp_filename()
 #endif
   else
      flg_file_out%hb = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open hball file 
+  ! -----------------------------------------------------------------------
+  if(ihball == 1) then
+     flg_file_out%hball = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_hball, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_hball(1:m-1)
+     else
+        filename = filename_hball
+     end if
+  
+     filename_hball = filename
+     i_cend_save     = index(filename_hball, '.hball') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%hball(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.hball'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open hball file(",outfile%hball(irep),"): ", trim(filename)
+        open(outfile%hball(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%hball = .False.
   end if
 
   ! -----------------------------------------------------------------------

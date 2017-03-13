@@ -43,7 +43,11 @@ module var_io
      integer :: ee    = 60
      integer :: chp(MXREPLICA)
      integer :: st(MXREPLICA)
+     integer :: tst(MXREPLICA)
+     integer :: stall(MXREPLICA)
+     integer :: tstall(MXREPLICA)
      integer :: hb(MXREPLICA)
+     integer :: hball(MXREPLICA)
      integer :: rst(MXREPLICA)
      integer :: ts(MXREPLICA)
      integer :: movie(MXREPLICA)
@@ -99,7 +103,11 @@ module var_io
      logical :: neigh
      logical :: ee
      logical :: st
+     logical :: stall
+     logical :: tst
+     logical :: tstall
      logical :: hb
+     logical :: hball
   end type fileout
   type(fileout), save :: flg_file_out
 

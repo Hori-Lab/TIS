@@ -43,8 +43,9 @@
    use const_physical
    use const_index
    use var_setp,    only : inmisc
+   use var_io,      only : flg_file_out, outfile
    use var_struct,  only : xyz_mp_rep, imp2unit, ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st
-   use var_simu,    only : st_status
+   use var_simu,    only : st_status, tempk
    use var_replica, only : irep2grep
    use mpiconst
  
@@ -62,6 +63,7 @@
    real(PREC) :: v21(SDIM), v34(SDIM), v54(SDIM)
    real(PREC) :: v56(SDIM), v76(SDIM)
    integer :: ksta, kend
+   real(PREC) :: ene_st(1:ndtrna_st), ene_st_l(1:ndtrna_st) ! for stack energy output
 #ifdef MPI_PAR3
    integer :: klen
 #endif
@@ -87,6 +89,7 @@
    do ist=ksta,kend
 
       if (.not. st_status(ist,irep)) then
+         ene_st_l(ist) = 0.0e0_PREC
          cycle
       endif
 
@@ -150,7 +153,39 @@
       iunit = imp2unit(idtrna_st2mp(1,ist))
       energy_unit(iunit, iunit, E_TYPE%STACK_DTRNA) = &
                 energy_unit(iunit, iunit, E_TYPE%STACK_DTRNA) + efull
+      ene_st_l(ist) = efull
    end do
-!$omp end do nowait
+!$omp end do
+!!$omp end do nowait
+
+!$omp master
+
+  if (flg_file_out%st .or. flg_file_out%stall) then
+
+#ifdef MPI_PAR3
+     call mpi_allreduce(ene_st_l, ene_st, ndtrna_st, &
+                     PREC_MPI, MPI_LAND, mpi_comm_local, ierr)
+#else
+     ene_st(:) = ene_st_l(:)
+#endif
+
+     if (flg_file_out%st) then
+        do ist = 1, ndtrna_st
+           if (ene_st(ist) < -(tempk * BOLTZ_KCAL_MOL)) then
+              write(outfile%st(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
+           endif
+        enddo
+        write(outfile%st(irep),*)
+     endif
+     if (flg_file_out%stall) then
+        do ist = 1, ndtrna_st
+           write(outfile%stall(irep), '(e11.4,1x)', advance='no') ene_st(ist)
+        enddo
+        write(outfile%stall(irep),*)
+     endif
+  endif
+
+!$omp end master
+!$omp barrier
 
 end subroutine energy_dtrna_stack

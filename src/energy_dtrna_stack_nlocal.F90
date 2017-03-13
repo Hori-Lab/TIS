@@ -216,7 +216,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
 #ifdef MPI_PAR3
   call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
                      MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
-  if (flg_file_out(st)) then
+  if (flg_file_out%tst .or. flg_file_out%tstall) then
      call mpi_allreduce(ene_st_l, ene_st, ndtrna_tst, &
                      PREC_MPI, MPI_LAND, mpi_comm_local, ierr)
   endif
@@ -225,13 +225,19 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   ene_st(:) = ene_st_l(:)
 #endif
 
-  if (flg_file_out%st) then
+  if (flg_file_out%tst) then
      do ist = 1, ndtrna_tst
         if (ene_st(ist) < -(tempk * BOLTZ_KCAL_MOL)) then
-           write(outfile%st(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
+           write(outfile%tst(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
         endif
      enddo
-     write(outfile%st(irep),*)
+     write(outfile%tst(irep),*)
+  endif
+  if (flg_file_out%tstall) then
+     do ist = 1, ndtrna_tst
+        write(outfile%tstall(irep), '(e11.4,1x)', advance='no') ene_st(ist)
+     enddo
+     write(outfile%tstall(irep),*)
   endif
 
 !$omp end master

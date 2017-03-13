@@ -1,6 +1,6 @@
 .SUFFIXES: .F90 .o
-#TARGET = ../md
-TARGET = ../md.omp
+TARGET = ../md
+#TARGET = ../md.omp
 
 # .. utilites
 UTIL1 = ../crd2pdb
@@ -67,8 +67,8 @@ FC_UTIL = gfortran
 CPP = -cpp -DTIME -DSUB_COPY
 #CPP = -cpp -DTIME -D_DEBUG
 INC =
-#OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+#OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace

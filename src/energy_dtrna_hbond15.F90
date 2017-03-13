@@ -410,10 +410,16 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
      do ineigh=1, nhbneigh(irep)
         ihb = ineigh2hb(ineigh, irep)
         if (hb_energy(ihb,irep) < -(tempk * BOLTZ_KCAL_MOL)) then
-            write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
+           write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
         endif
      enddo
      write(outfile%hb(irep),*)
+  endif
+  if (flg_file_out%hball) then
+     do ihb = 1, ndtrna_hb
+        write(outfile%hball(irep), '(e11.4,1x)', advance='no') hb_energy(ihb,irep)
+     enddo
+     write(outfile%hball(irep),*)
   endif
 !$omp end master
 #ifdef MPI_PAR3
