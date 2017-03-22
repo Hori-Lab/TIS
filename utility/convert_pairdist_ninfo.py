@@ -14,5 +14,6 @@ for l in open(sys.argv[1],'r'):
     d = float(lsp[2])
     if abs(i-j) > 2 and d < 8.0:
         i_id += 1
-        print 'con_gauss  %i 1 1 %i %i %i %i' % (i_id, i,j,i,j)
+        #print 'con_gauss  %i 1 1 %i %i %i %i' % (i_id, i,j,i,j)
+        print 'wca  %i 1 1 %i %i %i %i  6.30  0.59645916047  0.59645916047' % (i_id, i,j,i,j)
 
