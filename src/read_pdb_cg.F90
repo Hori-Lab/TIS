@@ -116,9 +116,9 @@ subroutine read_pdb_cg(    lun,      & ![i ] target I/O unit
             endif
          end if
 
-         if(multistruct /= " " .and. multistruct /= "A") then
-            cycle
-         end if
+         !if(multistruct /= " " .and. multistruct /= "A") then
+         !   cycle
+         !end if
 
          imp = imp+1
          ires_mp(imp)   = ires
