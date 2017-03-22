@@ -29,8 +29,8 @@
 ! NOTE:  XXXXX_T_ means title string
 !        Total width of XXXX_T_ should be same as corresponding XXXX
 #define _FMT_TS_INI_TOTAL_     '(f15.3)'
-#define _FMT_TS_STEP_          '(1xi10)'
-#define _FMT_TS_STEP_T_        '(1xa10)'
+#define _FMT_TS_STEP_          '(1xi12)'
+#define _FMT_TS_STEP_T_        '(1xa12)'
 #define _FMT_TS_TEMP_          '(1xf8.2)'
 #define _FMT_TS_TEMP_T_        '(1xa8)'
 #define _FMT_TS_REPLICA_       '(1xi5)'
