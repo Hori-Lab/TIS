@@ -14,10 +14,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   use var_struct, only : lunit2mp, imp2unit, cmp2seq,&
        nbd, ibd2mp, bd_nat, factor_bd, coef_bd, &
        nfene, ifene2mp, fene_nat, coef_fene, dist2_fene, &
+       nrouse, irouse2mp, coef_rouse, &
        nba, iba2mp, ba_nat, factor_ba, coef_ba, &
 !       ndih, idih2mp, dih_nat, dih_sin_nat, dih_cos_nat, factor_dih, coef_dih, idih2type, &
        ncon, icon2mp, icon2unit, go_nat, go_nat2, factor_go, icon_dummy_mgo, coef_go, &
        nLJ, iLJ2mp, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,&
+       nwca, iwca2mp, iwca2unit, wca_nat, wca_nat2, coef_wca,&
+       ncon_gauss, icon_gauss2mp, icon_gauss2unit, &
 !       nrna_bp, irna_bp2mp, irna_bp2unit, rna_bp_nat, rna_bp_nat2, &
 !       factor_rna_bp, irna_bp_dummy_mgo, nhb_bp, coef_rna_bp, &
 !       nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
@@ -46,7 +49,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: input_status
   integer :: ii, jj, imp1, imp2, imp3, imp4, iunit1, iunit2, imp_tmp
   integer :: imp1un, imp2un, imp3un, imp4un, kunit1
-  integer :: ibd, ifene, iba, icon, iLJ
+  integer :: ibd, ifene, irouse, iba, icon, iLJ, iwca, icon_gauss
 !  integer :: idih
 !  integer :: iba_aicg2, idih_aicg2, idih_aicg2p
   integer :: ibd_read, iba_read, idih_read
@@ -75,6 +78,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
   ibd = nbd 
   ifene = nfene
+  irouse = nrouse
   iba = nba 
 !  idih = ndih
 !  iba_aicg2 = nba
@@ -82,6 +86,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !  idih_aicg2p = ndih
   icon = ncon
   iLJ = nLJ
+  iwca = nwca
+  icon_gauss = ncon_gauss
 !  ibp = nrna_bp
 !  ist = nrna_st
   ibsdist = ndtrna_st
@@ -168,6 +174,33 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         !if (ctype2 /= '  ') then
         !   ibd2type(ibd) = str2bondtype(ctype2)
         !endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read the Rouse spring (bond)
+     if(cline(1:5) == 'rouse') then
+        read (cline, *, iostat = input_status)     &
+             cline_head, ibd_read, iunit1, iunit2, &
+             imp1, imp2, imp1un, imp2un, coef
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        irouse = irouse + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           irouse2mp(1, irouse) = imp1 + ii
+           irouse2mp(2, irouse) = imp2 + ii
+           kunit1 = iunit1
+        else ! NATIVEINFO%ONE_BY_ONE
+           irouse2mp(1, irouse) = imp1un + ii
+           irouse2mp(2, irouse) = imp2un + ii
+           kunit1 = iunit
+        end if
+        !if (inmisc%flg_coef_from_ninfo) then
+           coef_rouse(1,irouse,:) = coef
+        !endif
+
      end if
 
      ! ------------------------------------------------------------------
@@ -401,6 +434,66 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         if (inmisc%flg_coef_from_ninfo) then
            coef_LJ(iLJ) = coef
         endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read wca
+     if(cline(1:3) == 'wca') then
+        read (cline, *, iostat = input_status) &
+             cline_head, icon_read, iunit1, iunit2,  &
+             imp1, imp2, imp1un, imp2un,             &
+             go, coef, factor
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        iwca = iwca + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           imp1 = imp1 + ii
+           imp2 = imp2 + jj
+        else ! NATIVEINFO%ONE_BY_ONE
+           imp1 = imp1un + ii
+           imp2 = imp2un + jj
+        end if
+        iwca2unit(1, iwca) = imp2unit(imp1)
+        iwca2unit(2, iwca) = imp2unit(imp2)
+        iwca2mp(1, iwca) = imp1
+        iwca2mp(2, iwca) = imp2
+        wca_nat(iwca) = go
+        wca_nat2(iwca) = go**2
+        !if (inmisc%flg_coef_from_ninfo) then
+           coef_wca(iwca,1) = coef
+           coef_wca(iwca,2) = factor
+        !endif
+     end if
+
+     ! ------------------------------------------------------------------
+     ! read con_gauss
+     if(cline(1:9) == 'con_gauss') then
+        read (cline, *, iostat = input_status) &
+             cline_head, icon_read, iunit1, iunit2,  &
+             imp1, imp2, imp1un, imp2un
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        icon_gauss = icon_gauss + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           imp1 = imp1 + ii
+           imp2 = imp2 + jj
+        else ! NATIVEINFO%ONE_BY_ONE
+           imp1 = imp1un + ii
+           imp2 = imp2un + jj
+        end if
+        icon_gauss2unit(1, icon_gauss) = imp2unit(imp1)
+        icon_gauss2unit(2, icon_gauss) = imp2unit(imp2)
+        icon_gauss2mp(1, icon_gauss) = imp1
+        icon_gauss2mp(2, icon_gauss) = imp2
+        !if (inmisc%flg_coef_from_ninfo) then
+           !coef_con_gauss(icon_gauss) = coef
+        !endif
      end if
 
 !     ! ------------------------------------------------------------------
@@ -723,10 +816,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   ! ---------------------------------------------------------------------
   nbd = ibd 
   nfene = ifene
+  nrouse = irouse
   nba = iba 
 !  ndih = idih
   ncon = icon
   nLJ  = iLJ
+  nwca  = iwca
+  ncon_gauss  = icon_gauss
 !  nrna_bp = ibp
 !  nrna_st = ist
   ndtrna_st = ibsdist

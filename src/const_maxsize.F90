@@ -58,6 +58,8 @@ module const_maxsize
   integer, parameter :: MXBD = MXMPBD * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPFENE = 1
   integer, parameter :: MXFENE = MXMPFENE * MXMP        !< maximum # of bonds
+  integer, parameter :: MXMPROUSE = 1
+  integer, parameter :: MXROUSE = MXMPROUSE * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPBA = 2
   integer, parameter :: MXBA = MXMPBA * MXMP    !< maximum # of bond angles
   integer, parameter :: MXMPDIH = 2
@@ -66,6 +68,10 @@ module const_maxsize
   integer, parameter :: MXCON = MXMPCON * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPLJ = 20       !< maximum # of Go-type contacts per residue 
   integer, parameter :: MXLJ = MXMPLJ * MXMP  !< maximum # of total contacts
+  integer, parameter :: MXMPWCA = 20       !< maximum # of Go-type contacts per residue 
+  integer, parameter :: MXWCA = MXMPWCA * MXMP  !< maximum # of total contacts
+  integer, parameter :: MXMPCONGAUSS = 20       !< maximum # of Go-type contacts per residue 
+  integer, parameter :: MXCONGAUSS = MXMPCONGAUSS * MXMP  !< maximum # of total contacts
 !  integer, parameter :: MXMPRNABP = 2
 !  integer, parameter :: MXRNABP = MXMPRNABP * MXMP  !< maximum # of contacts
 !  integer, parameter :: MXMPRNAST = 2

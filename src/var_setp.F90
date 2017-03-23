@@ -35,7 +35,9 @@ module var_setp
      integer :: n_sep_contact !< the minimum number of amino acids that separate a contact pair
      real(PREC) :: cutoff_go !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_LJ !< truncation distance for computing non-local Go interaction
+     real(PREC) :: cutoff_wca !< truncation distance for computing non-local Go interaction
      real(PREC) :: cutoff_exvol !< truncation distance for computing nonlocal non-native repulsion
+     real(PREC) :: cutoff_exv_gauss
      real(PREC) :: dfcontact !< the cutoff distance to define the native contact
      real(PREC) :: cgo1210 !< constant coefficient "go of the energy function for non-local Go interaction
      real(PREC) :: cdist_rep6  !< reference distance d in the non-native repulsive interaction
@@ -388,6 +390,7 @@ module var_setp
      integer    :: i_reset_struct
      integer    :: i_temp_independent
      logical    :: flg_coef_from_ninfo
+     integer    :: i_exv_all
 
      ! redefine_parameter
      integer    :: i_redef_para
@@ -497,7 +500,14 @@ module var_setp
      integer    :: rest1d_center_init_flag(MXREST1D)
      real(PREC) :: rest1d_center_v(MXREST1D, 3)
      real(PREC) :: rest1d_center_origin(MXREST1D, 3)
+
+     ! EXV_GAUSS
+     real(PREC) :: exv_gauss_a0
      
+     ! CON_GAUSS
+     real(PREC) :: con_gauss_sigma
+     real(PREC) :: con_gauss_k
+
      ! fix
      integer    :: i_fix
 

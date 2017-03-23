@@ -69,6 +69,14 @@ module var_struct
   real(PREC), allocatable, save :: dist2_fene(:)   !(MXFENE)
   !real(PREC), allocatable, save :: correct_bd_mgo(:) !(MXFENE)
 
+  !> parameters for Rouse potential
+  integer,    save :: nrouse = 0
+  integer,    allocatable, save :: irouse2mp(:,:)       !(2, MXROUSE)
+  real(PREC), allocatable, save :: coef_rouse(:,:,:)    !(2, MXROUSE, n_replica_all)
+                                   ! 1: a0
+                                   ! 2: 3kT/a0^2  (for force calculation)
+                                   !    should be divided by 2 to calculate energy term (3kT/(2*a0^2))
+
   !> parameters for bond angle potential
   integer,    save :: nba = 0
 !  integer,    save :: nfba = 0
@@ -131,6 +139,21 @@ module var_struct
   real(PREC), allocatable, save :: LJ_nat2(:)       !(MXLJ)
   !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
   real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
+
+  !> parameters for WCA potential
+  integer,    save :: nwca = 0
+  integer,    allocatable, save :: iwca2mp(:,:)      !(2, MXwca)
+  integer,    allocatable, save :: lmp2wca(:)        !(MXMP)
+  integer,    allocatable, save :: iwca2unit(:,:)    !(2, MXwca)
+  real(PREC), allocatable, save :: wca_nat(:)        !(MXwca)
+  real(PREC), allocatable, save :: wca_nat2(:)       !(MXwca)
+  real(PREC), allocatable, save :: coef_wca(:,:)     !(MXwca,2)  ! 1:repulsion 2:attraction
+
+  !> parameters for con_gauss potential
+  integer,    save :: ncon_gauss = 0
+  integer,    allocatable, save :: icon_gauss2mp(:,:)      !(2, MXcon_gauss)
+  !integer,    allocatable, save :: lmp2con_gauss(:)        !(MXMP)
+  integer,    allocatable, save :: icon_gauss2unit(:,:)    !(2, MXcon_gauss)
 
 !  !> parameter for go (morse) potential
 !  integer,    save :: nmorse = 0

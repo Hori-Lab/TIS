@@ -145,6 +145,10 @@ subroutine write_tseries(ibefore_time, istep, &
 !           write (lunout, _FMT_TS_MORSE_T_,    ADVANCE = "NO") 'morse'
 !        endif
         write (lunout, _FMT_TS_REPUL_T_, ADVANCE = "NO") 'repul'
+        if (inmisc%force_flag(INTERACT%WCA)) then
+           write (lunout, _FMT_TS_WCAREP_T_, ADVANCE = "NO") 'wca_rep'
+           write (lunout, _FMT_TS_WCAATT_T_, ADVANCE = "NO") 'wca_att'
+        endif
    
         if (inmisc%class_flag(CLASS%RNA)) then
            if (inmisc%i_dtrna_model == 2015) then
@@ -367,7 +371,7 @@ contains
     real(PREC) :: terg, termsd, teqscore
     real(PREC) :: tenergy(E_TYPE%MAX)
     real(PREC) :: erg, ermsd, eqscore, etotal, evelo
-    real(PREC) :: elocal, ego, erepul
+    real(PREC) :: elocal, ego, erepul, ewcarep, ewcaatt
     real(PREC) :: eelect
 !    real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
@@ -421,8 +425,13 @@ contains
     if (ego > HIGH_ENERGY_JUDGE) ego = HIGH_ENERGY_OUT
 !    emorse  = tenergy(E_TYPE%MORSE)
 !    if (emorse > HIGH_ENERGY_JUDGE) emorse = HIGH_ENERGY_OUT
-    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) + tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15)
+    erepul  = tenergy(E_TYPE%EXV12) + tenergy(E_TYPE%EXV6) &
+             +tenergy(E_TYPE%EXV_WCA) + tenergy(E_TYPE%EXV_DT15) + tenergy(E_TYPE%EXV_GAUSS)
     if (erepul > HIGH_ENERGY_JUDGE) erepul = HIGH_ENERGY_OUT
+    ewcarep = tenergy(E_TYPE%WCA_REP)
+    if (ewcarep > HIGH_ENERGY_JUDGE) ewcarep = HIGH_ENERGY_OUT
+    ewcaatt = tenergy(E_TYPE%WCA_ATT)
+    if (ewcaatt > HIGH_ENERGY_JUDGE) ewcaatt = HIGH_ENERGY_OUT
     !estack_rna = tenergy(E_TYPE%STACK_RNA) + tenergy(E_TYPE%STACK_DTRNA)
     estack_rna = tenergy(E_TYPE%STACK_DTRNA)
     if (estack_rna > HIGH_ENERGY_JUDGE) estack_rna = HIGH_ENERGY_OUT
@@ -511,6 +520,10 @@ contains
           write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") HIGH_ENERGY_OUT
        else
           write (lunout, _FMT_TS_REPUL_, ADVANCE = "NO") erepul
+       endif
+       if (inmisc%force_flag(INTERACT%WCA)) then
+          write (lunout, _FMT_TS_WCAREP_, ADVANCE = "NO") ewcarep
+          write (lunout, _FMT_TS_WCAATT_, ADVANCE = "NO") ewcaatt
        endif
 
        if (inmisc%class_flag(CLASS%RNA)) then

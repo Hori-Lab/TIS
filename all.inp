@@ -273,6 +273,7 @@ LOCAL(2)     L_BOND
 **L_ENM         : local elastic network model(=NOTHING)
 **L_RIGID_LIG   : ligand rigid interaction (not yet released)
 **L_DTRNA       : DT-RNA model
+**L_ROUSE       : Rouse model
 
 
 ** WHAT ABOUT THE NONLOCAL ENERGY FUNCTION
@@ -295,6 +296,8 @@ NLOCAL(1-2b/1-2b)     GO EXV
 **AICG2[53]     : AICG2 (protein)
 **DTRNA         : DT-RNA model
 **EXV_WCA       : Excluded volume by Weeks-Chandler-Andersen potential
+**EXV_GAUSS     : Gaussian-form excluded volume  (<<<< twobody_gauss is required)
+**CON_GAUSS     : Gaussian-form atraction  (<<<< twobody_gauss is required)
 
 
 ** using flexible local potential (Parameters is defined in flexible_local block)
@@ -342,8 +345,19 @@ i_output_energy_style = 0
 
 **i_dtrna_model = 2013 (default)
 **              = 2015
+
+**       = 0 : EXV is not applied to native-contact pairs (default)
+**       = 1 : EXV is applied to any pairs including native-contact pairs
+** (This flag will not be applied to excluded volume in DTRNA model)
+**i_exv_all = 1
 >>>>
 
+
+<<<< twobody_gauss
+exv_gauss_a0 = 3.8
+con_gauss_sigma = 6.3
+con_gauss_k = 0.0
+>>>>
 
 **************************************************************
 ** para_aicg_file (required only when AICG1 or AICG2 was specifiedf

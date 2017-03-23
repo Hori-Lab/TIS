@@ -10,7 +10,7 @@ subroutine write_psf()
    use var_struct, only : nmp_real, imp2unit, iclass_unit,      &
                           cmp2seq, ires_mp, cmp2atom, imp2type, &
                           cmass_mp, nbd, ibd2mp, lmp2charge, coef_charge, &
-                          nfene, ifene2mp
+                          nfene, ifene2mp, nrouse, irouse2mp
    use var_io,    only : outfile
 #ifdef MPI_PAR
    use mpiconst
@@ -78,7 +78,7 @@ subroutine write_psf()
 !       1       2       1       3       3       4       4       5
 !       4       6 
    ! header
-   write(lunout, '(i8)', ADVANCE='NO') nbd+nfene
+   write(lunout, '(i8)', ADVANCE='NO') nbd+nfene+nrouse
    write(lunout, '(a)') ' !NBOND: bonds'
    ! data
    icounter = 0
@@ -97,6 +97,15 @@ subroutine write_psf()
          write(lunout, '(i8,i8)', ADVANCE='NO') ifene2mp(1,ibd), ifene2mp(2,ibd)
       else
          write(lunout, '(i8,i8)') ifene2mp(1,ibd), ifene2mp(2,ibd)
+         icounter = 0
+      endif
+   enddo
+   do ibd = 1, nrouse
+      icounter = icounter + 1
+      if (icounter < 4) then
+         write(lunout, '(i8,i8)', ADVANCE='NO') irouse2mp(1,ibd), irouse2mp(2,ibd)
+      else
+         write(lunout, '(i8,i8)') irouse2mp(1,ibd), irouse2mp(2,ibd)
          icounter = 0
       endif
    enddo

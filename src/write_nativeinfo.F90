@@ -10,12 +10,15 @@ subroutine write_nativeinfo(lunout)
                          nbd, ibd2mp, bd_nat, cmp2atom, &
                          factor_bd, coef_bd, correct_bd_mgo,  &
                          nfene, ifene2mp, fene_nat, coef_fene, dist2_fene,  &
+                         nrouse, irouse2mp, coef_rouse, &
                          nba, iba2mp, ba_nat, factor_ba, coef_ba, correct_ba_mgo,&
 !                         ndih, idih2mp, dih_nat,    &
 !                         factor_dih, coef_dih, correct_dih_mgo, &
                          ncon, icon2mp, factor_go,       &
                          coef_go, icon_dummy_mgo, go_nat, ncon_unit, &
                          nLJ, iLJ2mp, coef_LJ, LJ_nat,  &
+                         nwca, iwca2mp, coef_wca, wca_nat,  &
+                         ncon_gauss, icon_gauss2mp, &
                          iclass_unit, ibd2type, iba2type, idih2type, icon2type, &
 !                         nrna_bp,nrna_bp_unit, nrna_st, rna_bp_nat, &
 !                         irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
@@ -98,6 +101,27 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! nfene > 0
+
+
+  ! -------------------------------------------------------------------
+  ! write the Rouse
+  if (nrouse > 0) then
+     write (lunout, '(a)') '<<<< Rouse '
+       
+     do ibd = 1, nrouse
+        imp1 = irouse2mp(1, ibd)
+        imp2 = irouse2mp(2, ibd)
+        iunit1 = imp2unit(imp1)
+        iunit2 = iunit1
+        imp1un = imp1 - lunit2mp(1, iunit1) + 1
+        imp2un = imp2 - lunit2mp(1, iunit1) + 1
+        write (lunout, "(a5, 7(1xi6), 1(1xf12.4))") &
+             'rouse', ibd, iunit1, iunit2, imp1, imp2, imp1un, imp2un, coef_rouse(1, ibd, IREP)
+     end do
+        
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! nrouse > 0
 
   
   ! -------------------------------------------------------------------
@@ -375,6 +399,70 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
   endif  ! nLJ > 0
+
+
+  ! ------------------------------------------------------------------
+  ! wca
+  if (nwca > 0) then
+     write (lunout, '(a)') '<<<< wca'
+     write (lunout, '(a, i6)') '** total_contact = ', nwca
+     
+     do iunit = 1, nunit_all
+        do junit = iunit, nunit_all
+           write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
+           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+           write (lunout, '(a)', ADVANCE='NO') '**         iwca iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+           write (lunout, '(a)') '    distance    coef_rep     coef_att'
+           do icon = 1, nwca
+              imp1 = iwca2mp(1, icon)
+              imp2 = iwca2mp(2, icon)
+              iunit1 = imp2unit(imp1)
+              iunit2 = imp2unit(imp2)
+              imp1un = imp1 - lunit2mp(1, iunit1) + 1
+              imp2un = imp2 - lunit2mp(1, iunit2) + 1
+                 
+              if(iunit == iunit1 .and. junit == iunit2) then
+                 write (lunout, "(a3, 7(1xi6), 3(f12.4))") &
+                      'wca', icon, iunit1, iunit2, imp1, imp2, imp1un, imp2un, &
+                      wca_nat(icon), coef_wca(icon,1), coef_wca(icon,2)
+              end if
+           end do
+           !write (lunout, '(a)') ''
+        end do
+     end do
+   
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! nwca > 0
+
+
+  ! ------------------------------------------------------------------
+  ! CON_GAUSS
+  if (ncon_gauss > 0) then
+     write (lunout, '(a)') '<<<< con_gauss'
+     write (lunout, '(a, i6)') '** total_contact = ', ncon_gauss
+     
+     do iunit = 1, nunit_all
+        do junit = iunit, nunit_all
+           do icon = 1, ncon_gauss
+              imp1 = icon_gauss2mp(1, icon)
+              imp2 = icon_gauss2mp(2, icon)
+              iunit1 = imp2unit(imp1)
+              iunit2 = imp2unit(imp2)
+              imp1un = imp1 - lunit2mp(1, iunit1) + 1
+              imp2un = imp2 - lunit2mp(1, iunit2) + 1
+                 
+              if(iunit == iunit1 .and. junit == iunit2) then
+                 write (lunout, "(a10, 7(1xi6))") &
+                      'ncon_gauss', icon, iunit1, iunit2, imp1, imp2, imp1un, imp2un
+              end if
+           end do
+        end do
+     end do
+   
+     write (lunout, '(a4)') '>>>>'
+     write (lunout, '(a)') ''
+  endif  ! ncon_gauss > 0
 
 
 !  ! ------------------------------------------------------------------

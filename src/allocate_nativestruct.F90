@@ -10,6 +10,7 @@ subroutine allocate_nativestruct()
    use var_struct,  only : nmp_all, &
                            ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
                            ifene2mp, fene_nat, dist2_fene, coef_fene, &
+                           irouse2mp, coef_rouse, &
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba, &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
@@ -17,6 +18,8 @@ subroutine allocate_nativestruct()
                            icon2mp, icon2type, lmp2con, icon2unit, icon_dummy_mgo,       &
                            go_nat, go_nat2, factor_go, coef_go,                          &
                            iLJ2mp, lmp2LJ, iLJ2unit, LJ_nat, LJ_nat2, coef_LJ,           &
+                           iwca2mp, lmp2wca, iwca2unit, wca_nat, wca_nat2, coef_wca,     &
+                           icon_gauss2mp, icon_gauss2unit, &
 !                           imorse2mp, imorse2type, lmp2morse, imorse2unit, imorse_dummy_mgo, &
 !                           morse_nat, morse_nat2, factor_morse, coef_morse_fD, coef_morse_a, &
 !                           irna_bp2mp, lmp2rna_bp, irna_bp2unit, nhb_bp,           &
@@ -92,6 +95,14 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_fene(:) = 0.0e0_PREC
 
+   ! rouse
+   allocate( irouse2mp(2, MXMPROUSE*nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   irouse2mp(:,:) = 0
+
+   allocate( coef_rouse(2, MXMPROUSE*nmp_all, n_replica_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_rouse(:,:,:) = 0.0e0_PREC
 
    ! bond angle
    allocate( iba2mp(3, MXMPBA*nmp_all), stat=ier)
@@ -269,6 +280,40 @@ subroutine allocate_nativestruct()
    allocate( coef_LJ(nmp_all*MXMPLJ), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ(:) = 0.0e0_PREC
+
+   ! wca
+   allocate( iwca2mp(2, nmp_all*MXMPWCA), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iwca2mp(:,:) = 0
+   
+   allocate( lmp2wca(nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   lmp2wca(:) = 0
+   
+   allocate( iwca2unit(2, nmp_all*MXMPWCA), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iwca2unit(:,:) = 0
+   
+   allocate( wca_nat(nmp_all*MXMPWCA), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   wca_nat(:) = 0.0e0_PREC
+   
+   allocate( wca_nat2(nmp_all*MXMPWCA), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   wca_nat2(:) = 0.0e0_PREC
+   
+   allocate( coef_wca(nmp_all*MXMPWCA,2), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_wca(:,:) = 0.0e0_PREC
+
+   ! con_gauss
+   allocate( icon_gauss2mp(2, nmp_all*MXMPCONGAUSS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   icon_gauss2mp(:,:) = 0
+
+   allocate( icon_gauss2unit(2, nmp_all*MXMPCONGAUSS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   icon_gauss2unit(:,:) = 0
 
 !   ! go (morse)
 !   allocate( imorse2mp(2, MXMPMORSE*nmp_all),     stat=ier)
@@ -672,6 +717,7 @@ subroutine deallocate_nativestruct
 
    use var_struct,  only : ibd2mp, ibd2type, bd_nat, factor_bd, coef_bd, correct_bd_mgo, &
                            ifene2mp, fene_nat, dist2_fene, coef_fene, &
+                           irouse2mp, coef_rouse,&
                            iba2mp, iba2type, iunit2ba, ba_nat, factor_ba, coef_ba,       &
                            correct_ba_mgo, &
                            idih2mp, idih2type, iunit2dih, dih_nat, factor_dih, coef_dih, &
@@ -713,6 +759,10 @@ subroutine deallocate_nativestruct
    if (allocated(fene_nat))             deallocate(fene_nat)
    if (allocated(dist2_fene))           deallocate(dist2_fene)
    if (allocated(coef_fene))            deallocate(coef_fene)
+
+   ! Rouse
+   if (allocated(irouse2mp))             deallocate(irouse2mp)
+   if (allocated(coef_rouse))            deallocate(coef_rouse)
 
    ! bond angle
    if (allocated(iba2mp))             deallocate(iba2mp)

@@ -45,6 +45,7 @@ subroutine neighbor(irep)
   TIME_S( tm_neighbor_exv )
   if (inmisc%force_flag(INTERACT%EXV_DT15) .OR. inmisc%force_flag(INTERACT%EXV_WCA) .OR.&
       inmisc%force_flag(INTERACT%EXV12) .OR. inmisc%force_flag(INTERACT%EXV6) .OR.&
+      inmisc%force_flag(INTERACT%EXV_GAUSS) .OR. &
       inmisc%force_flag(INTERACT%GO) .OR. inmisc%force_flag(INTERACT%LJ) ) then
       !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
@@ -91,6 +92,7 @@ subroutine neighbor(irep)
      if (inmisc%force_flag(INTERACT%EXV6)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
      if (inmisc%force_flag(INTERACT%EXV_WCA)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1
      if (inmisc%force_flag(INTERACT%EXV_DT15)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_DT15,irep) - lexv(1,E_TYPE%EXV_DT15,irep) + 1
+     if (inmisc%force_flag(INTERACT%EXV_GAUSS)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
      if (inmisc%i_dtrna_model == 2015) write(outfile%neigh,'(1xi6)',advance='no') nhbneigh(irep)
      if (inmisc%force_flag(INTERACT%ELE)) write(outfile%neigh,'(1xi6)',advance='no') lele(irep)
      write(outfile%neigh, *) ''

@@ -81,6 +81,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
                          !ene_unit_l(1,1,tn))
 
   call force_fene  (irep, force_mp_l(1,1,tn)) !, ene_unit_l(1,1,tn))
+  call force_rouse (irep, force_mp_l(1,1,tn))
 
   call force_bangle(irep, force_mp_l(1,1,tn))
                          !force_mp_mgo(1,1,1,1,tn), &
@@ -138,9 +139,11 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !     call force_enm(irep, force_mp_l(1,1,tn))
 !  else
      call force_LJ(irep, force_mp_l(1,1,tn))
+     call force_wca(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_go(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
+     call force_con_gauss(irep, force_mp_l(1,1,tn))
 !  end if
 
 !$omp master
@@ -182,8 +185,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_S( tm_force_exv ) 
 !$omp end master
 
-  ! Also used in ion-only simulations
   if (inmisc%force_flag(INTERACT%EXV_DT15)) then
+        ! Also used in ion-only simulations
         call force_exv_dt15 (irep, force_mp_l(1,1,tn))
   else
      if (inmisc%i_residuenergy_radii == 0) then
@@ -194,6 +197,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
      endif
      if (inmisc%force_flag(INTERACT%EXV_WCA)) then
         call force_exv_wca (irep, force_mp_l(1,1,tn))
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then
+        call force_exv_gauss (irep, force_mp_l(1,1,tn))
      endif
   endif
 

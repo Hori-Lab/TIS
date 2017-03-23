@@ -114,6 +114,7 @@ subroutine energy_sumup(irep,          &
 
   call energy_bond  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   call energy_fene  (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  call energy_rouse (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
   call energy_bangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
@@ -176,9 +177,11 @@ subroutine energy_sumup(irep,          &
      TIME_S( tm_energy_nlocal_go) 
 !$omp end master
      call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_wca(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_con_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !$omp master
      TIME_E( tm_energy_nlocal_go) 
 !$omp end master
@@ -218,6 +221,9 @@ subroutine energy_sumup(irep,          &
   endif
   if (inmisc%force_flag(INTERACT%EXV_WCA)) then 
      call energy_exv_wca (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  endif
+  if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then 
+     call energy_exv_gauss (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
 !$omp master
   TIME_E( tm_energy_exv) 
