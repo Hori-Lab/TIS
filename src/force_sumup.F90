@@ -91,25 +91,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !                         force_mp_mgo(1,1,1,1,tn), &
 !                         ene_unit_l(1,1,tn))
     
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!     call force_aicg13_gauss(irep, force_mp_l(1,1,tn), &
-!                                  force_mp_mgo(1,1,1,1,tn), &
-!                                  ene_unit_l(1,1,tn))
-!  end if
-
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-!     call force_aicg14_gauss(irep, force_mp_l(1,1,tn), &
-!                                  force_mp_mgo(1,1,1,1,tn), &
-!                                  ene_unit_l(1,1,tn))
-     
-!  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!     
-!     call force_dih_gauss(irep, force_mp_l(1,1,tn), &
-!                               force_mp_mgo(1,1,1,1,tn), &
-!                               ene_unit_l(1,1,tn))
-!  end if
-
 !  call force_dih_harmonic(irep, force_mp_l(1,1,tn), &
 !                         force_mp_mgo(1,1,1,1,tn), &
 !                         ene_unit_l(1,1,tn))

@@ -9,10 +9,8 @@ subroutine inp_datafile()
   use const_index
   use var_io,    only : infile, outfile, iopen_lunnum,  &
                          ifile_ini, num_file, i_initial_state, i_initial_velo, &
-!                        ifile_dssp, i_aicg, &
                          i_run_mode
   use var_struct, only : iclass_unit
-!  use var_setp,   only : inmisc !AICG
   use var_replica,only : n_replica_all
   use mpiconst
 
@@ -25,18 +23,13 @@ subroutine inp_datafile()
   integer :: luninp, lunout, iopen_status
   integer :: iopen_number
   integer :: iini, nini
-!  integer :: ndssp, idssp ! aicg
   integer :: iline, nlines, iequa, nequat
   logical :: flg_open
   character(CARRAY_MXFILE) :: path_ini, path_para, path_dcd
-  !character(CARRAY_MXFILE) :: path_aicg ! aicg
   !character(CARRAY_MXFILE) :: path_msf ! fmat
   character(CARRAY_MXFILE) :: path_velo
   character(CARRAY_MXFILE) :: filename_para(MXPARA), cname
   character(CARRAY_MXFILE) :: filename_ini(MXINI)
-!  character(CARRAY_MXFILE) :: filename_dssp(MXPDB) ! aicg
-!  character(CARRAY_MXFILE) :: filename_aicg ! aicg
-!  character(CARRAY_MXFILE) :: filename_aicg2 ! aicg2
 !  character(CARRAY_MXFILE) :: filename_msf  ! fmat
   character(CARRAY_MXFILE) :: filename_velo(MXREPLICA)
 
@@ -52,12 +45,9 @@ subroutine inp_datafile()
   lunout       = outfile%data
 
   iini         = 0
-!  idssp        = 0 ! aicg
-!  ndssp        = 0 ! aicg
 
   path_ini     = "./pdb"
   path_para    = "./para"
-!  path_aicg    = "./aicg"  ! aicg
 !  path_msf     = "."       ! fmat
   path_velo    = "."
   path_dcd     = "."
@@ -89,8 +79,6 @@ subroutine inp_datafile()
            path_ini = csides(2, iequa)
         else if(csides(1, iequa) == 'path_para') then
            path_para = csides(2, iequa)
-        !else if(csides(1, iequa) == 'path_aicg') then  ! aicg
-        !   path_aicg = csides(2, iequa)                ! aicg
         !else if(csides(1, iequa) == 'path_msf') then   ! fmat
         !   path_msf = csides(2, iequa)                 ! fmat
         else if(csides(1, iequa) == 'path_dcd') then
@@ -156,90 +144,6 @@ subroutine inp_datafile()
         end if
      end do
   end if
-
-!  ! aicg
-!  ! --------------------------------------------------------------------
-!  ! Reading "dssp_file" field in input file
-!  ! --------------------------------------------------------------------
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. inmisc%force_flag(INTERACT%AICG1)) then !AICG
-!  if (i_aicg == AICG%AUTO) then
-!     rewind(luninp)
-!     call ukoto_uiread2(luninp, lunout, 'dssp_file        ', kfind, &
-!          CARRAY_MXLINE, nlines, cwkinp)
-!     if(kfind /= 'FIND') then
-!        error_message = 'Error: cannot find "dssp_file" field in the input file'
-!        call util_error(ERROR%STOP_ALL, error_message)
-!     end if
-!     ! dssp of real chain 
-!     do iline = 1, nlines
-!        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-!        ctmp00 = cwkinp(iline)
-!
-!        if(ctmp00(1:1) /= ' ') then
-!           read (ctmp00, *) char12, cname
-!           write (lunout, '(4a)') '---reading filename for dssp file: ', trim(char12), ' ', trim(cname)
-!           call util_unitstate(char12, inunit, instate)
-!           if(instate <= 1) then
-!              idssp = idssp + 1
-!              filename_dssp(idssp) = cname
-!           end if
-!        end if
-!     end do
-!
-!     ! dssp of shadow chain
-!     do iline = 1, nlines
-!        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-!        ctmp00 = cwkinp(iline)
-!
-!        if(ctmp00(1:1) /= ' ') then
-!           read (ctmp00, *) char12, cname
-!           write (lunout, '(4a)') '---reading filename for dssp file: ', trim(char12), ' ', trim(cname)
-!           call util_unitstate(char12, inunit, instate)
-!           if(instate >= 2) then
-!              idssp = idssp + 1
-!              filename_dssp(idssp) = cname
-!           end if
-!        end if
-!     end do
-!
-!  ndssp = idssp
-!  end if
-!  end if !AICG
-
-!  ! aicg
-!  ! --------------------------------------------------------------------
-!  ! Reading "para_aicg_file" field in input file
-!  ! --------------------------------------------------------------------
-!  if (inmisc%force_flag(INTERACT%AICG1) .OR. &
-!      inmisc%force_flag(INTERACT%AICG2) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!
-!     if (i_aicg == AICG%USER) then
-!         rewind(luninp)
-!         call ukoto_uiread2(luninp, lunout, 'aicg            ', kfind, &
-!              CARRAY_MXLINE, nlines, cwkinp)
-!         if(kfind /= 'FIND') then
-!            error_message = 'Error: cannot find "aicg" field in the input file'
-!            call util_error(ERROR%STOP_ALL, error_message)
-!         end if
-!
-!         do iline = 1, nlines
-!            call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
-!
-!            do iequa = 1, nequat
-!               if(csides(1, iequa) == 'filename_aicg') then
-!                  filename_aicg = csides(2, iequa)
-!               else if(csides(1, iequa) == 'filename_aicg2') then
-!                  filename_aicg2 = csides(2, iequa)
-!               end if
-!            end do
-!
-!         end do
-!
-!     end if
-!  end if !AICG
 
 !  ! fmat
 !  ! --------------------------------------------------------------------
@@ -323,73 +227,6 @@ subroutine inp_datafile()
      !end do
   end if
 
-!  ! --------------------------------------------------------------------
-!  ! AICG
-!  ! open dssp file
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. inmisc%force_flag(INTERACT%AICG1)) then
-!      if(i_aicg == AICG%AUTO) then
-!         n = index(path_aicg, ' ')
-!         do i = 1, ndssp
-!            ifile_dssp(i) = iopen_lunnum
-!            iopen_lunnum = iopen_lunnum + 1
-!            if(path_aicg /= '') then
-!               cname = path_aicg(1:n-1)//'/'//filename_dssp(i)
-!            else
-!               cname = './aicg/'//filename_aicg
-!            end if
-!            write (*, '(a15,i3,a3,a)') "open dssp file(",ifile_dssp(i),"): ", trim(cname)
-!            open(ifile_dssp(i), file = cname, status = 'old', action = 'read', &
-!                 iostat = iopen_status)
-!            if(iopen_status > 0) then
-!               error_message = 'Error: cannot open the file: ' // filename_dssp(i)
-!               call util_error(ERROR%STOP_ALL, error_message)
-!            end if
-!         end do
-!      end if
-!  end if
-
-!  ! open aicg parameter files 
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG1) .OR. &
-!      inmisc%force_flag(INTERACT%AICG1)) then
-!      if(i_aicg == AICG%USER) then
-!         n = index(path_aicg, ' ')
-!         if(path_aicg /= '') then
-!            filename_aicg = path_aicg(1:n-1)//'/'//filename_aicg
-!         else
-!            filename_aicg = './aicg/'//filename_aicg
-!         end if
-!         write (*, '(a25,i3,a3,a)') "open aicg parameter file(",infile%para_aicg, &
-!                                      "): ", trim(filename_aicg)
-!         open(infile%para_aicg, file = filename_aicg, status = 'old', action = 'read', &
-!                 iostat = iopen_status)
-!         if(iopen_status > 0) then
-!            error_message = 'Error: cannot open the file: ' // filename_aicg
-!            call util_error(ERROR%STOP_ALL, error_message)
-!         end if
-!      end if
-!  end if
-!
-!  ! open aicg2 parameter files 
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS) .OR. &
-!      inmisc%force_flag(INTERACT%AICG2)) then
-!      if(i_aicg == AICG%USER) then
-!         n = index(path_aicg, ' ')
-!         if(path_aicg /= '') then
-!            filename_aicg2 = path_aicg(1:n-1)//'/'//filename_aicg2
-!         else
-!            filename_aicg2 = './aicg/'//filename_aicg2
-!         end if
-!         write (*, '(a26,i3,a3,a)') "open aicg2 parameter file(",infile%para_aicg2, &
-!                                      "): ", trim(filename_aicg2)
-!         open(infile%para_aicg2, file = filename_aicg2, status = 'old', action = 'read', &
-!                 iostat = iopen_status)
-!         if(iopen_status > 0) then
-!            error_message = 'Error: cannot open the file: ' // filename_aicg2
-!            call util_error(ERROR%STOP_ALL, error_message)
-!         end if
-!      end if
-!  end if
 
   ! --------------------------------------------------------------------
   ! open parameter files 
@@ -498,21 +335,6 @@ subroutine inp_datafile()
 !     call util_error(ERROR%STOP_ALL, error_message)
 !  end if
 
-!  ! generic parameter for aicg and aicg2
-!  if(path_para /= '') then
-!     filename_para(11) = path_para(1:l-1)//'/'//'aicg_generic.para'
-!  else
-!     filename_para(11) = './para/aicg_generic.para'
-!  end if
-!  write (*, '(a33,i3,a3,a)') "open aicg_generic parameter file(",infile%para_aicg_gen,&
-!                               "): ", trim(filename_para(11))
-!  open(infile%para_aicg_gen, file = filename_para(11), status = 'old', action = 'read', &
-!  iostat = iopen_status)
-!  if(iopen_status > 0) then
-!     error_message = 'Error: cannot open the file: ' // filename_para(11)
-!     call util_error(ERROR%STOP_ALL, error_message)
-!  end if
-
 !  !sasa
 !  ! generic parameter for sasa
 !  if(path_para /= '') then
@@ -567,7 +389,6 @@ subroutine inp_datafile()
   ! ------------------------------------------------------------------------
 
   num_file%ini         = nini
-!  num_file%dssp        = ndssp ! aicg
 
    
   ! --------------------------------------------------------------------

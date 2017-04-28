@@ -9,7 +9,7 @@ subroutine setpara( xyz_mp_init )
   use const_index
   use const_physical
   use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
-                         i_run_mode, i_seq_read_style !, i_aicg, i_go_native_read_style
+                         i_run_mode, i_seq_read_style
   use var_setp,   only : inpara, inmisc, fix_mp, inperi !, inflp, inmmc
   use var_struct, only : xyz_ref_mp, iontype_mp, nmp_all
 !  use var_mgo,    only : inmgo
@@ -25,8 +25,6 @@ subroutine setpara( xyz_mp_init )
   integer :: npdb, input_status
 !  integer,    allocatable :: iatomnum(:)
 !  real(PREC), allocatable :: xyz(:, :, :)
-!  character(4), allocatable :: cname_ha(:, :)  ! aicg
-!  character(1), allocatable :: dssp(:)  ! aicg
   character(72) :: char72
   character(CARRAY_MSG_ERROR) :: error_message
 
@@ -89,19 +87,9 @@ subroutine setpara( xyz_mp_init )
   endif
 
   ! -----------------------------------------------------------------------
-!  ! reading parameters from parameter files
-!  if (inmisc%force_flag(INTERACT%HP)) then
-!     call setp_mapara_hp()
-!  endif
-
   if (inmisc%force_flag(INTERACT%ELE)) then
      call setp_mapara_ele()
   endif
-
-!  ! sasa
-!  if (inmisc%force_flag(INTERACT%SASA)) then
-!     call setp_mapara_sasa()
-!  endif
 
   ! excluded volume
   if (inmisc%force_flag(INTERACT%EXV12)) then
@@ -150,8 +138,6 @@ subroutine setpara( xyz_mp_init )
   ! reading sequence
 !  allocate( iatomnum(MXMP)                       )
 !  allocate( xyz(SDIM, MXATOM_MP, MXMP)      )
-!  allocate( cname_ha(MXATOM_MP, MXMP)            )    ! aicg
-!  allocate( dssp(MXMP)                           )    ! aicg
 
   iontype_mp(1:MXMP) = 0
   if(i_seq_read_style == SEQREAD%PDB) then
@@ -194,11 +180,6 @@ subroutine setpara( xyz_mp_init )
 
   ! modified multi-canonical
 !  if(inmmc%i_modified_muca == 1) call setp_modified_muca()
-
-  ! try to read <<<< hydrophobic
-!  if(inmisc%force_flag(INTERACT%HP)) then
-!     call setp_hydrophobic()
-!  endif 
 
   if(inmisc%force_flag(INTERACT%ELE)) call setp_electrostatic()
 
@@ -258,42 +239,6 @@ subroutine setpara( xyz_mp_init )
   !call setp_nativestruct(xyz_mp_init, iatomnum, xyz, cname_ha )
   call setp_nativestruct()
 
-  ! Atomic interaction based coarse-grained model (AICG)
-!  if(i_go_native_read_style == NATIVEREAD%PDB) then
-!  if (inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag_local(LINTERACT%L_AICG1)) then
-!      if(i_aicg == AICG%AUTO) then
-!         call setp_mapara_aicg()
-!         call read_dssp(dssp)
-!         call setp_aicg(iatomnum, xyz, cname_ha, dssp)
-!      else if(i_aicg == AICG%USER) then
-!         call read_paraaicg()
-!      end if
-!  end if
-!  if (inmisc%force_flag(INTERACT%AICG2) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2) .OR. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!      if(i_aicg == AICG%AUTO) then
-!         call setp_mapara_aicg()
-!!         call setp_aicg2(iatomnum, xyz, cname_ha)
-!      else if(i_aicg == AICG%USER) then
-!         call read_paraaicg2()
-!      end if
-!  end if
-!  end if
-  ! =======================================================================
-  
-
-!  ! implicit ligand
-!  if(inmisc%i_implig == 1) then
-!     call setp_para_implig() !! read parameter from input_file (<<<< implicit_ligand )
-!                             !! parameter setting for implicit ligand model 
-!                             !! set initial state (BOUND, UN_BOUND) for implicit ligand
-!     if(inimplig%iexe_implig == 1) then
-!        call setp_bindsite_implig() !! read binding site information from input_file 
-!                                 !! (<<<< binding_site) [IMPLIGSITE]
-!        call setp_con_implig(xyz_mp_init, iatomnum, xyz) ! fix the ligand mediated contact pair
-!     endif
-!  endif
 
   !-----------------------------------------------------------------------
   ! flexible local potential
@@ -305,8 +250,6 @@ subroutine setpara( xyz_mp_init )
 
 !  deallocate(iatomnum)
 !  deallocate(xyz)
-!  deallocate(dssp)  ! aicg
-!  deallocate(cname_ha)  ! aicg
 
 !  ! fluctuation matching
 !  if (i_run_mode == RUN%FMAT     ) call setp_fmat_para()

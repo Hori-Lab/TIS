@@ -122,11 +122,6 @@ subroutine energy_sumup(irep,          &
   TIME_E( tm_energy_local)
 !$omp end master
 
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG2) .or. &
-!      inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!     call energy_aicg13_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-!  end if
-
 !  !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then
 !     call energy_fbangle(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -135,12 +130,6 @@ subroutine energy_sumup(irep,          &
 !  TIME_S( tm_energy_dih)
 !  call energy_dih   (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !  TIME_E( tm_energy_dih)
-
-!  if (inmisc%force_flag_local(LINTERACT%L_AICG2)) then
-!     call energy_aicg14_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-!  else if (inmisc%force_flag_local(LINTERACT%L_AICG2_PLUS)) then
-!     call energy_dih_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
-!  end if
 
 !  !if (inmisc%i_add_int == 1) then
 !  if (inflp%i_flp == 1 .or. inmisc%force_flag_local(LINTERACT%L_FLP)) then

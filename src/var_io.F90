@@ -18,9 +18,6 @@ module var_io
      integer :: para_hp       = 20
      integer :: para_ele      = 21
      integer :: para_flp      = 22
-     integer :: para_aicg_gen = 23 ! aicg_gen
-     integer :: para_aicg     = 24 ! aicg
-     integer :: para_aicg2    = 25 ! aicg2
      integer :: msf           = 26 ! fmat
      integer :: para_fsasa    = 27 ! sasa
      integer :: para_exv      = 28 ! excluded volume
@@ -69,7 +66,6 @@ module var_io
      integer :: pdb
      integer :: ini
      integer :: para
-     integer :: dssp  ! aicg
      integer :: sz
   endtype numfile
   type(numfile), save :: num_file
@@ -86,7 +82,6 @@ module var_io
                            ! 4: imunit + inunit(2) - inunit(1)
                            ! 5: 1:PDB 2:generate 3:sequence
   integer, save :: ifile_ini(4, MXINI)
-  integer, save :: ifile_dssp(MXPDB) ! aicg
 
   !> file handler for output files (50 <= num <= 100)
   type fileout
@@ -121,9 +116,6 @@ module var_io
 
   integer, save :: ius2unit(MXUNIT, 0:MXSTATE_MGO)
   integer, save :: iunit2us(2, MXUNIT)
-
-  ! aicg
-!  integer, save :: i_aicg
 
   logical, save :: flg_rst ! To read
   logical, save :: flg_unit_generate_ion(MXUNIT)

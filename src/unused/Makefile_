@@ -254,6 +254,49 @@ FOBJ1 = \
 	write_rep_traject.o write_rep_result.o write_rep_table.o\
 	read_pull.o\
 	widom.o
+	#mloop_recalc_coef.o
+	#read_paraaicg.o read_paraaicg2.o\
+	#setp_para_enm.o\
+	#setp_para_implig.o setp_con_implig.o setp_bindsite_implig.o\
+	#allocate_mgo.o allocate_fmat.o\
+	#simu_copyxyz.o simu_copyxyz_ele.o\
+	#step_adjustment.o setp_box.o setp_cap.o\
+	#setp_modified_muca.o 
+	#setp_anneal_para.o setp_searchingtf_para.o\
+	#setp_native_bond.o setp_native_bangle.o\
+	#setp_native_neighbor_list.o setp_native_go.o\
+	#setp_native_hp.o setp_native_sasa.o setp_native_dih.o\
+	#setp_para_mgo.o setp_hydrophobic.o setp_cylinder_para.o setp_native_secstruct.o\
+	#setp_mapara_flp.o 
+	#mloop_setup_nlocal_add_mgo.o mloop_setup_nlocal_ref_mgo.o\
+	#simu_anneal.o simu_searchingtf.o simu_mc_implig.o\
+	#simu_copyxyz_mgo.o\
+	#mloop_setup_mgo.o mloop_setup_local_mgo.o mloop_setup_nlocal_mgo.o\
+	#mloop_flexible_local.o\
+	#setp_mapara_aicg.o setp_aicg.o setp_aicg2.o\
+	#setp_mapara_sasa.o setp_mapara_hp.o\
+	#neighbor_list_hp.o\
+	#energy_aicg13_gauss.o\
+	#energy_implig.o\
+	#energy_nlocal_morse.o energy_nlocal_rna_bp.o\
+	#energy_dih_gauss.o\
+	#energy_fbangle.o energy_fdih.o\
+	#energy_dih.o energy_dih_harmonic.o energy_rna_stack.o \
+	#energy_nlocal_mgo.o energy_mgo.o energy_nlocal_go.o\
+	#energy_cylinder.o energy_hp.o energy_sasa.o energy_box.o energy_cap.o\
+	#energy_winz.o energy_enm.o\
+	#force_dih.o\
+	#force_dih_harmonic.o force_rna_stack.o force_nlocal_go.o force_nlocal_morse.o \
+	#force_fbangle.o force_fdih.o force_aicg13_gauss.o\
+	#force_nlocal_rna_bp.o force_nlocal_mgo.o force_mgo.o\
+	#force_hp.o force_sasa.o force_implig.o\
+	#force_enm.o #force_winz.o\
+	#force_box.o force_cap.o force_cylinder.o\
+	#dump_var_all.o dump_var_setp.o dump_var_struct.o dump_var_replica.o\
+	#read_pdb_rna.o\
+	write_rep_adjust.o \
+	#simu_fmat.o setp_fmat_para.o mloop_fmat_homo.o mloop_fmat_hetero.o write_fmat.o\
+	#read_dssp.o read_dssp_pro.o\
 
 FOBJ2 = \
 	write_version.o write_xyz_dcd.o

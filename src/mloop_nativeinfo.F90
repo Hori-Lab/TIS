@@ -38,9 +38,6 @@ subroutine mloop_nativeinfo(istep_sim)
 !                         imorse2type, &
                          idtrna_hb2hbsite, flg_hb_tertiary, &
                          irna_st_dummy_mgo
-!                         coef_aicg13_gauss, wid_aicg13_gauss, aicg13_nat, factor_aicg13, & ! AICG2
-!                         coef_aicg14_gauss, wid_aicg14_gauss, aicg14_nat, factor_aicg14, &
-!                         coef_dih_gauss, wid_dih_gauss ! AICG2
 #endif
 
   implicit none
@@ -163,12 +160,6 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(factor_ba,   MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_ba,   2*MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
-!  ! aicg13(L_AICG2)
-!  call MPI_Bcast(aicg13_nat,      MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(factor_aicg13,   MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(wid_aicg13_gauss, MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(coef_aicg13_gauss,MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-
   ! dihedral
   call MPI_Bcast(ndih,        1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(idih2mp,     4*MXMPDIH*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
@@ -178,16 +169,6 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(dih_cos_nat,   MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(factor_dih,    MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_dih,    2*MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-
-!  ! aicg14(L_AICG2)
-!  call MPI_Bcast(aicg14_nat,      MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(factor_aicg14,   MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(wid_aicg14_gauss, MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(coef_aicg14_gauss,MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!
-!  ! aicgdih(L_AICG2_PLUS)
-!  call MPI_Bcast(wid_dih_gauss,   MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(coef_dih_gauss,  MXMPDIH*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
   ! go (LJ1210)
   call MPI_Bcast(ncon,           1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)

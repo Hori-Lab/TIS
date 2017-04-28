@@ -168,20 +168,6 @@ module var_struct
 !  real(PREC), allocatable, save :: coef_morse_fD(:)    !(MXMORSE)
 !  real(PREC), allocatable, save :: coef_morse_a(:)     !(MXMORSE)
 
-!  !> parameters for aicg13 potential  !aicg2
-!  real(PREC), allocatable, save :: aicg13_nat(:)        !(MXBA)
-!  real(PREC), allocatable, save :: coef_aicg13_gauss(:) !(MXBA)
-!  real(PREC), allocatable, save :: wid_aicg13_gauss(:)  !(MXBA)
-!  real(PREC), allocatable, save :: factor_aicg13(:)     !(MXBA)
-!
-!  !> parameters for aicg14 potential  !aicg2
-!  real(PREC), allocatable, save :: aicg14_nat(:)          !(MXDIH)
-!  real(PREC), allocatable, save :: coef_aicg14_gauss(:)   !(MXDIH)
-!  real(PREC), allocatable, save :: wid_aicg14_gauss(:)    !(MXDIH)
-!  real(PREC), allocatable, save :: coef_dih_gauss(:)   !(MXDIH)
-!  real(PREC), allocatable, save :: wid_dih_gauss(:)    !(MXDIH)
-!  real(PREC), allocatable, save :: factor_aicg14(:)       !(MXDIH)
-
 !  !> parameters sasa
 !  !sasa
 !  real(PREC), allocatable, save :: para_sasa(:)          !(MXMP)

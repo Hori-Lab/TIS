@@ -29,9 +29,6 @@ subroutine allocate_nativestruct()
 !                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
 !                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
 !                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
-!                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
-!                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
-!                           coef_dih_gauss, wid_dih_gauss,&  ! aicg2
 !                           para_sasa, rad_sasa, surf, connect,& ! sasa
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite, &
@@ -178,47 +175,6 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    correct_dih_mgo(:) = 1.0e0_PREC
 
-!   ! aicg2
-!   allocate( aicg13_nat(MXMPBA*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   aicg13_nat(:) = 0.0e0_PREC
-!
-!   allocate( factor_aicg13(MXMPBA*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   factor_aicg13(:) = 0.0e0_PREC
-!
-!   allocate( coef_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   coef_aicg13_gauss(:) = 0.0e0_PREC
-!
-!   allocate( wid_aicg13_gauss(MXMPBA*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   wid_aicg13_gauss(:) = 0.0e0_PREC
-!
-!   allocate( aicg14_nat(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   aicg14_nat(:) = 0.0e0_PREC
-!
-!   allocate( factor_aicg14(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   factor_aicg14(:) = 0.0e0_PREC
-!
-!   allocate( coef_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   coef_aicg14_gauss(:) = 0.0e0_PREC
-!
-!   allocate( wid_aicg14_gauss(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   wid_aicg14_gauss(:) = 0.0e0_PREC
-!
-!   allocate( coef_dih_gauss(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   coef_dih_gauss(:) = 0.0e0_PREC
-!
-!   allocate( wid_dih_gauss(MXMPDIH*nmp_all), stat=ier)
-!   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-!   wid_dih_gauss(:) = 0.0e0_PREC
-   
    ! go (LJ1210)
    allocate( icon2mp(2, nmp_all*MXMPCON), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
@@ -600,18 +556,6 @@ contains
       if (allocated(dih_cos_nat))       flg_error = .true.
       if (allocated(correct_dih_mgo))   flg_error = .true.
 
-!      !  aicg2
-!      if (allocated(aicg13_nat))        flg_error = .true.
-!      if (allocated(factor_aicg13))     flg_error = .true.
-!      if (allocated(coef_aicg13_gauss)) flg_error = .true.
-!      if (allocated(wid_aicg13_gauss))  flg_error = .true.
-!      if (allocated(aicg14_nat))        flg_error = .true.
-!      if (allocated(factor_aicg14))     flg_error = .true.
-!      if (allocated(coef_aicg14_gauss)) flg_error = .true.
-!      if (allocated(wid_aicg14_gauss))  flg_error = .true.
-!      if (allocated(coef_dih_gauss))    flg_error = .true.
-!      if (allocated(wid_dih_gauss))     flg_error = .true.
-   
       ! go (LJ1210)
       if (allocated(icon2mp))           flg_error = .true.
       if (allocated(icon2type))         flg_error = .true.
@@ -733,9 +677,6 @@ subroutine deallocate_nativestruct
 !                           irna_st_dummy_mgo, rna_st_nat, rna_st_nat2,&
 !                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
 !                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
-!                           aicg13_nat, aicg14_nat, coef_aicg13_gauss, coef_aicg14_gauss, & ! aicg2
-!                           wid_aicg13_gauss, wid_aicg14_gauss, factor_aicg13, factor_aicg14, & ! aicg2
-!                           coef_dih_gauss, wid_dih_gauss,  & !aicg2
 !                           para_sasa, rad_sasa, surf, connect, & !sasa
                            idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite,&
@@ -783,18 +724,6 @@ subroutine deallocate_nativestruct
    if (allocated(dih_sin_nat))        deallocate(dih_sin_nat)
    if (allocated(dih_cos_nat))        deallocate(dih_cos_nat)
    if (allocated(correct_dih_mgo))    deallocate(correct_dih_mgo)
-
-!  !  aicg2
-!   if (allocated(aicg13_nat))         deallocate(aicg13_nat)
-!   if (allocated(factor_aicg13))      deallocate(factor_aicg13)
-!   if (allocated(coef_aicg13_gauss))  deallocate(coef_aicg13_gauss)
-!   if (allocated(wid_aicg13_gauss))   deallocate(wid_aicg13_gauss)
-!   if (allocated(aicg14_nat))         deallocate(aicg14_nat)
-!   if (allocated(factor_aicg14))      deallocate(factor_aicg14)
-!   if (allocated(coef_aicg14_gauss))  deallocate(coef_aicg14_gauss)
-!   if (allocated(wid_aicg14_gauss))   deallocate(wid_aicg14_gauss)
-!   if (allocated(coef_dih_gauss))     deallocate(coef_dih_gauss)
-!   if (allocated(wid_dih_gauss))      deallocate(wid_dih_gauss)
 
    ! go (LJ1210)
    if (allocated(icon2mp))            deallocate(icon2mp)

@@ -533,67 +533,6 @@ module var_setp
 
   type(input_miscellaneous), save :: inmisc
 
-!  !==========================================
-!  !mcanonical
-!  type input_modified_muca
-!     integer    :: i_modified_muca
-!     real(PREC) :: em_depth
-!     real(PREC) :: em_sigma
-!     real(PREC) :: em_mid
-!     integer    :: sz
-!  end type input_modified_muca
-!
-!  type(input_modified_muca), save :: inmmc
-
-!  !==========================================
-!  ! aicg
-!  type input_aicg_parameter
-!     real(PREC) :: cbd_aicg
-!     real(PREC) :: cba_aicg_G
-!     real(PREC) :: cba_aicg_H
-!     real(PREC) :: cba_aicg_E
-!     real(PREC) :: cba_aicg_T
-!     real(PREC) :: cba_aicg_C
-!     real(PREC) :: cdih_aicg_G
-!     real(PREC) :: cdih_aicg_H
-!     real(PREC) :: cdih_aicg_E
-!     real(PREC) :: cdih_aicg_T
-!     real(PREC) :: cdih_aicg_C
-!     real(PREC) :: ave_caicg
-!     real(PREC) :: gen_caicg
-!     real(PREC) :: ecut_low
-!     real(PREC) :: ecut_up
-!     integer    :: iflag_scale
-!     integer    :: sz
-!  end type input_aicg_parameter
-!
-!  type(input_aicg_parameter), save :: inaicg
-!
-!  !==========================================
-!  ! aicg2
-!  type input_aicg2_parameter
-!     real(PREC) :: cbd_aicg2
-!     real(PREC) :: wid_aicg13
-!     real(PREC) :: wid_aicg14
-!     real(PREC) :: wid_dih
-!     real(PREC) :: ave_caicg2_loc
-!     real(PREC) :: gen_caicg2_loc
-!     real(PREC) :: ave_caicg2plus_13
-!     real(PREC) :: gen_caicg2plus_13
-!     real(PREC) :: ave_caicg2plus_14
-!     real(PREC) :: gen_caicg2plus_14
-!     real(PREC) :: ave_caicg2_nloc
-!     real(PREC) :: gen_caicg2_nloc
-!     real(PREC) :: ave_caicg2plus_nloc
-!     real(PREC) :: gen_caicg2plus_nloc
-!     real(PREC) :: ecut_low_aicg2
-!     real(PREC) :: ecut_up_aicg2
-!     integer    :: iflag_scale_aicg2
-!     integer    :: sz
-!  end type input_aicg2_parameter
-!
-!  type(input_aicg2_parameter), save :: inaicg2
-
   !==========================================
   ! electrostatic
   type input_electrostatic

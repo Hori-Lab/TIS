@@ -9,8 +9,6 @@ subroutine mloop_del_int()
   use var_setp, only : inmisc
   use var_struct, only : nba, iba2mp, factor_ba, coef_ba, &
                          ndih, idih2mp, factor_dih, coef_dih, &
-!                         lunit2mp, factor_aicg13, coef_aicg13_gauss, &
-!                         factor_aicg14, coef_aicg14_gauss, coef_dih_gauss, &
                          ncon, icon2mp, coef_go
 !  use var_mgo, only : inmgo, ishadow2real_mp_mgo
   use mpiconst
@@ -62,9 +60,6 @@ subroutine mloop_del_int()
         imp3 = iba2mp(3, iba)
 
         if(idel_mp(imp1) == 1 .or. idel_mp(imp2) == 1 .or. idel_mp(imp3) == 1) then
-!           factor_aicg13(iba) = 0.0e0_PREC
-!           coef_aicg13_gauss(iba) = 0.0e0_PREC
-
            factor_ba(iba) = 0.0e0_PREC
            coef_ba(1, iba) = 0.0e0_PREC
            coef_ba(2, iba) = 0.0e0_PREC
@@ -79,10 +74,6 @@ subroutine mloop_del_int()
         imp4 = idih2mp(4, idih)
 
         if(idel_mp(imp1) == 1 .or. idel_mp(imp2) == 1 .or. idel_mp(imp3) == 1 .or. idel_mp(imp4) == 1) then
-!           factor_aicg14(idih) = 0.0e0_PREC
-!           coef_aicg14_gauss(idih) = 0.0e0_PREC
-!           coef_dih_gauss(idih) = 0.0e0_PREC
-
            factor_dih(idih) = 0.0e0_PREC
            coef_dih(1, idih) = 0.0e0_PREC
            coef_dih(2, idih) = 0.0e0_PREC
