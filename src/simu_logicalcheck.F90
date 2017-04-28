@@ -32,11 +32,6 @@ subroutine simu_logicalcheck()
      error_code = 90
 !     if (i_type /= REPTYPE%VOID) error_code = 10 ! i_type should be VOID
 
-  ! Auto-search of T_f
-  case (RUN%SEARCH_TF)
-     error_code = 90
-!     if (i_type /= REPTYPE%VOID) error_code = 20  ! i_type should be VOID
-
   ! Energy calculation at single point
   case (RUN%ENERGY_CALC)
 
@@ -96,7 +91,6 @@ subroutine simu_logicalcheck()
   ! i_reset_struct is only available either FMAT or REPLICA
   if (inmisc%i_reset_struct == 1) then
      if ((i_run_mode == RUN%FMAT)      .OR.&
-         (i_run_mode == RUN%SEARCH_TF) .OR.&
         (i_run_mode == RUN%REPLICA .AND. inrep%flg_opt_temp)) then
         continue
      else

@@ -100,8 +100,6 @@ subroutine inp_job()
      write (lunout, *) 'Constant temperature simulation'
   else if(i_run_mode == RUN%SA) then
      write (lunout, *) 'Simulated annealing (require "<<<< annealing" field)'
-  else if(i_run_mode == RUN%SEARCH_TF) then
-     write (lunout, *) 'Auto-search of T_f (require "<<<< seraching_tf" field)'
   else if(i_run_mode == RUN%ENERGY_CALC) then
      write (lunout, *) 'Energy calculation at single point'
   else if(i_run_mode == RUN%REPLICA) then

@@ -49,20 +49,6 @@ subroutine simu_para()
 !     istep = 0
 !     call simu_anneal(istep, tempk)
 !
-!  ! searchingtf
-!  else if(i_run_mode == RUN%SEARCH_TF) then
-!     ntstep = insimu%n_tstep(istep_sim)
-!
-!     ! # of replica should be one
-!     if (n_replica_all /= 1) then
-!        write(error_message,*) 'defect at simu_para, PROGRAM STOP'
-!        call util_error(ERROR%STOP_ALL, error_message) 
-!     endif
-!
-!     istep = 0
-!     call simu_searchingtf(istep, ntstep, qscore, tempk)
-!     mstep = MXSEARCHINGTF    ! defined by const_maxsize.F90 (default=1000)
-!
 !  ! fluctuation matching
 !  else if (i_run_mode == RUN%FMAT) then
 !     call fmat_clear()

@@ -131,9 +131,6 @@ subroutine setpara( xyz_mp_init )
 !  ! annealing
 !  if (i_run_mode == RUN%SA       ) call setp_anneal_para()
 
-!  ! searching Tf
-!  if (i_run_mode == RUN%SEARCH_TF) call setp_searchingtf_para()
-
   ! re-define parameters
   if (inmisc%i_redef_para == 1) call setp_redef_para()
 

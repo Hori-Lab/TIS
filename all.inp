@@ -1,6 +1,6 @@
 <<<< filenames
 ** defining the directory where output date are saved
-path = ./data
+path = ./
 ** the output file names up to the suffix
 filename = md
 
@@ -16,7 +16,7 @@ filename = md
 **    psf: Protein Structure File can be used by VMD to visualize DCD data.
 ** 
 ** If you want above format file, write the extension name following 'OUTPUT'.
-**OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh
+**OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh hb st
 
 ** define the directory where the native (reference) structures are prepared
 path_pdb = ./pdb
@@ -26,9 +26,6 @@ path_ini = ./pdb
 
 ** define the directory where native info files are prepared
 path_natinfo = ./ninfo
-
-** define the directory where the secondary structure dssp are prepared
-**path_aicg = ./aicg
 
 ** define the directory where parameter files are prepared
 **path_para=./para
@@ -47,7 +44,6 @@ path_natinfo = ./ninfo
 **           = 1 : Debug Mode, Check the consistence between force and energy
 **           = 2 : Constant temperature simulation 
 **           = 3 : Simulated annealing (require "<<<< annealing" block)
-**           = 4 : Auto-search of T_f (require "<<<< searching_tf" block)
 **           = 5 : Energy calculation at single point
 **           = 6 : Replica exchange method
 **           = 7 : Fluctuation matching method (not available)
@@ -245,16 +241,6 @@ SEQRES   5 A   64  THR GLY TYR ILE PRO SER ASN TYR VAL ALA PRO SER
 
 
 **************************************************************
-** dssp_file (required only when "i_aicg /= 0")
-**************************************************************
-<<<< dssp_file
-** When i_aicg >= 1 in "<<<< job_cntl" block,
-** dssp file should be specified here.     
-1    igd.dssp
->>>>
-
-
-**************************************************************
 ** energy_function (required)
 **************************************************************
 <<<< energy_function        
@@ -265,9 +251,6 @@ LOCAL(2)     L_BOND
 
 **NOTHING       : no interaction
 **L_GO          : local Go interaction
-**L_AICG1       : local AICG1
-**L_AICG2       : local AICG2(automatically includeing L_FLP)
-**L_AICG2_PLUS  : modified local AICG2
 **L_FLP         : flexible local potential
 **L_BOND        : bond potential only
 **L_ENM         : local elastic network model(=NOTHING)
@@ -619,13 +602,6 @@ i_in_box = 0
 **               (requires the input block <<<< in_cap")
 i_in_cap = 0
 
-** modified multicanonical
-**   = 0 not using modified multicanonical sampling; default
-**   = 1 using modified multicanonical sampling
-**       (based on Gosavi et al. JMB,2006,357,986) ;
-**       input block "modified_muca" should be specified
-i_modified_muca = 0
-
 ** Hydrodynamic-interaction tensor
 **    = 1: Rotne-Prager-Yamakawa (RPY)
 **    = 2: RPY (overlap allowed)
@@ -912,14 +888,6 @@ kcap = 500.0
 CENTER 0.0 0.0 0.0
 >>>>
 
-**************************************************************
-** searching_tf (required only when "i_run_mode = 4")
-**************************************************************
-**<<<< searching_tf   
-tempk_upper = 500.0
-tempk_lower = 100.0
->>>>
-
 
 **************************************************************
 ** annealing (required only when "i_run_mode = 3")
@@ -1015,11 +983,6 @@ i_style = 1
 ** REPLICA(8)  = 0.250
 >>>>
 
-**<<<< modified_muca
-em_depth = 10.0
-em_mid = 90.0
-em_sigma = 60.0
->>>>
 
 **************************************************************
 ** replica_wind (required only when "i_run_mode = 6" 

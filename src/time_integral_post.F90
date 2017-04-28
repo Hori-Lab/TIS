@@ -166,10 +166,6 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      end if
      ! call mpi_barrier(MPI_COMM_WORLD, ierr)
 #endif
-!     if(i_run_mode == RUN%SEARCH_TF) then
-!        irep = 1
-!        call simu_searchingtf(istep, ntstep, qscore(irep), tempk)
-!     end if
   end if
   TIME_E( tm_output )
   

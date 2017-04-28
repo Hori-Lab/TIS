@@ -150,10 +150,6 @@ subroutine mloop_simulator()
      end do ! for ntstep
      TIME_E( tm_main_loop )
 
-!     if(i_run_mode == RUN%SEARCH_TF) then
-!        call simu_searchingtf(istep, ntstep, qscore(1), tempk)
-!     end if
-
   end do loop_mstep
 
   ibefore_time = ibefore_time + ntstep

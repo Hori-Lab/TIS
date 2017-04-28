@@ -10,7 +10,6 @@ module const_index
      integer :: CHECK_FORCE !< 1: Debug Mode, Check the consistence between force and energy
      integer :: CONST_TEMP  !< 2: Constant temperature simulation 
      integer :: SA          !< 3: Simulated annealing (require "<<<< annealing" field)
-     integer :: SEARCH_TF   !< 4: Auto-search of T_f (require "<<<< searching_tf" field)
      integer :: ENERGY_CALC !< 5: Energy calculation at single point
      integer :: REPLICA     !< 6: Replica exchange method
      integer :: FMAT        !< 7: Fluctuation matching method
@@ -18,7 +17,7 @@ module const_index
      integer :: EMIN        !< 9: Energy minimization
      integer :: WIDOM       !<10: Widom method to calculate chemical potential(s)
   endtype run_mode
-  type(run_mode), parameter :: RUN = run_mode(1,2,3,4,5,6,7,8,9,10)
+  type(run_mode), parameter :: RUN = run_mode(1,2,3,5,6,7,8,9,10)
 
   ! i_simulate_type: define dynamics 
   type simu_type
