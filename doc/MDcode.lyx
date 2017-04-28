@@ -1,0 +1,342 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+LJ
+\end_layout
+
+\begin_layout Standard
+rest1d
+\end_layout
+
+\begin_layout Standard
+anchor
+\end_layout
+
+\begin_layout Standard
+exv_rep6
+\end_layout
+
+\begin_layout Standard
+ele
+\end_layout
+
+\begin_layout Standard
+ele_coulomb
+\end_layout
+
+\begin_layout Standard
+ele_coulomb_brute
+\end_layout
+
+\begin_layout Standard
+ele_coulomb_ewld
+\end_layout
+
+\begin_layout Standard
+velo
+\end_layout
+
+\begin_layout Standard
+exv_wca
+\end_layout
+
+\begin_layout Standard
+exv_gauss
+\end_layout
+
+\begin_layout Standard
+exv_restype
+\end_layout
+
+\begin_layout Standard
+exv_rep12
+\end_layout
+
+\begin_layout Standard
+exv_dt15
+\end_layout
+
+\begin_layout Standard
+wca
+\end_layout
+
+\begin_layout Standard
+bridge
+\end_layout
+
+\begin_layout Standard
+window
+\end_layout
+
+\begin_layout Standard
+con_gauss
+\end_layout
+
+\begin_layout Standard
+orderpara
+\end_layout
+
+\begin_layout Standard
+dtrna_hbond15
+\end_layout
+
+\begin_layout Standard
+dtrna_hbond13
+\end_layout
+
+\begin_layout Standard
+dtrna_stack
+\end_layout
+
+\begin_layout Standard
+dtrna_stack_nlocal
+\end_layout
+
+\begin_layout Standard
+pulling
+\end_layout
+
+\begin_layout Paragraph
+Bond (harmonic)
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{bd}}}k_{i,1}(d_{i}-d_{i,0})^{2}+k_{i,2}(d_{i}-d_{i,0})^{4}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{i}$
+\end_inset
+
+: distance between particles, 
+\begin_inset Formula $d_{i}=\vert\mathbf{r}_{i,1}-\mathbf{r}_{i,2}\vert$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{i,0}$
+\end_inset
+
+: distance
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{i,1}$
+\end_inset
+
+: coef_bd(1,i)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{i,2}$
+\end_inset
+
+: coef_bd(2,i)
+\end_layout
+
+\begin_layout Paragraph*
+FENE (Finitely Extensible Nonlinear Elastic)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{FENE}}}-\frac{1}{2}k_{i}R_{i}^{2}\log\left[1-\frac{(d_{i}-d_{i,0})^{2}}{R_{i}^{2}}\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+: distance between particles, 
+\begin_inset Formula $d=\vert\mathbf{r}_{i,1}-\mathbf{r}_{i,2}\vert$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{i}$
+\end_inset
+
+: coef_fene(i)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $R_{i}^{2}$
+\end_inset
+
+: dist2_fene(i)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{i,0}$
+\end_inset
+
+: fene_nat(i)
+\end_layout
+
+\begin_layout Paragraph*
+Rouse
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{Rouse}}}\frac{3k_{\textrm{B}}T}{2\sigma^{2}}d^{2}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+: distance between particles, 
+\begin_inset Formula $d=\vert\mathbf{r}_{i,1}-\mathbf{r}_{i,2}\vert$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Angle
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{ba}}}k_{i,1}(\theta_{i}-\theta_{i,0})^{2}+k_{i,2}(\cos\theta_{i}+1.0)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+: angle by three particles at 
+\begin_inset Formula $\mathbf{r}_{i,1}$
+\end_inset
+
+, 
+\begin_inset Formula $\mathbf{r}_{i,2}$
+\end_inset
+
+, 
+\begin_inset Formula $\mathbf{r}_{i,3}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\theta_{i,0}$
+\end_inset
+
+: reference angle
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{i,1}$
+\end_inset
+
+: coef_ba(1,i)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{i,2}$
+\end_inset
+
+: coef_ba(2,i)
+\end_layout
+
+\end_body
+\end_document
