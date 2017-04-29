@@ -139,21 +139,19 @@ module const_index
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
      integer :: L_GO        !<  2: local Go interaction
-     !integer :: L_AICG1     !<  3: local AICG1
-     !integer :: L_AICG2     !<  4: local AICG2
-     !integer :: L_FLP       !<  5: flexible local potential
-     integer :: L_BOND      !<  6: bond potential only
-     !integer :: L_ENM       !<  7: local elastic network model(=NOTHING)
-     integer :: L_RIGID_LIG !<  8: ligand rigid interaction (not yet released)
-     !integer :: L_AICG2_PLUS!<  9: local AICG2_PLUS
-     integer :: L_DTRNA     !< 10: Denesyuk-Thirumalai RNA model
-     integer :: L_FENE      !< 11: FENE
-     integer :: L_ROUSE     !< 12: Rouse
+     integer :: L_BOND      !<  3: bond potential only
+     integer :: L_ANGL      !<  4: angle potential
+     integer :: L_RIGID_LIG !<  5: ligand rigid interaction (not yet released)
+     integer :: L_DTRNA     !<  6: Denesyuk-Thirumalai RNA model
+     integer :: L_FENE      !<  7: FENE
+     integer :: L_ROUSE     !<  8: Rouse
      integer :: MAX         !< Maximum value
+     !integer :: L_FLP       !<  5: flexible local potential
+     !integer :: L_ENM       !<  7: local elastic network model(=NOTHING)
   endtype local_interaction_type
   type(local_interaction_type), parameter :: LINTERACT  & 
      != local_interaction_type(1,2,3,4,5,6,7,8,9,10,11,11)
-     = local_interaction_type(1,2,3,4,5,6,7,7)
+     = local_interaction_type(1,2,3,4,5,6,7,8,8)
 
 
   type interaction_type

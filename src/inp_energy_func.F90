@@ -446,6 +446,7 @@ subroutine inp_energy_func()
   write (lunout, '(i2, a)') LINTERACT%NOTHING, ' : no interation'
   write (lunout, '(i2, a)') LINTERACT%L_GO, ' : local Go potential'
   write (lunout, '(i2, a)') LINTERACT%L_BOND, ' : bond potential only'
+  write (lunout, '(i2, a)') LINTERACT%L_ANGL, ' : Angle'
   write (lunout, '(i2, a)') LINTERACT%L_RIGID_LIG, ' : rigid ligand potential'
   write (lunout, '(i2, a)') LINTERACT%L_DTRNA, ' : DTRNA'
   write (lunout, '(i2, a)') LINTERACT%L_FENE, ' : FENE'
@@ -583,14 +584,8 @@ contains
     else if(char00(i1:i2) == 'L_FENE') then
        itype = LINTERACT%L_FENE
 
-!    else if(char00(i1:i2) == 'L_AICG1') then
-!       itype = LINTERACT%L_AICG1
-
-!    else if(char00(i1:i2) == 'L_AICG2') then
-!       itype = LINTERACT%L_AICG2
-
-!    else if(char00(i1:i2) == 'L_AICG2_PLUS') then
-!       itype = LINTERACT%L_AICG2_PLUS
+    else if(char00(i1:i2) == 'L_ANGL') then
+       itype = LINTERACT%L_ANGL
 
 !    else if(char00(i1:i2) == 'L_FLP') then
 !       itype = LINTERACT%L_FLP
@@ -821,8 +816,8 @@ contains
 
        else if(n_local_input >= 2) then
 
-          error_message = 'Error: should not specify more than one local interaction for each unit'
-          call util_error(ERROR%STOP_ALL, error_message)
+          !error_message = 'Error: should not specify more than one local interaction for each unit'
+          !call util_error(ERROR%STOP_ALL, error_message)
           
        end if
 
