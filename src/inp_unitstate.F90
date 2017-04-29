@@ -249,11 +249,11 @@ subroutine inp_unitstate()
 
   else if(i_seq_read_style == SEQREAD%INPUT_SEQ) then
      write (lunout, *) 'Reading sequence information from "sequence" field in input file'
-     if(num_class(CLASS%PRO) >= 1 .or. &
-        num_class(CLASS%RNA) >= 1 .or. num_class(CLASS%LIG) >= 1 ) then
-        error_message = 'Error: solo use for dna if i_seq_read_style = 2'
-        call util_error(ERROR%STOP_ALL, error_message)
-     end if
+     !if(num_class(CLASS%PRO) >= 1 .or. &
+     !   num_class(CLASS%RNA) >= 1 .or. num_class(CLASS%LIG) >= 1 ) then
+     !   error_message = 'Error: solo use for dna if i_seq_read_style = 2'
+     !   call util_error(ERROR%STOP_ALL, error_message)
+     !end if
 
   else if(i_seq_read_style == SEQREAD%CG) then
      write (lunout, *) 'Reading sequence information from CafeMol(CG) style'
