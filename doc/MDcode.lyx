@@ -4,7 +4,7 @@
 \begin_header
 \save_transient_properties true
 \origin unavailable
-\textclass article
+\textclass book
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -26,10 +26,11 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
-\paperfontsize default
+\paperfontsize 11
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -53,6 +54,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 1in
+\topmargin 1in
+\rightmargin 1in
+\bottommargin 1in
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -70,100 +75,36 @@
 
 \begin_body
 
-\begin_layout Standard
-LJ
+\begin_layout Title
+MDcode
 \end_layout
 
-\begin_layout Standard
-rest1d
+\begin_layout Author
+Naoto Hori
 \end_layout
 
-\begin_layout Standard
-anchor
+\begin_layout Date
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+today
 \end_layout
 
-\begin_layout Standard
-exv_rep6
+\end_inset
+
+
 \end_layout
 
-\begin_layout Standard
-ele
+\begin_layout Chapter
+Energy functions
 \end_layout
 
-\begin_layout Standard
-ele_coulomb
-\end_layout
-
-\begin_layout Standard
-ele_coulomb_brute
-\end_layout
-
-\begin_layout Standard
-ele_coulomb_ewld
-\end_layout
-
-\begin_layout Standard
-velo
-\end_layout
-
-\begin_layout Standard
-exv_wca
-\end_layout
-
-\begin_layout Standard
-exv_gauss
-\end_layout
-
-\begin_layout Standard
-exv_restype
-\end_layout
-
-\begin_layout Standard
-exv_rep12
-\end_layout
-
-\begin_layout Standard
-exv_dt15
-\end_layout
-
-\begin_layout Standard
-wca
-\end_layout
-
-\begin_layout Standard
-bridge
-\end_layout
-
-\begin_layout Standard
-window
-\end_layout
-
-\begin_layout Standard
-con_gauss
-\end_layout
-
-\begin_layout Standard
-orderpara
-\end_layout
-
-\begin_layout Standard
-dtrna_hbond15
-\end_layout
-
-\begin_layout Standard
-dtrna_hbond13
-\end_layout
-
-\begin_layout Standard
-dtrna_stack
-\end_layout
-
-\begin_layout Standard
-dtrna_stack_nlocal
-\end_layout
-
-\begin_layout Standard
-pulling
+\begin_layout Section
+List of functions
 \end_layout
 
 \begin_layout Paragraph
@@ -336,6 +277,270 @@ U=\sum_{i=1}^{N_{\textrm{ba}}}k_{i,1}(\theta_{i}-\theta_{i,0})^{2}+k_{i,2}(\cos\
 \end_inset
 
 : coef_ba(2,i)
+\end_layout
+
+\begin_layout Paragraph
+Lennard-Jones
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{LJ}}}\varepsilon_{i}\left[\left(\frac{d_{i,0}}{d_{i}}\right)^{12}-2\left(\frac{d_{i,0}}{d_{i}}\right)^{6}\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{i}$
+\end_inset
+
+: distance between particles, 
+\begin_inset Formula $d_{i}=\vert\mathbf{r}_{i,1}-\mathbf{r}_{i,2}\vert$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{i,0}$
+\end_inset
+
+: distance
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\varepsilon_{i}$
+\end_inset
+
+: coef_LJ(i)
+\end_layout
+
+\begin_layout Paragraph*
+con_gauss
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{CONG}}}-kk_{\textrm{B}}T\exp\left(\frac{d_{i}^{2}}{2\sigma^{2}}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d$
+\end_inset
+
+: distance between particles, 
+\begin_inset Formula $d=\vert\mathbf{r}_{i,1}-\mathbf{r}_{i,2}\vert$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k$
+\end_inset
+
+: (inmisc%con_gauss_k)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $k_{\textrm{B}}$
+\end_inset
+
+: Boltzmann constant
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $T$
+\end_inset
+
+: Temperature
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\sigma$
+\end_inset
+
+: (inmisc%con_gauss_sigma)
+\end_layout
+
+\begin_layout Paragraph*
+rest1d
+\end_layout
+
+\begin_layout Paragraph*
+anchor
+\end_layout
+
+\begin_layout Paragraph*
+exv_rep6
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+U=\sum_{i=1}^{N_{\textrm{REP6}}}\varepsilon\left(\frac{d_{i,0}}{d_{i}}\right)^{6}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+ele
+\end_layout
+
+\begin_layout Paragraph*
+ele_coulomb
+\end_layout
+
+\begin_layout Paragraph*
+ele_coulomb_brute
+\end_layout
+
+\begin_layout Paragraph*
+ele_coulomb_ewld
+\end_layout
+
+\begin_layout Paragraph*
+velo
+\end_layout
+
+\begin_layout Paragraph*
+exv_wca
+\end_layout
+
+\begin_layout Paragraph*
+exv_gauss
+\end_layout
+
+\begin_layout Paragraph*
+exv_restype
+\end_layout
+
+\begin_layout Paragraph*
+exv_rep12
+\end_layout
+
+\begin_layout Paragraph*
+exv_dt15
+\end_layout
+
+\begin_layout Paragraph*
+wca
+\end_layout
+
+\begin_layout Paragraph*
+bridge
+\end_layout
+
+\begin_layout Paragraph*
+window
+\end_layout
+
+\begin_layout Paragraph*
+orderpara
+\end_layout
+
+\begin_layout Paragraph*
+dtrna_hbond15
+\end_layout
+
+\begin_layout Paragraph*
+dtrna_hbond13
+\end_layout
+
+\begin_layout Paragraph*
+dtrna_stack
+\end_layout
+
+\begin_layout Paragraph*
+dtrna_stack_nlocal
+\end_layout
+
+\begin_layout Paragraph*
+pulling
+\end_layout
+
+\begin_layout Chapter
+Dynamics
+\end_layout
+
+\begin_layout Section
+Langevin
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{R}_{i}(t+\delta t)=\mathbf{R}_{i}(t)+\left(1-\frac{\zeta}{2m_{i}}\delta t\right)\delta t\mathbf{v}_{i}(t)+\frac{1}{2}\delta t^{2}\mathbf{a}_{i}(t)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{F}_{i}(t+\delta t)=-\frac{\partial U\left[\mathbf{R}_{i}(t+\delta t)\right]}{\partial\mathbf{R}}+\sqrt{\frac{2\zeta T}{\delta t}}\Gamma
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{a}_{i}(t+\delta t)=\frac{1}{m_{i}}\mathbf{F}_{i}(t+\delta t)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\mathbf{v}_{i}(t+\delta t)=\left(1-\frac{\zeta}{2m_{i}}\delta t\right)\left(1-\frac{\zeta}{2m_{i}}\delta t+\frac{\zeta^{2}}{4m_{i}^{2}}\delta t^{2}\right)\mathbf{v}_{i}(t)+\frac{1}{2}\delta t\left(1-\frac{\zeta}{2m_{i}}\delta t\right)\left[\mathbf{a}_{i}(t)+\mathbf{a}_{i}(t+\delta t)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\zeta_{i}=6\pi\eta r_{i}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Brownian
+\end_layout
+
+\begin_layout Section
+Newtonian
 \end_layout
 
 \end_body
