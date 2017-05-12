@@ -50,7 +50,7 @@ module const_maxsize
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
   integer, parameter :: MXUNIT = 20        !< maximum # of interaction units
-  integer, parameter :: MXMP = 30000       !< maximum # of mass points
+  integer, parameter :: MXMP = 3500       !< maximum # of mass points
   integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 
 !  integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
@@ -104,16 +104,16 @@ module const_maxsize
 !  integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
 
   ! Replica exchange method
-  integer, parameter :: MXREPLICA = 24     !< maximum # of replicas
+  integer, parameter :: MXREPLICA = 1     !< maximum # of replicas
   integer, parameter :: MXREPDIM = 3       !< maximum # of dimensions in REM
 
   ! Optional interaction
   integer, parameter :: MXDEL_LGO = 20 !< maximum # of del-interaction residue groups
   integer, parameter :: MXDEL_GO = 100     !< maximum # of del-interaction residue groups
   integer, parameter :: MXBRIDGE = 20     !< maximum # of bridge residue pairs
-  integer, parameter :: MXPULLING = 5000    !< maximum # of pulling residues
-  integer, parameter :: MXANCHOR = 600    !< maximum # of anchored residues
-  integer, parameter :: MXREST1D = 20     !< maximum # of 1D-restrained residues
+  integer, parameter :: MXPULLING = 1    !< maximum # of pulling residues
+  integer, parameter :: MXANCHOR = 1    !< maximum # of anchored residues
+  integer, parameter :: MXREST1D = 1     !< maximum # of 1D-restrained residues
   integer, parameter :: MXFIX = MXMP      !< maximum # of fixed residues
 !  integer, parameter :: MXFLEXIBLE = 20   !< maximum # of the region calculated by flexible local potential
   integer, parameter :: MXGRP = 10
@@ -121,7 +121,7 @@ module const_maxsize
 
 !  ! Multiple Go model
 !  integer, parameter :: MXSYSTEM_MGO = 20 !< maximum # of systems in multiple-Go simulation
-  integer, parameter :: MXSTATE_MGO = 3   !< maximum # of states in multiple-Go simulation
+  integer, parameter :: MXSTATE_MGO = 1   !< maximum # of states in multiple-Go simulation
 !  integer, parameter :: MXACT_MGO = 6000  !< maximum # of interaction types
   !integer, parameter :: MXLCON_MGO = 2 * MXCON / MXACT_MGO !< maximum # of contacts belonging to the interaction type
 
@@ -134,7 +134,7 @@ module const_maxsize
 
   ! Hydrophobic interactions
   integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues
-  integer, parameter :: MXMPHP = 500   !< maximum # of hydrophobic neighbors per residue
+  integer, parameter :: MXMPHP = 1  !< maximum # of hydrophobic neighbors per residue
 
   ! Test particles used in Widom method
   integer, parameter :: MXTP = 3
