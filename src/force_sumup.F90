@@ -36,6 +36,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
   real(PREC) :: force_mp_l(SDIM, nmp_all, 0:nthreads-1)
   !real(PREC) :: ene_unit_l(nunit_all, nunit_all, 0:nthreads-1)
   !real(PREC),allocatable :: force_mp_mgo(:,:,:,:,:)
+  character(CARRAY_MSG_ERROR) :: error_message
 
   ! ---------------------------------------------------------------------
 
@@ -210,7 +211,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
         call force_ele_coulomb_ewld(irep, force_mp_l(1,1,tn))
 
      elseif (inele%i_function_form == 3) then ! Coulomb potential (Brute-force to check Ewald results)
-        call util_error(ERROR%STOP_ALL, 'Error: i_function_form=3 for force calculation is not available.')
+        error_message = 'Error: i_function_form=3 for force calculation is not available.'
+        call util_error(ERROR%STOP_ALL, error_message)
      endif
   endif
 

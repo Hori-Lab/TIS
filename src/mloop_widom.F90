@@ -8,10 +8,12 @@ subroutine mloop_widom
    use var_simu,   only : widom_iw, widom_chp
 
    integer :: i, itp
+   character(CARRAY_MSG_ERROR) :: error_message
 
    ntp = inwidom%n_Mg_add + inwidom%n_Na_add + inwidom%n_K_add + inwidom%n_Cl_add
-   if (ntp > MXTP) then
-      call util_error(ERROR%STOP_ALL, 'Error: ntp > MXTP')
+   if (ntp > MXTP) then 
+      error_message = 'Error: ntp > MXTP'
+      call util_error(ERROR%STOP_ALL, error_message)
    endif
 
    iclass_tp(1:ntp) = CLASS%ION

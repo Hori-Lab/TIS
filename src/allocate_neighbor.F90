@@ -116,7 +116,8 @@ subroutine allocate_neighbor()
      coef_ele(:,:) = 0.0e0_PREC
 
      if(inele%i_calc_method /= 0) then
-        call util_error(ERROR%STOP_ALL, 'i_calc_method /= 0 in allocate_neighbor')
+        error_message = 'i_calc_method /= 0 in allocate_neighbor'
+        call util_error(ERROR%STOP_ALL, error_message)
      endif
   endif
   

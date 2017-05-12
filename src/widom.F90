@@ -16,19 +16,22 @@ subroutine widom
    real(PREC) :: random(SDIM)
    real(PREC) :: energy_test(E_TYPE%MAX), test_total, chp
    real(PREC) :: kT
+   character(CARRAY_MSG_ERROR) :: error_message
 
 interface
    subroutine energy_exv_dt15_tp(irep, energy)
       use const_maxsize
+      use const_index
       implicit none
       integer,    intent(in)  :: irep
-      real(PREC), intent(out) :: energy(:)
+      real(PREC), intent(inout) :: energy(E_TYPE%MAX)
    endsubroutine energy_exv_dt15_tp
    subroutine energy_ele_coulomb_tp(irep, energy)
       use const_maxsize
+      use const_index
       implicit none
       integer,    intent(in)    :: irep
-      real(PREC), intent(out)   :: energy(:)
+      real(PREC), intent(out)   :: energy(E_TYPE%MAX)
    endsubroutine energy_ele_coulomb_tp
    subroutine energy_ele_coulomb_ewld_tp(irep, energy)
       use const_maxsize
@@ -68,7 +71,8 @@ endinterface
       elseif (inele%i_function_form == 2) then ! Coulomb potential
          call energy_ele_coulomb_ewld_tp(irep, energy_test)
       else
-         call util_error(ERROR%STOP_ALL, 'Error in widom.F90')
+         error_message = 'Error in widom.F90'
+         call util_error(ERROR%STOP_ALL, error_message)
       endif
 
       test_total = energy_test(E_TYPE%EXV_DT15) + energy_test(E_TYPE%ELE)
@@ -78,7 +82,7 @@ endinterface
       widom_chp =  widom_chp + chp
 
       ! Output
-      write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,g10.4,1x,g10.4,1x,g10.4)') &
+      write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,g11.4,1x,g11.4,1x,g11.4)') &
                   widom_iw, -kT*log(widom_chp/real(widom_iw)), istep, iw, &
                   test_total, energy_test(E_TYPE%EXV_DT15), energy_test(E_TYPE%ELE)
    enddo

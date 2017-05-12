@@ -59,6 +59,14 @@ subroutine mloop_nativeinfo(istep_sim)
   character(CARRAY_MSG_ERROR) :: error_message
   logical :: flg_enm
 
+  interface
+     subroutine util_sort_contact(ipost2pre_con)
+        use const_maxsize
+        use var_struct, only : nmp_all
+        integer, intent(out), optional :: ipost2pre_con(nmp_all*MXMPCON)
+     endsubroutine util_sort_contact
+  endinterface
+
 #ifdef _DEBUG
   write(6,*) '#### start mloop_nativeinfo'
 #endif
