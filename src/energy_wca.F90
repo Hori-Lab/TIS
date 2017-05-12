@@ -60,7 +60,7 @@ subroutine energy_wca(irep, energy_unit, energy)
    kend = nwca
 #endif
 !$omp do private(imp1,imp2,iunit,junit,v21,dist2,roverdist2,roverdist6, &
-!$omp&           roverdist12,rjudge,e_rep,e_att,imirror)
+!$omp&           roverdist12,e_rep,e_att,imirror)
    do iwca=ksta,kend
    
      imp1 = iwca2mp(1, iwca)
