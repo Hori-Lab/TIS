@@ -31,6 +31,7 @@ UTIL8 = ../utility/a2rst
 # --------------------------------------------------------------------
 # Debug
 # -D_DEBUG        : output processing status to STD
+# -D_DEBUG_EWLD   : output Ewald summation terms (Real, Fourier, correction)
 # -D_DEBUG_REP    : using consistent random numbers,
 #                   regardless of the number of processes
 # -D_DUMP_COMMON  : necessary for any type of DUMP
@@ -65,6 +66,7 @@ VERSION += -DVERDATE="\"$(DATESEQ)\""
 FC = gfortran
 FC_UTIL = gfortran
 CPP = -cpp -DTIME -DSUB_COPY
+#CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
 #CPP = -cpp -DTIME -D_DEBUG
 INC =
 OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check

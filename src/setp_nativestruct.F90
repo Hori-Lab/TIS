@@ -34,11 +34,14 @@ subroutine setp_nativestruct( )
 #ifdef _DEBUG
   write(*,*) '##### start setp_nativestruct'
 #endif
-  
-  if (i_go_native_read_style /= NATIVEREAD%INFO) then
-     error_message = 'Error: i_go_native_read_style should be INFO'
-     call util_error(ERROR%STOP_ALL, error_message)
 
+  if (i_go_native_read_style /= NATIVEREAD%INFO .and. &
+      i_go_native_read_style /= NATIVEREAD%NO ) then
+     error_message = 'Error: i_go_native_read_style should be INFO or NO'
+     call util_error(ERROR%STOP_ALL, error_message)
+  endif
+
+!  if (i_go_native_read_style /= NATIVEREAD%INFO) then
      ! secondary structure
 !     call setp_native_secstruct()
 
@@ -53,7 +56,7 @@ subroutine setp_nativestruct( )
      ! nonlocal
 !     call setp_native_go(xyz_mp_init, iatomnum, xyz, ineigh2mp, lmp2neigh, cname_ha)
      
-  endif
+!  endif
 
   !if (inmisc%force_flag(INTERACT%DTRNA)) then
   !   call setp_native_dtrna(xyz_mp_init)

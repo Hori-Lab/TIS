@@ -1,3 +1,11 @@
+#ifdef TIME
+#define TIME_S(x) call time_s(x)
+#define TIME_E(x) call time_e(x)
+#else
+#define TIME_S(x) !
+#define TIME_E(x) !
+#endif
+
 subroutine force_ele_coulomb_ewld(irep, force_mp)
 
   use const_maxsize
@@ -8,6 +16,7 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
                          ncharge, coef_charge, icharge2mp
   use var_simu,   only : ewld_f_n, ewld_f_rlv, ewld_f_coef
   use var_replica,only : irep2grep
+  use time
   use mpiconst
 
   implicit none
@@ -27,14 +36,55 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
   integer :: klen
 #endif
 
-   grep = irep2grep(irep)
+  grep = irep2grep(irep)
+
+  cutoff2 = inele%cutoff_ele ** 2
+  alpha2 = inele%ewld_alpha**2
+  beta = 2.0 * inele%ewld_alpha / sqrt(F_PI)
+
+
+!$omp master
+  TIME_S( tm_force_ele_EwF )
+!$omp end master
+
+  !================================================
+  !================= Fourier space ================
+  !================================================
+!$omp do private(qcosgr,qsingr,ich1,imp1,q1,dp,scos,ssin,dv_dr)
+  do ig = 1, ewld_f_n
+    
+     qcosgr(:) = 0.0
+     qsingr(:) = 0.0
+
+     do ich1 = 1, ncharge
+        imp1 = icharge2mp(ich1)
+        dp = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp1, irep))
+
+        q1 = coef_charge(ich1, irep)
+        qcosgr(ich1) = q1 * cos(dp)
+        qsingr(ich1) = q1 * sin(dp)
+     end do
+
+     scos = sum(qcosgr)
+     ssin = sum(qsingr)
+
+     do ich1 = 1, ncharge
+        imp1 = icharge2mp(ich1)
+        dv_dr = inele%coef(grep) * 2.0 * ewld_f_coef(ig) * (qsingr(ich1)*scos - qcosgr(ich1)*ssin)
+        force_mp(1:SDIM, imp1) = force_mp(1:SDIM, imp1) + dv_dr * ewld_f_rlv(:,ig)
+     end do
+  end do
+!$omp end do nowait
+
+!$omp master
+  TIME_E( tm_force_ele_EwF )
+  TIME_S( tm_force_ele_EwR )
+!$omp end master
+
 
   !================================================
   !================== Real space ==================
   !================================================
-  cutoff2 = inele%cutoff_ele ** 2
-  alpha2 = inele%ewld_alpha**2
-  beta = 2.0 * inele%ewld_alpha / sqrt(F_PI)
 
 #ifdef _DEBUG
   write(*,*) 'lele(irep), ',lele(irep)
@@ -79,33 +129,8 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
   end do
 !$omp end do nowait
 
-  !================================================
-  !================= Fourier space ================
-  !================================================
-!$omp do private(qcosgr,qsingr,ich1,imp1,q1,dp,scos,ssin,dv_dr)
-  do ig = 1, ewld_f_n
-    
-     qcosgr(:) = 0.0
-     qsingr(:) = 0.0
-
-     do ich1 = 1, ncharge
-        imp1 = icharge2mp(ich1)
-        dp = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp1, irep))
-
-        q1 = coef_charge(ich1, irep)
-        qcosgr(ich1) = q1 * cos(dp)
-        qsingr(ich1) = q1 * sin(dp)
-     end do
-
-     scos = sum(qcosgr)
-     ssin = sum(qsingr)
-
-     do ich1 = 1, ncharge
-        imp1 = icharge2mp(ich1)
-        dv_dr = inele%coef(grep) * 2.0 * ewld_f_coef(ig) * (qsingr(ich1)*scos - qcosgr(ich1)*ssin)
-        force_mp(1:SDIM, imp1) = force_mp(1:SDIM, imp1) + dv_dr * ewld_f_rlv(:,ig)
-     end do
-  end do
-!$omp end do nowait
+!$omp master
+  TIME_E( tm_force_ele_EwR )
+!$omp end master
 
 end subroutine force_ele_coulomb_ewld

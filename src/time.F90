@@ -7,7 +7,7 @@ module time
 use mpiconst
 use const_index
 use var_io, only : i_run_mode, i_simulate_type
-use var_setp, only : inmisc
+use var_setp, only : inmisc, inele
 
 implicit none
 
@@ -39,6 +39,8 @@ integer,parameter :: tm_force_local       =  31
 integer,parameter :: tm_force_go          =  32
 integer,parameter :: tm_force_exv         =  33
 integer,parameter :: tm_force_ele         =  34
+integer,parameter :: tm_force_ele_EwR     =  35
+integer,parameter :: tm_force_ele_EwF     =  36
 !integer,parameter :: tm_force_hp          =  35
 !integer,parameter :: tm_force_sasa        =  36 !sasa
 integer,parameter :: tm_force_dtrna_hb    =  37
@@ -80,8 +82,10 @@ integer,parameter :: tm_energy_replica    = 115
 !integer,parameter :: tm_energy_dih_harmonic     = 116
 !integer,parameter :: tm_energy_hp         = 117
 integer,parameter :: tm_energy_ele        = 118
+integer,parameter :: tm_energy_ele_EwR    = 119
+integer,parameter :: tm_energy_ele_EwF    = 120
 
-integer,parameter :: NMAX         =  119
+integer,parameter :: NMAX         =  120
 
 real(8) :: total_time(NMAX)
 
@@ -120,6 +124,10 @@ subroutine time_write( lunout )
 
   if (inmisc%force_flag(INTERACT%ELE)) then
      write(lunout, fmt=fmt1) '_force(ele)     ', total_time(tm_force_ele), trate*total_time(tm_force_ele)
+     if ( inele%i_function_form == 2 ) then
+        write(lunout, fmt=fmt1) '_force(ele_EwR)     ', total_time(tm_force_ele_EwR), trate*total_time(tm_force_ele_EwR)
+        write(lunout, fmt=fmt1) '_force(ele_EwF)     ', total_time(tm_force_ele_EwF), trate*total_time(tm_force_ele_EwF)
+     endif
   end if
 
 !  if (inmisc%force_flag(INTERACT%HP)) then
@@ -175,10 +183,17 @@ subroutine time_write( lunout )
   write(lunout, fmt=fmt1) '_energy(total)  ', total_time(tm_energy_total), trate*total_time(tm_energy_total)
   write(lunout, fmt=fmt1) '_energy(rep)    ', total_time(tm_energy_replica), trate*total_time(tm_energy_replica)
 
+  if (inmisc%force_flag(INTERACT%ELE)) then
+     write(lunout, fmt=fmt1) '_energy(ele)     ', total_time(tm_energy_ele), trate*total_time(tm_energy_ele)
+     if ( inele%i_function_form == 2 ) then
+        write(lunout, fmt=fmt1) '_energy(ele_EwR)     ', total_time(tm_energy_ele_EwR), trate*total_time(tm_energy_ele_EwR)
+        write(lunout, fmt=fmt1) '_energy(ele_EwF)     ', total_time(tm_energy_ele_EwF), trate*total_time(tm_energy_ele_EwF)
+     endif
+  end if
+
   if (i_run_mode == RUN%REPLICA) then
      write(lunout, fmt=fmt1) 'replica         ', total_time(tm_replica), trate*total_time(tm_replica)
      write(lunout, fmt=fmt1) '_replica(comm)  ', total_time(tmc_replica), trate*total_time(tmc_replica)
-
 !     write(lunout, fmt=fmt1) 'stepadjust     ', total_time(tm_step_adj), trate*total_time(tm_step_adj)
 !     write(lunout, fmt=fmt1) '_stepadj(comm) ', total_time(tmc_step_adj), trate*total_time(tmc_step_adj)
   end if

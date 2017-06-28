@@ -1,5 +1,21 @@
 ! energy_ele_coulomb
 !> @brief Calculate the energy of electrostatic interaction 
+#ifdef TIME
+#define TIME_S(x) call time_s(x)
+#define TIME_E(x) call time_e(x)
+#else
+#define TIME_S(x) !
+#define TIME_E(x) !
+#endif
+
+
+  !!!! To improve the numerical accuracy, summation is taken by following order.
+  !!!!
+  !!!!     1. Fourier space sum from most outer shell to inner shell. 
+  !!!!        (since values outside tend to be smaller)
+  !!!!     2. Real space sum
+  !!!!     3. The correction term
+
 
 subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 
@@ -12,6 +28,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_sum
   use var_replica, only : irep2grep
   use mpiconst
+  use time
 
   implicit none
 
@@ -29,17 +46,57 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   integer :: klen
 #endif
 
+#ifdef _DEBUG_EWLD
+  !!! These debug command works only in serial jobs. (OpenMP does not work)
+  real(PREC) :: e_real, e_fourier
+#endif _DEBUG_EWLD
+
+
   grep = irep2grep(irep)
+
+
+!$omp master
+  TIME_S( tm_energy_ele_EwF )
+!$omp end master
+
+  !================================================
+  !================= Fourier space ================
+  !================================================
+
+!$omp do private(scos,ssin,ich1,imp1,q1,dp)
+  do ig = ewld_f_n, 1, -1
+    
+     scos = 0.0
+     ssin = 0.0
+
+     do ich1 = 1, ncharge
+        imp1 = icharge2mp(ich1)
+        q1 = coef_charge(ich1, irep)
+
+        dp = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp1, irep))
+        scos = scos + q1 * cos(dp)
+        ssin = ssin + q1 * sin(dp)
+     end do
+      
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_f_coef(ig) * (scos * scos + ssin * ssin)
+  end do
+!$omp end do nowait
+
+#ifdef _DEBUG_EWLD
+  e_fourier = energy(E_TYPE%ELE)
+#endif
+
+!$omp master
+  TIME_E( tm_energy_ele_EwF )
+  TIME_S( tm_energy_ele_EwR )
+!$omp end master
+
 
   !================================================
   !================== Real space ==================
   !================================================
   cutoff2 = inele%cutoff_ele ** 2
   !cutoff2 = inperi%psizeh(1) ** 2   ! Assuming a cubic box
-  !write(*,*) 'coef_ele(1)=',coef_ele(1,irep)
-  !write(*,*) 'coef_ele(196)=',coef_ele(196,irep)
-  !write(*,*) 'inele%coef=',inele%coef(grep)
-  !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH
@@ -70,11 +127,12 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
      dist1 = sqrt(dist2)
      
      energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
-     !if (iele < 20) then
-     !    write(*,*) 'real',iele,dist1,coef_ele(iele,irep ) * erfc(inele%ewld_alpha*dist1) / dist1
-     !endif
   end do
 !$omp end do nowait
+
+#ifdef _DEBUG_EWLD
+  e_real = energy(E_TYPE%ELE) - e_fourier
+#endif
 
 !! In case no neighbor list used
 !!$omp do private(ich1,imp1,q1,ich2,imp2,v21,dist2,dist1,ene,iunit,junit,imirror)
@@ -106,32 +164,9 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 !  end do
 !!$omp end do nowait
 
-  !================================================
-  !================= Fourier space ================
-  !================================================
-
-!$omp do private(scos,ssin,ich1,imp1,q1,dp)
-  do ig = 1, ewld_f_n
-    
-     scos = 0.0
-     ssin = 0.0
-
-     do ich1 = 1, ncharge
-        imp1 = icharge2mp(ich1)
-        q1 = coef_charge(ich1, irep)
-
-        dp = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp1, irep))
-        scos = scos + q1 * cos(dp)
-        ssin = ssin + q1 * sin(dp)
-     end do
-      
-     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_f_coef(ig) * (scos * scos + ssin * ssin)
-     !if (ig <= 10 .or. ig > ewld_f_n - 10) then
-     !   write(*,*) 'ewld_f_coef:', ig, ewld_f_coef(ig), ewld_f_coef(ig) * (scos * scos + ssin * ssin)
-     !endiF
-  end do
-!$omp end do nowait
-
+!$omp master
+  TIME_E( tm_energy_ele_EwR )
+!$omp end master
 
   !================================================
   !======= Correction for self interaction ========
@@ -150,7 +185,9 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_s_sum
 !$omp end master
 
-  !write(*,*) 'energy(ELE)=',energy(E_TYPE%ELE)
+#ifdef _DEBUG_EWLD
+  write(*,*) e_real, e_fourier, inele%coef(grep)*ewld_s_sum, energy(E_TYPE%ELE)
+#endif
 
 end subroutine energy_ele_coulomb_ewld
 
