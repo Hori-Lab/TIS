@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-import subprocess
+import subprocess32
 
+max_time = 100.0
 inp_tmpl    = 'NaCl50_ewld_energy.inp'
 inp_tmpl_md = 'NaCl50_ewld_energy_md.inp'
 
@@ -47,7 +48,7 @@ for hmax in hmax_series:
     f_out = open('out','w')
     f_err = open('err','w')
     cmds = [ exe1, 'tmp.inp' ]
-    subprocess.call( cmds, stdout=f_out, stderr=f_err)
+    subprocess32.call( cmds, stdout=f_out, stderr=f_err)
     f_out.close()
     f_err.close()
 
@@ -120,7 +121,7 @@ for alpha in alpha_series:
         f_out = open('out','w')
         f_err = open('err','w')
         cmds = [ exe1, 'tmp.inp' ]
-        subprocess.call( cmds, stdout=f_out, stderr=f_err)
+        subprocess32.call( cmds, stdout=f_out, stderr=f_err)
         f_out.close()
         f_err.close()
     
@@ -174,7 +175,7 @@ while (cut > 0.0):
 fastest_time = 9999.9999
 fastest_data = None
 
-f_log.write('# alpha     Hmax    cutoff     T(Neigh)   T(Energy)   T(Force)    T(E_Real)  T(E_Fourier) T(F_Real)  T(F_Fourier)\n')
+f_log.write('# alpha     Hmax    cutoff     T(main)    T(Neigh)   T(Energy)   T(Force)    T(E_Real)  T(E_Fourier) T(F_Real)  T(F_Fourier)\n')
 for d in data:
     alpha  = d[0]
     hmax   = d[1]
@@ -203,7 +204,7 @@ for d in data:
         f_out = open('out','w')
         f_err = open('err','w')
         cmds = [ exe1, 'tmp.inp' ]
-        subprocess.call( cmds, stdout=f_out, stderr=f_err)
+        subprocess32.call( cmds, stdout=f_out, stderr=f_err)
         f_out.close()
         f_err.close()
     
@@ -235,35 +236,51 @@ for d in data:
     ''' Execute the code '''
     f_out = open('out','w')
     f_err = open('err','w')
-    cmds = [ exe1, 'tmp.inp' ]
-    subprocess.call( cmds, stdout=f_out, stderr=f_err)
-    f_out.close()
-    f_err.close()
-    
-    ''' Read the timings output '''
-    for l in open('out'):
-        if l.find("_force(ele)") != -1:
-            tm_force = float(l.split()[1])
-        elif l.find("_force(ele_EwR)") != -1:
-            tm_force_EwR = float(l.split()[1])
-        elif l.find("_force(ele_EwF)") != -1:
-            tm_force_EwF = float(l.split()[1])
-        elif l.find("_neighbor(ele)") != -1:
-            tm_neighbor = float(l.split()[1])
-        elif l.find("_energy(ele)") != -1:
-            tm_energy = float(l.split()[1])
-        elif l.find("_energy(ele_EwR)") != -1:
-            tm_energy_EwR = float(l.split()[1])
-        elif l.find("_energy(ele_EwF)") != -1:
-            tm_energy_EwF = float(l.split()[1])
-        elif l.find("main_loop") != -1:
-            tm_main_loop = float(l.split()[1])
+    cmds = [ exe2, 'tmp.inp' ]
 
-    f_log.write('%7.3f   %7.3f   %5.1f     %9.5f  %9.5f  %9.5f    %9.5f  %9.5f    %9.5f  %9.5f\n' % 
+    try:
+        subprocess32.call( cmds, stdout=f_out, stderr=f_err, timeout=max_time)
+
+    except subprocess32.TimeoutExpired as e:  # If it takes too long time
+        f_out.close()
+        f_err.close()
+        tm_force = max_time
+        tm_force_EwR = max_time
+        tm_force_EwF = max_time
+        tm_energy = max_time
+        tm_energy_EwR = max_time
+        tm_energy_EwF = max_time
+        tm_main_loop = max_time
+
+    else:
+        f_out.close()
+        f_err.close()
+
+        ''' Read the timings output '''
+        for l in open('out'):
+            if l.find("_force(ele)") != -1:
+                tm_force = float(l.split()[1])
+            elif l.find("_force(ele_EwR)") != -1:
+                tm_force_EwR = float(l.split()[1])
+            elif l.find("_force(ele_EwF)") != -1:
+                tm_force_EwF = float(l.split()[1])
+            elif l.find("_neighbor(ele)") != -1:
+                tm_neighbor = float(l.split()[1])
+            elif l.find("_energy(ele)") != -1:
+                tm_energy = float(l.split()[1])
+            elif l.find("_energy(ele_EwR)") != -1:
+                tm_energy_EwR = float(l.split()[1])
+            elif l.find("_energy(ele_EwF)") != -1:
+                tm_energy_EwF = float(l.split()[1])
+            elif l.find("main_loop") != -1:
+                tm_main_loop = float(l.split()[1])
+
+    f_log.write('%7.3f   %7.3f   %5.1f     %9.5f   %9.5f  %9.5f  %9.5f    %9.5f  %9.5f    %9.5f  %9.5f\n' % 
            (alpha, hmax, cutoff_ele, 
-            0.1*tm_neighbor, 0.01*tm_energy, 0.01*tm_force, 
-            0.01*tm_energy_EwR, 0.01*tm_energy_EwF, 
-            0.01*tm_force_EwR, 0.01*tm_force_EwF ))
+            tm_main_loop,
+            tm_neighbor,   tm_energy,  tm_force, 
+            tm_energy_EwR, tm_energy_EwF, 
+            tm_force_EwR,  tm_force_EwF ))
     f_log.flush()
 
     if tm_main_loop < fastest_time:
