@@ -1,7 +1,7 @@
 program exact_coulomb
    implicit none
 
-   integer, parameter :: PREC = 16
+   integer, parameter :: PREC = 8
 
    ! Physical constants
    real(PREC), parameter :: JOUL2KCAL_MOL = 1.43862e20  ! (J -> kcal/mol)
@@ -11,8 +11,8 @@ program exact_coulomb
    real(PREC), parameter :: ORIGIN(3) = [0.0,0.0,0.0]
 
    ! Parameters of the lattice
-   integer, parameter :: NLATTICE = 75 
-   integer, parameter :: NCELLS = (2*NLATTICE+1)**3 - 1
+   integer, parameter :: NLATTICE = 50
+   integer, parameter :: MAXCELLS = (2*NLATTICE+1)**3 - 1
    integer, parameter :: FILEPDB = 10
 
    ! Parameters of the input PDB
@@ -32,6 +32,7 @@ program exact_coulomb
    real(PREC), allocatable :: hs(:, :)
    real(PREC), allocatable :: norms(:)
    real(PREC) :: norm_pre
+   integer :: ncells
 
    !###################
    !! Read PDB
@@ -48,45 +49,52 @@ program exact_coulomb
 
    write(*,*) '#coef=', coef
 
-   allocate( hs(3, (2*NLATTICE+1)**3-1) )
-   allocate( norms((2*NLATTICE+1)**3-1) )
+   allocate( hs(3, MAXCELLS) )
+   allocate( norms(MAXCELLS) )
 
    !###################
    !! Generate reciprocal lattices (hs) and norms
    !###################
    !write(*, *) '# Calling generate_reciprocal_lattice'
-   call generate_reciprocal_lattice(NLATTICE)
+   call generate_reciprocal_lattice(NLATTICE, ncells)
 
    !do i =1, NCELLS
    !   write(*,*) hs(1,i), hs(2,i), hs(3,i), norms(i)
    !enddo
 
-
-   !###################
-   !! Origin
-   !###################
-   ene = coef * coulomb( ORIGIN, .True.)
-   ene_total = ene
-   write(*,*) '#', 0, 0.0, ene, ene_total
-   write(*,*) 0.0, ene_total
-
+   ene_total = 0.0e0_PREC
 
    !###################
    !! All srounding cells
    !###################
-   norm_pre = 0.0
-   do il = 1, NCELLS
+   !norm_pre = 0.0
+   norm_pre = norms(ncells)
+
+   !do il = 1, NCELLS
+   do il = ncells, 1, -1
 
       if (norms(il) /= norm_pre) then
-         write(*,*) norms(il), ene_total
+         write(*,*) norm_pre, ene_total
          norm_pre = norms(il)
       endif
 
       ene = coef * coulomb( hs(:,il), .False. )
       ene_total = ene_total + ene
 
-      write(*,*) '#', il, norms(il), ene, ene_total
+      !write(*,*) '#', il, norms(il), ene, ene_total
    enddo
+
+   write(*,*) norm_pre, ene_total
+
+
+   !###################
+   !! Origin
+   !###################
+   ene = coef * coulomb( ORIGIN, .True.)
+   ene_total = ene_total + ene
+   write(*,*) '#', 0, 0.0, ene, ene_total
+   write(*,*) 0.0, ene_total
+
 
 contains
 
@@ -145,15 +153,18 @@ contains
 
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   subroutine generate_reciprocal_lattice(m)
+   subroutine generate_reciprocal_lattice(m, ncells)
       integer, intent(in) :: m
+      integer, intent(out) :: ncells
       !real(PREC), intent(out) :: hs(3, (m+1)**3 - 1)
       !real(PREC), intent(out) :: norms((m+1)**3 - 1)
       real(PREC) :: h(3), h_swp(3)
-      real(PREC) :: r_swp
+      real(PREC) :: r_swp, m_real, x
       integer :: i, ix, iy, iz
       integer :: icomb
       logical :: flg_swp
+
+      m_real = real(m, kind=PREC)
 
       i = 0
       do ix = -m, m
@@ -167,21 +178,27 @@ contains
                if (ix == 0 .and. iy == 0 .and. iz == 0) then
                   cycle
                endif
-
+               
                h(3) = real(iz)
+
+               x = sqrt(dot_product(h,h))
+               if (x > m_real) then
+                  cycle
+               endif
 
                i = i+1
                hs(1:3,i) = h(1:3)
-               norms(i) = sqrt(dot_product(h,h))
+               norms(i) = x
 
             enddo
          enddo
       enddo
       
-      if (i /= NCELLS) then
-         write(*, *) 'Error: i /= NCELLS, i=', i, ' NCELLS=', NCELLS
-         stop
-      endif
+      ncells = i
+      !if (i /= NCELLS) then
+      !   write(*, *) 'Error: i /= NCELLS, i=', i, ' NCELLS=', NCELLS
+      !   stop
+      !endif
 
       !write(*,*) '# Calling comb11 sort'
       icomb = NCELLS
