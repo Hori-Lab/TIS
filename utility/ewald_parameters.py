@@ -222,7 +222,7 @@ for d in data:
     ''' Measure the computation time of short MD run (not single point energy) '''
     ''' Prepare an input file '''
     f_inp = open('tmp_md.inp', 'w')
-    for  l in open(inp_tmpl):
+    for  l in open(inp_tmpl_md):
         if l.find('cutoff_ele') != -1:
             f_inp.write('cutoff_ele = %10.5f\n' % cutoff_ele)
         elif l.find('ewld_alpha') != -1:
@@ -236,7 +236,7 @@ for d in data:
     ''' Execute the code '''
     f_out = open('out','w')
     f_err = open('err','w')
-    cmds = [ exe2, 'tmp.inp' ]
+    cmds = [ exe2, 'tmp_md.inp' ]
 
     try:
         subprocess32.call( cmds, stdout=f_out, stderr=f_err, timeout=max_time)
