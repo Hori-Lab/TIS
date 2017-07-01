@@ -183,6 +183,8 @@ for d in data:
 
     if abs(energy - Econv) > accuracy:
         continue
+    else:
+        cutoff_ele = max_cut
 
     ''' Find the smallest possible cutoff_ele that still gives accurate energy '''
     for cut in cut_series:
@@ -215,8 +217,9 @@ for d in data:
                 break
     
         if abs(energy-Econv) > accuracy:
-            cutoff_ele = cut
             break
+        else:
+            cutoff_ele = cut
 
     
     ''' Measure the computation time of short MD run (not single point energy) '''
