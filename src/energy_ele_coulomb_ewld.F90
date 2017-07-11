@@ -186,7 +186,10 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 !$omp end master
 
 #ifdef _DEBUG_EWLD
-  write(*,*) 'EWLD: ', e_real, e_fourier, inele%coef(grep)*ewld_s_sum, energy(E_TYPE%ELE)
+  write(*,*) 'EWLD_REAL: ', e_real
+  write(*,*) 'EWLD_FOUR: ', e_fourier
+  write(*,*) 'EWLD_CORR: ', inele%coef(grep)*ewld_s_sum
+  write(*,*) 'EWLD: ', energy(E_TYPE%ELE)
 #endif
 
 end subroutine energy_ele_coulomb_ewld
