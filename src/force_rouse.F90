@@ -12,7 +12,6 @@ subroutine force_rouse(irep, force_mp)
 
   integer :: irouse, imp1, imp2
   integer :: ksta, kend
-  real(PREC) :: dist, ddist, ddist2, for
   real(PREC) :: force(3), v21(3)
 #ifdef MPI_PAR
   integer :: klen
@@ -34,7 +33,7 @@ subroutine force_rouse(irep, force_mp)
   ksta = 1
   kend = nrouse
 #endif
-!$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for,force)
+!$omp do private(imp1,imp2,v21,force)
   do irouse = ksta, kend
 
      imp1 = irouse2mp(1, irouse)
