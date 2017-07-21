@@ -21,7 +21,7 @@ subroutine mloop_nativeinfo(istep_sim)
                          bd_nat, ba_nat, &
                          ibd2mp, factor_bd, coef_bd, &
                          iba2mp, factor_ba, coef_ba, &
-                         ifene2mp, fene_nat, coef_fene, dist2_fene, &
+                         ifene2mp, fene_nat, coef_fene, dist2_fene, & 
                          idih2mp, factor_dih, coef_dih, &
                          go_nat, go_nat2, icon_dummy_mgo, &
                          icon2mp, factor_go, coef_go, &
@@ -32,12 +32,13 @@ subroutine mloop_nativeinfo(istep_sim)
                          idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                          ndtrna_tst, idtrna_tst2mp, idtrna_tst2side, dtrna_tst_nat, &
                          idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, idtrna_st2nn,&
-                         irna_bp_dummy_mgo, &
+                         !irna_bp_dummy_mgo, &
                          coef_dtrna_tst, flg_tst_exclusive,&
                          ibd2type, iba2type, idih2type, icon2type, &
 !                         imorse2type, &
                          idtrna_hb2hbsite, flg_hb_tertiary, &
-                         irna_st_dummy_mgo
+                         !irna_st_dummy_mgo
+                         iwca2mp, iwca2unit, wca_nat, wca_nat2, coef_wca
 #endif
 
   implicit none
@@ -155,7 +156,6 @@ subroutine mloop_nativeinfo(istep_sim)
   ! FENE
   call MPI_Bcast(nfene,         1,              MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ifene2mp,    2*MXMPBD*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(ifene2type,    MXMPBD*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(fene_nat,      MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_fene,   2*MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(dist2_fene,    MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)

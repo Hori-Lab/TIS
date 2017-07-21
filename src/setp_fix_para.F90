@@ -9,10 +9,12 @@ subroutine setp_fix_para()
   use const_index
   use var_io, only : infile, outfile
   use var_setp, only : fix_mp
-  use var_struct, only : lunit2mp
 
 #ifdef MPI_PAR
   use mpiconst
+  use var_struct, only : lunit2mp, nmp_all
+#else
+  use var_struct, only : lunit2mp
 #endif
 
   implicit none

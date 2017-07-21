@@ -11,7 +11,7 @@ function rfunc_boxmuller(istream, tn)
   use var_setp, only : insimu, mts
   use var_replica, only : n_replica_mpi
   use mt_stream
-  use mpiconst, only : nthreads
+  use mpiconst, only : nthreads, npar_mpi
 
   implicit none
 

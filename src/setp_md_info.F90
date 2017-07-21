@@ -596,7 +596,7 @@ subroutine setp_md_info()
 
   call MPI_Bcast (insimu, insimu%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (inmisc, inmisc%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast (inmmc, inmmc%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
+  !call MPI_Bcast (inmmc, inmmc%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (irand,      1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 #endif
 
