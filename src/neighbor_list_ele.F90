@@ -27,13 +27,14 @@ subroutine neighbor_list_ele(jrep)
   integer, intent(in) :: jrep
 
   integer :: imp, jmp, iunit, junit, irep, grep
-  integer :: icharge, jcharge, iele, imirror, n_index
+  integer :: icharge, jcharge, iele, imirror
   integer :: icalc(MXUNIT, MXUNIT)
   real(PREC) :: dist2, rneighbor2_ele, v21(3)
   character(CARRAY_MSG_ERROR) :: error_message
 #ifdef MPI_PAR2
   integer :: icharge_l
 #ifdef SHARE_NEIGH
+  integer :: n_index
   integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
   real(PREC) :: coef_ele_l(MXMPELE*ncharge)
   integer :: nele_l, n
@@ -43,8 +44,6 @@ subroutine neighbor_list_ele(jrep)
 #endif
 
   ! -------------------------------------------------------------------
-  n_index = 2 + inperi%n_mirror_index
-
   if(inmisc%force_flag(INTERACT%ELE)) then
      continue
   else
@@ -65,7 +64,6 @@ subroutine neighbor_list_ele(jrep)
   ! --------------------------------------------------------------------
 
   irep = jrep   ! to avoid intel compiler internal error.(@dan)
-! do irep = 1, n_replica_mpi
 
   grep = irep2grep(irep)
   if (inmisc%i_neigh_dynamic == 1) then 
@@ -75,6 +73,9 @@ subroutine neighbor_list_ele(jrep)
         rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
         rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
+     else if (inele%i_function_form == 3) then  ! Brute-force direct (only energy)
+        lele(:) = 0
+        return
      else
         rneighbor2_ele = 0.0
      endif
@@ -85,6 +86,9 @@ subroutine neighbor_list_ele(jrep)
         rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
         rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
+     else if (inele%i_function_form == 3) then  ! Brute-force direct (only energy)
+        lele(:) = 0
+        return
      else
         rneighbor2_ele = 0.0
      endif
@@ -106,9 +110,9 @@ subroutine neighbor_list_ele(jrep)
 
      jcharge = icharge + 1
 
-     if(jcharge > ncharge) cycle
+     if (jcharge > ncharge) cycle
 
-     do while(jcharge <= ncharge)
+     do while (jcharge <= ncharge)
         jmp = icharge2mp(jcharge)
         junit = imp2unit(jmp)
 
@@ -171,6 +175,8 @@ subroutine neighbor_list_ele(jrep)
 
   lele(irep) = sum( nele_lall(0:npar_mpi-1) )
 
+  n_index = 2 + inperi%n_mirror_index   !! n_mirror_index =  1 if periodic 
+                                        !!                   0  otherwise
   disp (0) = 0
   count(0) = n_index*nele_lall(0)
   do n = 1, npar_mpi-1
@@ -203,20 +209,16 @@ subroutine neighbor_list_ele(jrep)
 
 #endif
 
-  !if(iele > MXELE) then
+
   if(iele > (MXMPELE*ncharge)) then
      error_message = 'Error: too big nele in neighbor_list_ele'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
-! enddo ! irep
 
-! DBG
 #ifdef _DEBUG
   write(6,*) 'neighbor_list_ele, irep, lele(irep) ' , irep, lele(irep)
   call flush(6)
 #endif
-
-!  write (*, *) ncharge, lele(irep), sqrt(rneighbor2_ele)
 
 end subroutine neighbor_list_ele
