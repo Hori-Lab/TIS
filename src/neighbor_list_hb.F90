@@ -20,7 +20,10 @@ subroutine neighbor_list_hb(irep)
   integer :: ksta, kend
   integer :: ineigh2hb_l(1:MXMPHBNEIGHBOR*nmp_all/2)
 #ifdef MPI_PAR
-  integer :: klen, pos(npar_mpi)
+  integer :: klen
+  integer :: nhbneigh_l
+  integer :: nhbneigh_lall(0:npar_mpi-1)
+  integer :: recvcounts(0:npar_mpi-1), displs(0:npar_mpi-1)
 #endif
   real(PREC) :: v12(3), d1212
 !  real(PREC) :: dist_cut_sq
@@ -67,14 +70,25 @@ subroutine neighbor_list_hb(irep)
   enddo
 
 #ifdef MPI_PAR2
-  call mpi_reduce(ineigh, nhbneigh(irep), 1, MPI_INTEGER, MPI_SUM, mpi_comm_local,ierr) 
+  nhbneigh_l = ineigh
 
-  pos(1) = 0
-  do i=2, npar_mpi
-     pos(i) = sum(nhbneigh(1:i-1))
+  call mpi_allgather( nhbneigh_l,    1, MPI_INTEGER, &
+                      nhbneigh_lall, 1, MPI_INTEGER, &
+                      mpi_comm_local, ierr)
+
+  nhbneigh(irep) = sum( nhbneigh_lall(0:npar_mpi-1) )
+  
+  displs(0) = 0
+  recvcounts(0) = nhbneigh_lall(0)
+
+  do i=1, npar_mpi-1
+     displs(i) = displs(i-1) + nhbneigh_lall(i-1)
+     recvcounts(i) = nhbneigh_lall(i)
   enddo
-  call mpi_allgatherv(ineigh2hb_l, ineigh, MPI_INTEGER,&
-                      ineigh2hb, nhbneigh(irep), pos, MPI_INTEGER, mpi_comm_local, ierr)
+
+  call mpi_allgatherv( ineigh2hb_l,       nhbneigh_l, MPI_INTEGER,&
+                       ineigh2hb(1,irep), recvcounts,  displs,  MPI_INTEGER, &
+                       mpi_comm_local, ierr)
 #else
   nhbneigh(irep) = ineigh
   ineigh2hb(:,irep) = ineigh2hb_l(:)
