@@ -170,7 +170,9 @@ subroutine energy_sumup(irep,          &
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_morse(irep, now_morse, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_rna_bp(irep, now_rna_bp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  if (inmisc%force_flag(INTERACT%CON_GAUSS)) then 
      call energy_con_gauss(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  endif
 !$omp master
      TIME_E( tm_energy_nlocal_go) 
 !$omp end master

@@ -30,6 +30,11 @@ subroutine force_con_gauss(irep, force_mp)
 #endif
 
   ! --------------------------------------------------------------------
+  if (.not. inmisc%force_flag(INTERACT%CON_GAUSS)) then
+     return
+  endif
+
+  ! --------------------------------------------------------------------
   sigma = inmisc%con_gauss_sigma   ! 6.3 [A]
   k = inmisc%con_gauss_k  ! 1.0 [kT]
   kT = tempk * BOLTZ_KCAL_MOL
