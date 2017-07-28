@@ -218,7 +218,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
                      MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
   if (flg_file_out%tst .or. flg_file_out%tstall) then
      call mpi_allreduce(ene_st_l, ene_st, ndtrna_tst, &
-                     PREC_MPI, MPI_LAND, mpi_comm_local, ierr)
+                     PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
   endif
 #else
   st_status(:,irep) = st_status_l(:)

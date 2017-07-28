@@ -164,7 +164,7 @@
 
 #ifdef MPI_PAR3
      call mpi_allreduce(ene_st_l, ene_st, ndtrna_st, &
-                     PREC_MPI, MPI_LAND, mpi_comm_local, ierr)
+                        PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
 #else
      ene_st(:) = ene_st_l(:)
 #endif
