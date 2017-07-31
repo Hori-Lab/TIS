@@ -890,7 +890,7 @@ subroutine inp_filename()
   if(ineigh == 1) then
      flg_file_out%neigh = .True.
 #ifdef MPI_PAR
-     if (myrank == 0) then
+     if (local_rank_mpi == 0) then
 #endif
      n = index(path, ' ')
      m = index(filename_neigh, ' ')
@@ -901,13 +901,34 @@ subroutine inp_filename()
         filename = filename_neigh
      end if
   
-     write (*, '(a16,i3,a3,a)') "open neigh file(",outfile%neigh,"): ", trim(filename)
-     open(outfile%neigh, file = filename, status = FILE_STATUS, &
-                         action = 'write', iostat = iopen_status)
-     if(iopen_status > 0) then
-        error_message = 'Error: cannot open the file: ' // filename
-        call util_error(ERROR%STOP_STD, error_message)
-     end if
+     filename_neigh = filename
+     i_cend_save     = index(filename_neigh, '.neigh') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%neigh(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.neigh'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open neigh file(",outfile%neigh(irep),"): ", trim(filename)
+        open(outfile%neigh(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
 #ifdef MPI_PAR
      end if
 #endif
@@ -921,7 +942,7 @@ subroutine inp_filename()
   if(iee == 1) then
      flg_file_out%ee = .True.
 #ifdef MPI_PAR
-     if (myrank == 0) then
+     if (local_rank_mpi == 0) then
 #endif
      n = index(path, ' ')
      m = index(filename_ee, ' ')
@@ -932,13 +953,34 @@ subroutine inp_filename()
         filename = filename_ee
      end if
   
-     write (*, '(a13,i3,a3,a)') "open ee file(",outfile%ee,"): ", trim(filename)
-     open(outfile%ee, file = filename, status = FILE_STATUS, &
-                         action = 'write', iostat = iopen_status)
-     if(iopen_status > 0) then
-        error_message = 'Error: cannot open the file: ' // filename
-        call util_error(ERROR%STOP_STD, error_message)
-     end if
+     filename_ee = filename
+     i_cend_save     = index(filename_ee, '.ee') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%ee(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.ee'
+        endif ! replica
+        write (*, '(a15,i3,a3,a)') "open ee file(",outfile%ee(irep),"): ", trim(filename)
+        open(outfile%ee(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
 #ifdef MPI_PAR
      end if
 #endif

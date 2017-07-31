@@ -36,8 +36,8 @@ module var_io
      integer :: psf   = 55
      integer :: fmat  = 56
      integer :: opt   = 57
-     integer :: neigh = 59
-     integer :: ee    = 60
+     integer :: neigh(MXREPLICA)
+     integer :: ee(MXREPLICA)
      integer :: chp(MXREPLICA)
      integer :: st(MXREPLICA)
      integer :: tst(MXREPLICA)

@@ -52,7 +52,7 @@ subroutine simu_minimize(flg_converge)
 
       if (sqrt(d2max) + sqrt(d2max_2nd) > inpara%neigh_margin) then
          if (flg_file_out%neigh) then
-            write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+            write(outfile%neigh(IREP), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
                                  istep, irep, d2max, d2max_2nd, d2max+d2max_2nd
          endif
          call neighbor(irep)
@@ -63,7 +63,7 @@ subroutine simu_minimize(flg_converge)
    else if(mod(istep, insimu%n_step_neighbor) == 1 .OR. istep == insimu%i_tstep_init) then  
       TIME_S( tm_neighbor )
       if (flg_file_out%neigh) then
-         write(outfile%neigh, '(i10,1x,i5)',advance='no') istep, irep
+         write(outfile%neigh(IREP), '(i10,1x,i5)',advance='no') istep, irep
       endif
       call neighbor(IREP)
       TIME_E( tm_neighbor )

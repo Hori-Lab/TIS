@@ -73,8 +73,14 @@ subroutine time_integral(flg_step_each_replica)
 
         if (sqrt(d2max) + sqrt(d2max_2nd) > inpara%neigh_margin) then
            if (flg_file_out%neigh) then
-              write(outfile%neigh, '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+#ifdef MPI_PAR
+           if (myrank == 0)then
+#endif
+              write(outfile%neigh(irep), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
                                    istep, irep, d2max, d2max_2nd, d2max+d2max_2nd
+#ifdef MPI_PAR
+           endif
+#endif
            endif
            call neighbor(irep)
            dxyz_mp(:,:,irep) = 0.0e0_PREC
@@ -86,7 +92,13 @@ subroutine time_integral(flg_step_each_replica)
      TIME_S( tm_neighbor )
      do irep = 1, n_replica_mpi
         if (flg_file_out%neigh) then
-           write(outfile%neigh, '(i10,1x,i5)',advance='no') istep, irep
+#ifdef MPI_PAR
+           if (myrank == 0)then
+#endif
+           write(outfile%neigh(irep), '(i10,1x,i5)',advance='no') istep, irep
+#ifdef MPI_PAR
+           endif
+#endif
         endif
         call neighbor(irep)
      enddo

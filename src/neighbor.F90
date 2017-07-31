@@ -87,16 +87,36 @@ subroutine neighbor(irep)
      TIME_E( tm_neighbor_hb )
   endif
 
+#ifdef MPI_PAR
+  if (myrank == 0) then
+#endif
   if (flg_file_out%neigh) then
-     if (inmisc%force_flag(INTERACT%EXV12)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
-     if (inmisc%force_flag(INTERACT%EXV6)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
-     if (inmisc%force_flag(INTERACT%EXV_WCA)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1
-     if (inmisc%force_flag(INTERACT%EXV_DT15)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_DT15,irep) - lexv(1,E_TYPE%EXV_DT15,irep) + 1
-     if (inmisc%force_flag(INTERACT%EXV_GAUSS)) write(outfile%neigh,'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
-     if (inmisc%i_dtrna_model == 2015) write(outfile%neigh,'(1xi6)',advance='no') nhbneigh(irep)
-     if (inmisc%force_flag(INTERACT%ELE)) write(outfile%neigh,'(1xi6)',advance='no') lele(irep)
-     write(outfile%neigh, *) ''
+     if (inmisc%force_flag(INTERACT%EXV12)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
+     endif
+     if (inmisc%force_flag(INTERACT%EXV6)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_WCA)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_DT15)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_DT15,irep) - lexv(1,E_TYPE%EXV_DT15,irep) + 1
+     endif
+     if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
+     endif
+     if (inmisc%i_dtrna_model == 2015) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') nhbneigh(irep)
+     endif
+     if (inmisc%force_flag(INTERACT%ELE)) then
+        write(outfile%neigh(irep),'(1xi6)',advance='no') lele(irep)
+     endif
+     write(outfile%neigh(irep), *) ''
   endif
+#ifdef MPI_PAR
+  endif
+#endif
 
 #ifdef _DEBUG
   write(6,*) '####### end neighbor'
