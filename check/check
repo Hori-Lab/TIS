@@ -10,7 +10,7 @@
 
 if( ${#argv} == 0 ) then
   set make = 1 
-  set exec = 1
+  set exec = 2
   set diff = 0
   set rev  = 0
 else if( ${#argv} == 4 ) then
@@ -764,6 +764,12 @@ foreach inp ( `ls inp` )
     sleep 1
   end
 end
+
+#--------------------------------------------------
+endif
+#--------------------------------------------------
+
+
 #--------------------------------------------------
 # diff
 #--------------------------------------------------
@@ -783,147 +789,147 @@ foreach inp ( `ls inp` )
 
   cd data/$inp
 
-  set dir0 = single
-  set dirx = omp08
-  set dir1 = 01n01p01t01
-  set dir4 = 16n02p02t04
+  set dir0 = gnu.serial
+  set dirx = gnu.omp04
+  set dir1 = gnu.01n01p01t01
+  set dir4 = gnu.16n01p04t04
      
   switch($inp)
     case *replica*
-      diff -q  $dir0/$inp:r.rep $dir1/$inp:r.rep
-      diff -q  $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts
-      diff -q  $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts
-      diff -q  $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts
+      diff -q  $dir0/md.rep $dir1/md.rep
+      diff -q  $dir0/md_0001.ts $dir1/md_0001.ts
+      diff -q  $dir0/md_0002.ts $dir1/md_0002.ts
+      diff -q  $dir0/md_0005.ts $dir1/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r.rep $dir1/$inp:r.rep >> $here/diff.out
-        diff $dir0/$inp:r.rep $dir1/$inp:r.rep >> $here/diff.out
+        diff -q $dir0/md.rep $dir1/md.rep >> $here/diff.out
+        diff $dir0/md.rep $dir1/md.rep >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts >> $here/diff.out
-        diff $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dir0/md_0001.ts $dir1/md_0001.ts >> $here/diff.out
+        diff $dir0/md_0001.ts $dir1/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts >> $here/diff.out
-        diff $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dir0/md_0002.ts $dir1/md_0002.ts >> $here/diff.out
+        diff $dir0/md_0002.ts $dir1/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts >> $here/diff.out
-        diff $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
+        diff $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
       endif
       if( $tsout ) then
-        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts   100
-        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts   300
-        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts  1000
-        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts 10000
-        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts   100
-        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts   300
-        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts  1000
-        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts 10000
-        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts   100
-        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts   300
-        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts  1000
-        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts 10000
+        $tchk     $dir0/md_0001.ts $dir1/md_0001.ts   100
+        $tchk     $dir0/md_0001.ts $dir1/md_0001.ts   300
+        $tchk     $dir0/md_0001.ts $dir1/md_0001.ts  1000
+        $tchk     $dir0/md_0001.ts $dir1/md_0001.ts 10000
+        $tchk     $dir0/md_0002.ts $dir1/md_0002.ts   100
+        $tchk     $dir0/md_0002.ts $dir1/md_0002.ts   300
+        $tchk     $dir0/md_0002.ts $dir1/md_0002.ts  1000
+        $tchk     $dir0/md_0002.ts $dir1/md_0002.ts 10000
+        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts   100
+        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts   300
+        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts  1000
+        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts 10000
       endif
-      diff -q  $dir0/$inp:r.rep $dirx/$inp:r.rep
-      diff -q  $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts
-      diff -q  $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts
-      diff -q  $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts
+      diff -q  $dir0/md.rep $dirx/md.rep
+      diff -q  $dir0/md_0001.ts $dirx/md_0001.ts
+      diff -q  $dir0/md_0002.ts $dirx/md_0002.ts
+      diff -q  $dir0/md_0005.ts $dirx/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r.rep $dirx/$inp:r.rep >> $here/diff.out
-        diff $dir0/$inp:r.rep $dirx/$inp:r.rep >> $here/diff.out
+        diff -q $dir0/md.rep $dirx/md.rep >> $here/diff.out
+        diff $dir0/md.rep $dirx/md.rep >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts >> $here/diff.out
-        diff $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dir0/md_0001.ts $dirx/md_0001.ts >> $here/diff.out
+        diff $dir0/md_0001.ts $dirx/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts >> $here/diff.out
-        diff $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dir0/md_0002.ts $dirx/md_0002.ts >> $here/diff.out
+        diff $dir0/md_0002.ts $dirx/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts >> $here/diff.out
-        diff $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
+        diff $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
       endif
       if( $tsout ) then
-        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts   100
-        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts   300
-        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts  1000
-        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts 10000
-        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts   100
-        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts   300
-        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts  1000
-        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts 10000
-        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts   100
-        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts   300
-        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts  1000
-        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts 10000
+        $tchk     $dir0/md_0001.ts $dirx/md_0001.ts   100
+        $tchk     $dir0/md_0001.ts $dirx/md_0001.ts   300
+        $tchk     $dir0/md_0001.ts $dirx/md_0001.ts  1000
+        $tchk     $dir0/md_0001.ts $dirx/md_0001.ts 10000
+        $tchk     $dir0/md_0002.ts $dirx/md_0002.ts   100
+        $tchk     $dir0/md_0002.ts $dirx/md_0002.ts   300
+        $tchk     $dir0/md_0002.ts $dirx/md_0002.ts  1000
+        $tchk     $dir0/md_0002.ts $dirx/md_0002.ts 10000
+        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts   100
+        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts   300
+        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts  1000
+        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts 10000
       endif
-      diff -q $dir1/$inp:r.rep $dir4/$inp:r.rep
-      diff -q $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts
-      diff -q $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts
-      diff -q $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts
+      diff -q $dir1/md.rep $dir4/md.rep
+      diff -q $dir1/md_0001.ts $dir4/md_0001.ts
+      diff -q $dir1/md_0002.ts $dir4/md_0002.ts
+      diff -q $dir1/md_0005.ts $dir4/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r.rep $dir4/$inp:r.rep >> $here/diff.out 
-        diff $dir1/$inp:r.rep $dir4/$inp:r.rep >> $here/diff.out 
+        diff -q $dir1/md.rep $dir4/md.rep >> $here/diff.out 
+        diff $dir1/md.rep $dir4/md.rep >> $here/diff.out 
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts >> $here/diff.out 
-        diff $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts >> $here/diff.out 
+        diff -q $dir1/md_0001.ts $dir4/md_0001.ts >> $here/diff.out 
+        diff $dir1/md_0001.ts $dir4/md_0001.ts >> $here/diff.out 
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts >> $here/diff.out 
-        diff $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts >> $here/diff.out 
+        diff -q $dir1/md_0002.ts $dir4/md_0002.ts >> $here/diff.out 
+        diff $dir1/md_0002.ts $dir4/md_0002.ts >> $here/diff.out 
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts >> $here/diff.out 
-        diff $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts >> $here/diff.out 
+        diff -q $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
+        diff $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
       endif
       if( $tsout ) then
-        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts   100
-        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts   300
-        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts  1000
-        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts 10000
-        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts   100
-        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts   300
-        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts  1000
-        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts 10000
-        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts   100
-        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts   300
-        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts  1000
-        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts 10000
+        $tchk    $dir1/md_0001.ts $dir4/md_0001.ts   100
+        $tchk    $dir1/md_0001.ts $dir4/md_0001.ts   300
+        $tchk    $dir1/md_0001.ts $dir4/md_0001.ts  1000
+        $tchk    $dir1/md_0001.ts $dir4/md_0001.ts 10000
+        $tchk    $dir1/md_0002.ts $dir4/md_0002.ts   100
+        $tchk    $dir1/md_0002.ts $dir4/md_0002.ts   300
+        $tchk    $dir1/md_0002.ts $dir4/md_0002.ts  1000
+        $tchk    $dir1/md_0002.ts $dir4/md_0002.ts 10000
+        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts   100
+        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts   300
+        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts  1000
+        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts 10000
       endif
       breaksw
     default
 
-      diff -q  $dir0/$inp:r.ts $dir1/$inp:r.ts
+      diff -q  $dir0/md.ts $dir1/md.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q  $dir0/$inp:r.ts $dir1/$inp:r.ts >> $here/diff.out
-        diff $dir0/$inp:r.ts $dir1/$inp:r.ts >> $here/diff.out
+        diff -q  $dir0/md.ts $dir1/md.ts >> $here/diff.out
+        diff $dir0/md.ts $dir1/md.ts >> $here/diff.out
       endif
       if( $tsout ) then
-        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts   100
-        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts   300
-        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts  1000
-        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts 10000
+        $tchk $dir0/md.ts $dir1/md.ts   100
+        $tchk $dir0/md.ts $dir1/md.ts   300
+        $tchk $dir0/md.ts $dir1/md.ts  1000
+        $tchk $dir0/md.ts $dir1/md.ts 10000
       endif
-      diff -q  $dir0/$inp:r.ts $dirx/$inp:r.ts
+      diff -q  $dir0/md.ts $dirx/md.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q  $dir0/$inp:r.ts $dirx/$inp:r.ts >> $here/diff.out
-        diff $dir0/$inp:r.ts $dirx/$inp:r.ts >> $here/diff.out
+        diff -q  $dir0/md.ts $dirx/md.ts >> $here/diff.out
+        diff $dir0/md.ts $dirx/md.ts >> $here/diff.out
       endif
       if( $tsout ) then
-        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts   100
-        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts   300
-        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts  1000
-        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts 10000
+        $tchk $dir0/md.ts $dirx/md.ts   100
+        $tchk $dir0/md.ts $dirx/md.ts   300
+        $tchk $dir0/md.ts $dirx/md.ts  1000
+        $tchk $dir0/md.ts $dirx/md.ts 10000
       endif
-      diff -q $dir1/$inp:r.ts $dir4/$inp:r.ts
+      diff -q $dir1/md.ts $dir4/md.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r.ts $dir4/$inp:r.ts >> $here/diff.out
-        diff $dir1/$inp:r.ts $dir4/$inp:r.ts >> $here/diff.out
+        diff -q $dir1/md.ts $dir4/md.ts >> $here/diff.out
+        diff $dir1/md.ts $dir4/md.ts >> $here/diff.out
       endif
       if( $tsout ) then
-        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts   100
-        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts   300
-        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts  1000
-        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts 10000
+        $tchk $dir1/md.ts $dir4/md.ts   100
+        $tchk $dir1/md.ts $dir4/md.ts   300
+        $tchk $dir1/md.ts $dir4/md.ts  1000
+        $tchk $dir1/md.ts $dir4/md.ts 10000
       endif
     endsw
   cd ../..
