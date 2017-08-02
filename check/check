@@ -1,0 +1,1045 @@
+#!/bin/csh
+#
+# 実行結果のチェック
+#
+# make ... コンパイルを行う
+# exec ... プログラムを実行する
+# diff ... 比較する single <-> mpi p1, 
+#                   mpi p1 <-> mpi p4
+# rev  ... 比較する    rev <-> rev 
+
+if( ${#argv} == 0 ) then
+  set make = 1 
+  set exec = 1
+  set diff = 0
+  set rev  = 0
+else if( ${#argv} == 4 ) then
+  set make = ${argv[1]}
+  set exec = ${argv[2]}
+  set diff = ${argv[3]}
+  set rev  = ${argv[4]}
+else
+  echo 'usage 1: ./go.chk'
+  echo 'usage 2: ./go.chk [make 0/1] [exec 0/1/2] [diff 0/1] [rev 0/1]'
+  exit
+endif
+
+if( $exec == 0 ) then   # No execution
+  set exec_intel = 0
+  set exec_gnu   = 0
+else if( $exec == 1 ) then  # Only Intel
+  set exec_intel = 1
+  set exec_gnu   = 0
+else if( $exec == 2 ) then  # Intel and GNU
+  set exec_intel = 1
+  set exec_gnu   = 1
+endif
+
+# diff で t_series を出力する
+set tsout = 0
+
+# diff の結果を diff.out へ出力する
+set diff_out = 1
+
+# 比較対象のディレクトリ
+set revdir = /home/hori/check
+
+# コンパイル時のcleanの有無
+set clean = 1
+# clean = 1 : Make cleanする (デフォルト)
+# clean = 0 : Make cleanしない
+#            （二度目以降のチェックで、cleanの必要のない修正のとき、時間短縮可能。
+#              使用後は必ず 1 に戻してからコミットしてください。）
+
+# 実行プロセス数        nprocs ( 0 : single run, 1- : mpi run )
+# 実行プロセス数/ノード ptile
+# 実行スレッド数        nthreads
+# レプリカ方向並列数    npar_rep
+
+#===== チェック用 ===== 
+#set nprocs   = "0 0 1 4"
+#set ptile    = "0 0 1 2"
+#set nthreads = "0 8 1 4"
+#set npar_rep = "1 1 1 4"
+set nprocs   = "0 0 1 4 4 12"
+set ptile    = "0 0 1 4 4  4"
+set nthreads = "0 4 1 1 4  4"
+set npar_rep = "1 1 1 1 1  1"
+#set nprocs   = "4"
+#set ptile    = "2"
+#set nthreads = "4"
+#set npar_rep = "4"
+#set nprocs   = "0 1 4 8 1"
+#set ptile    = "0 1 2 8 1"
+#set nthreads = "0 1 4 1 8"
+#set npar_rep = "1 1 4 8 1"
+#set npar_rep = "1 1 
+#set nprocs   = "0 1 4"
+#set ptile    = "0 1 2"
+#set nthreads = "0 1 4"
+#set npar_rep = "1 1 4"
+
+# 乱数列を一致させる (速度計測なら0に)
+set consistent_rand = 1
+
+# 四倍精度で計算する (速度計測なら0に)
+set quadruple = 1
+
+# bug根絶祈願オプション
+set intel_db = 1
+##  -traceback
+##   異常終了時の出力
+##  -fpe0
+##   浮動小数点例外(ゼロ除算など)で停止
+##  -check all
+##   すべてのcheckオプションを有効にする
+##   (配列の領域外,変数の初期化など)
+##  -gen-interfaces nosource
+##  -warn interfaces
+##   暗黙的インターフェースでの型の整合性をチェック
+
+# 浮動小数点演算の精度を高める(intelのみ)
+set intel_fp = 1
+##  -fp-model strict
+##   浮動小数点演算に関わる最適化をしない
+##  -fp-speculation=off
+##   浮動小数点演算に関わるスペキュレーション(先読み)をしない
+##  -prec-div
+##   除算精度を高める
+##  -prec-sqrt
+##   平方根精度を高める
+
+# GNU, PGIでのコンパイルテスト
+set compile_test = 1
+
+set gnu_db = 1
+
+################################################################################
+
+# チェック環境のルートディレクトリ(srcディレクトリからの相対パス)
+set root = ../check
+
+# t_series
+set tchk = `pwd`/tchk
+
+# Machine name ( lakers )
+set host = `uname -n`
+set host6=`echo $host | cut -c1-6`
+
+# カレントディレクトリ取得
+set here = `pwd`
+
+if ( $consistent_rand ) then
+  set cpp_rand = "-D_DEBUG_REP"
+else
+  set cpp_rand = ""
+endif
+
+if ( $quadruple ) then
+  set cpp_prec = "-DPREC_INTEL16"
+else
+  set cpp_prec = ""
+endif
+
+if ( $intel_db ) then
+  set ifort_opt_db = "-O0 -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces"
+else
+  set ifort_opt_db = "-O2"
+endif
+
+if ( $intel_fp ) then
+  set ifort_opt_fp = "-fp-model strict -fp-speculation=off -prec-div -prec-sqrt"
+else
+  set ifort_opt_fp = ""
+endif
+
+if ( $gnu_db ) then
+  set gnu_opt_db = "-O0 -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check"
+else
+  set gnu_opt_db = "-O2"
+endif
+
+#--------------------------------------------------
+if( $make ) then
+#--------------------------------------------------
+
+# Makefile の作成
+
+if( $host6 == 'lakers' ) then
+  sed -e 's/^ *TARGET .*$/TARGET = md.i.serial/' \
+      -e 's/^ *FC .*$/FC = ifort/' \
+      -e 's/^ *FC_UTIL .*$/FC_UTIL = ifort/' \
+      -e 's/^ *CPP .*$/CPP = -cpp -DTIME '"$cpp_rand"' '"$cpp_prec"'/' \
+#      -e 's/^ *CPP .*$/CPP = -cpp -D_DEBUG -DTIME '"$cpp_rand"' '"$cpp_prec"'/' \
+      -e 's/^ *INC .*$/INC = /' \
+      -e 's/^ *OPT .*$/OPT = '"$ifort_opt_db"' '"$ifort_opt_fp"'/' \
+      -e 's/^ *LIB .*$/LIB = /' \
+          ../src/Makefile_ > Makefile.i.serial
+
+  sed -e 's/^ *TARGET .*$/TARGET = md.i.omp/' \
+      -e 's/^ *FC .*$/FC = ifort/' \
+      -e 's/^ *FC_UTIL .*$/FC_UTIL = ifort/' \
+      -e 's/^ *CPP .*$/CPP = -cpp -DTIME '"$cpp_rand"' '"$cpp_prec"'/' \
+      -e 's/^ *INC .*$/INC = /' \
+      -e 's/^ *OPT .*$/OPT = -qopenmp -openmp-report1 '"$ifort_opt_db"' '"$ifort_opt_fp"'/' \
+      -e 's/^ *LIB .*$/LIB = /' \
+         ../src/Makefile_ > Makefile.i.omp
+
+#  sed -e 's/^ *TARGET .*$/TARGET = md.i.mpi/' \
+#      -e 's/^ *FC .*$/FC = mpiifort/' \
+#      -e 's/^ *FC_UTIL .*$/FC_UTIL = mpiifort/' \
+#      -e 's/^ *CPP .*$/CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 '"$cpp_rand"' '"$cpp_prec"'/' \
+##      -e 's/^ *CPP .*$/CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP '"$cpp_rand"' '"$cpp_prec"'/' \
+##      -e 's/^ *CPP .*$/CPP = -cpp -D_DEBUG -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP '"$cpp_rand"' '"$cpp_prec"'/' \
+#      -e 's/^ *INC .*$/INC = /' \
+#      -e 's/^ *OPT .*$/OPT = -O2 -openmp -openmp-report1 '"$ifort_opt_db"' '"$ifort_opt_fp"'/' \
+#      -e 's/^ *LIB .*$/LIB = /' \
+#         ../src/Makefile_ > Makefile.i.mpi
+ 
+  module swap intel gnu
+  module load openmpi
+
+  sed -e 's/^ *TARGET .*$/TARGET = md.g.serial/' \
+      -e 's/^ *FC .*$/FC = gfortran/' \
+      -e 's/^ *FC_UTIL .*$/FC_UTIL = gfortran/' \
+      -e 's/^ *CPP .*$/CPP = -DTIME '"$cpp_rand"'/' \
+      -e 's/^ *INC .*$/INC = /' \
+      -e 's/^ *OPT .*$/OPT = '"$gnu_opt_db"'/' \
+      -e 's/^ *LIB .*$/LIB = /' \
+          ../src/Makefile_ > Makefile.g.serial
+
+  sed -e 's/^ *TARGET .*$/TARGET = md.g.omp/' \
+      -e 's/^ *FC .*$/FC = gfortran/' \
+      -e 's/^ *FC_UTIL .*$/FC_UTIL = gfortran/' \
+      -e 's/^ *CPP .*$/CPP = -DTIME '"$cpp_rand"'/' \
+      -e 's/^ *INC .*$/INC = /' \
+      -e 's/^ *OPT .*$/OPT = -fopenmp '"$gnu_opt_db"'/' \
+      -e 's/^ *LIB .*$/LIB = /' \
+          ../src/Makefile_ > Makefile.g.omp
+
+  sed -e 's/^ *TARGET .*$/TARGET = md.g.mpi/' \
+      -e 's/^ *FC .*$/FC = mpifort/' \
+      -e 's/^ *FC_UTIL .*$/FC_UTIL = mpifort/' \
+      -e 's/^ *CPP .*$/CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP '"$cpp_rand"'/' \
+      -e 's/^ *INC .*$/INC = /' \
+      -e 's/^ *OPT .*$/OPT = -fopenmp '"$gnu_opt_db"'/' \
+      -e 's/^ *LIB .*$/LIB = /' \
+          ../src/Makefile_ > Makefile.g.mpi
+  
+  module swap gnu intel
+
+else
+  echo "this host is not supported !! ... " $host
+  exit
+endif
+
+# compile
+
+#cd ../src
+
+if ( $compile_test) then
+  
+  module swap intel gnu
+  module load openmpi
+
+  ########################################
+  # gfortran
+  if( $host6 == 'lakers' ) then
+    ####### g.serial ########
+    if ( ! -d src.g.serial ) mkdir src.g.serial src.g.serial/mt_stream_cafe
+    cp -rfp ../src/*F90 src.g.serial/
+    cp -rfp ../src/mt_stream_cafe/*F90 src.g.serial/mt_stream_cafe/
+
+    cd src.g.serial
+    if ( $clean ) make -f ../Makefile.g.serial clean
+    make -f ../Makefile.g.serial |& tee ../make.g.serial.log
+
+    if( ! -f md.g.serial ) exit
+    cp md.g.serial ../
+    #make -f ../Makefile.gfort clean
+    #rm  -rf ../Makefile.gfort
+    cd ../
+
+    ####### g.omp ########
+    if ( ! -d src.g.omp ) mkdir src.g.omp src.g.omp/mt_stream_cafe
+    cp -rfp ../src/*F90 src.g.omp/
+    cp -rfp ../src/mt_stream_cafe/*F90 src.g.omp/mt_stream_cafe/
+
+    cd src.g.omp
+    if ( $clean ) make -f ../Makefile.g.omp clean
+    make -f ../Makefile.g.omp |& tee ../make.g.omp.log
+
+    if( ! -f md.g.omp ) exit
+    cp md.g.omp ../
+    #make -f ../Makefile.gfort clean
+    #rm  -rf ../Makefile.gfort
+    cd ../
+
+    ####### g.mpi ########
+    if ( ! -d src.g.mpi ) mkdir src.g.mpi src.g.mpi/mt_stream_cafe
+    cp -rfp ../src/*F90 src.g.mpi/
+    cp -rfp ../src/mt_stream_cafe/*F90 src.g.mpi/mt_stream_cafe/
+
+    cd src.g.mpi
+    if ( $clean ) make -f ../Makefile.g.mpi clean
+    make -f ../Makefile.g.mpi |& tee ../make.g.mpi.log
+
+    if( ! -f md.g.mpi ) exit
+    cp md.g.mpi ../
+    #make -f ../Makefile.gfort clean
+    #rm  -rf ../Makefile.gfort
+    cd ../
+  endif
+
+  module swap gnu intel
+endif
+
+########################################
+# intel
+if ( ! -d src.i.serial ) mkdir src.i.serial src.i.serial/mt_stream_cafe
+cp -rfp ../src/*F90 src.i.serial/
+cp -rfp ../src/mt_stream_cafe/*F90 src.i.serial/mt_stream_cafe/
+
+cd src.i.serial
+if ( $clean ) make -f ../Makefile.i.serial clean
+make -f ../Makefile.i.serial |& tee ../make.i.serial.log
+
+if( ! -f md.i.serial ) exit
+cp md.i.serial ../
+#make -f ../Makefile     clean
+#rm  -rf ../Makefile
+cd ../
+
+########################################
+# intel (OpenMP)
+if ( ! -d src.i.omp ) mkdir src.i.omp src.i.omp/mt_stream_cafe
+cp -rfp ../src/*F90 src.i.omp/
+cp -rfp ../src/mt_stream_cafe/*F90 src.i.omp/mt_stream_cafe/
+
+cd src.i.omp
+if ( $clean ) make -f ../Makefile.i.omp clean
+make -f ../Makefile.i.omp |& tee ../make.i.omp.log
+
+if( ! -f md.i.omp ) exit
+cp md.i.omp ../
+#make -f ../Makefile.omp clean
+#rm  -rf ../Makefile.omp
+cd ../
+
+#########################################
+## intel (MPI)
+#if ( ! -d src.i.mpi ) mkdir src.i.mpi src.i.mpi/mt_stream_cafe
+#cp -rfp ../src/*F90 src.i.mpi/
+#cp -rfp ../src/mt_stream_cafe/*F90 src.i.mpi/mt_stream_cafe/
+#
+#cd src.i.mpi
+#if ( $clean ) make -f ../Makefile.i.mpi clean
+#make -f ../Makefile.i.mpi |& tee ../make.i.mpi.log
+#if( ! -f md.i.mpi ) exit
+#cp md.i.mpi ../
+##make -f ../Makefile.i.mpi clean
+##rm  -rf ../Makefile.i.mpi
+#cd ../
+
+
+#--------------------------------------------------
+endif
+#--------------------------------------------------
+
+
+#--------------------------------------------------
+# ジョブ実行 by intel
+if( $exec_intel ) then
+#--------------------------------------------------
+
+foreach inp ( `ls inp` )
+  echo "=============================="
+  echo $inp
+  echo "=============================="
+
+  set pt0 = `echo $ptile`
+  set nt0 = `echo $nthreads`
+  set rep0 = `echo $npar_rep`
+
+  foreach np ( $nprocs )
+    set pt = ${pt0[1]}
+    set nt = ${nt0[1]}
+    set rep = ${rep0[1]}
+ 
+    if( $np == 0 ) then
+      if( $nt == 0) then
+        set dir = serial
+	if( $host6 == 'lakers' ) then
+          sed -e 's/chk.np/1/' \
+              -e 's/chk.nd/1/' \
+              -e 's/chk.nt/1/' \
+              -e 's/chk.out/'$inp'\/'$dir'/' \
+              -e 's/-o log -e err/-o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+              -e 's/chk.module/module load intel/' \
+              -e 's/chk.go//'        bs0.lakers > bs
+          sed -e 's/chk.lm/md.i.serial/' \
+              -e 's/chk.nt/1/' \
+              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else if( $host == 'dan' ) then
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md/' \
+#              -e 's/chk.nt/1/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md/' \
+#              -e 's/chk.nt/1/' \
+#              -e 's/chk.in/'$inp'/'  go0 > go
+        endif
+      else
+        set t00 = `printf "%02d" $nt`
+        set dir = omp${t00}
+	if( $host6 == 'lakers' ) then
+          sed -e 's/chk.np/1/' \
+              -e 's/chk.nd/1/' \
+              -e 's/chk.nt/'$nt'/' \
+              -e 's/chk.out/'$inp'\/'$dir'/' \
+              -e 's/-o log -e err/-o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+              -e 's/chk.module/module load intel/' \
+              -e 's/chk.go//'        bs0.lakers > bs
+          sed -e 's/chk.lm/md.i.omp/' \
+              -e 's/chk.nt/'$nt'/' \
+              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else if( $host == 'melvin01' ) then
+#          sed -e 's/#\$ -pe mpichk.pt chk.np//' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#$ -o log -e err/#$ -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md.omp/' \
+#              -e 's/chk.nt/'$nt'/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else if( $host == 'dan' ) then
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md.omp/' \
+#              -e 's/chk.nt/'$nt'/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+        endif
+      endif
+    else
+      @ node = $np / $pt
+      @ core = $np * $nt
+  
+      set n00 = `printf "%02d" $node`
+      set c00 = `printf "%02d" $core`
+      set p00 = `printf "%02d" $pt`
+      set t00 = `printf "%02d" $nt`
+  
+      set dir = ${c00}n${n00}p${p00}t${t00}
+
+      if( $host6 == 'lakers' ) then
+
+        echo 'Intel MPI is not supported'
+	continue
+
+#      else if( $host == 'melvin01' ) then
+#        sed -e 's/chk.np/'$np'/' \
+#            -e 's/chk.pt//' \
+#            -e 's/chk.out/'$inp'\/'$dir'/' \
+#            -e 's/go_all.chk/go.chk/' \
+#            -e 's/#$ -o log -e err/#$ -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#            -e 's/chk.go/mpiexec.hydra -bootstrap rsh -machinefile $TMPDIR\/machines -np $NSLOTS/' bs0 > bs
+#        sed -e 's/chk.lm/md.mpi/' \
+#            -e 's/chk.nt/'$nt'/' \
+#            -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#            -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#            -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#      else if( $host == 'dan' ) then
+#        sed -e 's/chk.np/'$np'/' \
+#            -e 's/chk.pt/'$pt'/' \
+#            -e 's/chk.out/'$inp'\/'$dir'/' \
+#            -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#            -e 's/chk.go/impijob/' bs0 > bs
+#        sed -e 's/chk.lm/md.mpi/' \
+#            -e 's/chk.nt/'$nt'/' \
+#            -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#            -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#            -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+      else
+        sed -e 's/chk.np/'$np'/' \
+            -e 's/chk.pt/'$pt'/' \
+            -e 's/chk.go/impijob/' bs0 > bs
+        sed -e 's/chk.lm/md.mpi/' \
+            -e 's/chk.nt/'$nt'/' \
+            -e 's/chk.in/'$inp'/'  go0 > go
+      endif
+    endif
+  
+    echo '***** '$dir
+
+    sed -e 's/^ *\(npar_rep *=\).*$/\1 '$rep'/' inp/$inp > inp/$inp.tmp
+#    diff inp/$inp.tmp inp/$inp
+    mv   inp/$inp.tmp inp/$inp
+
+    rm -rf data/$inp/$dir/* >& /dev/null
+    mkdir -p data/$inp/$dir
+
+    if( $host6 == 'lakers' ) then
+      chmod u+x go
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      sbatch ./data/$inp/$dir/bs
+
+    else if( $host == 'melvin01' ) then
+      chmod u+x go
+#      qsub -sync y ./bs
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      qsub -N $inp ./data/$inp/$dir/bs
+
+    else if ( $host == 'dan') then
+      chmod u+x go
+#      bsub -K < bs
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      bsub -J $inp < data/$inp/$dir/bs
+    else
+      chmod u+x go
+      bsub -K < bs
+    endif
+  
+#    if( $host != 'dan' && $host4 != 'melv' ) then
+#      cd data
+##     $tchk $inp:r.data > $inp/$dir/$inp:r.ts
+#      mv *.data *.ninfo *.ts *.movie *.crd *.psf \
+#         *.velo *.dcd *.vdcd *.pdb *rep \
+#         ../err* ../log* ../bg.* ../bs.* $inp/$dir
+#      cd ..
+#    endif
+
+    echo ''
+    shift pt0
+    shift nt0
+    shift rep0
+
+    sleep 1
+  end
+end
+
+rm -rf bs go >& /dev/null
+
+#--------------------------------------------------
+endif
+#--------------------------------------------------
+
+#--------------------------------------------------
+# ジョブ実行 by GNU
+if( $exec_gnu  ) then
+#--------------------------------------------------
+
+foreach inp ( `ls inp` )
+  echo "=============================="
+  echo $inp "by GNU"
+  echo "=============================="
+
+  set pt0 = `echo $ptile`
+  set nt0 = `echo $nthreads`
+  set rep0 = `echo $npar_rep`
+
+  foreach np ( $nprocs )
+    set pt = ${pt0[1]}
+    set nt = ${nt0[1]}
+    set rep = ${rep0[1]}
+ 
+    if( $np == 0 ) then
+      if( $nt == 0) then
+        set dir = gnu.serial
+	if( $host6 == 'lakers' ) then
+          sed -e 's/chk.np/1/' \
+              -e 's/chk.nd/1/' \
+              -e 's/chk.nt/1/' \
+              -e 's/chk.out/'$inp'\/'$dir'/' \
+              -e 's/-o log -e err/-o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+              -e 's/chk.module/module swap intel gnu/' \
+              -e 's/chk.go//'        bs0.lakers > bs
+          sed -e 's/chk.lm/md.g.serial/' \
+              -e 's/chk.nt/1/' \
+              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else if( $host == 'dan' ) then
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md/' \
+#              -e 's/chk.nt/1/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md/' \
+#              -e 's/chk.nt/1/' \
+#              -e 's/chk.in/'$inp'/'  go0 > go
+        endif
+      else
+        set t00 = `printf "%02d" $nt`
+        set dir = gnu.omp${t00}
+	if( $host6 == 'lakers' ) then
+          sed -e 's/chk.np/1/' \
+              -e 's/chk.nd/1/' \
+              -e 's/chk.nt/'$nt'/' \
+              -e 's/chk.out/'$inp'\/'$dir'/' \
+              -e 's/-o log -e err/-o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+              -e 's/chk.module/module swap intel gnu/' \
+              -e 's/chk.go//'        bs0.lakers > bs
+          sed -e 's/chk.lm/md.g.omp/' \
+              -e 's/chk.nt/'$nt'/' \
+              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        if( $host == 'melvin01' ) then
+#          sed -e 's/#\$ -pe mpichk.pt chk.np//' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#$ -o log -e err/#$ -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md.omp/' \
+#              -e 's/chk.nt/'$nt'/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#        else if( $host == 'dan' ) then
+#          sed -e 's/chk.np/1/' \
+#              -e 's/chk.pt/1/' \
+#              -e 's/chk.out/'$inp'\/'$dir'/' \
+#              -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#              -e 's/chk.go//'        bs0 > bs
+#          sed -e 's/chk.lm/md.omp/' \
+#              -e 's/chk.nt/'$nt'/' \
+#              -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#              -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#              -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+        endif
+      endif
+    else
+      @ node = $np / $pt
+      @ core = $np * $nt
+  
+      set n00 = `printf "%02d" $node`
+      set c00 = `printf "%02d" $core`
+      set p00 = `printf "%02d" $pt`
+      set t00 = `printf "%02d" $nt`
+  
+      set dir = gnu.${c00}n${n00}p${p00}t${t00}
+
+      if( $host6 == 'lakers' ) then
+        sed -e 's/chk.np/'$np'/' \
+            -e 's/chk.nd/'$n00'/' \
+            -e 's/chk.nt/'$nt'/' \
+            -e 's/chk.out/'$inp'\/'$dir'/' \
+            -e 's/-o log -e err/-o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+            -e 's/chk.module/module swap intel gnu; module load openmpi/' \
+            -e 's/chk.go/mpirun -n '$np'/'        bs0.lakers > bs
+        sed -e 's/chk.lm/md.g.mpi/' \
+            -e 's/chk.nt/'$nt'/' \
+            -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+            -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+            -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#      else if( $host == 'melvin01' ) then
+#        sed -e 's/chk.np/'$np'/' \
+#            -e 's/chk.pt//' \
+#            -e 's/chk.out/'$inp'\/'$dir'/' \
+#            -e 's/go_all.chk/go.chk/' \
+#            -e 's/#$ -o log -e err/#$ -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#            -e 's/chk.go/mpiexec.hydra -bootstrap rsh -machinefile $TMPDIR\/machines -np $NSLOTS/' bs0 > bs
+#        sed -e 's/chk.lm/md.mpi/' \
+#            -e 's/chk.nt/'$nt'/' \
+#            -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#            -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#            -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#      else if( $host == 'dan' ) then
+#        sed -e 's/chk.np/'$np'/' \
+#            -e 's/chk.pt/'$pt'/' \
+#            -e 's/chk.out/'$inp'\/'$dir'/' \
+#            -e 's/#BSUB -o log -e err/#BSUB -o data\/'$inp'\/'$dir'\/log -e data\/'$inp'\/'$dir'\/err/' \
+#            -e 's/chk.go/impijob/' bs0 > bs
+#        sed -e 's/chk.lm/md.mpi/' \
+#            -e 's/chk.nt/'$nt'/' \
+#            -e 's/log.$suffix/data\/'$inp'\/'$dir'\/log.$suffix/' \
+#            -e 's/err.$suffix/data\/'$inp'\/'$dir'\/err.$suffix/' \
+#            -e 's/chk.in/..\/data\/'$inp'\/'$dir'\/inp\/'$inp'/'  go0 > go
+#      else
+#        sed -e 's/chk.np/'$np'/' \
+#            -e 's/chk.pt/'$pt'/' \
+#            -e 's/chk.go/impijob/' bs0 > bs
+#        sed -e 's/chk.lm/md.mpi/' \
+#            -e 's/chk.nt/'$nt'/' \
+#            -e 's/chk.in/'$inp'/'  go0 > go
+      endif
+    endif
+  
+    echo '***** '$dir
+
+    sed -e 's/^ *\(npar_rep *=\).*$/\1 '$rep'/' inp/$inp > inp/$inp.tmp
+#    diff inp/$inp.tmp inp/$inp
+    mv   inp/$inp.tmp inp/$inp
+
+    rm -rf data/$inp/$dir/* >& /dev/null
+    mkdir -p data/$inp/$dir
+
+    if( $host6 == 'lakers' ) then
+      chmod u+x go
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      sbatch ./data/$inp/$dir/bs
+
+    else if( $host == 'melvin01' ) then
+      chmod u+x go
+#      qsub -sync y ./bs
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      qsub -N $inp ./data/$inp/$dir/bs
+
+    else if ( $host == 'dan') then
+      chmod u+x go
+#      bsub -K < bs
+      mkdir data/$inp/$dir/inp
+      sed -e 's/path = .\/data/path = .\/data\/'$inp'\/'$dir'/' inp/$inp > inp/$inp.data
+      mv inp/$inp.data data/$inp/$dir/inp/$inp
+      cp bs       data/$inp/$dir
+      cp go       data/$inp/$dir
+      bsub -J $inp < data/$inp/$dir/bs
+    else
+      chmod u+x go
+      bsub -K < bs
+    endif
+  
+#    if( $host != 'dan' && $host4 != 'melv' ) then
+#      cd data
+##     $tchk $inp:r.data > $inp/$dir/$inp:r.ts
+#      mv *.data *.ninfo *.ts *.movie *.crd *.psf \
+#         *.velo *.dcd *.vdcd *.pdb *rep \
+#         ../err* ../log* ../bg.* ../bs.* $inp/$dir
+#      cd ..
+#    endif
+
+    echo ''
+    shift pt0
+    shift nt0
+    shift rep0
+
+    sleep 1
+  end
+end
+#--------------------------------------------------
+# diff
+#--------------------------------------------------
+if( $diff ) then
+  if( $diff_out ) then
+    if( -f diff.out ) then
+      rm $here/diff.out
+    endif
+    touch $here/diff.out
+  endif
+#--------------------------------------------------
+
+foreach inp ( `ls inp` )
+  echo "=============================="
+  echo $inp
+  echo "=============================="
+
+  cd data/$inp
+
+  set dir0 = single
+  set dirx = omp08
+  set dir1 = 01n01p01t01
+  set dir4 = 16n02p02t04
+     
+  switch($inp)
+    case *replica*
+      diff -q  $dir0/$inp:r.rep $dir1/$inp:r.rep
+      diff -q  $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts
+      diff -q  $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts
+      diff -q  $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r.rep $dir1/$inp:r.rep >> $here/diff.out
+        diff $dir0/$inp:r.rep $dir1/$inp:r.rep >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts >> $here/diff.out
+        diff $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts >> $here/diff.out
+        diff $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts >> $here/diff.out
+        diff $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts >> $here/diff.out
+      endif
+      if( $tsout ) then
+        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts   100
+        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts   300
+        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts  1000
+        $tchk     $dir0/$inp:r_0001.ts $dir1/$inp:r_0001.ts 10000
+        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts   100
+        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts   300
+        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts  1000
+        $tchk     $dir0/$inp:r_0002.ts $dir1/$inp:r_0002.ts 10000
+        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts   100
+        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts   300
+        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts  1000
+        $tchk     $dir0/$inp:r_0005.ts $dir1/$inp:r_0005.ts 10000
+      endif
+      diff -q  $dir0/$inp:r.rep $dirx/$inp:r.rep
+      diff -q  $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts
+      diff -q  $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts
+      diff -q  $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r.rep $dirx/$inp:r.rep >> $here/diff.out
+        diff $dir0/$inp:r.rep $dirx/$inp:r.rep >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts >> $here/diff.out
+        diff $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts >> $here/diff.out
+        diff $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts >> $here/diff.out
+        diff $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts >> $here/diff.out
+      endif
+      if( $tsout ) then
+        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts   100
+        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts   300
+        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts  1000
+        $tchk     $dir0/$inp:r_0001.ts $dirx/$inp:r_0001.ts 10000
+        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts   100
+        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts   300
+        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts  1000
+        $tchk     $dir0/$inp:r_0002.ts $dirx/$inp:r_0002.ts 10000
+        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts   100
+        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts   300
+        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts  1000
+        $tchk     $dir0/$inp:r_0005.ts $dirx/$inp:r_0005.ts 10000
+      endif
+      diff -q $dir1/$inp:r.rep $dir4/$inp:r.rep
+      diff -q $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts
+      diff -q $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts
+      diff -q $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r.rep $dir4/$inp:r.rep >> $here/diff.out 
+        diff $dir1/$inp:r.rep $dir4/$inp:r.rep >> $here/diff.out 
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts >> $here/diff.out 
+        diff $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts >> $here/diff.out 
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts >> $here/diff.out 
+        diff $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts >> $here/diff.out 
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts >> $here/diff.out 
+        diff $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts >> $here/diff.out 
+      endif
+      if( $tsout ) then
+        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts   100
+        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts   300
+        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts  1000
+        $tchk    $dir1/$inp:r_0001.ts $dir4/$inp:r_0001.ts 10000
+        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts   100
+        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts   300
+        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts  1000
+        $tchk    $dir1/$inp:r_0002.ts $dir4/$inp:r_0002.ts 10000
+        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts   100
+        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts   300
+        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts  1000
+        $tchk    $dir1/$inp:r_0005.ts $dir4/$inp:r_0005.ts 10000
+      endif
+      breaksw
+    default
+
+      diff -q  $dir0/$inp:r.ts $dir1/$inp:r.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q  $dir0/$inp:r.ts $dir1/$inp:r.ts >> $here/diff.out
+        diff $dir0/$inp:r.ts $dir1/$inp:r.ts >> $here/diff.out
+      endif
+      if( $tsout ) then
+        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts   100
+        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts   300
+        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts  1000
+        $tchk $dir0/$inp:r.ts $dir1/$inp:r.ts 10000
+      endif
+      diff -q  $dir0/$inp:r.ts $dirx/$inp:r.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q  $dir0/$inp:r.ts $dirx/$inp:r.ts >> $here/diff.out
+        diff $dir0/$inp:r.ts $dirx/$inp:r.ts >> $here/diff.out
+      endif
+      if( $tsout ) then
+        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts   100
+        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts   300
+        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts  1000
+        $tchk $dir0/$inp:r.ts $dirx/$inp:r.ts 10000
+      endif
+      diff -q $dir1/$inp:r.ts $dir4/$inp:r.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r.ts $dir4/$inp:r.ts >> $here/diff.out
+        diff $dir1/$inp:r.ts $dir4/$inp:r.ts >> $here/diff.out
+      endif
+      if( $tsout ) then
+        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts   100
+        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts   300
+        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts  1000
+        $tchk $dir1/$inp:r.ts $dir4/$inp:r.ts 10000
+      endif
+    endsw
+  cd ../..
+end
+
+#--------------------------------------------------
+endif
+#--------------------------------------------------
+
+#--------------------------------------------------
+if( $rev ) then
+#--------------------------------------------------
+echo "############################################################"
+foreach inp ( `ls inp` )
+  echo "=============================="
+  echo $inp
+  echo "=============================="
+
+  cd data/$inp
+
+  set dir0 = single
+  set dirx = omp08
+  set dir1 = 01n01p01t01
+  set dir4 = 16n02p02t04
+
+  switch($inp)
+    case *replica*
+      diff -q $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep
+      diff -q $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep
+      diff -q $dir1/$inp:r.rep  $revdir/data/$inp/$dir1/$inp:r.rep
+      diff -q $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep
+      diff -q $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts
+      diff -q $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts
+      diff -q $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts
+      diff -q $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts
+      diff -q $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts
+      diff -q $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts
+      diff -q $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts
+      diff -q $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts
+      diff -q $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts
+      diff -q $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts
+      diff -q $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts
+      diff -q $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts
+      if( $diff_out ) then 
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep >> $here/diff.out
+        diff $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep >> $here/diff.out
+        diff $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep >> $here/diff.out
+        diff $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts >> $here/diff.out
+        diff $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts >> $here/diff.out
+        diff $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts >> $here/diff.out
+        diff $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts >> $here/diff.out
+        diff $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts >> $here/diff.out
+        diff $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts >> $here/diff.out
+        diff $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts >> $here/diff.out
+        diff $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts >> $here/diff.out
+        diff $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts >> $here/diff.out
+        diff $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts >> $here/diff.out
+        diff $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts >> $here/diff.out
+        diff $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts >> $here/diff.out
+        diff $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts >> $here/diff.out
+      endif
+      breaksw
+
+    default
+      diff -q $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts
+      diff -q $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts
+      diff -q $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts
+      diff -q $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts
+      if( $diff_out ) then
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts >> $here/diff.out
+        diff $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts >> $here/diff.out
+        diff $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts >> $here/diff.out
+        diff $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts >> $here/diff.out
+        echo '#---------------------------------------------------' >> $here/diff.out
+        diff -q $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts >> $here/diff.out
+        diff $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts >> $here/diff.out
+      endif
+  endsw
+
+  cd ../..
+end
+
+#--------------------------------------------------
+endif
+#--------------------------------------------------

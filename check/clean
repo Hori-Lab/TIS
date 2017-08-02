@@ -1,0 +1,11 @@
+#!/bin/csh
+
+rm -rf data/* \
+       md.* \
+       Makefile Makefile.* \
+       bs go log* err* bg.* \
+       core.* \
+       diff.out \
+       bs.* *.jms \
+       src* \
+       make.*.log

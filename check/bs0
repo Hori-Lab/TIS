@@ -1,0 +1,35 @@
+#!/bin/bash
+#### Lakers ============================
+#SBATCH -J check
+#SBATCH -n chk.np
+#SBATCH -t 1:00:00
+#SBATCH --mem=500m
+#SBATCH -o log -e err
+
+chk.module
+
+host=`uname -n`
+host1=`echo $host | cut -c1-1`
+host6=`echo $host | cut -c1-6`
+
+pwd
+
+#--------------------------------------------------
+# Lakers
+if [ $host1 = 'n' ]; then
+#--------------------------------------------------
+
+export PMI_RANK=0
+
+chk.go ./data/chk.out/go
+
+
+#--------------------------------------------------
+else
+#--------------------------------------------------
+
+echo "this host is not supported !! ... " $host
+
+#--------------------------------------------------
+fi
+#--------------------------------------------------

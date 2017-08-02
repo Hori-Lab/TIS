@@ -1,0 +1,36 @@
+#!/bin/csh
+
+if( ${#argv} == 0 ) then
+  echo 'usage : tchk [file1] [file2] ... [fileN] [step]'
+  exit
+endif
+
+set last = ${argv[${#argv}]}
+
+if( -f $last ) then
+  set nmax = ${#argv}
+  set step = ''
+  set all = 1
+else
+  @ nmax = ${#argv} - 1
+  set step = $last
+  set all = 0
+endif
+
+set n = 1
+while ( $n <= $nmax )
+  set file = ${argv[$n]}
+  echo "*****" $file "*****"
+  if( $all ) then
+    grep -A 1 '<<<< initial_energy' $file
+    grep --color -A 1 '<<<< t_series'           $file
+    grep              '^t_series'               $file
+  else
+    grep --color -A 1 '<<<< t_series'           $file
+    grep              '^t_series     *'$step' ' $file
+    grep              '^t_series ALL *'$step' ' $file
+    grep              '^t_series all *'$step' ' $file
+  endif
+
+  @ n = $n + 1
+end
