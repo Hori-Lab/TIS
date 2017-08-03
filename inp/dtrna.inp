@@ -47,6 +47,7 @@ i_mass = 1
 <<<< energy_function       
 LOCAL(1)      L_DTRNA
 NLOCAL(1/1)   DTRNA EXV_WCA ELE
+i_dtrna_model = 2013
 i_triple_angle_term = 0
 i_use_atom_protein = 0
 i_use_atom_dna = 0

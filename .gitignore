@@ -6,3 +6,5 @@ inp2/
 check/src*
 check/Makefile*
 check/make*
+check/md.*
+md*

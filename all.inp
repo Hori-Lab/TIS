@@ -4,19 +4,14 @@ path = ./
 ** the output file names up to the suffix
 filename = md
 
-** There are 3 output formats for record:
+OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh hb hball st stall tst tstall
 **    pdb: PDB file format (coordinate)
 **    crd: CARD file format (coordinate)
 **    velo: CARD file format (velocity)
-** There are 3 output formats for trajectory:
 **    movie: PDB file format for trajectory (coordinate)
 **    dcd: DCD file format for trajectory (coordinate)
 **    vdcd: DCD file format for trajectory (velocity)
-** There is 1 output format for other purpose.
 **    psf: Protein Structure File can be used by VMD to visualize DCD data.
-** 
-** If you want above format file, write the extension name following 'OUTPUT'.
-**OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh hb st
 
 ** define the directory where the native (reference) structures are prepared
 path_pdb = ./pdb
@@ -322,8 +317,9 @@ i_output_energy_style = 0
 **       = 1 : enabled  (tempk_ref should be specified in <<<< md_information)
 **i_temp_independent = 0
 
-**i_dtrna_model = 2013 (default)
-**              = 2015
+** DTRNA model version. This has to be set appropriately if DTRNA is used. (default = 0)
+i_dtrna_model = 2013
+**            = 2015
 
 **       = 0 : EXV is not applied to native-contact pairs (default)
 **       = 1 : EXV is applied to any pairs including native-contact pairs

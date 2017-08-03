@@ -23,6 +23,8 @@ cutoff_LJ = 5.0
 * truncation distance for computing nonlocal non-native repulsion
 cutoff_exvol = 2.0
 
+cutoff_exv_gauss = 999.0
+
 * the cutoff distance to define the native contact
 dfcontact = 6.5
 * constant coefficient "go of the energy function for non-local Go interaction
@@ -40,4 +42,6 @@ crep12 = 0.2
 
 cdist_rep6 = 3.8
 crep6 = 1.0
+
+cutoff_wca = 999.0
 >>>>

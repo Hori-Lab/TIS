@@ -57,18 +57,15 @@ set clean = 1
 # レプリカ方向並列数    npar_rep
 
 #===== チェック用 ===== 
-#set nprocs   = "0 0 1 4"
-#set ptile    = "0 0 1 2"
-#set nthreads = "0 8 1 4"
-#set npar_rep = "1 1 1 4"
 set nprocs   = "0 0 1 4 4 12"
 set ptile    = "0 0 1 4 4  4"
 set nthreads = "0 4 1 1 4  4"
 set npar_rep = "1 1 1 1 1  1"
 #set nprocs   = "4"
-#set ptile    = "2"
+#set ptile    = "4"
 #set nthreads = "4"
-#set npar_rep = "4"
+#set npar_rep = "1"
+
 #set nprocs   = "0 1 4 8 1"
 #set ptile    = "0 1 2 8 1"
 #set nthreads = "0 1 4 1 8"
