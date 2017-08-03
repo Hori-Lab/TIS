@@ -54,6 +54,9 @@ module var_simu
   ! energy
   real(PREC), allocatable, save :: energy(:,:)          ! (E_TYPE%MAX, replica)
   real(PREC), allocatable, save :: energy_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
+  real(PREC), allocatable, save :: ene_st(:,:)
+  real(PREC), allocatable, save :: ene_tst(:,:)
+
   real(PREC), allocatable, save :: qscore(:)           ! (replica)
   real(PREC), allocatable, save :: qscore_unit(:,:,:)  ! (unit, unit, replica)
   real(PREC), allocatable, save :: rg(:)               ! (replica)

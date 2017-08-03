@@ -34,5 +34,13 @@ interface
       real(PREC), intent(in) :: velo_mp(:,:,:)
    endsubroutine write_xyz_dcd
 
+   subroutine write_stack(ene_st, ene_tst, tempk)
+      use const_maxsize
+      implicit none
+      real(PREC), intent(in) :: ene_st(:,:)
+      real(PREC), intent(in) :: ene_tst(:,:)
+      real(PREC), intent(in) :: tempk
+   endsubroutine write_stack
+
 endinterface
 endmodule if_write

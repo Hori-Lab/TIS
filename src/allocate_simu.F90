@@ -3,13 +3,14 @@ subroutine allocate_simu()
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,     only : i_simulate_type
-  use var_struct,  only : nmp_all, nmp_real, nunit_all
+  use var_io,      only : i_simulate_type, flg_file_out
+  use var_struct,  only : nmp_all, nmp_real, nunit_all, ndtrna_st, ndtrna_tst
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : dxyz_mp, velo_mp, accel_mp, force_mp, rcmass_mp, &
 !                          energy_unit_muca, &
                           rlan_const, nLAN_CONST, &
                           energy, energy_unit, qscore, qscore_unit, &
+                          ene_st, ene_tst, &
                           rg, rg_unit, rmsd, rmsd_unit, &
 #ifdef MPI_PAR
                           replica_energy_l, &
@@ -61,6 +62,15 @@ subroutine allocate_simu()
   allocate( energy(E_TYPE%MAX, n_replica_mpi), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
   
+  !!!!!  ene_st and ene_tst are allocated in mloop_dtrna()
+!  if (flg_file_out%st  .or. flg_file_out%stall .or. &
+!      flg_file_out%tst .or. flg_file_out%tstall ) then
+!     allocate( ene_st(ndtrna_st, n_replica_mpi), stat=ier)
+!     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+!     allocate( ene_tst(ndtrna_tst, n_replica_mpi), stat=ier)
+!     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+!  endif
+
   ! energy_unit
   allocate( energy_unit(nunit_all, nunit_all, E_TYPE%MAX, n_replica_mpi), stat=ier) 
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
@@ -131,6 +141,8 @@ contains
          allocated(rlan_const) .OR.&
          allocated(energy) .OR.&
          allocated(energy_unit) .OR.&
+         allocated(ene_st) .OR.&
+         allocated(ene_tst) .OR.&
          allocated(qscore) .OR.&
          allocated(qscore_unit) .OR.&
          allocated(rg) .OR.&
@@ -168,6 +180,8 @@ subroutine deallocate_simu()
   if (allocated(rlan_const)) deallocate(rlan_const)
   if (allocated(energy)) deallocate(energy)
   if (allocated(energy_unit)) deallocate(energy_unit)
+  if (allocated(ene_st)) deallocate(ene_st)
+  if (allocated(ene_tst)) deallocate(ene_tst)
   if (allocated(qscore)) deallocate(qscore)
   if (allocated(qscore_unit)) deallocate(qscore_unit)
   if (allocated(rg)) deallocate(rg)

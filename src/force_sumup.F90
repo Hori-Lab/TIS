@@ -20,8 +20,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
   use const_physical
   use const_index
   use var_setp,   only : inmisc, inele !, inflp
-  use var_struct, only : nmp_all  !, nunit_all
+  use var_struct, only : nmp_all, ndtrna_st 
   !use var_mgo,    only : inmgo
+  use var_simu,   only : st_status
   use time
   use mpiconst
 
@@ -34,6 +35,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
   integer    :: tn, n
   !real(PREC) :: ene_unit(nunit_all, nunit_all)
   real(PREC) :: force_mp_l(SDIM, nmp_all, 0:nthreads-1)
+  logical    :: st_status_l(1:ndtrna_st, 0:nthreads-1)
   !real(PREC) :: ene_unit_l(nunit_all, nunit_all, 0:nthreads-1)
   !real(PREC),allocatable :: force_mp_mgo(:,:,:,:,:)
   character(CARRAY_MSG_ERROR) :: error_message
@@ -132,7 +134,9 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_E( tm_force_go )
 !$omp end master
 
+
   if (inmisc%class_flag(CLASS%RNA)) then
+
      if (inmisc%i_dtrna_model == 2013) then
 !$omp master
   TIME_S( tm_force_dtrna_st ) 
@@ -146,11 +150,31 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !$omp master
   TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
+
      else if (inmisc%i_dtrna_model == 2015) then
 !$omp master
   TIME_S( tm_force_dtrna_st ) 
 !$omp end master
-        call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn))
+        call force_dtrna_stack_nlocal(irep, force_mp_l(1,1,tn), st_status_l(1,tn))
+
+!############### Collect all information into st_status_l(:,0) within a process
+!$omp barrier
+!$omp critical
+        st_status_l(1:ndtrna_st,0) = st_status_l(1:ndtrna_st,0) .and. st_status_l(1:ndtrna_st,tn)
+!$omp end critical
+!$omp barrier
+
+!############### Collect and distribute all information in ALL processes to st_status
+!$omp master
+#ifdef MPI_PAR3
+        call mpi_allreduce(st_status_l(:,0), st_status(1,irep), ndtrna_st, &
+                           MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
+#else
+        st_status(:,irep) = st_status_l(:,0)
+#endif
+!$omp end master
+!$omp barrier
+
         call force_dtrna_stack(irep, force_mp_l(1,1,tn))
 !$omp master
   TIME_E( tm_force_dtrna_st ) 
@@ -160,6 +184,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !$omp master
   TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
+
      endif
   endif
 

@@ -43,7 +43,7 @@
 ! psi1   : 1=2-4-6      v12, v24, v46
 
 
-subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
+subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_status)
 
   use const_maxsize
   use const_physical
@@ -53,7 +53,6 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                           idtrna_tst2st, flg_tst_exclusive, ndtrna_st
-  use var_simu,    only : st_status, tempk
   use mpiconst
 
   implicit none
@@ -61,6 +60,8 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: energy(:)
   real(PREC), intent(inout) :: energy_unit(:,:,:)
+  real(PREC), intent(out)   :: ene_tst(:)
+  logical,    intent(out)   :: st_status(:)
 
   integer :: imp1, imp2, iunit1, iunit2
   integer :: ist, ist_2nd
@@ -72,8 +73,6 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
   integer :: ksta, kend
-  real(PREC) :: ene_st(1:ndtrna_tst), ene_st_l(1:ndtrna_tst) ! for stack energy output
-  logical :: st_status_l(1:ndtrna_st)
 #ifdef MPI_PAR3
   integer :: klen
 #endif
@@ -96,15 +95,13 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
   kend = ndtrna_tst
 #endif
 
-!$omp master
-  st_status_l(:) = .True.
-  ene_st(:) = 999999.9  ! stacking energy < 0
-  ene_st_l(:) = 999999.9
 
-!!$omp do private(imp1,imp2,iunit1,iunit2,ist_2nd,&
-!!$omp&           d, dih, cos_theta, efull, ediv, &
-!!$omp&           v12,v13,v53,v42,v46,d1212,&
-!!$omp&           m,n,c4212,c1213)
+  st_status(:) = .True.
+
+!$omp do private(imp1,imp2,iunit1,iunit2,ist_2nd,&
+!$omp&           d, dih, cos_theta, efull, ediv, &
+!$omp&           v12,v13,v53,v42,v46,d1212,&
+!$omp&           m,n,c4212,c1213)
   do ist=ksta,kend
 
      imp1 = idtrna_tst2mp(1,ist)
@@ -118,11 +115,11 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
      if (d < 10.0) then
         if (flg_tst_exclusive(1,ist)) then
            ist_2nd = idtrna_tst2st(1,ist)
-           st_status_l(ist_2nd) = .False.
+           st_status(ist_2nd) = .False.
         endif
         if (flg_tst_exclusive(2,ist)) then
            ist_2nd = idtrna_tst2st(2,ist)
-           st_status_l(ist_2nd) = .False.
+           st_status(ist_2nd) = .False.
         endif
      endif
 
@@ -209,38 +206,8 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
      energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) = &
                energy_unit(iunit1, iunit2, E_TYPE%TSTACK_DTRNA) + efull
 
-     ene_st_l(ist) = efull  ! for stack energy output
+     ene_tst(ist) = efull  ! for stack energy output
   end do
-!!$omp end do nowait
-
-#ifdef MPI_PAR3
-  call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
-                     MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
-  if (flg_file_out%tst .or. flg_file_out%tstall) then
-     call mpi_allreduce(ene_st_l, ene_st, ndtrna_tst, &
-                     PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
-  endif
-#else
-  st_status(:,irep) = st_status_l(:)
-  ene_st(:) = ene_st_l(:)
-#endif
-
-  if (flg_file_out%tst) then
-     do ist = 1, ndtrna_tst
-        if (ene_st(ist) < -(tempk * BOLTZ_KCAL_MOL)) then
-           write(outfile%tst(irep), '(i5,1x,e11.4,1x)', advance='no') ist, ene_st(ist)
-        endif
-     enddo
-     write(outfile%tst(irep),*)
-  endif
-  if (flg_file_out%tstall) then
-     do ist = 1, ndtrna_tst
-        write(outfile%tstall(irep), '(e11.4,1x)', advance='no') ene_st(ist)
-     enddo
-     write(outfile%tstall(irep),*)
-  endif
-
-!$omp end master
-!$omp barrier
+!$omp end do nowait
 
 end subroutine energy_dtrna_stack_nlocal

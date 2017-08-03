@@ -41,6 +41,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                           n_exchange, iopt_stage, &
                           tstep, tempk, velo_mp, rlan_const, &
                           energy, energy_unit, rg, rg_unit, rmsd, rmsd_unit, &
+                          ene_st, ene_tst, &
                           replica_energy
   use time, only : tm_energy, tm_radiusg_rmsd, &
                    tm_output, tm_replica, & 
@@ -101,21 +102,52 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! --------------------------------------------------------------
   ! energy calculation
   ! --------------------------------------------------------------
-  if(     flg_step_rep_exc   &     ! to exchange replica
-     .OR. flg_step_save      &     ! to save
+  if (    flg_step_save      &     ! to save
      .OR. istep == 1       ) then  ! to save 1st step
      
-     ! calc energy and radius
      TIME_S( tm_energy )
      replica_energy(:,:) = 0.0e0_PREC
-     call energy_allrep(energy_unit, energy, &
-          velo_mp, replica_energy, flg_step_rep_exc, tempk)
+
+     if ((flg_file_out%st  .or. flg_file_out%stall) .and. &
+         (flg_file_out%tst .or. flg_file_out%tstall )) then
+        ene_st(:,:) = 0.0e0_PREC
+        ene_tst(:,:) = 0.0e0_PREC
+        call energy_allrep(energy_unit, energy, &
+                           velo_mp, replica_energy, flg_step_rep_exc, tempk, &
+                           ene_st=ene_st, ene_tst=ene_tst)
+
+     else if (flg_file_out%st .or. flg_file_out%stall) then
+        ene_st(:,:) = 0.0e0_PREC
+        call energy_allrep(energy_unit, energy, &
+                           velo_mp, replica_energy, flg_step_rep_exc, tempk, &
+                           ene_st=ene_st)
+
+     else if (flg_file_out%tst .or. flg_file_out%tstall) then
+        ene_tst(:,:) = 0.0e0_PREC
+        call energy_allrep(energy_unit, energy, &
+                           velo_mp, replica_energy, flg_step_rep_exc, tempk, &
+                           ene_tst=ene_tst)
+     else
+        call energy_allrep(energy_unit, energy, &
+             velo_mp, replica_energy, flg_step_rep_exc, tempk)
+     endif
+
      TIME_E( tm_energy )
      
      TIME_S( tm_radiusg_rmsd)
      call simu_radiusg(rg_unit, rg)
      call simu_rmsd(rmsd_unit, rmsd)
      TIME_E( tm_radiusg_rmsd )
+
+  else if (flg_step_rep_exc) then
+
+     replica_energy(:,:) = 0.0e0_PREC
+
+     TIME_S( tm_energy )
+     call energy_allrep(energy_unit, energy, &
+                        velo_mp, replica_energy, flg_step_rep_exc, tempk)
+     TIME_E( tm_energy )
+
   endif
 
   if (flg_step_widom) then
@@ -141,6 +173,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                         rg_unit, rg,                  &
                         rmsd_unit, rmsd,              &
                         energy_unit, energy, tempk)
+
+     if (flg_file_out%st .or. flg_file_out%tst .or. flg_file_out%stall .or. flg_file_out%tstall) then
+        call write_stack(ene_st, ene_tst, tempk)
+     endif
 
      if (flg_file_out%opt) then
         ! something to write to opt file

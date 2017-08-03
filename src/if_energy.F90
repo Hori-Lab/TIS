@@ -100,12 +100,13 @@ interface
 !      real(PREC), intent(inout) :: energy_unit(:,:,:)
 !   endsubroutine energy_rna_stack
 
-   subroutine energy_dtrna_stack(irep, energy_unit, energy)
+   subroutine energy_dtrna_stack(irep, energy_unit, energy, ene_st)
       use const_maxsize
       implicit none
       integer,    intent(in)    :: irep
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
+      real(PREC), intent(inout) :: ene_st(:)
    endsubroutine energy_dtrna_stack
 
    subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
@@ -124,12 +125,14 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_dtrna_hbond15
 
-   subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy)
+   subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_status)
       use const_maxsize
       implicit none
       integer,    intent(in)    :: irep
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
+      real(PREC), intent(out)   :: ene_tst(:)
+      logical,    intent(out)   :: st_status(:)
    endsubroutine energy_dtrna_stack_nlocal
 
    subroutine energy_exv_wca (irep, energy_unit, energy)

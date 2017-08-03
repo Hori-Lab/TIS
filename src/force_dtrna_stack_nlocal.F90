@@ -3,7 +3,7 @@
 !
 ! See energy_dtrna_stack_nlocal.F90 for detail
 
-subroutine force_dtrna_stack_nlocal(irep, force_mp) 
+subroutine force_dtrna_stack_nlocal(irep, force_mp, st_status) 
 
   use const_maxsize
   use const_physical
@@ -11,7 +11,6 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   use var_struct,  only : xyz_mp_rep,&
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                           nmp_all, idtrna_tst2st, flg_tst_exclusive, ndtrna_st
-  use var_simu,    only : st_status
   use mpiconst
 
   implicit none
@@ -19,6 +18,7 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   ! --------------------------------------------------------------------
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3,nmp_all)
+  logical,    intent(out)   :: st_status(ndtrna_st)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -39,7 +39,6 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   real(PREC) :: dnn, dmm
   real(PREC) :: pre
   real(PREC) :: for(3,6), f_i(3), f_k(3), f_l(3), ediv
-  logical    :: st_status_l(1:ndtrna_st)   
   !!! These all local variables are private in each thread
   !!! if this subroutine called in parallel region.
 #ifdef MPI_PAR3
@@ -56,7 +55,7 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
   kend = ndtrna_tst
 #endif
 
-  st_status_l(1:ndtrna_st) = .True.
+  st_status(1:ndtrna_st) = .True.
 
 !$omp do private(f_i,f_k,f_l,for,pre,ediv,m,n,dmm,dnn,&
 !$omp&           d,cos_theta,dih,ist_2nd,&
@@ -76,11 +75,11 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
      if (d < 10.0) then
         if (flg_tst_exclusive(1,ist)) then
            ist_2nd = idtrna_tst2st(1,ist)
-           st_status_l(ist_2nd) = .False.
+           st_status(ist_2nd) = .False.
         endif
         if (flg_tst_exclusive(2,ist)) then
            ist_2nd = idtrna_tst2st(2,ist)
-           st_status_l(ist_2nd) = .False.
+           st_status(ist_2nd) = .False.
         endif
      endif
 
@@ -240,26 +239,5 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp)
      force_mp(1:3,idtrna_tst2mp(6,ist)) = force_mp(1:3,idtrna_tst2mp(6,ist)) + for(:,6)
   end do
 !$omp end do nowait
-
-#ifdef MPI_PAR3
-  call mpi_allreduce(st_status_l, st_status(1,irep), ndtrna_st, &
-                     MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
-#else
-!$omp master
-  st_status(:,irep) = .True.
-!$omp end master
-!$omp barrier
-
-!$omp critical
-  !do ist = 1, ndtrna_tst
-  !   if (.not. st_status_l(ist)) then
-  !      st_status(ist,irep) = .False.
-  !   endif
-  !enddo
-  st_status(1:ndtrna_st,irep) = st_status(1:ndtrna_st,irep) .and.  st_status_l(1:ndtrna_st)
-!$omp end critical
-#endif
-
-!$omp barrier
 
 end subroutine force_dtrna_stack_nlocal

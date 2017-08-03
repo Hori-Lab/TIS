@@ -55,7 +55,7 @@ subroutine inp_energy_func()
   inmisc%i_triple_angle_term = 1   ! default
   inmisc%flg_coef_from_ninfo = .true.  ! default
   inmisc%i_temp_independent = 0   ! default
-  inmisc%i_dtrna_model = 2013  ! default
+  inmisc%i_dtrna_model = 0  ! default
   inmisc%i_exv_all = 0 !default
 
   ! ----------------------------------------------------------------------
@@ -545,13 +545,15 @@ subroutine inp_energy_func()
   endif
 
   ! -----------------------------------------------------------------
-  if(inmisc%i_dtrna_model == 2013) then
-     write (lunout, *) 'i_dtrna_model = 2013'
-  else if(inmisc%i_dtrna_model == 2015) then
-     write (lunout, *) 'i_dtrna_model = 2015'
-  else
-     error_message = 'Error: invalid value for inmisc%i_dtrna_model'
-     call util_error(ERROR%STOP_ALL, error_message)
+  if (inmisc%force_flag(INTERACT%DTRNA)) then
+     if(inmisc%i_dtrna_model == 2013) then
+        write (lunout, *) 'i_dtrna_model = 2013'
+     else if(inmisc%i_dtrna_model == 2015) then
+        write (lunout, *) 'i_dtrna_model = 2015'
+     else
+        error_message = 'Error: invalid value for inmisc%i_dtrna_model'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
   endif
 
   ! -----------------------------------------------------------------
