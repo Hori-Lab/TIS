@@ -50,7 +50,7 @@ subroutine force_LJ(irep, force_mp)
   ksta = 1
   kend = nLJ
 #endif
-!$omp do private(imp1,imp2,rcut_off2,v21,dist2,roverdist2, &
+!$omp do private(imp1,imp2,v21,dist2,roverdist2, &
 !$omp&           roverdist8,roverdist14,dLJ_dr,for,imirror)
   do iLJ=ksta,kend
 
