@@ -85,6 +85,9 @@ subroutine mpiconst_tables
 
   use var_struct, only : nmp_real, ncharge !, nhp
 
+!!!! For debug
+!  integer :: icharge_l
+
   !--------------------------------------------------
   print *,"list for neighborlist"
   !--------------------------------------------------
@@ -102,6 +105,11 @@ subroutine mpiconst_tables
   write (*, *) "neighborlist(ele) local_rank_mpi = ", &
        local_rank_mpi, ncharge_l, ncharge
 
+!!!! For debug
+!  do icharge_l = 1, ncharge_l
+!     write(*,*) 'icharge_l2g(',icharge_l,')=',icharge_l2g(icharge_l)
+!  enddo
+
 !  !--------------------------------------------------
 !  print *,"list for neighborlist (hp)"
 !  !--------------------------------------------------
@@ -112,51 +120,51 @@ subroutine mpiconst_tables
 end subroutine mpiconst_tables
 
 
-subroutine tables( il2g, n_l, n )
-  integer,intent(in)  :: n
-  integer,intent(out) :: n_l
-  integer,intent(out) :: il2g(n/npar_mpi+1)
-
-  logical,parameter :: cyclic = .true.
-  integer :: incr, ip, len
-  integer :: i, is, ie
-
-
-  if( cyclic ) then
-    n_l  =  0
-    incr =  1
-    ip   = -1
-
-    do i = 1, n-1
-      ip = ip + incr
-      if( ip < 0 .or. ip > npar_mpi-1 ) then
-        incr = -incr
-        ip = ip + incr
-      endif
-
-      if( ip == local_rank_mpi ) then
-        n_l = n_l + 1
-        il2g(n_l) = i
-      end if
-    end do
-
-    else
-      len = ((n-1)-1+npar_mpi)/npar_mpi
-      is  = 1+len*local_rank_mpi
-      ie  = min(is+len-1,(n-1))
-
-      n_l = 0
-      do i = is, ie
-        n_l = n_l + 1
-        il2g(n_l) = i
-      end do 
-
-    end if
-
-    print *,"[mpi] n_l  = ",n_l
-!   print *,"[mpi] il2g = ",il2g(1:n_l)
-
-end subroutine tables
+!subroutine tables( il2g, n_l, n )
+!  integer,intent(in)  :: n
+!  integer,intent(out) :: n_l
+!  integer,intent(out) :: il2g(n/npar_mpi+1)
+!
+!  logical,parameter :: cyclic = .true.
+!  integer :: incr, ip, len
+!  integer :: i, is, ie
+!
+!
+!  if( cyclic ) then
+!    n_l  =  0
+!    incr =  1
+!    ip   = -1
+!
+!    do i = 1, n-1
+!      ip = ip + incr
+!      if( ip < 0 .or. ip > npar_mpi-1 ) then
+!        incr = -incr
+!        ip = ip + incr
+!      endif
+!
+!      if( ip == local_rank_mpi ) then
+!        n_l = n_l + 1
+!        il2g(n_l) = i
+!      end if
+!    end do
+!
+!    else
+!      len = ((n-1)-1+npar_mpi)/npar_mpi
+!      is  = 1+len*local_rank_mpi
+!      ie  = min(is+len-1,(n-1))
+!
+!      n_l = 0
+!      do i = is, ie
+!        n_l = n_l + 1
+!        il2g(n_l) = i
+!      end do 
+!
+!    end if
+!
+!    print *,"[mpi] n_l  = ",n_l
+!!   print *,"[mpi] il2g = ",il2g(1:n_l)
+!
+!end subroutine tables
 
 subroutine tables2( il2g, n_l, n )
   integer,intent(in)  :: n

@@ -17,16 +17,14 @@
 subroutine energy_sumup(irep,          &
                         velo_mp,       &
                         energy,        &
-                        energy_unit,   &
-                        ene_st,        &
-                        ene_tst )
+                        energy_unit )
 
   use if_energy
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele !,inflp
-  use var_struct,  only : nunit_all, ncon, nLJ, ndtrna_st, ndtrna_tst!, nmorse, nrna_bp
-  use var_simu,    only : st_status
+  use var_struct,  only : nunit_all, ncon, nLJ, ndtrna_st, ndtrna_tst, ndtrna_hb
+  use var_simu,    only : st_status, ene_st, ene_tst, ene_hb
   use time
   use mpiconst
 
@@ -36,8 +34,6 @@ subroutine energy_sumup(irep,          &
   real(PREC), intent(in)  :: velo_mp(:,:)      ! (SDIM, nmp_real)
   real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
   real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
-  real(PREC), intent(out), optional :: ene_st(:)
-  real(PREC), intent(out), optional :: ene_tst(:)
 
   integer :: ier
   integer :: i, iunit, junit
@@ -68,6 +64,7 @@ subroutine energy_sumup(irep,          &
   real(PREC), allocatable :: ene_st_l(:,:)          !(1:ndtrna_st, 0:nthreads-1)
   real(PREC), allocatable :: ene_tst_l(:,:)         !(1:ndtrna_st, 0:nthreads-1)
   logical,    allocatable :: st_status_l(:,:)       !(1:ndtrna_st, 0:nthreads-1)
+  real(PREC), allocatable :: ene_hb_l(:,:)          !(1:ndtrna_hb, 0:nthreads-1)
 
 #ifdef _DEBUG
   write(6,*) '######## start energy_sumup'
@@ -77,11 +74,10 @@ subroutine energy_sumup(irep,          &
 ! zero clear
   energy(:)         = 0.0e0_PREC
   energy_unit(:,:,:) = 0.0e0_PREC
-  if (present(ene_st)) then
-     ene_st(:)  = 0.0e0_PREC
-  endif
-  if (present(ene_tst)) then
-     ene_tst(:)  = 0.0e0_PREC
+  ene_st(:,irep)   = 0.0e0_PREC
+  ene_tst(:,irep)  = 0.0e0_PREC
+  if (inmisc%i_dtrna_model == 2013) then
+     ene_hb(:,irep) = 0.0e0_PREC
   endif
 
 #ifdef MEM_ALLOC
@@ -120,6 +116,12 @@ subroutine energy_sumup(irep,          &
      allocate( ene_tst_l(1:ndtrna_tst, 0:nthreads-1), stat=ier)
      if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
      ene_tst_l(:,:) = 0.0e0_PREC
+
+     if (inmisc%i_dtrna_model == 2013) then
+        allocate( ene_hb_l(1:ndtrna_hb, 0:nthreads-1), stat=ier)
+        if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
+        ene_hb_l(:,:) = 0.0e0_PREC
+     endif
 
      if (inmisc%i_dtrna_model == 2015) then
         allocate( st_status_l(1:ndtrna_st, 0:nthreads-1), stat=ier)
@@ -173,7 +175,7 @@ subroutine energy_sumup(irep,          &
 
   if (inmisc%i_dtrna_model == 2013) then
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_st_l(:,tn))
-     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_hb_l(:,tn))
   else if (inmisc%i_dtrna_model == 2015) then
      call energy_dtrna_stack_nlocal(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_tst_l(:,tn), st_status_l(:,tn))
 
@@ -196,7 +198,6 @@ subroutine energy_sumup(irep,          &
 !$omp barrier
 
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_st_l(:,tn))
-     call energy_dtrna_hbond15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
      call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
 
@@ -336,24 +337,52 @@ subroutine energy_sumup(irep,          &
   energy(:) = energy_l(:,0)
 #endif
 
-  if (present(ene_st)) then
-#ifdef MPI_PAR3
-     call mpi_allreduce(ene_st_l, ene_st, &
-                        ndtrna_st, PREC_MPI, &
-                        MPI_SUM, mpi_comm_local, ierr)
-#else
-     ene_st(:) = ene_st_l(:,0)
-#endif
+  deallocate( energy_l,     stat=ier)
+  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+  deallocate( energy_unit_l, stat=ier)
+  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+  deallocate( now_allcon_l,stat=ier)
+  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+
+  if (inmisc%i_dtrna_model == 2015) then
+     ! Since this routine is not parallelized by MPI
+     call energy_dtrna_hbond15(irep, energy_unit(:,:,:), energy(:))
   endif
 
-  if (present(ene_tst)) then
+  if (inmisc%i_dtrna_model /= 0) then
 #ifdef MPI_PAR3
-     call mpi_allreduce(ene_tst_l, ene_tst, &
-                        ndtrna_tst, PREC_MPI, &
-                        MPI_SUM, mpi_comm_local, ierr)
+     if (ndtrna_st > 0 ) then
+        call mpi_allreduce(ene_st_l, ene_st(1,irep), &
+                           ndtrna_st, PREC_MPI, &
+                           MPI_SUM, mpi_comm_local, ierr)
+     endif
+
+     if (ndtrna_tst > 0 ) then
+        call mpi_allreduce(ene_tst_l, ene_tst(1,irep), &
+                           ndtrna_tst, PREC_MPI, &
+                           MPI_SUM, mpi_comm_local, ierr)
+     endif
+
+     if (inmisc%i_dtrna_model == 2013 .and. ndtrna_hb > 0) then
+        call mpi_allreduce(ene_hb_l, ene_hb(1,irep), &
+                           ndtrna_hb, PREC_MPI, &
+                           MPI_SUM, mpi_comm_local, ierr)
+     endif
 #else
-     ene_tst(:) = ene_tst_l(:,0)
+     ene_st(:,irep) = ene_st_l(:,0)
+     ene_tst(:,irep) = ene_tst_l(:,0)
+     if (inmisc%i_dtrna_model == 2013) then
+        ene_hb(:,irep) = ene_hb_l(:,0)
+     endif
 #endif
+     deallocate( ene_st_l,stat=ier)
+     if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+     deallocate( ene_tst_l,stat=ier)
+     if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+     if (inmisc%i_dtrna_model == 2013) then
+        deallocate( ene_hb_l,stat=ier)
+        if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
+     endif
   endif
 
   TIME_E( tmc_energy )
@@ -363,21 +392,6 @@ subroutine energy_sumup(irep,          &
 !     call energy_mgo(energy_unit, energy)
 !     TIME_E( tm_energy_mgo)
 !  end if
-
-  deallocate( energy_l,     stat=ier)
-  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-  deallocate( energy_unit_l, stat=ier)
-  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-  deallocate( now_allcon_l,stat=ier)
-  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-
-  if (inmisc%i_dtrna_model /= 0) then
-     deallocate( ene_st_l,stat=ier)
-     if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-     deallocate( ene_tst_l,stat=ier)
-     if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-  endif
-
 
 !  if(inmisc%i_in_box == 1) then
 !     call energy_box(irep, energy_unit, energy)

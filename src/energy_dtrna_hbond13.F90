@@ -44,7 +44,7 @@
 ! psi1   : 1=2-4-6      v12, v24, v46
 
 
-subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
+subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
 
   use const_maxsize
   use const_physical
@@ -63,6 +63,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: energy(:)
   real(PREC), intent(inout) :: energy_unit(:,:,:)
+  real(PREC), intent(out)   :: ene_hb(:)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -75,7 +76,6 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
   real(PREC) :: d1212
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
-  real(PREC) :: hb_energy(ndtrna_hb)
   integer :: ksta, kend
 #ifdef MPI_PAR3
   integer :: klen
@@ -189,7 +189,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
 
       !===== Total =====
       efull = coef_dtrna_hb(0,ihb) / ediv
-      hb_energy(ihb) = efull
+      ene_hb(ihb) = efull
 
       energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + efull
 
@@ -197,28 +197,5 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
                 energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + efull
    end do
 !$omp end do nowait
-
-#ifdef MPI_PAR3
-  if( myrank == 0 ) then
-#endif
-!$omp master
-  if (flg_file_out%hb) then
-     do ihb = 1, ndtrna_hb
-        if (hb_energy(ihb) < -(tempk * BOLTZ_KCAL_MOL)) then
-           write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb)
-        endif
-     enddo
-     write(outfile%hb(irep),*)
-  endif
-  if (flg_file_out%hball) then
-     do ihb = 1, ndtrna_hb
-        write(outfile%hball(irep), '(e11.4,1x)', advance='no') hb_energy(ihb)
-     enddo
-     write(outfile%hball(irep),*)
-  endif
-!$omp end master
-#ifdef MPI_PAR3
-  endif
-#endif
 
 end subroutine energy_dtrna_hbond13

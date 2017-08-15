@@ -109,12 +109,13 @@ interface
       real(PREC), intent(inout) :: ene_st(:)
    endsubroutine energy_dtrna_stack
 
-   subroutine energy_dtrna_hbond13(irep, energy_unit, energy)
+   subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
       use const_maxsize
       implicit none
       integer,    intent(in)    :: irep
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
+      real(PREC), intent(out)   ::  ene_hb(:)
    endsubroutine energy_dtrna_hbond13
 
    subroutine energy_dtrna_hbond15(irep, energy_unit, energy)

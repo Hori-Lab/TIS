@@ -12,7 +12,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   use var_struct,  only : xyz_mp_rep, nmp_all, ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
                           list_hb_at_hbsite, num_hb_at_hbsite, nhbneigh, ineigh2hb
-  use var_simu,    only : tempk, hb_energy, flg_hb_energy, hb_status, hbsite_excess
+  use var_simu,    only : flg_hb_energy, hb_status, hbsite_excess, beta_hbond15, for_hb, ene_hb
   use mpiconst
 
   implicit none
@@ -37,8 +37,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: c4212_abs2, c1213_abs2
   real(PREC) :: dnn, dmm
   real(PREC) :: pre
-  real(PREC) :: f_i(3), f_k(3), f_l(3), ex
-  real(PREC) :: for(3,6,1:ndtrna_hb)
+  real(PREC) :: f_i(3), f_k(3), f_l(3), ex, ene
   !integer    :: hbsite_excess_l(1:nhbsite)
   !real(PREC) :: hb_energy_l(1:ndtrna_hb)
   !logical    :: hb_status_l(1:ndtrna_hb)
@@ -46,7 +45,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 !  integer :: klen
 !#endif 
   real(PREC) :: rnd
-  real(PREC) :: beta, p(20), pmin
+  real(PREC) :: p(20), pmin
   integer :: imin
   integer :: ihb_delete
   integer :: ihbsite_delete
@@ -71,15 +70,16 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 !#endif
 
 !$omp master
-  hb_energy(1:ndtrna_hb,irep) = 0.0
   hb_status(1:ndtrna_hb,irep) = .False.
   hbsite_excess(1:nhbsite) = 0
+  ene_hb(1:ndtrna_hb, irep) = 0.0e0_PREC
+  for_hb(1:3,1:6,1:ndtrna_hb) = 0.0e0_PREC
 !$omp end master
 
 ! Wait until the master initializes the arrays
 !$omp barrier
 
-!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,&
+!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,ene,&
 !$omp&           d,cos_theta,dih,&
 !$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
 !$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
@@ -123,12 +123,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      endif
 
      !ex = 0.0e0_PREC
-     for(:,:,ihb) = 0.0e0_PREC
+     !for(:,:,ihb) = 0.0e0_PREC
 
      ex = - coef_dtrna_hb(1, ihb) * d**2
      f_i(:) = (2.0e0_PREC * coef_dtrna_hb(1,ihb) * d / a12) * v12(:)
-     for(:,1,ihb) = + f_i(:)
-     for(:,2,ihb) = - f_i(:)
+     for_hb(:,1,ihb) = + f_i(:)
+     for_hb(:,2,ihb) = - f_i(:)
 
      v13 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
           -xyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
@@ -160,9 +160,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
      f_i(:) = pre * (v12(:) - (d1213over1313 * v13(:)))
      f_k(:) = pre * (v13(:) - (d1213over1212 * v12(:)))
-     for(:,3,ihb) = for(:,3,ihb) + f_i(:)
-     for(:,2,ihb) = for(:,2,ihb) + f_k(:)
-     for(:,1,ihb) = for(:,1,ihb) - f_i(:) - f_k(:)
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_k(:)
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) - f_i(:) - f_k(:)
      ex = ex - coef_dtrna_hb(2, ihb) * d**2
 
      !===== Angle of 1=2-4  =====
@@ -171,9 +171,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
      f_i(:) = - pre * (v42(:) - (d1242over1212 * v12(:)))
      f_k(:) = - pre * (v12(:) - (d1242over4242 * v42(:)))
-     for(:,1,ihb) = for(:,1,ihb) + f_i(:)
-     for(:,4,ihb) = for(:,4,ihb) + f_k(:)
-     for(:,2,ihb) = for(:,2,ihb) - f_i(:) - f_k(:)
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_k(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) - f_i(:) - f_k(:)
      ex = ex - coef_dtrna_hb(3, ihb) * d**2
 
     
@@ -200,12 +200,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      f_i(:) = + pre / c4212_abs2 * c4212(:)
      f_l(:) = - pre / c1213_abs2 * c1213(:)
 
-     for(:,4,ihb) = for(:,4,ihb) + f_i(:)
-     for(:,2,ihb) = for(:,2,ihb) + (-1.0e0_PREC + d1242over1212) * f_i(:) &
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over1212) * f_i(:) &
                                  - (              d1213over1212) * f_l(:)
-     for(:,1,ihb) = for(:,1,ihb) + (-1.0e0_PREC + d1213over1212) * f_l(:) &
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1212) * f_l(:) &
                                  - (              d1242over1212) * f_i(:)
-     for(:,3,ihb) = for(:,3,ihb) + f_l(:)
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_l(:)
 
 
      !===== Dihedral angle among 5-3-1=2 =====
@@ -229,12 +229,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      f_i(:) = + pre / dmm * m(:)
      f_l(:) = - pre / dnn * n(:)
 
-     for(:,5,ihb) = for(:,5,ihb) + f_i(:)
-     for(:,3,ihb) = for(:,3,ihb) + (-1.0e0_PREC + d1353over1313) * f_i(:) &
+     for_hb(:,5,ihb) = for_hb(:,5,ihb) + f_i(:)
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + (-1.0e0_PREC + d1353over1313) * f_i(:) &
                                  - (              d1213over1313) * f_l(:)
-     for(:,1,ihb) = for(:,1,ihb) + (-1.0e0_PREC + d1213over1313) * f_l(:) &
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1313) * f_l(:) &
                                  - (              d1353over1313) * f_i(:)
-     for(:,2,ihb) = for(:,2,ihb) + f_l(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_l(:)
 
 
      !===== Dihedral angle among 1=2-4-6 =====
@@ -258,18 +258,20 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      f_i(:) = + pre / dmm * m(:)
      f_l(:) = - pre / dnn * n(:)
 
-     for(:,1,ihb) = for(:,1,ihb) + f_i(:)
-     for(:,2,ihb) = for(:,2,ihb) + (-1.0e0_PREC + d1242over4242) * f_i(:) &
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over4242) * f_i(:) &
                                  - (              d4246over4242) * f_l(:)
-     for(:,4,ihb) = for(:,4,ihb) + (-1.0e0_PREC + d4246over4242) * f_l(:) &
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + (-1.0e0_PREC + d4246over4242) * f_l(:) &
                                  - (              d1242over4242) * f_i(:)
-     for(:,6,ihb) = for(:,6,ihb) + f_l(:)
+     for_hb(:,6,ihb) = for_hb(:,6,ihb) + f_l(:)
 
      !===== Total =====
      !hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
      !for(:,:,ihb) = for(:,:,ihb) * hb_energy_l(ihb)
-     hb_energy(ihb,irep) = coef_dtrna_hb(0,ihb) * exp(ex)
-     for(:,:,ihb) = for(:,:,ihb) * hb_energy(ihb,irep)
+     !hb_energy(ihb,irep) = coef_dtrna_hb(0,ihb) * exp(ex)
+     ene = coef_dtrna_hb(0,ihb) * exp(ex)
+     ene_hb(ihb, irep) = ene
+     for_hb(:,:,ihb) = ene * for_hb(:,:,ihb)
   end do
 !$omp end do
 
@@ -307,8 +309,6 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         ihbsitelist_excess(nhbsite_excess) = ihbsite
      endif
   enddo
-
-  beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL)
 
   do while (nhbsite_excess > 0)
      ! Randomely choose one "ihbsite" that will be deleted
@@ -364,7 +364,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      imin = 1
      do i = 1, nhb_seq
         ihb = hb_seq(i)
-        p(i) = exp(-beta*hb_energy(ihb,irep))
+        p(i) = exp(-beta_hbond15 * ene_hb(ihb,irep))
         if (p(i) < pmin) then
            pmin = p(i)
            imin = i
@@ -389,7 +389,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      ! Delete it
      hb_status( ihb_delete, irep ) = .False.
-     hb_energy( ihb_delete, irep ) = 0.0e0_PREC
+     ene_hb( ihb_delete, irep ) = 0.0e0_PREC
 
      ! Update hbsite_excess and nhbsite_excess
      do i = 1, 3
@@ -434,12 +434,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
         cycle
      endif
 
-     force_mp(1:3,idtrna_hb2mp(1,ihb)) = force_mp(1:3,idtrna_hb2mp(1,ihb)) + for(1:3,1,ihb)
-     force_mp(1:3,idtrna_hb2mp(2,ihb)) = force_mp(1:3,idtrna_hb2mp(2,ihb)) + for(1:3,2,ihb)
-     force_mp(1:3,idtrna_hb2mp(3,ihb)) = force_mp(1:3,idtrna_hb2mp(3,ihb)) + for(1:3,3,ihb)
-     force_mp(1:3,idtrna_hb2mp(4,ihb)) = force_mp(1:3,idtrna_hb2mp(4,ihb)) + for(1:3,4,ihb)
-     force_mp(1:3,idtrna_hb2mp(5,ihb)) = force_mp(1:3,idtrna_hb2mp(5,ihb)) + for(1:3,5,ihb)
-     force_mp(1:3,idtrna_hb2mp(6,ihb)) = force_mp(1:3,idtrna_hb2mp(6,ihb)) + for(1:3,6,ihb)
+     force_mp(1:3,idtrna_hb2mp(1,ihb)) = force_mp(1:3,idtrna_hb2mp(1,ihb)) + for_hb(1:3,1,ihb)
+     force_mp(1:3,idtrna_hb2mp(2,ihb)) = force_mp(1:3,idtrna_hb2mp(2,ihb)) + for_hb(1:3,2,ihb)
+     force_mp(1:3,idtrna_hb2mp(3,ihb)) = force_mp(1:3,idtrna_hb2mp(3,ihb)) + for_hb(1:3,3,ihb)
+     force_mp(1:3,idtrna_hb2mp(4,ihb)) = force_mp(1:3,idtrna_hb2mp(4,ihb)) + for_hb(1:3,4,ihb)
+     force_mp(1:3,idtrna_hb2mp(5,ihb)) = force_mp(1:3,idtrna_hb2mp(5,ihb)) + for_hb(1:3,5,ihb)
+     force_mp(1:3,idtrna_hb2mp(6,ihb)) = force_mp(1:3,idtrna_hb2mp(6,ihb)) + for_hb(1:3,6,ihb)
   end do
 !$omp end do nowait
 

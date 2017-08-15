@@ -56,6 +56,7 @@ module var_simu
   real(PREC), allocatable, save :: energy_unit(:,:,:,:)  ! (unit, unit, E_TYPE%MAX, replica)
   real(PREC), allocatable, save :: ene_st(:,:)
   real(PREC), allocatable, save :: ene_tst(:,:)
+  real(PREC), allocatable, save :: ene_hb(:,:)
 
   real(PREC), allocatable, save :: qscore(:)           ! (replica)
   real(PREC), allocatable, save :: qscore_unit(:,:,:)  ! (unit, unit, replica)
@@ -72,11 +73,14 @@ module var_simu
   real(PREC), allocatable, save :: sasa(:)          ! (E_TYPE%MAX, replica)
 
   ! DTRNA15
+  real(PREC), save :: beta_hbond15
   integer, allocatable, save  :: hbsite_excess(:)     ! (1:nhbsite)  ! used only in force_dtrna_hbond15
-  real(PREC), allocatable, save :: hb_energy(:,:)     ! (1:ndtrna_hb, REPLICA)
+  !real(PREC), allocatable, save :: hb_energy(:,:)     ! (1:ndtrna_hb, REPLICA)
+          !---> ene_hb
   logical, allocatable, save :: hb_status(:,:)        ! (1:ndtrna_hb, REPLICA)
   logical, save :: flg_hb_energy
   logical, allocatable, save :: st_status(:,:)        ! (1:ndtrna_st, REPLICA)
+  real(PREC), allocatable, save :: for_hb(:,:,:)      ! (3, 6, ndtrna_hb)
 
 
   logical, save :: flg_ppr_release(MXBRIDGE) = .false.

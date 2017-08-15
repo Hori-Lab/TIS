@@ -42,7 +42,7 @@ set tsout = 0
 set diff_out = 1
 
 # 比較対象のディレクトリ
-set revdir = /home/hori/check
+set revdir = /home/hori/check/data_234bd5b
 
 # コンパイル時のcleanの有無
 set clean = 1
@@ -947,96 +947,96 @@ foreach inp ( `ls inp` )
 
   cd data/$inp
 
-  set dir0 = single
-  set dirx = omp08
-  set dir1 = 01n01p01t01
-  set dir4 = 16n02p02t04
+  set dir0 = gnu.serial
+  set dirx = gnu.omp04
+  set dir1 = gnu.01n01p01t01
+  set dir4 = gnu.16n01p04t04
 
   switch($inp)
     case *replica*
-      diff -q $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep
-      diff -q $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep
-      diff -q $dir1/$inp:r.rep  $revdir/data/$inp/$dir1/$inp:r.rep
-      diff -q $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep
-      diff -q $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts
-      diff -q $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts
-      diff -q $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts
-      diff -q $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts
-      diff -q $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts
-      diff -q $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts
-      diff -q $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts
-      diff -q $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts
-      diff -q $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts
-      diff -q $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts
-      diff -q $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts
-      diff -q $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts
+      diff -q $dir0/md.rep  $revdir/data/$inp/$dir0/md.rep
+      diff -q $dirx/md.rep  $revdir/data/$inp/$dirx/md.rep
+      diff -q $dir1/md.rep  $revdir/data/$inp/$dir1/md.rep
+      diff -q $dir4/md.rep  $revdir/data/$inp/$dir4/md.rep
+      diff -q $dir0/md_0001.ts  $revdir/data/$inp/$dir0/md_0001.ts
+      diff -q $dirx/md_0001.ts  $revdir/data/$inp/$dirx/md_0001.ts
+      diff -q $dir1/md_0001.ts $revdir/data/$inp/$dir1/md_0001.ts
+      diff -q $dir4/md_0001.ts $revdir/data/$inp/$dir4/md_0001.ts
+      diff -q $dir0/md_0002.ts  $revdir/data/$inp/$dir0/md_0002.ts
+      diff -q $dirx/md_0002.ts  $revdir/data/$inp/$dirx/md_0002.ts
+      diff -q $dir1/md_0002.ts $revdir/data/$inp/$dir1/md_0002.ts
+      diff -q $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts
+      diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts
+      diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts
+      diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts
+      diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts
       if( $diff_out ) then 
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep >> $here/diff.out
-        diff $dir0/$inp:r.rep  $revdir/data/$inp/$dir0/$inp:r.rep >> $here/diff.out
+        diff -q $dir0/md.rep  $revdir/data/$inp/$dir0/md.rep >> $here/diff.out
+        diff $dir0/md.rep  $revdir/data/$inp/$dir0/md.rep >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep >> $here/diff.out
-        diff $dirx/$inp:r.rep  $revdir/data/$inp/$dirx/$inp:r.rep >> $here/diff.out
+        diff -q $dirx/md.rep  $revdir/data/$inp/$dirx/md.rep >> $here/diff.out
+        diff $dirx/md.rep  $revdir/data/$inp/$dirx/md.rep >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep >> $here/diff.out
-        diff $dir4/$inp:r.rep  $revdir/data/$inp/$dir4/$inp:r.rep >> $here/diff.out
+        diff -q $dir4/md.rep  $revdir/data/$inp/$dir4/md.rep >> $here/diff.out
+        diff $dir4/md.rep  $revdir/data/$inp/$dir4/md.rep >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts >> $here/diff.out
-        diff $dir0/$inp:r_0001.ts  $revdir/data/$inp/$dir0/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dir0/md_0001.ts  $revdir/data/$inp/$dir0/md_0001.ts >> $here/diff.out
+        diff $dir0/md_0001.ts  $revdir/data/$inp/$dir0/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts >> $here/diff.out
-        diff $dirx/$inp:r_0001.ts  $revdir/data/$inp/$dirx/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dirx/md_0001.ts  $revdir/data/$inp/$dirx/md_0001.ts >> $here/diff.out
+        diff $dirx/md_0001.ts  $revdir/data/$inp/$dirx/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts >> $here/diff.out
-        diff $dir1/$inp:r_0001.ts $revdir/data/$inp/$dir1/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dir1/md_0001.ts $revdir/data/$inp/$dir1/md_0001.ts >> $here/diff.out
+        diff $dir1/md_0001.ts $revdir/data/$inp/$dir1/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts >> $here/diff.out
-        diff $dir4/$inp:r_0001.ts $revdir/data/$inp/$dir4/$inp:r_0001.ts >> $here/diff.out
+        diff -q $dir4/md_0001.ts $revdir/data/$inp/$dir4/md_0001.ts >> $here/diff.out
+        diff $dir4/md_0001.ts $revdir/data/$inp/$dir4/md_0001.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts >> $here/diff.out
-        diff $dir0/$inp:r_0002.ts  $revdir/data/$inp/$dir0/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dir0/md_0002.ts  $revdir/data/$inp/$dir0/md_0002.ts >> $here/diff.out
+        diff $dir0/md_0002.ts  $revdir/data/$inp/$dir0/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts >> $here/diff.out
-        diff $dirx/$inp:r_0002.ts  $revdir/data/$inp/$dirx/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dirx/md_0002.ts  $revdir/data/$inp/$dirx/md_0002.ts >> $here/diff.out
+        diff $dirx/md_0002.ts  $revdir/data/$inp/$dirx/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts >> $here/diff.out
-        diff $dir1/$inp:r_0002.ts $revdir/data/$inp/$dir1/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dir1/md_0002.ts $revdir/data/$inp/$dir1/md_0002.ts >> $here/diff.out
+        diff $dir1/md_0002.ts $revdir/data/$inp/$dir1/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts >> $here/diff.out
-        diff $dir4/$inp:r_0002.ts $revdir/data/$inp/$dir4/$inp:r_0002.ts >> $here/diff.out
+        diff -q $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts >> $here/diff.out
+        diff $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts >> $here/diff.out
-        diff $dir0/$inp:r_0005.ts  $revdir/data/$inp/$dir0/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
+        diff $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts >> $here/diff.out
-        diff $dirx/$inp:r_0005.ts  $revdir/data/$inp/$dirx/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
+        diff $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts >> $here/diff.out
-        diff $dir1/$inp:r_0005.ts $revdir/data/$inp/$dir1/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
+        diff $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts >> $here/diff.out
-        diff $dir4/$inp:r_0005.ts $revdir/data/$inp/$dir4/$inp:r_0005.ts >> $here/diff.out
+        diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
+        diff $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
       endif
       breaksw
 
     default
-      diff -q $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts
-      diff -q $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts
-      diff -q $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts
-      diff -q $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts
+      diff -q $dir0/md.ts $revdir/data/$inp/$dir0/md.ts
+      diff -q $dirx/md.ts $revdir/data/$inp/$dirx/md.ts
+      diff -q $dir1/md.ts $revdir/data/$inp/$dir1/md.ts
+      diff -q $dir4/md.ts $revdir/data/$inp/$dir4/md.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts >> $here/diff.out
-        diff $dir0/$inp:r.ts $revdir/data/$inp/$dir0/$inp:r.ts >> $here/diff.out
+        diff -q $dir0/md.ts $revdir/data/$inp/$dir0/md.ts >> $here/diff.out
+        diff $dir0/md.ts $revdir/data/$inp/$dir0/md.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts >> $here/diff.out
-        diff $dirx/$inp:r.ts $revdir/data/$inp/$dirx/$inp:r.ts >> $here/diff.out
+        diff -q $dirx/md.ts $revdir/data/$inp/$dirx/md.ts >> $here/diff.out
+        diff $dirx/md.ts $revdir/data/$inp/$dirx/md.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts >> $here/diff.out
-        diff $dir1/$inp:r.ts $revdir/data/$inp/$dir1/$inp:r.ts >> $here/diff.out
+        diff -q $dir1/md.ts $revdir/data/$inp/$dir1/md.ts >> $here/diff.out
+        diff $dir1/md.ts $revdir/data/$inp/$dir1/md.ts >> $here/diff.out
         echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts >> $here/diff.out
-        diff $dir4/$inp:r.ts $revdir/data/$inp/$dir4/$inp:r.ts >> $here/diff.out
+        diff -q $dir4/md.ts $revdir/data/$inp/$dir4/md.ts >> $here/diff.out
+        diff $dir4/md.ts $revdir/data/$inp/$dir4/md.ts >> $here/diff.out
       endif
   endsw
 

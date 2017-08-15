@@ -9,6 +9,7 @@ subroutine simu_set_dtrna(grep, tempk)
   use const_index
   use var_setp, only : indtrna13, indtrna15, inmisc
   use var_struct, only : idtrna_st2nn, ndtrna_st, coef_dtrna_st
+  use var_simu, only : beta_hbond15
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -47,6 +48,8 @@ subroutine simu_set_dtrna(grep, tempk)
            coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
         endif
      enddo
+
+     beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
 
   endif
 

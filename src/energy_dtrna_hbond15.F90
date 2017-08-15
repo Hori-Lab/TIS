@@ -56,7 +56,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
                           list_hb_at_hbsite, num_hb_at_hbsite,&
                           nhbneigh, ineigh2hb, flg_hb_tertiary
-  use var_simu,    only : tempk, hb_energy, flg_hb_energy, hb_status
+  use var_simu,    only : flg_hb_energy, hb_status, beta_hbond15, ene_hb
   use mpiconst
 
   implicit none
@@ -80,21 +80,15 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
 
   real(PREC) :: rnd
-  real(PREC) :: ratio, beta
+  real(PREC) :: ratio
   integer :: i,jhb, i_swap, i_save, ihbsite
   integer :: ihb_delete
   integer :: ihbsite_delete
   integer :: nhbsite_excess
   integer :: hbsite_excess(1:nhbsite)
-  integer :: hbsite_excess_l(1:nhbsite)
   integer :: ihbsitelist_excess(1:nhbsite)
   integer :: nhb_seq
   integer :: hb_seq(1:ndtrna_hb)
-  logical :: hb_status_l(1:ndtrna_hb)
-  real(PREC) :: hb_energy_l(1:ndtrna_hb)
-#ifdef MPI_PAR3
-  integer :: klen
-#endif
 
   ! --------------------------------------------------------------------
   if (.not. inmisc%class_flag(CLASS%RNA)) then
@@ -105,14 +99,14 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
      return
   endif
 
-#ifdef MPI_PAR3
-  klen=(nhbneigh(irep)-1+npar_mpi)/npar_mpi
-  ksta=1+klen*local_rank_mpi
-  kend=min(ksta+klen-1,nhbneigh(irep))
-#else
+!#ifdef MPI_PAR3
+!  klen=(nhbneigh(irep)-1+npar_mpi)/npar_mpi
+!  ksta=1+klen*local_rank_mpi
+!  kend=min(ksta+klen-1,nhbneigh(irep))
+!#else
   ksta = 1
   kend = nhbneigh(irep)
-#endif
+!#endif
 
   if (flg_hb_energy) then
 
@@ -128,13 +122,13 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         iunit2 = imp2unit(idtrna_hb2mp(2,ihb))
 
         if (flg_hb_tertiary(ihb)) then
-           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
+           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + ene_hb(ihb, irep)
            energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
-                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
+                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + ene_hb(ihb, irep)
         else
-           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
+           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + ene_hb(ihb, irep)
            energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
-                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
+                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + ene_hb(ihb, irep)
         endif
      end do
 !$omp end do nowait
@@ -142,26 +136,17 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   else
 
 !$omp master
-     beta = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
-
      !hbsite_excess_l(1:nhbsite) = -nvalence_hbsite(1:nhbsite)
-     hbsite_excess_l(1:nhbsite) = 0
-     hb_status_l(:) = .False.
-     hb_energy_l(:) = 0.0e0_PREC
+     hbsite_excess(1:nhbsite) = 0
+     hb_status(:, irep) = .False.
+     ene_hb(:, irep) = 0.0e0_PREC
+!$omp end master
+!$omp barrier
 
-#ifdef MPI_PAR3
-     klen=(nhbneigh(irep)-1+npar_mpi)/npar_mpi
-     ksta=1+klen*local_rank_mpi
-     kend=min(ksta+klen-1,nhbneigh(irep))
-#else
-     ksta = 1
-     kend = nhbneigh(irep)
-#endif
-
-!!$omp do private(ihb,i,ihbsite,ex,m,n,&
-!!$omp&           d,cos_theta,dih,&
-!!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,&
-!!$omp&           c4212,c1213)
+!$omp do private(ihb,i,ihbsite,ex,m,n,&
+!$omp&           d,cos_theta,dih,&
+!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,&
+!$omp&           c4212,c1213)
      do ineigh=ksta,kend
        
         ihb = ineigh2hb(ineigh, irep)
@@ -177,17 +162,19 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         if (abs(d) > indtrna15%hb_cutoff_dist) then  ! 2.0 Angstrom
            cycle
         else
-           hb_status_l(ihb) = .True.
+           hb_status(ihb, irep) = .True.
            do i = 1, 3
               ihbsite = idtrna_hb2hbsite(i,1,ihb)
               if (ihbsite > 0) then
-                 hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!$omp atomic
+                 hbsite_excess(ihbsite) = hbsite_excess(ihbsite) + 1
               endif
            enddo
            do i = 1, 3
               ihbsite = idtrna_hb2hbsite(i,2,ihb)
               if (ihbsite > 0) then
-                 hbsite_excess_l(ihbsite) = hbsite_excess_l(ihbsite) + 1
+!$omp atomic
+                 hbsite_excess(ihbsite) = hbsite_excess(ihbsite) + 1
               endif
            enddo
         endif
@@ -268,25 +255,31 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         ex = ex - coef_dtrna_hb(6,ihb) * d**2
 
         !===== Total =====
-        hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
+        ene_hb(ihb,irep) = coef_dtrna_hb(0,ihb) * exp(ex)
      end do
-!!$omp end do nowait
+!$omp end do
 
-#ifdef MPI_PAR3
-     call mpi_allreduce(hb_energy_l, hb_energy(1,irep), ndtrna_hb, &
-                        PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
-     call mpi_allreduce(hb_status_l, hb_status(1,irep), ndtrna_hb, &
-                        MPI_LOGICAL, MPI_LOR, mpi_comm_local, ierr)
-     call mpi_allreduce(hbsite_excess_l, hbsite_excess, nhbsite, &
-                        MPI_INTEGER, MPI_SUM, mpi_comm_local, ierr)
-#else
-     hb_energy(:,irep) = hb_energy_l(:)
-     hb_status(:,irep) = hb_status_l(:)
-     hbsite_excess(:)  = hbsite_excess_l(:)
-#endif
+!#ifdef MPI_PAR3
+!     call mpi_allreduce(ene_hb_l, ene_hb, ndtrna_hb, &
+!                        PREC_MPI, MPI_SUM, mpi_comm_local, ierr)
+!     call mpi_allreduce(hb_status_l, hb_status(1,irep), ndtrna_hb, &
+!                        MPI_LOGICAL, MPI_LOR, mpi_comm_local, ierr)
+!     call mpi_allreduce(hbsite_excess_l, hbsite_excess, nhbsite, &
+!                        MPI_INTEGER, MPI_SUM, mpi_comm_local, ierr)
+!#else
+     !ene_hb(:,irep) = ene_hb_l(:)
+     !hb_status(:,irep) = hb_status_l(:)
+     !hbsite_excess(:)  = hbsite_excess_l(:)
+!#endif
 
-     hbsite_excess(:)  = hbsite_excess(:) - nvalence_hbsite(:)
+!     hbsite_excess(:)  = hbsite_excess(:) - nvalence_hbsite(:)
+!$omp do
+  do ihbsite = 1, nhbsite
+     hbsite_excess(ihbsite)  = hbsite_excess(ihbsite) - nvalence_hbsite(ihbsite)
+  enddo
+!$omp end do
 
+!$omp master
      nhbsite_excess = 0
      ihbsitelist_excess(:) = 0
      do ihbsite = 1, nhbsite
@@ -330,7 +323,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         ihb_delete = hb_seq(1)
         do i = 2, nhb_seq
            jhb = hb_seq(i)
-           ratio = exp( (hb_energy(jhb, irep) - hb_energy(ihb_delete, irep)) * beta )
+           ratio = exp( (ene_hb(jhb, irep) - ene_hb(ihb_delete, irep)) * beta_hbond15 )
            rnd = genrand_double1(mts(0,0))
 
            if (rnd < ratio) then
@@ -340,7 +333,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
         ! Delete it
         hb_status( ihb_delete, irep ) = .False.
-        hb_energy( ihb_delete, irep ) = 0.0e0_PREC
+        ene_hb( ihb_delete, irep ) = 0.0e0_PREC
 
         ! Update hbsite_excess and nhbsite_excess
         ! for one side of the HB interaction
@@ -378,6 +371,9 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
      enddo
 !$omp end master
 
+! Wait until the master finishes deletions
+!$omp barrier
+
 !$omp do private(ihb,iunit1,iunit2)
      do ineigh=ksta,kend
 
@@ -390,40 +386,17 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         iunit2 = imp2unit(idtrna_hb2mp(2,ihb))
 
         if (flg_hb_tertiary(ihb)) then
-           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + hb_energy(ihb,irep)
+           energy(E_TYPE%THBOND_DTRNA) = energy(E_TYPE%THBOND_DTRNA) + ene_hb(ihb,irep)
            energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) = &
-                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + hb_energy(ihb, irep)
+                     energy_unit(iunit1, iunit2, E_TYPE%THBOND_DTRNA) + ene_hb(ihb, irep)
         else
-           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + hb_energy(ihb,irep)
+           energy(E_TYPE%HBOND_DTRNA) = energy(E_TYPE%HBOND_DTRNA) + ene_hb(ihb,irep)
            energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) = &
-                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + hb_energy(ihb, irep)
+                     energy_unit(iunit1, iunit2, E_TYPE%HBOND_DTRNA) + ene_hb(ihb, irep)
         endif
      end do
 !$omp end do nowait
-  endif
 
-#ifdef MPI_PAR3
-  if( myrank == 0 ) then
-#endif
-!$omp master
-  if (flg_file_out%hb) then
-     do ineigh=1, nhbneigh(irep)
-        ihb = ineigh2hb(ineigh, irep)
-        if (hb_energy(ihb,irep) < -(tempk * BOLTZ_KCAL_MOL)) then
-           write(outfile%hb(irep), '(i5,1x,e11.4,1x)', advance='no') ihb, hb_energy(ihb,irep)
-        endif
-     enddo
-     write(outfile%hb(irep),*)
   endif
-  if (flg_file_out%hball) then
-     do ihb = 1, ndtrna_hb
-        write(outfile%hball(irep), '(e11.4,1x)', advance='no') hb_energy(ihb,irep)
-     enddo
-     write(outfile%hball(irep),*)
-  endif
-!$omp end master
-#ifdef MPI_PAR3
-  endif
-#endif
 
 end subroutine energy_dtrna_hbond15

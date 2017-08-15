@@ -49,7 +49,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
 #ifdef _DEBUG_EWLD
   !!! These debug command works only in serial jobs. (OpenMP does not work)
   real(PREC) :: e_real, e_fourier
-#endif _DEBUG_EWLD
+#endif
 
 
   grep = irep2grep(irep)

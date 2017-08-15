@@ -40,7 +40,7 @@ num_mg_ion = 129
 
 <<<< native_info_sim1
 ** all-in-one-file style
-NINFO(all/all) dtrna15_noHB.ninfo
+NINFO(all/all) dtrna15.ninfo
 >>>>
 
 

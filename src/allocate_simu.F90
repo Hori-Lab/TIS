@@ -3,14 +3,14 @@ subroutine allocate_simu()
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,      only : i_simulate_type, flg_file_out
-  use var_struct,  only : nmp_all, nmp_real, nunit_all, ndtrna_st, ndtrna_tst
+  use var_io,      only : i_simulate_type
+  use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
   use var_simu,    only : dxyz_mp, velo_mp, accel_mp, force_mp, rcmass_mp, &
 !                          energy_unit_muca, &
                           rlan_const, nLAN_CONST, &
                           energy, energy_unit, qscore, qscore_unit, &
-                          ene_st, ene_tst, &
+                          ene_st, ene_tst, ene_hb, for_hb,&
                           rg, rg_unit, rmsd, rmsd_unit, &
 #ifdef MPI_PAR
                           replica_energy_l, &
@@ -143,6 +143,8 @@ contains
          allocated(energy_unit) .OR.&
          allocated(ene_st) .OR.&
          allocated(ene_tst) .OR.&
+         allocated(ene_hb) .OR.&
+         allocated(for_hb) .OR.&
          allocated(qscore) .OR.&
          allocated(qscore_unit) .OR.&
          allocated(rg) .OR.&
@@ -182,6 +184,8 @@ subroutine deallocate_simu()
   if (allocated(energy_unit)) deallocate(energy_unit)
   if (allocated(ene_st)) deallocate(ene_st)
   if (allocated(ene_tst)) deallocate(ene_tst)
+  if (allocated(ene_hb)) deallocate(ene_hb)
+  if (allocated(for_hb)) deallocate(for_hb)
   if (allocated(qscore)) deallocate(qscore)
   if (allocated(qscore_unit)) deallocate(qscore_unit)
   if (allocated(rg)) deallocate(rg)

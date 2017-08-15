@@ -2,14 +2,14 @@ subroutine mloop_dtrna()
 
   use const_maxsize
   use const_index
-  use var_io,      only : outfile, flg_file_out
+  use var_io,      only : outfile
   use var_setp,    only : inmisc, indtrna15, inpara
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
                           dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite
   use var_replica, only : n_replica_mpi
-  use var_simu,    only : hb_energy, hb_status, flg_hb_energy, st_status, hbsite_excess, &
-                          ene_st, ene_tst
+  use var_simu,    only : hb_status, flg_hb_energy, st_status, hbsite_excess, &
+                          ene_st, ene_tst, ene_hb, for_hb
 
   implicit none
   integer :: ier = 0
@@ -23,42 +23,48 @@ subroutine mloop_dtrna()
   lunout   = outfile%data
   error_message = 'failed in memory allocation at mloop_dtrna, PROGRAM STOP'
 
-  if (allocated(st_status)) deallocate(st_status)
   if (allocated(ene_st )) deallocate(ene_st)
   if (allocated(ene_tst)) deallocate(ene_tst)
+  if (allocated(ene_hb )) deallocate(ene_hb)
 
-  allocate( st_status(1:ndtrna_st, 1:n_replica_mpi), stat=ier)
+  allocate( ene_st(ndtrna_st, n_replica_mpi), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
-  st_status(:,:) = .True.
+  ene_st(:,:) = 0.0e0_PREC
 
-  ! ene_st and ene_tst
-  if (flg_file_out%st  .or. flg_file_out%stall .or. &
-      flg_file_out%tst .or. flg_file_out%tstall ) then
+  allocate( ene_tst(ndtrna_tst, n_replica_mpi), stat=ier)
+  if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+  ene_tst(:,:) = 0.0e0_PREC
 
-     allocate( ene_st(ndtrna_st, n_replica_mpi), stat=ier)
+  allocate( ene_hb(1:ndtrna_hb, 1:n_replica_mpi), stat=ier)
+  if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+  ene_hb(:,:) = 0.0e0_PREC
+
+
+  if (inmisc%i_dtrna_model /= 0) then
+
+     if (allocated(st_status)) deallocate(st_status)
+     allocate( st_status(1:ndtrna_st, 1:n_replica_mpi), stat=ier)
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
-     ene_st(:,:) = 0.0e0_PREC
+     st_status(:,:) = .True.
 
-     allocate( ene_tst(ndtrna_tst, n_replica_mpi), stat=ier)
-     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
-     ene_tst(:,:) = 0.0e0_PREC
   endif
 
 
   if (inmisc%i_dtrna_model == 2015) then
      
-     if (allocated(hb_energy)) deallocate(hb_energy)
-     if (allocated(hb_status)) deallocate(hb_status)
-   
-     allocate( hb_energy(1:ndtrna_hb, 1:n_replica_mpi), stat=ier)
-     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
-     hb_energy(:,:) = 0.0e0_PREC
      flg_hb_energy = .False.
+
+     if (allocated(for_hb )) deallocate(for_hb)
+     allocate( for_hb(1:3, 1:6, 1:ndtrna_hb), stat=ier)
+     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+     for_hb(:,:,:) = 0.0e0_PREC
    
+     if (allocated(hb_status)) deallocate(hb_status)
      allocate( hb_status(1:ndtrna_hb, 1:n_replica_mpi), stat=ier)
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
      hb_status(:,:) = .False.
 
+     if (allocated(hbsite_excess)) deallocate(hbsite_excess)
      allocate( hbsite_excess(1:nhbsite), stat=ier)
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
      hbsite_excess(:) = 0

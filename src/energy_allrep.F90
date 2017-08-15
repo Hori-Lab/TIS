@@ -17,9 +17,7 @@ subroutine energy_allrep(energy_unit,     &
                               velo_mp,       &
                               replica_energy,&
                               flg_replica,   &  ! flag for calculating replica_energy
-                              tempk, &
-                              ene_st, &
-                              ene_tst )
+                              tempk)
   use const_physical
   use const_maxsize
   use const_index
@@ -45,8 +43,6 @@ subroutine energy_allrep(energy_unit,     &
   real(PREC), intent(out) :: replica_energy(:,:)
   logical,    intent(in)  :: flg_replica         ! flag for calculating replica_energy
   real(PREC), intent(in)  :: tempk
-  real(PREC), intent(out), optional :: ene_st(:,:)
-  real(PREC), intent(out), optional :: ene_tst(:,:)
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -85,15 +81,13 @@ subroutine energy_allrep(energy_unit,     &
 #endif
 
   interface
-  subroutine energy_sumup(irep, velo_mp, energy, energy_unit, ene_st, ene_tst)
+  subroutine energy_sumup(irep, velo_mp, energy, energy_unit)
      use const_maxsize
      implicit none
      integer,    intent(in)  :: irep
      real(PREC), intent(in)  :: velo_mp(:,:)      ! (3, nmp_real)
      real(PREC), intent(out) :: energy(:)          ! (E_TYPE%MAX)
      real(PREC), intent(out) :: energy_unit(:,:,:)  ! (nunit_all, nunit_all, E_TYPE%MAX)
-     real(PREC), intent(out), optional :: ene_st(:)
-     real(PREC), intent(out), optional :: ene_tst(:)
   endsubroutine energy_sumup
   endinterface
 
@@ -125,26 +119,9 @@ subroutine energy_allrep(energy_unit,     &
 #endif
 
 
-  if (present(ene_st) .and. present(ene_tst)) then
-     do irep = 1, n_replica_mpi
-        call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep), &
-                          ene_st=ene_st(:,irep), ene_tst=ene_tst(:,irep)) 
-     enddo
-  else if (present(ene_st)) then
-     do irep = 1, n_replica_mpi
-        call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep), &
-                          ene_st=ene_st(:,irep)) 
-     enddo
-  else if (present(ene_tst)) then
-     do irep = 1, n_replica_mpi
-        call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep), &
-                          ene_tst=ene_tst(:,irep)) 
-     enddo
-  else
-     do irep = 1, n_replica_mpi
-        call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep)) 
-     enddo
-  endif
+  do irep = 1, n_replica_mpi
+     call energy_sumup(irep, velo_mp(:,:,irep), energy(:,irep), energy_unit(:,:,:,irep))
+  enddo
 
 
   if (.not. flg_replica) then
@@ -233,7 +210,7 @@ subroutine energy_allrep(energy_unit,     &
         !#############################################
         ! Calculate energy
         !#############################################
-        call energy_sumup(irep, velo_mp(:,:,irep), new_energy(:,irep), new_energy_unit(:,:,:,irep)) 
+        call energy_sumup(irep, velo_mp(:,:,irep), new_energy(:,irep), new_energy_unit(:,:,:,irep))
         replica_energy(2, grep) = new_energy(E_TYPE%TOTAL, irep)
 
         !#########################################

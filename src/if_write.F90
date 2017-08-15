@@ -42,5 +42,12 @@ interface
       real(PREC), intent(in) :: tempk
    endsubroutine write_stack
 
+   subroutine write_hbond(ene_hb, tempk)
+      use const_maxsize
+      implicit none
+      real(PREC), intent(in) :: ene_hb(:,:)
+      real(PREC), intent(in) :: tempk
+   endsubroutine write_hbond
+
 endinterface
 endmodule if_write
