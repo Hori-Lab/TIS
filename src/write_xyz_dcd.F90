@@ -209,7 +209,7 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
   !
   !  dcd coordinate part
   !
-  if (PREC == 8) then
+  if (PREC /= 4) then
      !
      ! in the case of double precision calculation, you need to change 
      ! the precision of the coordinate arrays.
@@ -222,25 +222,25 @@ subroutine write_xyz_dcd(i_coor_velo, ibefore_time, istep, ntstep, tempk, velo_m
         if(i_coor_velo == 1) then
            write (ioutfile(grep)) num
 !           write (ioutfile(grep)) (real(xyz_mp_rep(1,I,irep)),I=1,nmp_real)
-           write (ioutfile(grep)) (real(pxyz_mp_rep(1,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(pxyz_mp_rep(1,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
            write (ioutfile(grep)) num
 !           write (ioutfile(grep)) (real(xyz_mp_rep(2,I,irep)),I=1,nmp_real)
-           write (ioutfile(grep)) (real(pxyz_mp_rep(2,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(pxyz_mp_rep(2,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
            write (ioutfile(grep)) num
 !           write (ioutfile(grep)) (real(xyz_mp_rep(3,I,irep)),I=1,nmp_real)
-           write (ioutfile(grep)) (real(pxyz_mp_rep(3,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(pxyz_mp_rep(3,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
         else
            write (ioutfile(grep)) num
-           write (ioutfile(grep)) (real(velo_mp(1,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(velo_mp(1,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
            write (ioutfile(grep)) num
-           write (ioutfile(grep)) (real(velo_mp(2,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(velo_mp(2,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
            write (ioutfile(grep)) num
-           write (ioutfile(grep)) (real(velo_mp(3,I,irep)),I=1,nmp_real)
+           write (ioutfile(grep)) (real(velo_mp(3,I,irep),kind=4),I=1,nmp_real)
            write (ioutfile(grep)) num
         end if
      end do
