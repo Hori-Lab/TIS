@@ -13,7 +13,7 @@ subroutine simu_initial_ion(irep)
   
   integer, intent(in) :: irep
 
-  integer :: imp, jmp, iunit, junit, istream
+  integer :: imp, jmp, iunit, junit
   integer :: icrash
   real(PREC) :: exdist2
 
@@ -63,10 +63,9 @@ subroutine generate_ion(imp)
 !  xyz_mp_rep(1, imp, irep) = inperi%psize(1)*(grnd() - 0.5)
 !  xyz_mp_rep(2, imp, irep) = inperi%psize(2)*(grnd() - 0.5)
 !  xyz_mp_rep(3, imp, irep) = inperi%psize(3)*(grnd() - 0.5)
-  istream = irep
-  xyz_mp_rep(1, imp, irep) = inperi%psize(1)*(genrand_double1(mts(istream, 0)) - 0.5)
-  xyz_mp_rep(2, imp, irep) = inperi%psize(2)*(genrand_double1(mts(istream, 0)) - 0.5)
-  xyz_mp_rep(3, imp, irep) = inperi%psize(3)*(genrand_double1(mts(istream, 0)) - 0.5)
+  xyz_mp_rep(1, imp, irep) = inperi%psize(1)*(genrand_double1(mts(irep, 0)) - 0.5)
+  xyz_mp_rep(2, imp, irep) = inperi%psize(2)*(genrand_double1(mts(irep, 0)) - 0.5)
+  xyz_mp_rep(3, imp, irep) = inperi%psize(3)*(genrand_double1(mts(irep, 0)) - 0.5)
 
 end subroutine generate_ion
   

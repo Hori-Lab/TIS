@@ -48,11 +48,10 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,      only : flg_file_out, outfile
   use var_setp,    only : inmisc
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
-                          idtrna_tst2st, flg_tst_exclusive, ndtrna_st
+                          idtrna_tst2st, flg_tst_exclusive
   use mpiconst
 
   implicit none

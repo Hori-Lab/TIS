@@ -74,10 +74,14 @@ subroutine energy_sumup(irep,          &
 ! zero clear
   energy(:)         = 0.0e0_PREC
   energy_unit(:,:,:) = 0.0e0_PREC
-  ene_st(:,irep)   = 0.0e0_PREC
-  ene_tst(:,irep)  = 0.0e0_PREC
-  if (inmisc%i_dtrna_model == 2013) then
-     ene_hb(:,irep) = 0.0e0_PREC
+
+  if (inmisc%i_dtrna_model /= 0) then
+     ene_st(:,irep)   = 0.0e0_PREC
+     ene_tst(:,irep)  = 0.0e0_PREC
+
+     if (inmisc%i_dtrna_model == 2013) then
+        ene_hb(:,irep) = 0.0e0_PREC
+     endif
   endif
 
 #ifdef MEM_ALLOC

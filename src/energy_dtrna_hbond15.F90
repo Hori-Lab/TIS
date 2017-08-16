@@ -49,7 +49,6 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,      only : flg_file_out, outfile
   use var_setp,    only : inmisc, mts, indtrna15
   use var_struct,  only : xyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -292,7 +291,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
      do while (nhbsite_excess > 0)
         ! Randomely choose one "ihbsite" that will be deleted
-        rnd = genrand_double1(mts(0,0))  ! mts(istream,tn))
+        rnd = genrand_double1(mts(irep,0))  ! mts(istream,tn))
 
         ihbsite_delete = ihbsitelist_excess( ceiling( rnd*nhbsite_excess ) )
         !   1 <= ihbsite_delete <= nhbsite_excess
@@ -311,7 +310,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
         ! Shuffle
         do i = 1, nhb_seq
-           rnd = genrand_double1(mts(0,0))
+           rnd = genrand_double1(mts(irep,0))
            i_swap = ceiling( rnd * nhb_seq )
 
            i_save = hb_seq(i)
@@ -324,7 +323,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         do i = 2, nhb_seq
            jhb = hb_seq(i)
            ratio = exp( (ene_hb(jhb, irep) - ene_hb(ihb_delete, irep)) * beta_hbond15 )
-           rnd = genrand_double1(mts(0,0))
+           rnd = genrand_double1(mts(irep,0))
 
            if (rnd < ratio) then
               ihb_delete = jhb
