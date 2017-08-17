@@ -425,6 +425,10 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 ! Wait until the master finishes deletions
 !$omp barrier
 
+
+#ifdef MPI_PAR
+  if (local_rank_mpi == 0) then
+#endif
 !$omp do private(ihb)
   do ineigh=ksta,kend
 
@@ -442,6 +446,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      force_mp(1:3,idtrna_hb2mp(6,ihb)) = force_mp(1:3,idtrna_hb2mp(6,ihb)) + for_hb(1:3,6,ihb)
   end do
 !$omp end do nowait
+#ifdef MPI_PAR
+  endif
+#endif
 
 !$omp master
   flg_hb_energy = .True.

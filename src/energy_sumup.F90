@@ -202,6 +202,11 @@ subroutine energy_sumup(irep,          &
 !$omp barrier
 
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_st_l(:,tn))
+     call energy_dtrna_hbond15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+        !!!! Do not use "if (local_rank_mpi == 0) for this routine,
+        !!!! even though only local_rank_mpi=0 process is relevant to additional force.
+        !!!! Other processes also have to execute this routine
+        !!!! to keep consistency of random number generator (mts).
      call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
 
@@ -348,10 +353,6 @@ subroutine energy_sumup(irep,          &
   deallocate( now_allcon_l,stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
 
-  if (inmisc%i_dtrna_model == 2015) then
-     ! Since this routine is not parallelized by MPI
-     call energy_dtrna_hbond15(irep, energy_unit(:,:,:), energy(:))
-  endif
 
   if (inmisc%i_dtrna_model /= 0) then
 #ifdef MPI_PAR3

@@ -41,12 +41,12 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp, st_status)
   real(PREC) :: for(3,6), f_i(3), f_k(3), f_l(3), ediv
   !!! These all local variables are private in each thread
   !!! if this subroutine called in parallel region.
-#ifdef MPI_PAR3
+#ifdef MPI_PAR
   integer :: klen
 #endif
 
   ! --------------------------------------------------------------------
-#ifdef MPI_PAR3
+#ifdef MPI_PAR
   klen=(ndtrna_tst-1+npar_mpi)/npar_mpi
   ksta=1+klen*local_rank_mpi
   kend=min(ksta+klen-1,ndtrna_tst)

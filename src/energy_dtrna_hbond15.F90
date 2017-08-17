@@ -109,6 +109,9 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
   if (flg_hb_energy) then
 
+#ifdef MPI_PAR3
+     if (local_rank_mpi == 0) then
+#endif
 !$omp do private(ihb,iunit1,iunit2)
      do ineigh=ksta,kend
 
@@ -131,6 +134,9 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         endif
      end do
 !$omp end do nowait
+#ifdef MPI_PAR3
+     endif
+#endif
 
   else
 
@@ -373,6 +379,9 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 ! Wait until the master finishes deletions
 !$omp barrier
 
+#ifdef MPI_PAR3
+     if (local_rank_mpi == 0) then
+#endif
 !$omp do private(ihb,iunit1,iunit2)
      do ineigh=ksta,kend
 
@@ -395,6 +404,9 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         endif
      end do
 !$omp end do nowait
+#ifdef MPI_PAR3
+     endif
+#endif
 
   endif
 

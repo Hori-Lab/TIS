@@ -17,6 +17,7 @@ subroutine neighbor(irep)
   use var_setp,   only : inmisc, inperi
   use var_struct, only : lexv, nmp_all, nhbneigh, lele
   use var_io,     only : flg_file_out, outfile
+  use var_replica,only : irep2grep
 
   use time
   use mpiconst
@@ -24,6 +25,7 @@ subroutine neighbor(irep)
 
   integer, intent(in) :: irep
 
+  integer :: grep
   integer :: lmp2neigh((nmp_l+nthreads-1)/nthreads  ,0:nthreads-1)
   integer :: ineigh2mp(MXMPNEIGHBOR*nmp_all/nthreads,0:nthreads-1)
 
@@ -88,31 +90,33 @@ subroutine neighbor(irep)
   endif
 
 #ifdef MPI_PAR
-  if (myrank == 0) then
+  if (local_rank_mpi == 0) then
 #endif
   if (flg_file_out%neigh) then
+     grep = irep2grep(irep)
      if (inmisc%force_flag(INTERACT%EXV12)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
      endif
      if (inmisc%force_flag(INTERACT%EXV6)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
      endif
      if (inmisc%force_flag(INTERACT%EXV_WCA)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_WCA,irep) - lexv(1,E_TYPE%EXV_WCA,irep) + 1
      endif
      if (inmisc%force_flag(INTERACT%EXV_DT15)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_DT15,irep) - lexv(1,E_TYPE%EXV_DT15,irep) + 1
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_DT15,irep) - lexv(1,E_TYPE%EXV_DT15,irep) + 1
      endif
      if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
      endif
      if (inmisc%i_dtrna_model == 2015) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') nhbneigh(irep)
+        write(outfile%neigh(grep),'(1xi6)',advance='no') nhbneigh(irep)
      endif
      if (inmisc%force_flag(INTERACT%ELE)) then
-        write(outfile%neigh(irep),'(1xi6)',advance='no') lele(irep)
+        write(outfile%neigh(grep),'(1xi6)',advance='no') lele(irep)
      endif
-     write(outfile%neigh(irep), *) ''
+     write(outfile%neigh(grep), *) ''
+     flush(outfile%neigh(grep))
   endif
 #ifdef MPI_PAR
   endif

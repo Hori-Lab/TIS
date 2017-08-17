@@ -166,7 +166,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
 !############### Collect and distribute all information in ALL processes to st_status
 !$omp master
-#ifdef MPI_PAR3
+#ifdef MPI_PAR
         call mpi_allreduce(st_status_l(:,0), st_status(1,irep), ndtrna_st, &
                            MPI_LOGICAL, MPI_LAND, mpi_comm_local, ierr)
 #else
@@ -181,6 +181,10 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_S( tm_force_dtrna_hb ) 
 !$omp end master
         call force_dtrna_hbond15(irep, force_mp_l(1,1,tn))
+        !!!! Do not use "if (local_rank_mpi == 0) for this routine,
+        !!!! even though only local_rank_mpi=0 process is relevant to additional force.
+        !!!! Other processes also have to execute this routine
+        !!!! to keep consistency of random number generator (mts).
 !$omp master
   TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
@@ -312,13 +316,15 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !  TIME_S( tmc_force )
 
 #ifdef MPI_PAR
-!!  call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
-!!                     MPI_SUM, mpi_comm_local, ierr)
-  call allreduce(force_mp_l, force_mp)
+  call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_all, PREC_MPI, &
+                     MPI_SUM, mpi_comm_local, ierr)
+  
+  !call allreduce(force_mp_l, force_mp)
 #else
   force_mp(1:SDIM,1:nmp_all) = force_mp_l(1:SDIM,1:nmp_all,0) 
 #endif
   TIME_E( tmc_force )
+
 
   if(inmisc%i_bridge == 1) then
      call force_bridge(irep, force_mp)

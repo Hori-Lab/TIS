@@ -30,7 +30,7 @@
    real(PREC) :: m(3), n(3)
    real(PREC) :: dnn, dmm
    real(PREC) :: for(3,7), f_i(3), f_l(3), ediv
-#ifdef MPI_PAR3
+#ifdef MPI_PAR
    integer :: klen
 #endif
  
@@ -38,7 +38,7 @@
 
    grep = irep2grep(irep)
 
-#ifdef MPI_PAR3
+#ifdef MPI_PAR
    klen=(ndtrna_st-1+npar_mpi)/npar_mpi
    ksta=1+klen*local_rank_mpi
    kend=min(ksta+klen-1,ndtrna_st)

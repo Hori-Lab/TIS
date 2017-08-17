@@ -178,7 +178,7 @@ if( $host6 == 'lakers' ) then
       -e 's/^ *FC_UTIL .*$/FC_UTIL = ifort/' \
       -e 's/^ *CPP .*$/CPP = -cpp -DTIME '"$cpp_rand"' '"$cpp_prec"'/' \
       -e 's/^ *INC .*$/INC = /' \
-      -e 's/^ *OPT .*$/OPT = -qopenmp -openmp-report1 '"$ifort_opt_db"' '"$ifort_opt_fp"'/' \
+      -e 's/^ *OPT .*$/OPT = -qopenmp '"$ifort_opt_db"' '"$ifort_opt_fp"'/' \
       -e 's/^ *LIB .*$/LIB = /' \
          ../src/Makefile_ > Makefile.i.omp
 
@@ -218,6 +218,7 @@ if( $host6 == 'lakers' ) then
       -e 's/^ *FC .*$/FC = mpifort/' \
       -e 's/^ *FC_UTIL .*$/FC_UTIL = mpifort/' \
       -e 's/^ *CPP .*$/CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP '"$cpp_rand"'/' \
+      #-e 's/^ *CPP .*$/CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP -DSHARE_NEIGH -DSHARE_NEIGH_PNL '"$cpp_rand"'/' \
       -e 's/^ *INC .*$/INC = /' \
       -e 's/^ *OPT .*$/OPT = -fopenmp '"$gnu_opt_db"'/' \
       -e 's/^ *LIB .*$/LIB = /' \
