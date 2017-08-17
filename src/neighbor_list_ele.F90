@@ -35,7 +35,8 @@ subroutine neighbor_list_ele(jrep)
   integer :: icharge_l
 #ifdef SHARE_NEIGH
   integer :: n_index
-  integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
+  !integer :: iele2mp_l(2+inperi%n_mirror_index, MXMPELE*ncharge)
+  integer :: iele2mp_l(3, MXMPELE*ncharge)  ! iele2mp(3,:,:) is used even in case of non-periodic boundary
   real(PREC) :: coef_ele_l(MXMPELE*ncharge)
   integer :: nele_l, n
   integer :: nele_lall(0:npar_mpi-1)
@@ -94,8 +95,12 @@ subroutine neighbor_list_ele(jrep)
      endif
   endif
 
-  ! iele2mp(3,:,:) is used in case of non-periodic boundary
+  ! iele2mp(3,:,:) is used even in case of non-periodic boundary
   iele2mp(3,:,irep) = 1
+#ifdef SHARE_NEIGH
+  iele2mp_l(3, :) = 1
+#endif
+
   iele = 0
 
 #ifdef MPI_PAR2
@@ -175,8 +180,11 @@ subroutine neighbor_list_ele(jrep)
 
   lele(irep) = sum( nele_lall(0:npar_mpi-1) )
 
-  n_index = 2 + inperi%n_mirror_index   !! n_mirror_index =  1 if periodic 
-                                        !!                   0  otherwise
+  !n_index = 2 + inperi%n_mirror_index   !! n_mirror_index =  1 if periodic 
+  !                                      !!                   0  otherwise
+  n_index = 3
+  !!! Now index 3 is always used regardless i_periodic
+   
   disp (0) = 0
   count(0) = n_index*nele_lall(0)
   do n = 1, npar_mpi-1
