@@ -42,7 +42,8 @@ set tsout = 0
 set diff_out = 1
 
 # 比較対象のディレクトリ
-set revdir = /home/hori/check/data_234bd5b
+#set revdir = /home/hori/check/data_234bd5b
+set revdir = /home/hori/check/data_81e8c94
 
 # コンパイル時のcleanの有無
 set clean = 1

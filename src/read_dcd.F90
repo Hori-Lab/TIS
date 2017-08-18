@@ -8,7 +8,7 @@ subroutine read_dcd()
   use const_maxsize
   use const_index
   use var_io, only : infile
-  use var_struct, only : nmp_real, pxyz_mp_rep,xyz_mp_rep
+  use var_struct, only : nmp_real, pxyz_mp_rep,xyz_mp_rep, nunit_real
   use var_replica, only : n_replica_mpi, irep2grep
 #ifdef MPI_PAR
   use mpiconst
@@ -25,7 +25,7 @@ subroutine read_dcd()
   ! ---------------------------------------------------------------------
   ! variables
   integer :: i
-  integer :: imp
+  integer :: imp, iunit
   integer :: idummy
   integer :: irep, grep, ifile(MXREPLICA)
   !real(PREC) :: tempk_l
@@ -142,7 +142,7 @@ subroutine read_dcd()
         !title(1:40)  = "==================== Developped by Kyoto"
         !title(41:80) = " University ============================"
         read (ifile(grep)) title
-        read (ifile(grep)) title
+        !read (ifile(grep)) title
 
         ! temperature and lunit2mp is needed
         ! when you transfer dcd file to movie file.
@@ -150,10 +150,11 @@ subroutine read_dcd()
         !read (title, *) tempk_l
         read (ifile(grep)) title
         !read (ifile(grep)) title
-        !do iunit = 1, nunit_real
+        write(*,*) 'nunit_real =', nunit_real
+        do iunit = 1, nunit_real
            !read (title, '(i6)') lunit2mp(2, iunit)
-        !   read (ifile(grep)) title
-        !end do
+           read (ifile(grep)) title
+        end do
 
         ! block-size
         read (ifile(grep)) nblock_size
