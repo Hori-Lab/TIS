@@ -6,6 +6,7 @@
 ! ***********************************************************************
 subroutine force_LJ(irep, force_mp)
       
+  use if_util
   use const_maxsize
   use const_physical
   use const_index
@@ -20,7 +21,7 @@ subroutine force_LJ(irep, force_mp)
   real(PREC), intent(out) :: force_mp(3, nmp_all)
 
   integer :: imp1, imp2!, iunit, junit
-  integer :: iLJ, imirror
+  integer :: iLJ
   integer :: ksta, kend
   real(PREC) :: rcut_off2
   !!!!!!!!!real(PREC) :: rcut_off2_pro, rcut_off2_rna
@@ -51,7 +52,7 @@ subroutine force_LJ(irep, force_mp)
   kend = nLJ
 #endif
 !$omp do private(imp1,imp2,v21,dist2,roverdist2, &
-!$omp&           roverdist8,roverdist14,dLJ_dr,for,imirror)
+!$omp&           roverdist8,roverdist14,dLJ_dr,for)
   do iLJ=ksta,kend
 
      imp1 = iLJ2mp(1, iLJ)
@@ -66,7 +67,7 @@ subroutine force_LJ(irep, force_mp)
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
-        call util_pbneighbor(v21, imirror)
+        call util_pbneighbor(v21)
      end if
      
      dist2 = dot_product(v21,v21)

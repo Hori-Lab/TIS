@@ -13,6 +13,7 @@ subroutine energy_con_gauss(irep, energy_unit, energy)
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, imp2unit, ncon_gauss, icon_gauss2mp
   use var_simu,   only : tempk
   use mpiconst
+  use if_util
 
   implicit none
 

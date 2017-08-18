@@ -21,6 +21,7 @@ subroutine neighbor_list_ele(jrep)
   use var_replica, only : irep2grep
   use time
   use mpiconst
+  use if_util
 
   implicit none
 

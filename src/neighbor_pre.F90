@@ -4,6 +4,7 @@
 
 subroutine neighbor_pre(xyz_mp, ineigh_unit)
   
+  use if_util
   use const_maxsize
   use const_index
   use var_setp,   only : inmisc, inperi

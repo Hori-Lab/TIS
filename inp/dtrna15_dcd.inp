@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./data
 filename = azo_dcd
-OUTPUT  st hb
+OUTPUT pdb dcd psf rst st hb neigh
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -14,7 +14,6 @@ i_initial_state = 6
 i_periodic = 1
 >>>>
 
-** Path to DCD file to read. (Not only filename!)
 <<<< energy_dcd
 1 = data/azo.dcd
 >>>>
@@ -51,10 +50,10 @@ NINFO(all/all) dtrna15.ninfo
 
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 10000
+n_tstep(1) = 100
 tstep_size = 0.05
-n_step_save = 10
-n_step_neighbor = 10
+n_step_save = 1
+n_step_neighbor = 100
 n_step_rst = 100
 i_com_zeroing = 0
 i_no_trans_rot = 0
@@ -63,6 +62,7 @@ n_seed = 5
 i_mass = 1
 i_fric = 1
 i_redef_para = 1
+i_neigh_dynamic = 1
 >>>>
 
 

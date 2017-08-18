@@ -5,12 +5,14 @@
 
 subroutine force_dtrna_stack_nlocal(irep, force_mp, st_status) 
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index
-  use var_struct,  only : xyz_mp_rep,&
+  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                           nmp_all, idtrna_tst2st, flg_tst_exclusive, ndtrna_st
+  use var_setp,    only : inperi
   use mpiconst
 
   implicit none
@@ -64,8 +66,14 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp, st_status)
 !$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
   do ist=ksta,kend
 
-     v12 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+     if (inperi%i_periodic == 0) then
+        v12 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+     else
+        v12 = pxyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+        call util_pbneighbor(v12)
+     end if
 
      !===== Distance =====
      d1212 = dot_product(v12,v12)
@@ -86,14 +94,29 @@ subroutine force_dtrna_stack_nlocal(irep, force_mp, st_status)
      ediv = 1.0e0_PREC
      for(:,:) = 0.0e0_PREC
     
-     v13 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
-     v53 = xyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
-     v42 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
-     v46 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+     if(inperi%i_periodic == 0) then
+        v13 = xyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v53 = xyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v42 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+        v46 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+     else
+        v13 = pxyz_mp_rep(1:3, idtrna_tst2mp(1,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v53 = pxyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v42 = pxyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(2,ist), irep)
+        v46 = pxyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+        call util_pbneighbor(v13)
+        call util_pbneighbor(v53)
+        call util_pbneighbor(v42)
+        call util_pbneighbor(v46)
+     end if
 
      d1313 = dot_product(v13,v13)
      d4242 = dot_product(v42,v42)

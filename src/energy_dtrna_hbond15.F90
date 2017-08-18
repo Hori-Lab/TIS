@@ -45,12 +45,13 @@
 
 subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
+  use if_util
   use mt_stream
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inmisc, mts, indtrna15
-  use var_struct,  only : xyz_mp_rep, imp2unit, &
+  use var_setp,    only : inmisc, mts, indtrna15, inperi
+  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
                           list_hb_at_hbsite, num_hb_at_hbsite,&
@@ -156,8 +157,14 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
        
         ihb = ineigh2hb(ineigh, irep)
 
-        v12 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
-             -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+        if (inperi%i_periodic == 0) then
+           v12 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+                -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+        else
+           v12 = pxyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+                -pxyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+           call util_pbneighbor(v12)
+        endif
 
         d1212 = dot_product(v12,v12)
         a12 = sqrt(d1212)
@@ -186,14 +193,29 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
         ex = - coef_dtrna_hb(1, ihb) * d**2
 
-        v13 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
-             -xyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
-        v53 = xyz_mp_rep(1:3, idtrna_hb2mp(5,ihb), irep) &
-             -xyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
-        v42 = xyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
-             -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
-        v46 = xyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
-             -xyz_mp_rep(1:3, idtrna_hb2mp(6,ihb), irep)
+        if (inperi%i_periodic == 0) then
+           v13 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+                -xyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
+           v53 = xyz_mp_rep(1:3, idtrna_hb2mp(5,ihb), irep) &
+                -xyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
+           v42 = xyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
+                -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+           v46 = xyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
+                -xyz_mp_rep(1:3, idtrna_hb2mp(6,ihb), irep)
+        else
+           v13 = pxyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+                -pxyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
+           v53 = pxyz_mp_rep(1:3, idtrna_hb2mp(5,ihb), irep) &
+                -pxyz_mp_rep(1:3, idtrna_hb2mp(3,ihb), irep)
+           v42 = pxyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
+                -pxyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+           v46 = pxyz_mp_rep(1:3, idtrna_hb2mp(4,ihb), irep) &
+                -pxyz_mp_rep(1:3, idtrna_hb2mp(6,ihb), irep)
+           call util_pbneighbor(v13)
+           call util_pbneighbor(v53)
+           call util_pbneighbor(v42)
+           call util_pbneighbor(v46)
+        endif
 
         d1313 = dot_product(v13,v13)
         d4242 = dot_product(v42,v42)

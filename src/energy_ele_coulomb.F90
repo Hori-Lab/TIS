@@ -3,6 +3,7 @@
 
 subroutine energy_ele_coulomb(irep, energy, energy_unit)
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index
@@ -75,6 +76,7 @@ end subroutine energy_ele_coulomb
 
 subroutine energy_ele_coulomb_tp(irep, energy)
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index

@@ -6,6 +6,7 @@
 ! ************************************************************************
 subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index
@@ -23,7 +24,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
 
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
-  integer :: iLJ, imirror
+  integer :: iLJ
   real(PREC) :: rcut_off2 !, rcut_off2_pro, rcut_off2_rna
   real(PREC) :: rjudge_contact, rjudge
   real(PREC) :: roverdist2, roverdist6, roverdist12
@@ -59,7 +60,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
    kend = nLJ
 #endif
 !$omp do private(imp1,imp2,iunit,junit,v21,dist2,roverdist2,roverdist6, &
-!$omp&           roverdist12,rjudge,efull,imirror)
+!$omp&           roverdist12,rjudge,efull)
    do iLJ=ksta,kend
    
      imp1 = iLJ2mp(1, iLJ)
@@ -69,7 +70,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
      else
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
-        call util_pbneighbor(v21, imirror)
+        call util_pbneighbor(v21)
      end if
      
      dist2 = dot_product(v21,v21)

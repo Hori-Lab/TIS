@@ -6,6 +6,7 @@
 ! ***********************************************************************
 subroutine force_con_gauss(irep, force_mp)
       
+  use if_util
   use const_maxsize
   use const_physical
   use const_index

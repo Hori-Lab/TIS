@@ -197,6 +197,7 @@ end subroutine energy_ele_coulomb_ewld
 
 subroutine energy_ele_coulomb_ewld_tp(irep, energy)
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index

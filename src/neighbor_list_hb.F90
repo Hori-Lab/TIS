@@ -3,12 +3,13 @@
 
 subroutine neighbor_list_hb(irep)
   
+  use if_util
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc
+  use var_setp,    only : inmisc, inperi
   use var_struct,  only : ndtrna_hb, idtrna_hb2mp, nhbneigh, ineigh2hb, nhbsite, & 
                           idtrna_hb2hbsite, list_hb_at_hbsite, num_hb_at_hbsite, &
-                          xyz_mp_rep, nmp_all, dtrna_hb_neigh_dist2
+                          xyz_mp_rep, pxyz_mp_rep, nmp_all, dtrna_hb_neigh_dist2
   use mpiconst
 
   implicit none
@@ -57,8 +58,14 @@ subroutine neighbor_list_hb(irep)
   do ihb=ksta,kend
 
      !===== calc vectors =====
-     v12 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
-          -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+     if (inperi%i_periodic == 0) then
+        v12 = xyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+             -xyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+     else
+        v12 = pxyz_mp_rep(1:3, idtrna_hb2mp(1,ihb), irep) &
+             -pxyz_mp_rep(1:3, idtrna_hb2mp(2,ihb), irep)
+        call util_pbneighbor(v12)
+     endif
 
      d1212 = dot_product(v12,v12)
 

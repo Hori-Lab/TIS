@@ -165,7 +165,7 @@ FMOD2 = var_io.o var_struct.o var_setp.o var_replica.o var_simu.o
 FMOD3 = mpiconst.o time.o
 
 # interface
-FMOD4 = if_write.o if_mloop.o if_energy.o if_neighbor.o
+FMOD4 = if_write.o if_mloop.o if_energy.o if_neighbor.o if_util.o
 	#if_readpdb.o
 
 # sub programs

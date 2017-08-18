@@ -7,6 +7,7 @@
 subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
   
   use if_neighbor
+  use if_util
   use const_maxsize
   use const_index
   use var_setp, only : inmisc, inperi

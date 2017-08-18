@@ -10,7 +10,7 @@ subroutine util_pbneighbor(vx, imirror)
 
   ! --------------------------------------------------------------------
   real(PREC), intent(inout) :: vx(3)
-  integer, intent(out) :: imirror
+  integer, intent(out), optional :: imirror
 
   ! --------------------------------------------------------------------
   ! local variables
@@ -31,6 +31,8 @@ subroutine util_pbneighbor(vx, imirror)
      end if
   end do
 
-  imirror = 9*imi(1) + 3*imi(2) + imi(3) + 1
+  if (present(imirror)) then
+     imirror = 9*imi(1) + 3*imi(2) + imi(3) + 1
+  endif
 
 end subroutine util_pbneighbor

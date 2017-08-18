@@ -116,6 +116,7 @@ end subroutine energy_exv_dt15
 
 subroutine energy_exv_dt15_tp(irep, energy)
 
+  use if_util
   use const_maxsize
   use const_physical
   use const_index

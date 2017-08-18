@@ -48,11 +48,12 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inmisc
-  use var_struct,  only : xyz_mp_rep, imp2unit, &
+  use var_setp,    only : inmisc, inperi
+  use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                           idtrna_tst2st, flg_tst_exclusive
   use mpiconst
+  use if_util
 
   implicit none
 
@@ -105,7 +106,12 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
 
      imp1 = idtrna_tst2mp(1,ist)
      imp2 = idtrna_tst2mp(2,ist)
-     v12 = xyz_mp_rep(1:3, imp1, irep) - xyz_mp_rep(1:3, imp2, irep)
+     if (inperi%i_periodic == 0) then
+        v12 = xyz_mp_rep(1:3, imp1, irep) - xyz_mp_rep(1:3, imp2, irep)
+     else
+        v12 = pxyz_mp_rep(1:3, imp1, irep) - pxyz_mp_rep(1:3, imp2, irep)
+        call util_pbneighbor(v12)
+     endif
 
      !===== Distance =====
      d1212 = dot_product(v12,v12)
@@ -125,14 +131,29 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      ediv = 1.0e0_PREC
 
      !===== calc vectors =====
-     v13 = xyz_mp_rep(1:3, imp1,                 irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
-     v53 = xyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
-     v42 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
-          -xyz_mp_rep(1:3, imp2,                 irep)
-     v46 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
-          -xyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+     if (inperi%i_periodic == 0) then
+        v13 = xyz_mp_rep(1:3, imp1,                 irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v53 = xyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v42 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -xyz_mp_rep(1:3, imp2,                 irep)
+        v46 = xyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -xyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+     else
+        v13 = pxyz_mp_rep(1:3, imp1,                 irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v53 = pxyz_mp_rep(1:3, idtrna_tst2mp(5,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(3,ist), irep)
+        v42 = pxyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -pxyz_mp_rep(1:3, imp2,                 irep)
+        v46 = pxyz_mp_rep(1:3, idtrna_tst2mp(4,ist), irep) &
+             -pxyz_mp_rep(1:3, idtrna_tst2mp(6,ist), irep)
+        call util_pbneighbor(v13)
+        call util_pbneighbor(v53)
+        call util_pbneighbor(v42)
+        call util_pbneighbor(v46)
+     endif
 
      !===== Distance =====
      ediv = ediv + coef_dtrna_tst(1, ist) * d**2
