@@ -26,6 +26,7 @@ subroutine energy_allrep(energy_unit,     &
                           coef_ele, ncharge, coef_charge
   use var_replica, only : n_replica_all, n_replica_mpi, irep2grep, &
                           lab2val, rep2lab, flg_rep, get_pair, inrep
+  use var_simu,    only : flg_hb_energy
   use time
   use mpiconst
 #ifdef _DEBUG
@@ -129,6 +130,8 @@ subroutine energy_allrep(energy_unit,     &
   endif
 
   !#############################################################################
+
+  flg_hb_energy = .False.
 
   TIME_S( tm_energy_replica)
   do irep = 1, n_replica_mpi

@@ -13,6 +13,7 @@ subroutine mloop_ewld()
    use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef, ewld_s_sum, ewld_h
    use var_setp, only : inele, inperi
    use var_struct,only: coef_charge, ncharge
+   use mpiconst
 #endif
    
    implicit none
@@ -154,18 +155,20 @@ subroutine mloop_ewld()
    ewld_s_sum = ewld_s_coef * ewld_s_sum
 #endif
    
-   write(lunout,*) 'Ewald (mloop_ewld): alpha', alpha
-   write(lunout,*) 'Ewald (mloop_ewld): hmax', hmax
-   write(lunout,*) 'Ewald (mloop_ewld): Parameters for the fourie space'
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_n:',ewld_f_n
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n,'):',ewld_f_coef(ewld_f_n)
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-1,'):',ewld_f_coef(ewld_f_n-1)
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-2,'):',ewld_f_coef(ewld_f_n-2)
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-3,'):',ewld_f_coef(ewld_f_n-3)
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-4,'):',ewld_f_coef(ewld_f_n-4)
-   write(lunout,*) 'Ewald (mloop_ewld): Parameters for the self-interaction correction'
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_s_coef:',ewld_s_coef
-   write(lunout,*) 'Ewald (mloop_ewld): ewld_s_sum:',ewld_s_sum
+   if (myrank == 0) then
+      write(lunout,*) 'Ewald (mloop_ewld): alpha', alpha
+      write(lunout,*) 'Ewald (mloop_ewld): hmax', hmax
+      write(lunout,*) 'Ewald (mloop_ewld): Parameters for the fourie space'
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_n:',ewld_f_n
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n,'):',ewld_f_coef(ewld_f_n)
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-1,'):',ewld_f_coef(ewld_f_n-1)
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-2,'):',ewld_f_coef(ewld_f_n-2)
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-3,'):',ewld_f_coef(ewld_f_n-3)
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_f_coef(',ewld_f_n-4,'):',ewld_f_coef(ewld_f_n-4)
+      write(lunout,*) 'Ewald (mloop_ewld): Parameters for the self-interaction correction'
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_s_coef:',ewld_s_coef
+      write(lunout,*) 'Ewald (mloop_ewld): ewld_s_sum:',ewld_s_sum
+   endif
 
 endsubroutine mloop_ewld
 

@@ -1,0 +1,116 @@
+<<<< filenames
+path = ./data
+filename = md
+OUTPUT pdb dcd psf rst tstall stall hball
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para = ./para
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 6
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 1
+>>>>
+
+<<<< periodic_bound
+psizex = 170.0
+psizey = 170.0
+psizez = 170.0
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    rna    VPK_HP2.cg.pdb
+2    ion    BOX170_KCl50mM.pdb
+>>>>
+
+<<<< initial_struct
+1       VPK_HP2.cg.pdb
+2       BOX170_KCl50mM.pdb
+>>>>
+
+<<<< initial_ion
+num_k_ion = 148
+num_cl_ion = 122
+num_mg_ion = 0
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all) vpk15_HP2.ninfo
+>>>>
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 2000
+tstep_size = 0.05
+n_step_save =  100
+n_step_neighbor = 100
+n_step_rst = 2000
+i_com_zeroing = 1
+i_no_trans_rot = 0
+tempk = 310.15
+n_seed = 50
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+i_neigh_dynamic = 1
+i_rand_type = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_DTRNA
+LOCAL(2)      NOTHING
+NLOCAL(1/1)   DTRNA ELE EXV_DT15
+NLOCAL(1/2)   ELE EXV_DT15
+NLOCAL(2/2)   ELE EXV_DT15
+
+i_dtrna_model = 2015
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< electrostatic
+cutoff_ele = 50.0
+ionic_strength = 9999.9
+diele_water = 99999.0
+i_diele = 1
+i_charge = 0
+i_function_form = 2
+i_calc_method = 0
+CHARGE_CHANGE 3   0.0
+ewld_alpha = 0.05
+ewld_hmax = 8.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000015
+>>>>
+
+
+<<<< replica
+n_replica_temp = 8
+n_step_exchange = 100
+n_step_save_rep = 100
+>>>>
+
+<<<< replica_temp
+i_style = 100
+
+REPLICA(1)  = 298.15
+REPLICA(2)  = 303.15
+REPLICA(3)  = 308.15
+REPLICA(4)  = 313.15
+REPLICA(5)  = 318.15
+REPLICA(6)  = 323.15
+REPLICA(7)  = 327.15
+REPLICA(8)  = 329.15
+>>>>
