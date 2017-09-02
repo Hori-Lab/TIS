@@ -65,6 +65,7 @@ program cafemol
 !  call deallocate_fmat()
 
 #ifdef MPI_PAR
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
   call MPI_Finalize(ierr)
 #endif
 

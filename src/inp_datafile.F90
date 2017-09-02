@@ -28,7 +28,7 @@ subroutine inp_datafile()
   character(CARRAY_MXFILE) :: path_ini, path_para, path_dcd
   !character(CARRAY_MXFILE) :: path_msf ! fmat
   character(CARRAY_MXFILE) :: path_velo
-  character(CARRAY_MXFILE) :: filename_para(MXPARA), cname
+  character(CARRAY_MXFILE) :: filename_para, cname
   character(CARRAY_MXFILE) :: filename_ini(MXINI)
 !  character(CARRAY_MXFILE) :: filename_msf  ! fmat
   character(CARRAY_MXFILE) :: filename_velo(MXREPLICA)
@@ -232,138 +232,138 @@ subroutine inp_datafile()
   ! open parameter files 
   l = index(path_para, ' ')   
   if(path_para /= '') then
-     filename_para(1) = path_para(1:l-1)//'/'//'general.para'
+     filename_para = path_para(1:l-1)//'/'//'general.para'
   else
-     filename_para(1) = './para/general.para'
+     filename_para = './para/general.para'
   end if
   write (*, '(a28,i3,a3,a)') "open general parameter file(",infile%para_gen,&
-                               "): ", trim(filename_para(1))
-  open(infile%para_gen, file = filename_para(1), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_gen, file = filename_para, status = 'old', action = 'read', &
        iostat = iopen_status) 
   if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(1)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
   ! parameter for protein
   if(path_para /= '') then
-     filename_para(2) = path_para(1:l-1)//'/'//'protein.para'
+     filename_para = path_para(1:l-1)//'/'//'protein.para'
   else
-     filename_para(2) = './para/protein.para'
+     filename_para = './para/protein.para'
   end if
   write (*, '(a28,i3,a3,a)') "open protein parameter file(",infile%para_pro,&
-                               "): ", trim(filename_para(2))
-  open(infile%para_pro, file = filename_para(2), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_pro, file = filename_para, status = 'old', action = 'read', &
   iostat = iopen_status)
   if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(2)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
   ! parameter for RNA
   if(path_para /= '') then
-     filename_para(5) = path_para(1:l-1)//'/'//'rna.para'
+     filename_para = path_para(1:l-1)//'/'//'rna.para'
   else
-     filename_para(5) = './para/rna.para'
+     filename_para = './para/rna.para'
   end if
   write (*, '(a24,i3,a3,a)') "open RNA parameter file(",infile%para_rna,&
-                               "): ", trim(filename_para(5))
-  open(infile%para_rna, file = filename_para(5), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_rna, file = filename_para, status = 'old', action = 'read', &
   iostat = iopen_status)
   if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(5)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
   ! parameter for explicit ligand
   if(path_para /= '') then
-     filename_para(6) = path_para(1:l-1)//'/'//'ligand.para'
+     filename_para = path_para(1:l-1)//'/'//'ligand.para'
   else
-     filename_para(6) = './para/ligand.para'
+     filename_para = './para/ligand.para'
   end if
   write (*, '(a36,i3,a3,a)') "open explicit-ligand parameter file(",infile%para_lig,&
-                               "): ", trim(filename_para(6))
-  open(infile%para_lig, file = filename_para(6), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_lig, file = filename_para, status = 'old', action = 'read', &
   iostat = iopen_status)
   if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(6)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
 !  ! parameter for hydrophobic interaction 
 !  if(path_para /= '') then
-!     filename_para(7) = path_para(1:l-1)//'/'//'hydrophobic.para'
+!     filename_para = path_para(1:l-1)//'/'//'hydrophobic.para'
 !  else
-!     filename_para(7) = './para/hydrophobic.para'
+!     filename_para = './para/hydrophobic.para'
 !  end if
 !  write (*, '(a32,i3,a3,a)') "open hydrophobic parameter file(",infile%para_hp,&
-!                               "): ", trim(filename_para(7))
-!  open(infile%para_hp, file = filename_para(7), status = 'old', action = 'read', &
+!                               "): ", trim(filename_para)
+!  open(infile%para_hp, file = filename_para, status = 'old', action = 'read', &
 !  iostat = iopen_status)
 !  if(iopen_status > 0) then  
-!     error_message = 'Error: cannot open the file: ' // filename_para(7)
+!     error_message = 'Error: cannot open the file: ' // filename_para
 !     call util_error(ERROR%STOP_ALL, error_message)
 !  end if
 
   ! parameter for electrostatic interaction 
   if(path_para /= '') then
-     filename_para(8) = path_para(1:l-1)//'/'//'electrostatic.para'
+     filename_para = path_para(1:l-1)//'/'//'electrostatic.para'
   else
-     filename_para(8) = './para/electrostatic.para'
+     filename_para = './para/electrostatic.para'
   end if
   write (*, '(a34,i3,a3,a)') "open electrostatic parameter file(",infile%para_ele,&
-                               "): ", trim(filename_para(8))
-  open(infile%para_ele, file = filename_para(8), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_ele, file = filename_para, status = 'old', action = 'read', &
   iostat = iopen_status)
   if(iopen_status > 0) then  
-     error_message = 'Error: cannot open the file: ' // filename_para(8)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
 !  ! parameter for flexible local potential
 !  if(path_para /= '') then
-!     filename_para(10) = path_para(1:l-1)//'/'//'flexible_local.para'
+!     filename_para = path_para(1:l-1)//'/'//'flexible_local.para'
 !  else
-!     filename_para(10) = './para/flexible_local.para'
+!     filename_para = './para/flexible_local.para'
 !  end if
 !  write (*, '(a35,i3,a3,a)') "open flexible-local parameter file(",infile%para_flp,&
-!                               "): ", trim(filename_para(10))
-!  open(infile%para_flp, file = filename_para(10), status = 'old', action = 'read', &
+!                               "): ", trim(filename_para)
+!  open(infile%para_flp, file = filename_para, status = 'old', action = 'read', &
 !  iostat = iopen_status)
 !  if(iopen_status > 0) then
-!     error_message = 'Error: cannot open the file: ' // filename_para(10)
+!     error_message = 'Error: cannot open the file: ' // filename_para
 !     call util_error(ERROR%STOP_ALL, error_message)
 !  end if
 
 !  !sasa
 !  ! generic parameter for sasa
 !  if(path_para /= '') then
-!     filename_para(12) = path_para(1:l-1)//'/'//'sasa.para'
+!     filename_para = path_para(1:l-1)//'/'//'sasa.para'
 !  else
-!     filename_para(12) = './para/sasa.para'
+!     filename_para = './para/sasa.para'
 !  end if
 !  write (*, '(a33,i3,a3,a)') "open sasa_generic parameter file(",infile%para_fsasa,&
-!                               "): ", trim(filename_para(12))
-!  open(infile%para_fsasa, file = filename_para(12), status = 'old', action = 'read', &
+!                               "): ", trim(filename_para)
+!  open(infile%para_fsasa, file = filename_para, status = 'old', action = 'read', &
 !  iostat = iopen_status)
 !  if(iopen_status > 0) then
-!     error_message = 'Error: cannot open the file: ' // filename_para(12)
+!     error_message = 'Error: cannot open the file: ' // filename_para
 !     call util_error(ERROR%STOP_ALL, error_message)
 !  end if
 
   ! --------------------------------------------------------------------
   ! generic parameter for excluded volume
   if(path_para /= '') then
-     filename_para(13) = path_para(1:l-1)//'/'//'exv.para'
+     filename_para = path_para(1:l-1)//'/'//'exv.para'
   else
-     filename_para(13) = './para/exv.para'
+     filename_para = './para/exv.para'
   end if
   write (*, '(a24,i3,a3,a)') "open exv parameter file(",infile%para_exv,&
-                               "): ", trim(filename_para(13))
-  open(infile%para_exv, file = filename_para(13), status = 'old', action = 'read', &
+                               "): ", trim(filename_para)
+  open(infile%para_exv, file = filename_para, status = 'old', action = 'read', &
   iostat = iopen_status)
   if(iopen_status > 0) then
-     error_message = 'Error: cannot open the file: ' // filename_para(13)
+     error_message = 'Error: cannot open the file: ' // filename_para
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 

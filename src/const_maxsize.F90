@@ -38,7 +38,6 @@ module const_maxsize
   ! Files
   integer, parameter :: MXPDB = 20    !< maximum # of input PDB files
   integer, parameter :: MXINI = MXPDB  !< maximum # of input structure files
-  integer, parameter :: MXPARA = 15     !< maximum # of parameter files !changed for exv
   integer, parameter :: FILENAME_DIGIT_REPLICA = 4  !< # of digits added to .ts filename in REM
 
   ! MD-control
@@ -50,39 +49,27 @@ module const_maxsize
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
   integer, parameter :: MXUNIT = 20        !< maximum # of interaction units
-  integer, parameter :: MXMP = 3500       !< maximum # of mass points
-  integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
+  integer, parameter :: MXMP = 3500        !< maximum # of mass points
+  !integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 
 !  integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
   integer, parameter :: MXMPBD = 1
-  integer, parameter :: MXBD = MXMPBD * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPFENE = 1
-  integer, parameter :: MXFENE = MXMPFENE * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPROUSE = 1
-  integer, parameter :: MXROUSE = MXMPROUSE * MXMP        !< maximum # of bonds
   integer, parameter :: MXMPBA = 2
-  integer, parameter :: MXBA = MXMPBA * MXMP    !< maximum # of bond angles
   integer, parameter :: MXMPDIH = 2
-  integer, parameter :: MXDIH = MXMPDIH * MXMP   !< maximum # of dihedral angles
   integer, parameter :: MXMPCON = 20       !< maximum # of Go-type contacts per residue 
-  integer, parameter :: MXCON = MXMPCON * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPLJ = 20       !< maximum # of Go-type contacts per residue 
-  integer, parameter :: MXLJ = MXMPLJ * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPWCA = 20       !< maximum # of Go-type contacts per residue 
-  integer, parameter :: MXWCA = MXMPWCA * MXMP  !< maximum # of total contacts
   integer, parameter :: MXMPCONGAUSS = 20       !< maximum # of Go-type contacts per residue 
-  integer, parameter :: MXCONGAUSS = MXMPCONGAUSS * MXMP  !< maximum # of total contacts
 !  integer, parameter :: MXMPRNABP = 2
 !  integer, parameter :: MXRNABP = MXMPRNABP * MXMP  !< maximum # of contacts
 !  integer, parameter :: MXMPRNAST = 2
 !  integer, parameter :: MXRNAST = MXMPRNAST * MXMP  !< maximum # of contacts
   integer, parameter :: MXDTRNAST = int(real(MXMP) / 3.0)
-  integer, parameter :: MXMPDTRNAHB = 2
-  !integer, parameter :: MXDTRNAHB = MXMPDTRNAHB * MXMP / 2
   integer, parameter :: MXDTRNAHB = 6000
   integer, parameter :: MXDTRNATST= 50
-  integer, parameter :: MXMPMORSE = 10    !< maximum # of contacts
-  integer, parameter :: MXMORSE = MXMPMORSE * MXMP    !< maximum # of contacts
+!  integer, parameter :: MXMPMORSE = 10
 !  integer, parameter :: MXRNASTANGLE = (MXMP/3) !< maximum # of stack-angles in RNA
   integer, parameter :: MXCHARGE = MXMP    !< maximum # of chage particle
   integer, parameter :: MXCHARGECHANGE = 100 !< maximum # number of CHARGE_CHANGE lines in input file
@@ -104,8 +91,8 @@ module const_maxsize
 !  integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
 
   ! Replica exchange method
-  integer, parameter :: MXREPLICA = 20    !< maximum # of replicas
-  integer, parameter :: MXREPDIM = 3       !< maximum # of dimensions in REM
+  integer, parameter :: MXREPLICA = 8    !< maximum # of replicas
+  integer, parameter :: MXREPDIM = 1       !< maximum # of dimensions in REM
 
   ! Optional interaction
   integer, parameter :: MXDEL_LGO = 20 !< maximum # of del-interaction residue groups
@@ -132,9 +119,9 @@ module const_maxsize
 !  integer, parameter :: MXCON_SITE_IMPLIG = 100 !< maximum # of ligand-mediated contacts per binding site
 !  integer, parameter :: MXCON_IMPLIG = MXSITE_IMPLIG * MXCON_SITE_IMPLIG !< maximum # of the total of ligand-mediated contacts
 
-  ! Hydrophobic interactions
-  integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues
-  integer, parameter :: MXMPHP = 1  !< maximum # of hydrophobic neighbors per residue
+!  ! Hydrophobic interactions
+!  integer, parameter :: MXHP = MXMP    !< maximum # of hydrophobic residues
+!  integer, parameter :: MXMPHP = 1  !< maximum # of hydrophobic neighbors per residue
 
   ! Test particles used in Widom method
   integer, parameter :: MXTP = 3
