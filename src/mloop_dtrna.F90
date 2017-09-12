@@ -6,7 +6,7 @@ subroutine mloop_dtrna()
   use var_setp,    only : inmisc, indtrna15, inpara
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
-                          dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite
+                          dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite, flg_tst_exclusive
   use var_replica, only : n_replica_mpi
   use var_simu,    only : hb_status, flg_hb_energy, st_status, hbsite_excess, &
                           ene_st, ene_tst, ene_hb, for_hb
@@ -97,6 +97,15 @@ subroutine mloop_dtrna()
         if (.not. flg_found) then
            write(error_message, *) "WARNING: corresponding stack was not found in mloop_dtrna, itst=", itst
            call util_error(ERROR%WARN_ALL, error_message)
+
+           if (flg_tst_exclusive(1,itst)) then
+              flg_tst_exclusive(1,itst) = .False.
+           endif
+           !!! Since the base does not have (secondary) stacking interaction, 
+           !!! there is no need to care about exclusive or not.
+           !!! By changing the flg_tst_exclusive, accessing to st_status array will be skipped
+           !!! in force/energy routine.
+           !!! (otherwise, accessing st_status(ist) with ist=0 causes an error.
         endif
    
    
@@ -125,6 +134,11 @@ subroutine mloop_dtrna()
         if (.not. flg_found) then
            write(error_message, *) "WARNING: corresponding stack was not found in mloop_dtrna, itst=", itst
            call util_error(ERROR%WARN_ALL, error_message)
+
+           if (flg_tst_exclusive(2,itst)) then
+              flg_tst_exclusive(2,itst) = .False.
+           endif
+           !!!!! See comment above abount skipping st_status.
         endif
    
      enddo
