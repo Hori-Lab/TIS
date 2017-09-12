@@ -993,7 +993,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
      ! ------------------------------------------------------------------
      ! read nonlocal stacking dihedral of DT model (2015)
-     if(cline(1:8) == 'tst-dihd') then
+     if(cline(1:8) == 'tbs-dihd') then
         read (cline, *, iostat = input_status) &
              cline_head, ist_read, idih_read, iunit1, iunit2,  &
              imp1, imp2, imp3, imp4, imp1un, imp2un, imp3un, imp4un, &
