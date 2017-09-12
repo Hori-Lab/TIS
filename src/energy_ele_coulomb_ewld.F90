@@ -63,8 +63,16 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   !================= Fourier space ================
   !================================================
 
+#ifdef MPI_PAR3
+  klen=(ewld_f_n-1+npar_mpi)/npar_mpi
+  ksta=1+klen*local_rank_mpi
+  kend=min(ksta+klen-1,ewld_f_n)
+#else
+  ksta = 1
+  kend = ewld_f_n
+#endif
 !$omp do private(scos,ssin,ich1,imp1,q1,dp)
-  do ig = ewld_f_n, 1, -1
+  do ig = ksta, kend
     
      scos = 0.0
      ssin = 0.0
@@ -181,9 +189,15 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   !ene = - inele%coef(grep) * ewld_s_coef * ene
   !ene = - inele%coef(grep) * ewld_s_sum
 
+#ifdef MPI_PAR3
+  if (local_rank_mpi == 0) then
+#endif
 !$omp master
   energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_s_sum
 !$omp end master
+#ifdef MPI_PAR3
+  endif
+#endif
 
 #ifdef _DEBUG_EWLD
   write(*,*) 'EWLD_REAL: ', e_real

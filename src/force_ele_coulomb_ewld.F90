@@ -50,8 +50,16 @@ subroutine force_ele_coulomb_ewld(irep, force_mp)
   !================================================
   !================= Fourier space ================
   !================================================
+#ifdef MPI_PAR
+  klen=(ewld_f_n-1+npar_mpi)/npar_mpi
+  ksta=1+klen*local_rank_mpi
+  kend=min(ksta+klen-1,ewld_f_n)
+#else
+  ksta = 1
+  kend = ewld_f_n
+#endif
 !$omp do private(qcosgr,qsingr,ich1,imp1,q1,dp,scos,ssin,dv_dr)
-  do ig = 1, ewld_f_n
+  do ig = ksta, kend
     
      qcosgr(:) = 0.0
      qsingr(:) = 0.0
