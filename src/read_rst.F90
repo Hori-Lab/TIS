@@ -246,11 +246,11 @@ subroutine read_rst(itype_wanted)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(hb_status, ndtrna_hb*n_replica_mpi, LOGIC, &
+               call MPI_bcast(hb_status, ndtrna_hb*n_replica_mpi, MPI_LOGICAL, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
-               call MPI_send(temp_array_logic, ndtrna_hb, LOGIC, &
+               call MPI_send(temp_array_logic, ndtrna_hb, MPI_LOGICAL, &
                              rank, TAG, mpi_comm_rep, ierr)
             endif
 #endif
@@ -265,12 +265,12 @@ subroutine read_rst(itype_wanted)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(st_status, ndtrna_st*n_replica_mpi, LOGIC, &
+               call MPI_bcast(st_status, ndtrna_st*n_replica_mpi, MPI_LOGICAL, &
                               0, mpi_comm_local, ierr)
             else
                !call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
                ! irep was already sent when sending hb_status
-               call MPI_send(temp_array_logic, ndtrna_st, LOGIC, &
+               call MPI_send(temp_array_logic, ndtrna_st, MPI_LOGICAL, &
                              rank, TAG, mpi_comm_rep, ierr)
             endif
 #endif
@@ -372,15 +372,15 @@ subroutine read_rst(itype_wanted)
          if (local_rank_mpi == 0) then
             do i = 1, n_replica_mpi
                call MPI_recv(irep, 1, MPI_INTEGER, 0, TAG, mpi_comm_rep, istatus, ierr)
-               call MPI_recv(hb_status(:,irep), ndtrna_hb, LOGIC, &
+               call MPI_recv(hb_status(:,irep), ndtrna_hb, MPI_LOGICAL, &
                              0, TAG, mpi_comm_rep, istatus, ierr)
-               call MPI_recv(st_status(:,irep), ndtrna_st, LOGIC, &
+               call MPI_recv(st_status(:,irep), ndtrna_st, MPI_LOGICAL, &
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(ndtrna_hb, ndtrna_hb*n_replica_mpi, LOGIC, &
+         call MPI_bcast(ndtrna_hb, ndtrna_hb*n_replica_mpi, MPI_LOGICAL, &
                         0, mpi_comm_local, ierr)
-         call MPI_bcast(ndtrna_st, ndtrna_st*n_replica_mpi, LOGIC, &
+         call MPI_bcast(ndtrna_st, ndtrna_st*n_replica_mpi, MPI_LOGICAL, &
                         0, mpi_comm_local, ierr)
 
       case default

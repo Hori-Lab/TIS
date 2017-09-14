@@ -1,0 +1,37 @@
+#!/bin/bash
+#### Lakers ============================
+#SBATCH -J test
+#SBATCH -n 4
+#SBATCH -N 01
+#SBATCH -c 1
+#SBATCH -t 1:00:00
+#SBATCH --mem=500m
+#SBATCH -o slog -e serr
+
+#module swap intel gnu; module load openmpi
+
+host=`uname -n`
+host1=`echo $host | cut -c1-1`
+host6=`echo $host | cut -c1-6`
+
+pwd
+
+#--------------------------------------------------
+# Lakers
+if [ $host1 = 'n' ]; then
+#--------------------------------------------------
+
+export OMPI_COMM_WORLD_RANK=0
+
+mpirun -n 4 ./go
+
+
+#--------------------------------------------------
+else
+#--------------------------------------------------
+
+echo "this host is not supported !! ... " $host
+
+#--------------------------------------------------
+fi
+#--------------------------------------------------

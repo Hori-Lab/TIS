@@ -1,11 +1,11 @@
 <<<< filenames
+*path = /tmp/hori_HP2_repT
 path = ./data
-filename = md
-OUTPUT pdb dcd psf rst tstall stall hball
+filename = HP2_repT
+OUTPUT pdb dcd psf rst tstall stall hball st tst hb
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
-path_para = ./para
 >>>> 
 
 <<<< job_cntl  
@@ -34,31 +34,32 @@ i_go_native_read_style = 2
 >>>>
 
 <<<< initial_ion
-num_k_ion = 148
+num_k_ion =  148
 num_cl_ion = 122
 num_mg_ion = 0
 >>>>
 
 <<<< native_info_sim1
+** all-in-one-file style
 NINFO(all/all) vpk15_HP2.ninfo
 >>>>
 
+
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 2000
+n_tstep(1) = 200
 tstep_size = 0.05
-n_step_save =  100
+n_step_save = 10
 n_step_neighbor = 100
-n_step_rst = 2000
-i_com_zeroing = 1
+n_step_rst =  100
+i_com_zeroing = 0
 i_no_trans_rot = 0
-tempk = 310.15
-n_seed = 50
+tempk = 393.15
+n_seed = 5000
 i_mass = 1
 i_fric = 1
 i_redef_para = 1
 i_neigh_dynamic = 1
-i_rand_type = 0
 >>>>
 
 
@@ -79,7 +80,7 @@ i_output_energy_style = 1
 >>>>
 
 <<<< electrostatic
-cutoff_ele = 80.0
+cutoff_ele = 50.0
 ionic_strength = 9999.9
 diele_water = 99999.0
 i_diele = 1
@@ -93,11 +94,10 @@ CHARGE_CHANGE 3   0.0
 viscosity = 0.000015
 >>>>
 
-
 <<<< replica
 n_replica_temp = 8
-n_step_exchange = 100
-n_step_save_rep = 100
+n_step_exchange = 10
+n_step_save_rep = 10
 >>>>
 
 <<<< replica_temp
@@ -111,4 +111,28 @@ REPLICA(5)  = 318.15
 REPLICA(6)  = 323.15
 REPLICA(7)  = 327.15
 REPLICA(8)  = 329.15
+#REPLICA(9)  = 331.15
+#REPLICA(10) = 333.15
+#REPLICA(11) = 335.15
+#REPLICA(12) = 337.15
+#REPLICA(13) = 339.15
+#REPLICA(14) = 343.15
+#REPLICA(15) = 345.15
+#REPLICA(16) = 347.15
+#REPLICA(17) = 349.15
+#REPLICA(18) = 351.15
+#REPLICA(19) = 353.15
+#REPLICA(20) = 355.15
+#REPLICA(21) = 359.15
+#REPLICA(22) = 361.15
+#REPLICA(23) = 363.15
+#REPLICA(24) = 365.15
+#REPLICA(25) = 367.15
+#REPLICA(26) = 371.15
+#REPLICA(27) = 375.15
+#REPLICA(28) = 379.15
+#REPLICA(29) = 383.15
+#REPLICA(30) = 388.15
+#REPLICA(31) = 393.15
+#REPLICA(32) = 398.15
 >>>>
