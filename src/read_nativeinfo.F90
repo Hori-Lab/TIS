@@ -68,6 +68,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   character(4) :: ctype4
   character(4) :: a11,a12,a21,a22,a31,a32, atmp
 
+  ! For checking if all angl and dihd are stored for hb-dist, st-dist, tst-dist
+  logical :: datacheck_dtrna_hb_angl(2,MXDTRNAHB)
+  logical :: datacheck_dtrna_hb_dihd(3,MXDTRNAHB)
+  logical :: datacheck_dtrna_st_dihd(2,MXDTRNAST)
+  logical :: datacheck_dtrna_tst_angl(2,MXDTRNATST)
+  logical :: datacheck_dtrna_tst_dihd(3,MXDTRNATST)
+
   integer ::ifunc_nn2id
   ! ---------------------------------------------------------------------
 
@@ -87,6 +94,15 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   itbsdist = ndtrna_tst
   ii = lunit2mp(1, iunit) - 1
   jj = lunit2mp(1, junit) - 1
+
+  !! If XXX-diste is read, corresponding position of this flag is changed to False
+  !! Then once angl/dihd for that dist is read, the flag is changed back to True.
+  !! At last, all elements have to be True.
+  datacheck_dtrna_hb_angl(1:2, 1:MXDTRNAHB) = .True.
+  datacheck_dtrna_hb_dihd(1:3, 1:MXDTRNAHB) = .True.
+  datacheck_dtrna_st_dihd(1:2, 1:MXDTRNAST) = .True.
+  datacheck_dtrna_tst_angl(1:2, 1:MXDTRNATST) = .True.
+  datacheck_dtrna_tst_dihd(1:3, 1:MXDTRNATST) = .True.
 
   ! ---------------------------------------------------------------------
   ! reading intra coodinates
@@ -449,6 +465,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
         end if
+        if (ist_read < 1 .or. MXDTRNAST < ist_read) then
+           error_message = 'ibs of bs-dist is out of range. You may need to increase MXDTRNAST in const_maxsize.F90'
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+
+        datacheck_dtrna_st_dihd(1,ist_read) = .False.
+        datacheck_dtrna_st_dihd(2,ist_read) = .False.
 
         if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
            imp1 = imp1 + ii
@@ -533,6 +556,14 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            call util_error(ERROR%STOP_ALL, error_message)
         end if
 
+        if (ihb_read < 1 .or. MXDTRNAHB < ihb_read) then
+           error_message = 'ihb of hb-dist is out of range. You may need to increase MXDTRNAHB in const_maxsize.F90'
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+
+        datacheck_dtrna_hb_angl(1:2, ihb_read) = .False.
+        datacheck_dtrna_hb_dihd(1:3, ihb_read) = .False.
+
         if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
            imp1 = imp1 + ii
            imp2 = imp2 + jj
@@ -606,6 +637,14 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
         end if
+
+        if (ist_read < 1 .or. MXDTRNAHB < ist_read) then
+           error_message = 'ist of st-dist is out of range. You may need to increase MXDTRNAST in const_maxsize.F90'
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+
+        datacheck_dtrna_tst_angl(1:2, ist_read) = .False.
+        datacheck_dtrna_tst_dihd(1:3, ist_read) = .False.
 
         if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
            imp1 = imp1 + ii
@@ -761,6 +800,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               coef_dtrna_st(2, ist_read, :) = coef
            endif
 
+           datacheck_dtrna_st_dihd(1,ist_read) = .True.
+
         else if (ctype4 == 'SPSP') then
            if ((imp1 == idtrna_st2mp(4,ist_read) .and. &
                 imp2 == idtrna_st2mp(5,ist_read) .and. &
@@ -780,6 +821,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_st(3, ist_read, :) = coef
            endif
+
+           datacheck_dtrna_st_dihd(2,ist_read) = .True.
 
         else
            error_message = 'Error: unknown type of bs-dihd in read_nativeinfo'
@@ -830,6 +873,9 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_hb(2,ihb_read) = coef
            endif
+           
+           datacheck_dtrna_hb_angl(1, ihb_read) = .True.
+
         else if (imp1 == idtrna_hb2mp(1,ihb_read) .and. imp2 == idtrna_hb2mp(2,ihb_read)) then
            if (imp3 == idtrna_hb2mp(4,ihb_read)) then
               continue
@@ -843,6 +889,9 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_hb(3,ihb_read) = coef
            endif
+
+           datacheck_dtrna_hb_angl(2, ihb_read) = .True.
+
         else
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
@@ -906,6 +955,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               coef_dtrna_hb(4, ihb_read) = coef
            endif
 
+           datacheck_dtrna_hb_dihd(1, ihb_read) = .True.
+
         else if (imp3 == idtrna_hb2mp(1,ihb_read) .and. imp4 == idtrna_hb2mp(2,ihb_read)) then
            if (imp2 == idtrna_hb2mp(3, ihb_read)) then
               continue
@@ -921,6 +972,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               coef_dtrna_hb(5, ihb_read) = coef
            endif
 
+           datacheck_dtrna_hb_dihd(2, ihb_read) = .True.
+
         else if (imp1 == idtrna_hb2mp(1,ihb_read) .and. imp2 == idtrna_hb2mp(2,ihb_read)) then
            if (imp3 == idtrna_hb2mp(4,ihb_read)) then
               continue
@@ -935,6 +988,9 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_hb(6, ihb_read) = coef
            endif
+
+           datacheck_dtrna_hb_dihd(3, ihb_read) = .True.
+
         else
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
@@ -978,6 +1034,9 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_tst(2,ist_read) = coef
            endif
+
+           datacheck_dtrna_tst_angl(1, ist_read) = .True.
+
         else if (imp1 == idtrna_tst2mp(1,ist_read) .and.&
                  imp2 == idtrna_tst2mp(2,ist_read) .and.&
                  imp3 == idtrna_tst2mp(4,ist_read) ) then
@@ -985,6 +1044,9 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_tst(3,ist_read) = coef
            endif
+
+           datacheck_dtrna_tst_angl(2, ist_read) = .True.
+
         else
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
@@ -1035,6 +1097,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               coef_dtrna_tst(4, ist_read) = coef
            endif
 
+           datacheck_dtrna_tst_dihd(1, ist_read) = .True.
+
         elseif (imp1 == idtrna_tst2mp(5,ist_read) .and.&
                 imp2 == idtrna_tst2mp(3,ist_read) .and.&
                 imp3 == idtrna_tst2mp(1,ist_read) .and.&
@@ -1043,6 +1107,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            if (inmisc%flg_coef_from_ninfo) then
               coef_dtrna_tst(5, ist_read) = coef
            endif
+
+           datacheck_dtrna_tst_dihd(2, ist_read) = .True.
 
         elseif (imp1 == idtrna_tst2mp(1,ist_read) .and.&
                 imp2 == idtrna_tst2mp(2,ist_read) .and.&
@@ -1053,12 +1119,60 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               coef_dtrna_tst(6, ist_read) = coef
            endif
 
+           datacheck_dtrna_tst_dihd(3, ist_read) = .True.
+
         else
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
         endif
      endif
   enddo
+
+  !!! Check
+  do ihb_read = 1, ndtrna_hb
+     if (datacheck_dtrna_hb_angl(1,ihb_read) .and. &
+         datacheck_dtrna_hb_angl(2,ihb_read) ) then
+        continue
+     else
+        write(error_message,*) 'Error in ninfo: following ihb does not have angle: ', ihb_read
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+     if (datacheck_dtrna_hb_dihd(1,ihb_read) .and. &
+         datacheck_dtrna_hb_dihd(2,ihb_read) .and. &
+         datacheck_dtrna_hb_dihd(3,ihb_read)  ) then
+        continue
+     else
+        write(error_message,*) 'Error in ninfo: following ihb does not have dihedral: ', ihb_read
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  enddo
+  do ist_read = 1, ndtrna_st
+     if (datacheck_dtrna_st_dihd(1,ist_read) .and. &
+         datacheck_dtrna_st_dihd(2,ist_read) ) then
+        continue
+     else
+        write(error_message,*) 'Error in ninfo: following ist does not have dihedral: ', ist_read
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  enddo
+  do ist_read = 1, ndtrna_tst
+     if (datacheck_dtrna_tst_angl(1,ist_read) .and. &
+         datacheck_dtrna_tst_angl(2,ist_read) ) then
+        continue
+     else
+        write(error_message,*) 'Error in ninfo: following itst does not have angle: ', ist_read
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+     if (datacheck_dtrna_tst_dihd(1,ist_read) .and. &
+         datacheck_dtrna_tst_dihd(2,ist_read) .and. &
+         datacheck_dtrna_tst_dihd(3,ist_read) ) then
+        continue
+     else
+        write(error_message,*) 'Error in ninfo: following itst does not have dihedral: ', ist_read
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  enddo
+   
 
   ! ---------------------------------------------------------------------
 
