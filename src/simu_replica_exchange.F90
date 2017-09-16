@@ -15,12 +15,14 @@
 #undef DUMP
 #endif
 
+#define DUMP
+
 subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
 
    use const_maxsize
    use const_physical
    use const_index
-   use var_setp,    only : insimu, mts
+   use var_setp,    only : insimu, mts_rep
    use var_replica, only : n_replica_all,                 &
                            rep2lab, lab2rep, lab2val,     &
                            total_attempt, hist_combination, &
@@ -88,12 +90,12 @@ subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
    do i = 1, n_replica_all, 2
       nrand = nrand + 1
       !random0(nrand) = grnd()
-      random0(nrand) = genrand_double1(mts(0, 0))
+      random0(nrand) = genrand_double1(mts_rep)
    enddo
    TIME_E( tm_random)
-#ifdef MPI_REP
-   call MPI_BCAST(random0, nrand, MPI_REAL8, 0, mpi_comm_rep, ierr)
-#endif
+!#ifdef MPI_REP
+!   call MPI_BCAST(random0, nrand, MPI_REAL8, 0, mpi_comm_rep, ierr)
+!#endif
 
 
    ! ###########################################

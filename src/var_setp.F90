@@ -615,6 +615,7 @@ module var_setp
   integer, save :: irand !< variable for random number
 !  integer, parameter :: NSTREAM=128
 !  type(mt_state), save :: mts(0:MXREPLICA)
+  type(mt_state), save :: mts_rep
   type(mt_state), allocatable, save :: mts(:,:)
 
   logical, allocatable, save :: fix_mp(:) !< 
