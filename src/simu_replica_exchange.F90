@@ -15,8 +15,6 @@
 #undef DUMP
 #endif
 
-#define DUMP
-
 subroutine simu_replica_exchange(velo_mp, replica_energy, tempk)
 
    use const_maxsize
