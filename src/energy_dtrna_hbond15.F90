@@ -56,7 +56,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
                           list_hb_at_hbsite, num_hb_at_hbsite,&
                           nhbneigh, ineigh2hb, flg_hb_tertiary
-  use var_simu,    only : flg_hb_energy, hb_status, beta_hbond15, ene_hb
+  use var_simu,    only : flg_hb_energy, hb_status, beta_hbond15, ene_hb, hbsite_excess
   use mpiconst
 
   implicit none
@@ -85,7 +85,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   integer :: ihb_delete
   integer :: ihbsite_delete
   integer :: nhbsite_excess
-  integer :: hbsite_excess(1:nhbsite)
+  !integer :: hbsite_excess(1:nhbsite)
   integer :: ihbsitelist_excess(1:nhbsite)
   integer :: nhb_seq
   integer :: hb_seq(1:ndtrna_hb)
@@ -299,14 +299,91 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
      !hbsite_excess(:)  = hbsite_excess_l(:)
 !#endif
 
+!$omp barrier
+
 !     hbsite_excess(:)  = hbsite_excess(:) - nvalence_hbsite(:)
-!$omp do
+!$omp do private(ihbsite)
   do ihbsite = 1, nhbsite
      hbsite_excess(ihbsite)  = hbsite_excess(ihbsite) - nvalence_hbsite(ihbsite)
   enddo
 !$omp end do
 
 !$omp master
+
+  nhbsite_excess = 0
+  ihbsitelist_excess(:) = 0
+  do ihbsite = 1, nhbsite
+     if (hbsite_excess(ihbsite) > 0) then
+        nhbsite_excess = nhbsite_excess + 1
+        ihbsitelist_excess(nhbsite_excess) = ihbsite
+     endif
+  enddo
+
+
+  do while (nhbsite_excess > 0)
+     ! Randomely choose one "ihbsite" that will be deleted
+     rnd = genrand_double4(mts(irep,0))  ! mts(istream,tn))
+
+     ihbsite_delete = ihbsitelist_excess( ceiling( rnd*nhbsite_excess ) )
+     !   1 <= ihbsite_delete <= nhbsite_excess
+
+     ! Generate a sequence of "ihb"s that forms HB interaction involving "ihbsite_delete"
+     nhb_seq = 0
+     hb_seq(:) = 0
+     do i = 1, num_hb_at_hbsite(ihbsite_delete, irep)
+        ihb = list_hb_at_hbsite(i,ihbsite_delete, irep)
+
+        if (hb_status(ihb,irep)) then
+           nhb_seq = nhb_seq + 1
+           hb_seq(nhb_seq) = ihb
+        endif
+     enddo
+
+     ! Shuffle
+     do i = 1, nhb_seq
+        rnd = genrand_double1(mts(irep,0))
+        i_swap = ceiling( rnd * nhb_seq )
+
+        i_save = hb_seq(i)
+        hb_seq(i) = hb_seq(i_swap)
+        hb_seq(i_swap) = i_save
+     enddo
+
+     ! Randomely choose one "ihb" that will be deleted, depending on their energies
+     ihb_delete = hb_seq(1)
+     do i = 2, nhb_seq
+        jhb = hb_seq(i)
+        ratio = exp( (ene_hb(jhb, irep) - ene_hb(ihb_delete, irep)) * beta_hbond15 )
+        rnd = genrand_double1(mts(irep,0))
+
+        if (rnd < ratio) then
+           ihb_delete = jhb
+        endif
+     enddo
+
+     ! Delete it
+     hb_status( ihb_delete, irep ) = .False.
+     ene_hb( ihb_delete, irep ) = 0.0e0_PREC
+
+     ! Update hbsite_excess and nhbsite_excess
+     do i = 1, 3
+        ! for one side of the HB interaction
+        ihbsite = idtrna_hb2hbsite(i,1,ihb_delete) 
+        if (ihbsite > 0) then
+           if (hbsite_excess(ihbsite) > 0) then
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
+           endif
+        endif
+   
+        ! the other side of the HB interaction
+        ihbsite = idtrna_hb2hbsite(i,2,ihb_delete) 
+        if (ihbsite > 0) then
+           if (hbsite_excess(ihbsite) > 0) then
+              hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
+           endif
+        endif
+     enddo
+
      nhbsite_excess = 0
      ihbsitelist_excess(:) = 0
      do ihbsite = 1, nhbsite
@@ -316,86 +393,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         endif
      enddo
 
-
-     do while (nhbsite_excess > 0)
-        ! Randomely choose one "ihbsite" that will be deleted
-        rnd = genrand_double1(mts(irep,0))  ! mts(istream,tn))
-
-        ihbsite_delete = ihbsitelist_excess( ceiling( rnd*nhbsite_excess ) )
-        !   1 <= ihbsite_delete <= nhbsite_excess
-
-        ! Generate a sequence of "ihb"s that forms HB interaction involving "ihbsite_delete"
-        nhb_seq = 0
-        hb_seq(:) = 0
-        do i = 1, num_hb_at_hbsite(ihbsite_delete, irep)
-           ihb = list_hb_at_hbsite(i,ihbsite_delete, irep)
-
-           if (hb_status(ihb,irep)) then
-              nhb_seq = nhb_seq + 1
-              hb_seq(nhb_seq) = ihb
-           endif
-        enddo
-
-        ! Shuffle
-        do i = 1, nhb_seq
-           rnd = genrand_double1(mts(irep,0))
-           i_swap = ceiling( rnd * nhb_seq )
-
-           i_save = hb_seq(i)
-           hb_seq(i) = hb_seq(i_swap)
-           hb_seq(i_swap) = i_save
-        enddo
-
-        ! Randomely choose one "ihb" that will be deleted, depending on their energies
-        ihb_delete = hb_seq(1)
-        do i = 2, nhb_seq
-           jhb = hb_seq(i)
-           ratio = exp( (ene_hb(jhb, irep) - ene_hb(ihb_delete, irep)) * beta_hbond15 )
-           rnd = genrand_double1(mts(irep,0))
-
-           if (rnd < ratio) then
-              ihb_delete = jhb
-           endif
-        enddo
-
-        ! Delete it
-        hb_status( ihb_delete, irep ) = .False.
-        ene_hb( ihb_delete, irep ) = 0.0e0_PREC
-
-        ! Update hbsite_excess and nhbsite_excess
-        ! for one side of the HB interaction
-        do i = 1, 3
-           ihbsite = idtrna_hb2hbsite(i,1,ihb_delete) 
-           if (ihbsite <= 0) then
-              cycle
-           endif
-           if (hbsite_excess(ihbsite) <= 0) then
-              cycle
-           endif
-           hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
-        enddo
-        ! the other side of the HB interaction
-        do i = 1, 3
-           ihbsite = idtrna_hb2hbsite(i,2,ihb_delete) 
-           if (ihbsite <= 0) then
-              cycle
-           endif
-           if (hbsite_excess(ihbsite) <= 0) then
-              cycle
-           endif
-           hbsite_excess(ihbsite) = hbsite_excess(ihbsite) - 1
-        enddo
-
-        nhbsite_excess = 0
-        ihbsitelist_excess(:) = 0
-        do ihbsite = 1, nhbsite
-           if (hbsite_excess(ihbsite) > 0) then
-              nhbsite_excess = nhbsite_excess + 1
-              ihbsitelist_excess(nhbsite_excess) = ihbsite
-           endif
-        enddo
-
-     enddo
+  enddo
 !$omp end master
 
 ! Wait until the master finishes deletions

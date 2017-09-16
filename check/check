@@ -46,7 +46,7 @@ set diff_out = 1
 set revdir = /home/hori/check/data_81e8c94
 
 # コンパイル時のcleanの有無
-set clean = 1
+set clean = 0
 # clean = 1 : Make cleanする (デフォルト)
 # clean = 0 : Make cleanしない
 #            （二度目以降のチェックで、cleanの必要のない修正のとき、時間短縮可能。
@@ -58,10 +58,14 @@ set clean = 1
 # レプリカ方向並列数    npar_rep
 
 #===== チェック用 ===== 
-set nprocs   = "0 0 1 4 4"
-set ptile    = "0 0 1 4 4"
-set nthreads = "0 4 1 1 4"
-set npar_rep = "1 1 1 1 1"
+set nprocs   = "0 0 1 4 4 16"
+set ptile    = "0 0 1 4 4 16"
+set nthreads = "0 4 1 1 4 1"
+set npar_rep = "1 1 1 1 1 4"
+#set nprocs   = "0 0 1 4 4"
+#set ptile    = "0 0 1 4 4"
+#set nthreads = "0 4 1 1 4"
+#set npar_rep = "1 1 1 1 1"
 #set nprocs   = "0 0 1 4 4 12"
 #set ptile    = "0 0 1 4 4  4"
 #set nthreads = "0 4 1 1 4  4"
@@ -794,11 +798,11 @@ foreach inp ( `ls inp` )
   set dir4 = gnu.16n01p04t04
      
   switch($inp)
-    case *replica*
+    case *rep*
       diff -q  $dir0/md.rep $dir1/md.rep
       diff -q  $dir0/md_0001.ts $dir1/md_0001.ts
       diff -q  $dir0/md_0002.ts $dir1/md_0002.ts
-      diff -q  $dir0/md_0005.ts $dir1/md_0005.ts
+      #diff -q  $dir0/md_0005.ts $dir1/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir0/md.rep $dir1/md.rep >> $here/diff.out
@@ -809,9 +813,9 @@ foreach inp ( `ls inp` )
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir0/md_0002.ts $dir1/md_0002.ts >> $here/diff.out
         diff $dir0/md_0002.ts $dir1/md_0002.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
-        diff $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
+        #diff $dir0/md_0005.ts $dir1/md_0005.ts >> $here/diff.out
       endif
       if( $tsout ) then
         $tchk     $dir0/md_0001.ts $dir1/md_0001.ts   100
@@ -822,15 +826,15 @@ foreach inp ( `ls inp` )
         $tchk     $dir0/md_0002.ts $dir1/md_0002.ts   300
         $tchk     $dir0/md_0002.ts $dir1/md_0002.ts  1000
         $tchk     $dir0/md_0002.ts $dir1/md_0002.ts 10000
-        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts   100
-        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts   300
-        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts  1000
-        $tchk     $dir0/md_0005.ts $dir1/md_0005.ts 10000
+        #$tchk     $dir0/md_0005.ts $dir1/md_0005.ts   100
+        #$tchk     $dir0/md_0005.ts $dir1/md_0005.ts   300
+        #$tchk     $dir0/md_0005.ts $dir1/md_0005.ts  1000
+        #$tchk     $dir0/md_0005.ts $dir1/md_0005.ts 10000
       endif
       diff -q  $dir0/md.rep $dirx/md.rep
       diff -q  $dir0/md_0001.ts $dirx/md_0001.ts
       diff -q  $dir0/md_0002.ts $dirx/md_0002.ts
-      diff -q  $dir0/md_0005.ts $dirx/md_0005.ts
+      #diff -q  $dir0/md_0005.ts $dirx/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir0/md.rep $dirx/md.rep >> $here/diff.out
@@ -841,9 +845,9 @@ foreach inp ( `ls inp` )
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir0/md_0002.ts $dirx/md_0002.ts >> $here/diff.out
         diff $dir0/md_0002.ts $dirx/md_0002.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
-        diff $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
+        #diff $dir0/md_0005.ts $dirx/md_0005.ts >> $here/diff.out
       endif
       if( $tsout ) then
         $tchk     $dir0/md_0001.ts $dirx/md_0001.ts   100
@@ -854,15 +858,15 @@ foreach inp ( `ls inp` )
         $tchk     $dir0/md_0002.ts $dirx/md_0002.ts   300
         $tchk     $dir0/md_0002.ts $dirx/md_0002.ts  1000
         $tchk     $dir0/md_0002.ts $dirx/md_0002.ts 10000
-        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts   100
-        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts   300
-        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts  1000
-        $tchk     $dir0/md_0005.ts $dirx/md_0005.ts 10000
+        #$tchk     $dir0/md_0005.ts $dirx/md_0005.ts   100
+        #$tchk     $dir0/md_0005.ts $dirx/md_0005.ts   300
+        #$tchk     $dir0/md_0005.ts $dirx/md_0005.ts  1000
+        #$tchk     $dir0/md_0005.ts $dirx/md_0005.ts 10000
       endif
       diff -q $dir1/md.rep $dir4/md.rep
       diff -q $dir1/md_0001.ts $dir4/md_0001.ts
       diff -q $dir1/md_0002.ts $dir4/md_0002.ts
-      diff -q $dir1/md_0005.ts $dir4/md_0005.ts
+      #diff -q $dir1/md_0005.ts $dir4/md_0005.ts
       if( $diff_out ) then
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir1/md.rep $dir4/md.rep >> $here/diff.out 
@@ -873,9 +877,9 @@ foreach inp ( `ls inp` )
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir1/md_0002.ts $dir4/md_0002.ts >> $here/diff.out 
         diff $dir1/md_0002.ts $dir4/md_0002.ts >> $here/diff.out 
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
-        diff $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
+        #diff $dir1/md_0005.ts $dir4/md_0005.ts >> $here/diff.out 
       endif
       if( $tsout ) then
         $tchk    $dir1/md_0001.ts $dir4/md_0001.ts   100
@@ -886,10 +890,10 @@ foreach inp ( `ls inp` )
         $tchk    $dir1/md_0002.ts $dir4/md_0002.ts   300
         $tchk    $dir1/md_0002.ts $dir4/md_0002.ts  1000
         $tchk    $dir1/md_0002.ts $dir4/md_0002.ts 10000
-        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts   100
-        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts   300
-        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts  1000
-        $tchk    $dir1/md_0005.ts $dir4/md_0005.ts 10000
+        #$tchk    $dir1/md_0005.ts $dir4/md_0005.ts   100
+        #$tchk    $dir1/md_0005.ts $dir4/md_0005.ts   300
+        #$tchk    $dir1/md_0005.ts $dir4/md_0005.ts  1000
+        #$tchk    $dir1/md_0005.ts $dir4/md_0005.ts 10000
       endif
       breaksw
     default
@@ -955,7 +959,7 @@ foreach inp ( `ls inp` )
   set dir4 = gnu.16n01p04t04
 
   switch($inp)
-    case *replica*
+    case *rep*
       diff -q $dir0/md.rep  $revdir/data/$inp/$dir0/md.rep
       diff -q $dirx/md.rep  $revdir/data/$inp/$dirx/md.rep
       diff -q $dir1/md.rep  $revdir/data/$inp/$dir1/md.rep
@@ -968,10 +972,10 @@ foreach inp ( `ls inp` )
       diff -q $dirx/md_0002.ts  $revdir/data/$inp/$dirx/md_0002.ts
       diff -q $dir1/md_0002.ts $revdir/data/$inp/$dir1/md_0002.ts
       diff -q $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts
-      diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts
-      diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts
-      diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts
-      diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts
+      #diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts
+      #diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts
+      #diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts
+      #diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts
       if( $diff_out ) then 
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir0/md.rep  $revdir/data/$inp/$dir0/md.rep >> $here/diff.out
@@ -1006,18 +1010,18 @@ foreach inp ( `ls inp` )
         echo '#---------------------------------------------------' >> $here/diff.out
         diff -q $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts >> $here/diff.out
         diff $dir4/md_0002.ts $revdir/data/$inp/$dir4/md_0002.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
-        diff $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
-        diff $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
-        diff $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
-        echo '#---------------------------------------------------' >> $here/diff.out
-        diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
-        diff $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
+        #diff $dir0/md_0005.ts  $revdir/data/$inp/$dir0/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
+        #diff $dirx/md_0005.ts  $revdir/data/$inp/$dirx/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
+        #diff $dir1/md_0005.ts $revdir/data/$inp/$dir1/md_0005.ts >> $here/diff.out
+        #echo '#---------------------------------------------------' >> $here/diff.out
+        #diff -q $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
+        #diff $dir4/md_0005.ts $revdir/data/$inp/$dir4/md_0005.ts >> $here/diff.out
       endif
       breaksw
 

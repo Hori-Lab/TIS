@@ -46,9 +46,10 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 !#ifdef MPI_PAR3
 !  integer :: klen
 !#endif 
-  real(PREC) :: rnd
-  real(PREC) :: p(20), pmin
-  integer :: imin
+  real(PREC) :: rnd, ratio
+  !real(PREC) :: p(20), pmin
+  !integer :: imin
+  integer :: i_swap, i_save, jhb
   integer :: ihb_delete
   integer :: ihbsite_delete
   integer :: nhbsite_excess
@@ -313,7 +314,6 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   !hbsite_excess(1:nhbsite) = hbsite_excess(1:nhbsite) + hbsite_excess_l(1:nhbsite)
 !!!$omp end critical
 !#endif
-!!!$omp barrier
 
   !hbsite_excess(1:nhbsite)  = hbsite_excess(1:nhbsite) - nvalence_hbsite(1:nhbsite)
 !$omp do
@@ -354,61 +354,71 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      enddo
 
 
-!     ! Shuffle
-!     do i = 1, nhb_seq
-!        rnd = genrand_double1(mts(irep,0))
-!        i_swap = ceiling( rnd * nhb_seq )
-!
-!        i_save = hb_seq(i)
-!        hb_seq(i) = hb_seq(i_swap)
-!        hb_seq(i_swap) = i_save
-!     enddo
-!
-!     ! Randomely choose one "ihb" that will be deleted, depending on their energies
-!     ihb_delete = hb_seq(1)
-!     do i = 2, nhb_seq
-!        jhb = hb_seq(i)
-!        delta = hb_energy(jhb,irep) - hb_energy(ihb_delete,irep)
-!        if (delta > 0.0e0_PREC) then
-!           ihb_delete = jhb
-!        else
-!           !ratio = exp( delta * beta )
-!           !rnd = genrand_double1(mts(irep,0))
-!           !if (rnd < ratio) then
-!           if ( genrand_double1(mts(irep,0)) < exp(delta * beta) ) then
-!              ihb_delete = jhb
-!           endif
-!        endif
-!     enddo
-
-     ! Randomely choose one "ihb" that will be deleted, depending on their energies
-     p(:) = 0.0e0_PREC
-     pmin = 1.0e30_PREC  ! To find the minimum energy one
-     imin = 1
+     ! Shuffle
      do i = 1, nhb_seq
-        ihb = hb_seq(i)
-        p(i) = exp(-beta_hbond15 * ene_hb(ihb,irep))
-        if (p(i) < pmin) then
-           pmin = p(i)
-           imin = i
-        endif
+        rnd = genrand_double1(mts(irep,0))
+        i_swap = ceiling( rnd * nhb_seq )
+
+        i_save = hb_seq(i)
+        hb_seq(i) = hb_seq(i_swap)
+        hb_seq(i_swap) = i_save
      enddo
 
-     p(:) = p(:) / sum(p)
+     ! Randomely choose one "ihb" that will be deleted, depending on their energies
+     ihb_delete = hb_seq(1)
+     do i = 2, nhb_seq
+        jhb = hb_seq(i)
 
-     rnd = genrand_double1(mts(irep,0))
-     if (p(imin) < rnd) then  ! First, try one that has the minimum energy
-        ihb_delete = hb_seq(imin)
-     else                     ! If not good, try others until hit
-        ihb_delete = hb_seq(1)
-        do i = 2, nhb_seq
-           rnd = genrand_double1(mts(irep,0))
-           if (p(i) < rnd) then
-              ihb_delete = hb_seq(i)
-              exit
-           endif
-        enddo
-     endif
+        ratio = exp( (ene_hb(jhb, irep) - ene_hb(ihb_delete, irep)) * beta_hbond15 )
+        rnd = genrand_double1(mts(irep,0))
+
+        if (rnd < ratio) then
+           ihb_delete = jhb
+        endif
+
+        !delta = hb_energy(jhb,irep) - hb_energy(ihb_delete,irep)
+        !if (delta > 0.0e0_PREC) then
+        !   ihb_delete = jhb
+        !else
+        !   !ratio = exp( delta * beta )
+        !   !rnd = genrand_double1(mts(irep,0))
+        !   !if (rnd < ratio) then
+        !   if ( genrand_double1(mts(irep,0)) < exp(delta * beta_hbond15) ) then
+        !      ihb_delete = jhb
+        !   endif
+        !endif
+     enddo
+
+!     ! Randomely choose one "ihb" that will be deleted, depending on their energies
+!     p(:) = 0.0e0_PREC
+!     pmin = 1.0e30_PREC  ! To find one has the minimum possibility to survive
+!     imin = 1
+!     do i = 1, nhb_seq
+!        ihb = hb_seq(i)
+!        p(i) = exp(-beta_hbond15 * ene_hb(ihb,irep))
+!        if (p(i) < pmin) then
+!           pmin = p(i)
+!           imin = i
+!        endif
+!     enddo
+!
+!     p(:) = p(:) / sum(p)
+!
+!     rnd = genrand_double1(mts(irep,0))
+!     write(*,*) 'force_dtrna_hbond15: 2 rnd=', rnd
+!     if (p(imin) < rnd) then  ! First, try one that has the minimum possibility
+!        ihb_delete = hb_seq(imin)
+!     else                     ! If not good, try others until hit
+!        ihb_delete = hb_seq(1)
+!        do i = 2, nhb_seq
+!           rnd = genrand_double1(mts(irep,0))
+!           write(*,*) 'force_dtrna_hbond15: 3 rnd=', rnd
+!           if (p(i) < rnd) then
+!              ihb_delete = hb_seq(i)
+!              exit
+!           endif
+!        enddo
+!     endif
 
      ! Delete it
      hb_status( ihb_delete, irep ) = .False.

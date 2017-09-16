@@ -47,7 +47,7 @@ NINFO(all/all) vpk15_HP2.ninfo
 n_step_sim = 1
 n_tstep(1) = 2000
 tstep_size = 0.05
-n_step_save =  100
+n_step_save =  10
 n_step_neighbor = 100
 n_step_rst = 2000
 i_com_zeroing = 1
@@ -95,8 +95,9 @@ viscosity = 0.000015
 
 
 <<<< replica
-n_replica_temp = 8
-n_step_exchange = 100
+n_replica_temp = 4
+#n_replica_temp = 8
+n_step_exchange = 200
 n_step_save_rep = 100
 >>>>
 
@@ -107,8 +108,8 @@ REPLICA(1)  = 298.15
 REPLICA(2)  = 303.15
 REPLICA(3)  = 308.15
 REPLICA(4)  = 313.15
-REPLICA(5)  = 318.15
-REPLICA(6)  = 323.15
-REPLICA(7)  = 327.15
-REPLICA(8)  = 329.15
+#REPLICA(5)  = 318.15
+#REPLICA(6)  = 323.15
+#REPLICA(7)  = 327.15
+#REPLICA(8)  = 329.15
 >>>>
