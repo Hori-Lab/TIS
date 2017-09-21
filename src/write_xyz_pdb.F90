@@ -7,7 +7,7 @@ subroutine write_xyz_pdb(istep)
   use const_index
   use var_io,     only : outfile
   use var_struct,  only : nunit_real, lunit2mp, ires_mp, &
-                          cmp2seq, cmp2atom, xyz_mp_rep, iclass_mp
+                          cmp2seq, cmp2atom, pxyz_mp_rep, iclass_mp
   use var_replica, only : n_replica_mpi, irep2grep
 #ifdef MPI_PAR
   use mpiconst
@@ -51,9 +51,9 @@ subroutine write_xyz_pdb(istep)
            write (outfile%pdb(grep), "(a6, i5, (1xa4), (1xa3), a2, i4, (4x3f8.3))") &
                 char6, imp, cmp2atom(imp), cmp2seq(imp), &
                 chainid, iresnum, &
-                xyz_mp_rep(1, imp, irep), &
-                xyz_mp_rep(2, imp, irep), &
-                xyz_mp_rep(3, imp, irep)
+                pxyz_mp_rep(1, imp, irep), &
+                pxyz_mp_rep(2, imp, irep), &
+                pxyz_mp_rep(3, imp, irep)
         end do
    
         write (outfile%pdb(grep), '(a2)') '>>'
