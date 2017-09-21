@@ -22,6 +22,7 @@ subroutine mloop_nativeinfo(istep_sim)
                          ibd2mp, factor_bd, coef_bd, &
                          iba2mp, factor_ba, coef_ba, &
                          ifene2mp, fene_nat, coef_fene, dist2_fene, & 
+                         irouse2mp, coef_rouse, & 
                          idih2mp, factor_dih, coef_dih, &
                          go_nat, go_nat2, icon_dummy_mgo, &
                          icon2mp, factor_go, coef_go, &
@@ -155,10 +156,15 @@ subroutine mloop_nativeinfo(istep_sim)
 
   ! FENE
   call MPI_Bcast(nfene,         1,              MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(ifene2mp,    2*MXMPBD*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(fene_nat,      MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(coef_fene,   2*MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(dist2_fene,    MXMPBD*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(ifene2mp,    2*MXMPFENE*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(fene_nat,      MXMPFENE*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_fene,     MXMPFENE*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(dist2_fene,    MXMPFENE*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+
+  ! Rouse
+  call MPI_Bcast(nrouse,     1,                   MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(irouse2mp,  2*MXMPROUSE*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_rouse, 2*MXMPROUSE*nmp_all*n_replica_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
   ! angle
   call MPI_Bcast(nba,       1,                MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
