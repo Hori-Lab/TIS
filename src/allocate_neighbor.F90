@@ -6,7 +6,7 @@ subroutine allocate_neighbor()
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele, inperi
-  use var_struct,  only : lexv, iexv2mp, lele, iele2mp, coef_ele, &
+  use var_struct,  only : lexv, iexv2mp, exv2para, lele, iele2mp, coef_ele, &
 !                          nhpneigh, lhp2neigh, ineigh2hp, cutoff_dmin_hp, &
 !                          cutoff_dmax_hp, nhp, &
                           ncharge, nmp_all, &
@@ -38,6 +38,7 @@ subroutine allocate_neighbor()
   flg_error = .false.
   if (allocated(lexv))           flg_error = .true.
   if (allocated(iexv2mp))        flg_error = .true.
+  if (allocated(exv2para))       flg_error = .true.
   if (allocated(lele))           flg_error = .true.
   if (allocated(iele2mp))        flg_error = .true.
   if (allocated(coef_ele))       flg_error = .true.
@@ -67,16 +68,20 @@ subroutine allocate_neighbor()
 
 #ifdef SHARE_NEIGH_PNL
   allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
+  allocate( exv2para(3,      MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
 #else
   allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all/npar_mpi+1, n_replica_mpi), stat=ier)
+  allocate( exv2para(3,      MXMPNEIGHBOR*nmp_all/npar_mpi+1, n_replica_mpi), stat=ier)
 #endif
 
 #else
   allocate( iexv2mp(n_index, MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
+  allocate( exv2para(3,      MXMPNEIGHBOR*nmp_all, n_replica_mpi), stat=ier)
 #endif
 
   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
   iexv2mp(:,:,:) = 0
+  exv2para(:,:,:) = 0
   
   ! for electrostatic interaction
   if (inmisc%force_flag(INTERACT%ELE)) then
@@ -195,12 +200,13 @@ end subroutine allocate_neighbor
 
 subroutine deallocate_neighbor
 
-   use var_struct,  only : lexv, iexv2mp, lele, iele2mp, coef_ele, &
+   use var_struct,  only : lexv, iexv2mp, exv2para, lele, iele2mp, coef_ele, &
 !                           nhpneigh, ineigh2hp, lhp2neigh, cutoff_dmax_hp, cutoff_dmin_hp, &
                            nhbneigh, ineigh2hb, dtrna_hb_neigh_dist2
 
    if (allocated(lexv))          deallocate(lexv)
    if (allocated(iexv2mp))       deallocate(iexv2mp)
+   if (allocated(exv2para))      deallocate(exv2para)
    if (allocated(lele))          deallocate(lele)
    if (allocated(iele2mp))       deallocate(iele2mp)
    if (allocated(coef_ele))      deallocate(coef_ele)

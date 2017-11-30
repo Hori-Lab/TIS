@@ -89,9 +89,10 @@ module const_index
      integer :: RNA    !<  3: RNA
      integer :: LIG    !<  4: Ligand (not implicit)
      integer :: ION    !<  5: Ion
+     integer :: SOPSC  !<  6: SOP side chain model
      integer :: MAX    !<  6: Maximum value
   endtype class_type
-  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5,6)
+  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5,6,6)
 
   type energy_type
      integer :: TOTAL         !<  1: Total energy
@@ -231,8 +232,10 @@ module const_index
      integer :: ION_K      !<  8
      integer :: ION_CL     !<  9
      integer :: LIG_X1     !<  10
+     integer :: SOPBB      !<  11
+     integer :: SOPSC      !<  12
   endtype mp_type
-  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9,10)
+  type(mp_type), parameter :: MPTYPE = mp_type(0,1,2,3,4,5,6,7,8,9,10,11,12)
 
   type chemical_type
      integer :: UNKNOWN !<  0: Default value is stored here

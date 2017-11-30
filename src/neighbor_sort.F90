@@ -113,6 +113,7 @@ contains
           jmp = iexv2mp_in(2,iexv)
           iexv2mp(1,iexv2, irep) = imp
           iexv2mp(2,iexv2, irep) = jmp
+          iexv2mp(3,iexv2, irep) = iexv_name
 
         end do loop_iexv
       end do

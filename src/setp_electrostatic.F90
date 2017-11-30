@@ -59,6 +59,7 @@ subroutine setp_electrostatic()
   inele%i_calc_method = 0
   inele%n_charge_change = 0
   inele%i_function_form = -1
+  inele%i_sopsc_consec_res = -1
   inele%ewld_alpha = INVALID_VALUE
   inele%ewld_hmax = INVALID_VALUE
   
@@ -134,6 +135,10 @@ subroutine setp_electrostatic()
         cvalue = 'ewld_hmax'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%ewld_hmax, cvalue)
+
+        cvalue = 'i_sopsc_consec_res'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inele%i_sopsc_consec_res, cvalue)
      end do
 
      if(ctmp00(1:11) == 'CHARGE_TYPE') then
@@ -343,6 +348,20 @@ subroutine setp_electrostatic()
      endif
      if (inele%ewld_hmax > INVALID_JUDGE) then
         error_message = 'Error: invalid value for inele%ewld_hmax'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  endif
+
+  if (.not. inmisc%class_flag(CLASS%SOPSC)) then
+     inele%i_sopsc_consec_res = 1  ! Default
+     write (lunout, *) "i_sopsc_consec_res = 1 (not relevant if no SOPSC unit)"
+  else
+     if (inele%i_sopsc_consec_res == 0) then
+        write (lunout, *) "i_sopsc_consec_res = 0"
+     else if (inele%i_sopsc_consec_res == 1) then
+        write (lunout, *) "i_sopsc_consec_res = 1"
+     else
+        error_message = 'Error: invalid value for inele%i_sopsc_consec_res'
         call util_error(ERROR%STOP_ALL, error_message)
      endif
   endif

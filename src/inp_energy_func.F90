@@ -363,25 +363,20 @@ subroutine inp_energy_func()
      do iequa = 1, nequat
         
         cvalue = 'i_use_atom_protein'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_use_atom_protein, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_use_atom_protein, cvalue)
 
         cvalue = 'i_residuenergy_radii'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_residuenergy_radii, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_residuenergy_radii, cvalue)
 
         cvalue = 'i_output_energy_style'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_output_energy_style, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_output_energy_style, cvalue)
 
         cvalue = 'i_triple_angle_term'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_triple_angle_term, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_triple_angle_term, cvalue)
 
         cvalue = 'i_coef_from_ninfo'
         if(csides(1, iequa) == cvalue) then
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                i_ninfo, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), i_ninfo, cvalue)
            !if (i_ninfo == 0) then
            !   inmisc%flg_coef_from_ninfo = .false.
            !else if (i_ninfo == 1) then
@@ -394,16 +389,15 @@ subroutine inp_energy_func()
         end if
 
         cvalue = 'i_temp_independent'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_temp_independent, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_temp_independent, cvalue)
 
-        cvalue = 'i_dtrna_model'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_dtrna_model, cvalue)
+        if (inmisc%force_flag(INTERACT%DTRNA)) then
+           cvalue = 'i_dtrna_model'
+           call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_dtrna_model, cvalue)
+        endif
 
         cvalue = 'i_exv_all'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_exv_all, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_exv_all, cvalue)
 
      end do
   end do
@@ -545,15 +539,15 @@ subroutine inp_energy_func()
   endif
 
   ! -----------------------------------------------------------------
-  if (inmisc%force_flag(INTERACT%DTRNA)) then
-     if(inmisc%i_dtrna_model == 2013) then
-        write (lunout, *) 'i_dtrna_model = 2013'
-     else if(inmisc%i_dtrna_model == 2015) then
-        write (lunout, *) 'i_dtrna_model = 2015'
-     else
-        error_message = 'Error: invalid value for inmisc%i_dtrna_model'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
+  if(inmisc%i_dtrna_model == 0) then
+     write (lunout, *) 'i_dtrna_model = 0'
+  else if(inmisc%i_dtrna_model == 2013) then
+     write (lunout, *) 'i_dtrna_model = 2013'
+  else if(inmisc%i_dtrna_model == 2015) then
+     write (lunout, *) 'i_dtrna_model = 2015'
+  else
+     error_message = 'Error: invalid value for inmisc%i_dtrna_model'
+     call util_error(ERROR%STOP_ALL, error_message)
   endif
 
   ! -----------------------------------------------------------------
