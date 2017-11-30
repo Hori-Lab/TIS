@@ -48,7 +48,6 @@ i_bridge = 1
 LOCAL(1)      L_BOND
 NLOCAL(1/1)   NOTHING
 i_triple_angle_term = 0
-i_use_atom_protein = 0
 i_use_atom_dna = 0
 i_coef_from_ninfo = 1
 >>>>
