@@ -49,7 +49,6 @@ subroutine inp_energy_func()
 
 !  inflp%i_flp = 0 ! flexible_local_potential
 
-  inmisc%i_use_atom_protein = 0
   inmisc%i_residuenergy_radii = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
@@ -362,9 +361,6 @@ subroutine inp_energy_func()
 
      do iequa = 1, nequat
         
-        cvalue = 'i_use_atom_protein'
-        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_use_atom_protein, cvalue)
-
         cvalue = 'i_residuenergy_radii'
         call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_residuenergy_radii, cvalue)
 
@@ -406,7 +402,6 @@ subroutine inp_energy_func()
   end if
 
   call MPI_Bcast(inmisc%flg_coef_from_ninfo,   1,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_residuenergy_radii,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_triple_angle_term,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
@@ -473,20 +468,6 @@ subroutine inp_energy_func()
   write (lunout, '(i2, a)') INTERACT%EXV_GAUSS, ' : EXV_GAUSS'
   write (lunout, '(i2, a)') INTERACT%CON_GAUSS, ' : CON_GAUSS'
   write (lunout, '(a)') ''
-
-
-  ! -----------------------------------------------------------------
-  ! using atoms of protein, inmisc%i_use_atom_protein
-  if(inmisc%i_use_atom_protein == 0) then
-     write (lunout, *) 'using Ca'
-  else if(inmisc%i_use_atom_protein == 1) then
-     write (lunout, *) 'using Cb'
-  else if(inmisc%i_use_atom_protein == 2) then
-     write (lunout, *) 'using the center of mass '
-  else
-     error_message = 'Error: invalid value for inmisc%i_use_atom_protein'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
 
 
   ! -----------------------------------------------------------------

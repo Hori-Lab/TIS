@@ -386,7 +386,6 @@ module var_setp
   !> structure for parameters reading from various fields in input file
   type input_miscellaneous
      ! flag
-     integer    :: i_use_atom_protein
      integer    :: i_residuenergy_radii
      integer    :: i_output_energy_style
      integer    :: i_dtrna_model

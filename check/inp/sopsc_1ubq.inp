@@ -52,7 +52,6 @@ i_flp = 0
 **       = 0 : for using CA atom (default)
 **       = 1 : for using CB atom
 **       = 2 : for using the center of mass of side chain
-i_use_atom_protein = 0
 
 
 ** for excluded volume interactions
