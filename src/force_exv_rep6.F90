@@ -7,7 +7,7 @@ subroutine force_exv_rep6(irep, force_mp)
   use const_physical
   use const_index
   use var_setp,   only : inpro, inperi
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, exv2para
   use mpiconst
 
   implicit none
@@ -19,12 +19,12 @@ subroutine force_exv_rep6(irep, force_mp)
   integer :: imp1, imp2
   integer :: iexv, imirror
   real(PREC) :: dist2
-  real(PREC) :: coef_pro!, coef_rna, coef_rna_pro, coef_llig, coef_lpro
-  real(PREC) :: cdist2_pro!, cdist2_rna, cdist2_rna_pro, &
+  !real(PREC) :: coef_pro!, coef_rna, coef_rna_pro, coef_llig, coef_lpro
+  !real(PREC) :: cdist2_pro!, cdist2_rna, cdist2_rna_pro, &
                 !cdist2_llig, cdist2_lpro
   !real(PREC) :: cutoff2, cutoff2_pro, cutoff2_rna, cutoff2_rna_pro, &
                 !cutoff2_llig, cutoff2_lpro
-  real(PREC) :: cutoff2_pro
+  !real(PREC) :: cutoff2_pro
   real(PREC) :: roverdist2, roverdist4, roverdist8
   real(PREC) :: dvdw_dr
   real(PREC) :: v21(SDIM), for(SDIM)
@@ -35,9 +35,9 @@ subroutine force_exv_rep6(irep, force_mp)
   ! --------------------------------------------------------------------
   ! exvol protein
   ! for speed up
-  cutoff2_pro = (inpro%cutoff_exvol * inpro%cdist_rep6)**2
-  cdist2_pro = inpro%cdist_rep6**2
-  coef_pro = 6.0e0_PREC * inpro%crep6 / cdist2_pro
+  !cutoff2_pro = (inpro%cutoff_exvol * inpro%cdist_rep6)**2
+  !cdist2_pro = inpro%cdist_rep6**2
+  !coef_pro = 6.0e0_PREC * inpro%crep6 / cdist2_pro
   !if (inmisc%class_flag(CLASS%RNA)) then
   !   cutoff2_rna = (inrna%cutoff_exvol * inrna%cdist_rep12 )**2
   !   cdist2_rna = inrna%cdist_rep12**2
@@ -84,46 +84,19 @@ subroutine force_exv_rep6(irep, force_mp)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      end if
      
-!     v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-
      dist2 = dot_product(v21,v21)
 
-!     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-!        cutoff2 = cutoff2_rna
-!        cdist2  = cdist2_rna
-!        coef    = coef_rna
-!     else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-!              (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
-!        cutoff2 = cutoff2_rna_pro
-!        cdist2  = cdist2_rna_pro
-!        coef    = coef_rna_pro
-!     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
-!        cutoff2 = cutoff2_llig
-!        cdist2  = cdist2_llig
-!        coef    = coef_llig
-!        if(iclass_mp(imp1) == CLASS%PRO .OR. iclass_mp(imp2)==CLASS%PRO)then
-!           cutoff2 = cutoff2_lpro
-!           cdist2  = cdist2_lpro
-!           coef    = coef_lpro
-!        end if
-!     else
-!        cutoff2 = cutoff2_pro
-!        cdist2  = cdist2_pro
-!        coef    = coef_pro
-!     endif
-
-     if(dist2 > cutoff2_pro) cycle
+     if(dist2 > exv2para(1,iexv,irep)) cycle
      
      ! -----------------------------------------------------------------
-     roverdist2 = cdist2_pro / dist2
+     roverdist2 = exv2para(2,iexv,irep) / dist2
      roverdist4 = roverdist2 * roverdist2
      roverdist8 = roverdist4 * roverdist4
-     dvdw_dr = coef_pro * roverdist8
+     dvdw_dr = 6.0 * exv2para(3,iexv,irep) / exv2para(2,iexv,irep) * roverdist8
      if(dvdw_dr > DE_MAX) then
         !write (*, *) "exvol protein", imp1, imp2, dvdw_dr
         dvdw_dr = DE_MAX
      end if
-!     if(dvdw_dr > 4.0e0_PREC) dvdw_dr = 4.0e0_PREC
 
      for(1:3) = dvdw_dr * v21(1:3)
      force_mp(1:3, imp2) = force_mp(1:3, imp2) + for(1:3)

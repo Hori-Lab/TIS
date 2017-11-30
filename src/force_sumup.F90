@@ -201,11 +201,14 @@ subroutine force_sumup(force_mp, &  ! [ o]
         ! Also used in ion-only simulations
         call force_exv_dt15 (irep, force_mp_l(1,1,tn))
   else
-     if (inmisc%i_residuenergy_radii == 0) then
-        call force_exv_rep12 (irep, force_mp_l(1,1,tn))
+     !if (inmisc%i_residuenergy_radii == 0) then
+     !   call force_exv_rep12 (irep, force_mp_l(1,1,tn))
+     !   call force_exv_rep6 (irep, force_mp_l(1,1,tn))
+     !else if (inmisc%i_residuenergy_radii == 1) then
+     !   call force_exv_restype (irep, force_mp_l(1,1,tn))
+     !endif
+     if (inmisc%force_flag(INTERACT%EXV6)) then
         call force_exv_rep6 (irep, force_mp_l(1,1,tn))
-     else if (inmisc%i_residuenergy_radii == 1) then
-        call force_exv_restype (irep, force_mp_l(1,1,tn))
      endif
      if (inmisc%force_flag(INTERACT%EXV_WCA)) then
         call force_exv_wca (irep, force_mp_l(1,1,tn))

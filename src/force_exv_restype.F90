@@ -34,7 +34,7 @@ subroutine force_exv_restype(irep, force_mp)
   ! exvol protein
   ! for speed up
   coef = 12.0e0_PREC * inexv%exv_coef
-  cutoff02 = inexv%exv_cutoff * inexv%exv_cutoff
+  cutoff02 = inexv%exv12_cutoff * inexv%exv12_cutoff
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL

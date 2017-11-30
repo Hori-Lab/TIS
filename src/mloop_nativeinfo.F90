@@ -56,10 +56,8 @@ subroutine mloop_nativeinfo(istep_sim)
   integer :: iopen_status
   integer :: nld, inat, i_ninfo_type
   integer :: inat_unit(MXUNIT, MXUNIT)
-  real(PREC) :: cgo_pro
   character(CARRAY_MXFILE) :: cnat_fname(MXUNIT*MXUNIT)
   character(CARRAY_MSG_ERROR) :: error_message
-  logical :: flg_enm
 
   interface
      subroutine util_sort_contact(ipost2pre_con)
@@ -290,57 +288,19 @@ subroutine mloop_nativeinfo(istep_sim)
   if (inmisc%force_flag(INTERACT%WCA)) then
      call util_sort_wca()
   endif
+  if (inmisc%force_flag(INTERACT%LJ)) then
+     call util_sort_LJ()
+  endif
 !  if (inmisc%class_flag(CLASS%RNA)) then
 !     call util_sort_rna_bp()
 !     call util_sort_rna_st()
 !  endif
      
   ! ------------------------------------------------------------
-  ! calc coef_go and ncon_unit
-!  if (inmisc%force_flag(INTERACT%ENM)) then
-!     cgo_pro     = inenm%cenm
-!     flg_enm = .true.
-!  else
-     cgo_pro     = inpro%cgo1210
-     flg_enm = .false.
-!  endif
-
   ncon_unit(1:nunit_all, 1:nunit_all) = 0
   do icon = 1, ncon
      iunit = icon2unit(1, icon)
      junit = icon2unit(2, icon)
-
-!     if (.not. inmisc%flg_coef_from_ninfo) then
-!        iConType = get_icon_type(icon2mp(1, icon), icon2mp(2, icon))
-!
-!        selectcase (iConType)
-!        case (CONTYPE%RP_RP)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_P_P
-!        case (CONTYPE%RP_RB)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_P_S
-!        case (CONTYPE%RP_RS)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_P_B
-!        case (CONTYPE%RS_RS)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_S_S
-!        case (CONTYPE%RS_RB)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_S_B
-!        case (CONTYPE%RB_RB)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_B_B
-!        case (CONTYPE%PRO_RP)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_pro_P
-!        case (CONTYPE%PRO_RS)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_pro_B
-!        case (CONTYPE%PRO_RB)
-!           coef_go(icon) = factor_go(icon) * inrna%cgo1210_pro_S
-!        case (CONTYPE%PRO_PRO)
-!           coef_go(icon) = factor_go(icon) * inpro%cgo1210
-!        case (CONTYPE%PRO_LIG)
-!           coef_go(icon) = factor_go(icon) * inpro%cgo1210
-!        case default
-!           write(error_message,*) 'Error: logical defect in mloop_nativeinfo; iConType=',iConType
-!           call util_error(ERROR%STOP_ALL, error_message)
-!        endselect
-!     endif
 
      ncon_unit(iunit, junit) = ncon_unit(iunit, junit) + 1 
   end do

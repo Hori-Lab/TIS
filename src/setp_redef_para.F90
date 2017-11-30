@@ -167,9 +167,13 @@ subroutine setp_redef_para()
 
         !---------------------------------------------------------------------
         ! exv.para
-        cvalue = 'exv_cutoff'
+        cvalue = 'exv6_cutoff'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inexv%exv_cutoff, cvalue)
+             inexv%exv6_cutoff, cvalue)
+
+        cvalue = 'exv12_cutoff'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             inexv%exv12_cutoff, cvalue)
 
         cvalue = 'exv_coef'
         call ukoto_rvalue2(lunout, csides(1, iequa), &

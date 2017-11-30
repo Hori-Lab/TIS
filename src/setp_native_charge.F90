@@ -61,6 +61,40 @@ subroutine setp_native_charge()
               end if
            end if
         end do do_imp
+
+     else if(iclass_unit(iunit) == CLASS%SOPSC) then
+        do_imp_sopsc: do imp1 = lunit2mp(1, iunit), lunit2mp(2, iunit)
+           if(inele%flag_ele(imp1)) then
+              !! Check "CHARGE_CHANGE"
+              do i_charge_change = 1, inele%n_charge_change
+                 if (inele%charge_change_imp(i_charge_change) == imp1) then
+                    icharge = icharge + 1   
+                    icharge2mp(icharge) = imp1
+                    lmp2charge(imp1) = icharge
+                    coef_charge(icharge,:) = inele%charge_change_value(i_charge_change)
+                    cycle do_imp_sopsc
+                 endif
+              enddo
+
+              !! Assign default charge values depending on the amino acid type.
+              if (imp2type(imp1) /= MPTYPE%SOPSC) then
+                 cycle do_imp_sopsc
+              endif
+
+              aaid = ifunc_seq2id(cmp2seq(imp1))
+              if(aaid < 1 .or. aaid > SEQID%VAL) then
+                 write(error_message,*) 'Error: invalid charge type is specified in setp_native_charge.F90 aaid=', aaid
+                 call util_error(ERROR%STOP_ALL, error_message)
+              end if
+
+              if(inele%coef_charge_type(aaid) /= 0) then
+                 icharge = icharge + 1
+                 icharge2mp(icharge) = imp1
+                 lmp2charge(imp1) = icharge
+                 coef_charge(icharge,:) = inele%coef_charge_type(aaid)
+              end if
+           end if
+        end do do_imp_sopsc
     
      else if (iclass_unit(iunit) == CLASS%RNA) then
         do_imp_rna: do imp1 = lunit2mp(1, iunit), lunit2mp(2, iunit)

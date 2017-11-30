@@ -5,7 +5,7 @@ subroutine calc_size_structures()
 
   use const_maxsize, only : M_INT, S_REAL, LOGIC
   use var_io,   only : infile, outfile, num_file
-  use var_setp, only : inpara, inpro, inion, inperi,&
+  use var_setp, only : inpara, inpro, insopsc, inion, inperi,&
                        indtrna, indtrna13, indtrna15, indtrna19, inarna, &
                        insimu, inwidom, inmisc, &
                        inligand, inele, inexv, inpmf
@@ -44,6 +44,7 @@ subroutine calc_size_structures()
   ! var_setp
   inpara%sz = sizeof(inpara)
   inpro%sz  = sizeof(inpro)
+  insopsc%sz  = sizeof(insopsc)
   inion%sz  = sizeof(inion)
 !  inrna%sz  = sizeof(inrna)
   indtrna%sz= sizeof(indtrna)

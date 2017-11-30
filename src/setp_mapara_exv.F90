@@ -34,9 +34,10 @@ subroutine setp_mapara_exv()
   ! -------------------------------------------------------------------
   ! Initialize parameters
 
-  inexv%exv_sigma(0:CHEMICALTYPE%MAX) = 4.5
-  inexv%exv_cutoff = 2.0
-  inexv%exv_coef = 0.6
+  inexv%exv_rad(0:CHEMICALTYPE%MAX) = 0.0
+  inexv%exv12_cutoff = 0.0
+  inexv%exv6_cutoff = 0.0
+  inexv%exv_coef = 0.0
 
   ! -------------------------------------------------------------------
   ! Initialize file handle
@@ -47,7 +48,7 @@ subroutine setp_mapara_exv()
   if (myrank == 0) then
 #endif
 
-     ! Reading input for exv_sigma(i)
+     ! Reading input for exv_rad(i)
      rewind(lunpara)
 
      call ukoto_uiread2(lunpara, lunout, 'exv_para        ', kfind, &
@@ -61,17 +62,35 @@ subroutine setp_mapara_exv()
      do iline = 1, nlines
         cline = cwkinp(iline)
 
-        if(cline(1:9) == 'EXV_SIGMA') then
+        if(cline(1:13) == 'SOPSC_EXV_RAD') then
            write(ctype, '(20a)') (' ', i=1,20)
            read (cline, *) cdummy, ctype, x
-           write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading excluded volume sigma: ', trim(cdummy),trim(ctype), x
-           inexv%exv_sigma( char2ichem(ctype) ) = x
+           write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading radii for excluded volume: ', trim(cdummy),trim(ctype), x
+
+           if (ctype == 'BB_BB') then
+              inexv%exv_rad_sopsc_BB_BB = x
+           else if (ctype == 'BB_SC') then
+              inexv%exv_rad_sopsc_BB_SC = x
+           else
+              inexv%exv_rad_sopsc( char2ichem(ctype) ) = x
+           endif 
+
+        !if(cline(1:9) == 'EXV_SIGMA') then
+        else if(cline(1:7) == 'EXV_RAD') then
+           write(ctype, '(20a)') (' ', i=1,20)
+           read (cline, *) cdummy, ctype, x
+           write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading radii for excluded volume: ', trim(cdummy),trim(ctype), x
+           inexv%exv_rad( char2ichem(ctype) ) = x
+
         else
            call ukoto_uiequa2(lunout, cline, nequat, csides)
            do iequa = 1, nequat
 
-              cvalue = 'exv_cutoff'
-              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv_cutoff, cvalue)
+              cvalue = 'exv12_cutoff'
+              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv12_cutoff, cvalue)
+
+              cvalue = 'exv6_cutoff'
+              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv6_cutoff, cvalue)
 
               cvalue = 'exv_coef'
               call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv_coef, cvalue)
@@ -143,7 +162,7 @@ contains
        char2ichem = CHEMICALTYPE%VAL
     else
        char2ichem = CHEMICALTYPE%UNKNOWN
-       write(error_message,*) 'Error: unknown chemical type in "exv_sigma"',&
+       write(error_message,*) 'Error: unknown chemical type in "exv_rad"',&
             'field in para/exv.para;', c
        call util_error(ERROR%STOP_ALL, error_message)
     end if

@@ -7,7 +7,7 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   use const_index
   use var_setp,    only : inpro, inperi
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
-                          lexv, iexv2mp
+                          lexv, iexv2mp, exv2para
   use mpiconst
 
   implicit none
@@ -21,7 +21,6 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
   real(PREC) :: dist2, ene
-  real(PREC) :: coef_pro, cdist2_pro, cutoff2_pro
   real(PREC) :: roverdist2
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
@@ -31,16 +30,14 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
   ! ------------------------------------------------------------------------
   ! The formula of (sigma/r)**6 repulsion energy
   !
-  ! energy = crep6 * (cdist_rep6/dist)**6
+  ! energy = epsilon * (sigma / dist) ** 6   if dist <= cutoff
+  !        = 0                                 otherwise
   ! 
-  ! crep6  :  value of controling energy size of repulsion
-  ! cdist_rep6  : radius of rejection volume
-
-  ! ------------------------------------------------------------------------
-  ! for speed up
-  cutoff2_pro = (inpro%cutoff_exvol*inpro%cdist_rep6)**2
-  cdist2_pro = inpro%cdist_rep6 * inpro%cdist_rep6
-  coef_pro = inpro%crep6
+  ! --------------------------------------------------------------------
+  ! exv2para(1,iexv,irep) : cutoff ** 2 = (coef_cutoff * sigma) ** 2
+  ! exv2para(2,iexv,irep) : sigma ** 2
+  ! exv2para(3,iexv,irep) : epsilon
+  ! --------------------------------------------------------------------
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH_PNL
@@ -70,34 +67,21 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
      
      dist2 = dot_product(v21, v21)
 
-     !if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-     !   cutoff2 = cutoff2_rna
-     !   cdist2  = cdist2_rna
-     !   coef    = coef_rna
-     !else if ((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-     !         (iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA)) then
-     !   cutoff2 = cutoff2_rna_pro
-     !   cdist2  = cdist2_rna_pro
-     !   coef    = coef_rna_pro
-     !else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
-     !   cutoff2 = cutoff2_llig
-     !   cdist2  = cdist2_llig
-     !   coef    = coef_lig
-     !   if(iclass_mp(imp1) == CLASS%PRO .OR. iclass_mp(imp2) == CLASS%PRO) then
-     !      cutoff2 = cutoff2_lpro
-     !      cdist2  = cdist2_lpro
-     !   end if
-     !else
-     !   cutoff2 = cutoff2_pro
-     !   cdist2  = cdist2_pro
-     !   coef    = coef_pro
-     !endif
+     if(dist2 > exv2para(1,iexv,irep)) then
+#ifdef _DEBUG
+        write(*,'(a,3(x1i5),4(x1f9.4),1x,a)') 'energy_exv6:', iexv, imp1, imp2, &
+                      sqrt(exv2para(1,iexv,irep)), sqrt(exv2para(2,iexv,irep)), exv2para(3,iexv,irep), sqrt(dist2), 'cycle'
+#endif
+        cycle
+     endif
 
-     if(dist2 > cutoff2_pro) cycle
+     roverdist2 = exv2para(2,iexv,irep) / dist2
+     ene = exv2para(3,iexv,irep) * roverdist2 ** 3
 
-     ! --------------------------------------------------------------------
-     roverdist2 = cdist2_pro / dist2
-     ene = coef_pro * roverdist2 ** 3
+#ifdef _DEBUG
+     write(*,'(a,3(x1i5),5(x1f9.4))') 'energy_exv6:', iexv, imp1, imp2, &
+                   sqrt(exv2para(1,iexv,irep)), sqrt(exv2para(2,iexv,irep)), exv2para(3,iexv,irep), sqrt(dist2), ene
+#endif
 
      ! --------------------------------------------------------------------
      ! sum of the energy

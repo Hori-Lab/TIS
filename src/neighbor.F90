@@ -52,6 +52,7 @@ subroutine neighbor(irep)
       !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
       !inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
+
      ! make neighborlist
      call neighbor_list(irep, ineigh2mp, lmp2neigh)
 

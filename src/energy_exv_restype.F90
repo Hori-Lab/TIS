@@ -44,7 +44,7 @@ subroutine  energy_exv_restype(irep, energy_unit, energy)
 
   ! for speed up
   coef = inexv%exv_coef
-  cutoff02 = inexv%exv_cutoff * inexv%exv_cutoff
+  cutoff02 = inexv%exv12_cutoff * inexv%exv12_cutoff
   revcutoff12 = 1 / cutoff02**6
 
 #ifdef MPI_PAR3

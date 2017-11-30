@@ -49,6 +49,16 @@ module var_setp
   type(input_protein_parameter), save :: inpro
 
 
+  type input_sopsc_parameter
+     integer :: n_sep_nlocal_B_B
+     integer :: n_sep_nlocal_B_S
+     integer :: n_sep_nlocal_S_S
+     real(PREC) :: exv_scale_B_S_ang = 0.8
+     integer    :: sz !< size of the structure
+  endtype input_sopsc_parameter
+  type(input_sopsc_parameter), save :: insopsc
+
+
   !==========================================
   !> structure for parameters reading from "para_cafemol_ion" field in "ion.para" file
   type input_ion_parameter
@@ -552,6 +562,7 @@ module var_setp
      integer    :: i_function_form
      integer    :: i_calc_method
      integer    :: i_DH_cutoff_type
+     integer    :: i_sopsc_consec_res
      real(PREC) :: diele
      real(PREC) :: diele_water
      real(PREC) :: diele_dTcoef
@@ -590,8 +601,13 @@ module var_setp
   !==========================================
   ! excluded volume
   type input_exv
-     real(PREC) :: exv_sigma(0:CHEMICALTYPE%MAX)
-     real(PREC) :: exv_cutoff !< truncation distance for exv = exv_cutoff * exv_sigma
+     real(PREC) :: exv_rad(0:CHEMICALTYPE%MAX)
+     real(PREC) :: exv_rad_sopsc(0:CHEMICALTYPE%MAX)
+     real(PREC) :: exv_rad_sopsc_BB_BB
+     real(PREC) :: exv_rad_sopsc_BB_SC
+
+     real(PREC) :: exv12_cutoff
+     real(PREC) :: exv6_cutoff
      real(PREC) :: exv_coef   !< coefficient epsilon for exv
      integer    :: sz
   endtype input_exv

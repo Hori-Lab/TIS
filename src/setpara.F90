@@ -92,7 +92,8 @@ subroutine setpara( xyz_mp_init )
   endif
 
   ! excluded volume
-  if (inmisc%force_flag(INTERACT%EXV12)) then
+  if (inmisc%force_flag(INTERACT%EXV12) .or. &
+      inmisc%force_flag(INTERACT%EXV6)  ) then
      call setp_mapara_exv()
   endif
 
@@ -266,6 +267,10 @@ subroutine setpara( xyz_mp_init )
      call setp_dtrna15()
      call setp_pmf()
 
+  endif
+
+  if (inmisc%class_flag(CLASS%SOPSC)) then
+     call setp_sopsc()
   endif
 
 #ifdef _DEBUG

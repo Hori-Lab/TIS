@@ -7,3 +7,6 @@ check/Makefile*
 check/make*
 check/md.*
 md*
+bs
+diff.out
+go
