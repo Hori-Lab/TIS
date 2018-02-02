@@ -9,8 +9,10 @@ program dcd_check_crossing_face_S
            reshape( (/1., 0., 0., 0.,  0., 1., 0., 0.,  0., 0., 1., 0.,  0., 0., 0., 1./), (/4,4/) )
 
    integer, parameter :: nframe_save = 10000
-   integer, parameter :: nmp_dcd = 1397
-   integer, parameter :: nmp_sugar = 196
+   !integer, parameter :: nmp_dcd = 1397
+   !integer, parameter :: nmp_sugar = 196
+   integer :: nmp_dcd   ! Read from DCD
+   integer :: nmp_sugar ! Given as an argument
    real(PREC), parameter :: dsq_max = 25.0
 
    integer :: imp, iframe, nframe
@@ -19,10 +21,10 @@ program dcd_check_crossing_face_S
    integer :: idummy
    integer :: iarg
    integer :: iargc
-   character(256) :: cfile_dcd, cfile_out
+   character(256) :: cfile_dcd, cfile_out, cinp
 
-   real(4) :: xyz_dcd(3, nmp_dcd)
-   real(PREC) :: xyz1(3, nmp_sugar), xyz2(3, nmp_sugar)
+   real(4),    allocatable :: xyz_dcd(:,:)
+   real(PREC), allocatable :: xyz1(:,:), xyz2(:,:) 
 
    real(PREC), dimension(3) :: a1t1, a2t1, a1t2, a2t2, a3t1, a3t2
    real(PREC), dimension(3) :: b1t1, b2t1, b1t2, b2t2, b3t1, b3t2
@@ -35,13 +37,15 @@ program dcd_check_crossing_face_S
    real(PREC) :: mtx(4,4) 
 
    iarg = iargc()
-   if (iarg < 1 .or. 2 < iarg) then
-      write(*,*) 'Usage: PROGRAM [DCD file] [output]'
+   if (iarg /= 3) then
+      write(*,*) 'Usage: PROGRAM [DCD file] [nmp_sugar (196 for azo)] [output]'
       stop
    endif
 
    call getarg(1, cfile_dcd)
-   call getarg(2, cfile_out)
+   call getarg(2, cinp)
+   read(cinp, *) nmp_sugar
+   call getarg(3, cfile_out)
 
    open(FOUT, file=cfile_out, status='UNKNOWN', action='WRITE', iostat=istatus)
    if (istatus > 0) then
@@ -56,18 +60,20 @@ program dcd_check_crossing_face_S
       stop
    endif
 
-   !allocate(xyz_dcd(3,nmp_dcd))
-   !allocate(xyz(3,nmp_dcd))
-        
-   call dcd_count_frame(FDCD, nframe, istatus)
+   call dcd_count_frame(FDCD, nframe, nmp_dcd, istatus)
    if (istatus > 0) then
       write(*,   *) 'Warning: the DCD file has an abnormal end'
       write(FOUT,*) '## Warning: the DCD file has an abnormal end'
    endif 
    write(FOUT,*) '## Number of frames: ',nframe
    write(FOUT,*) '## The frame number shown below starts from 0.'
+   write(FOUT,*) '## Number of MP in DCD: ',nmp_dcd
 
    call dcd_skip_header(FDCD)
+
+   allocate(xyz_dcd(3,nmp_dcd))
+   allocate(xyz1(3,nmp_sugar))
+   allocate(xyz2(3,nmp_sugar))
 
 !## Exclude frame 0 
 !#for i in range(46000):
@@ -217,8 +223,9 @@ program dcd_check_crossing_face_S
 
    enddo
 
-   !deallocate(xyz_dcd)
-   !deallocate(xyz)
+   deallocate(xyz_dcd)
+   deallocate(xyz1)
+   deallocate(xyz2)
 
    stop
 
@@ -359,10 +366,11 @@ contains
       read (f) nblock_size
    endsubroutine dcd_skip_header
 
-   subroutine dcd_count_frame(f, n, istatus)
+   subroutine dcd_count_frame(f, n, nmp, istatus)
       integer, intent(in) :: f
-      integer, intent(out) :: n, istatus
+      integer, intent(out) :: n, nmp, istatus
       real(4) :: xdummy
+      logical :: flg_first = .True.
 
       call dcd_skip_header(f)
 
@@ -371,7 +379,11 @@ contains
       L1: do 
          read (fdcd, iostat=istatus) idummy
          if (istatus /= 0) exit L1
-         Lx: do imp = 1, nmp_dcd
+         if (flg_first) then
+            nmp = idummy / 4
+            flg_first = .False.
+         endif
+         Lx: do imp = 1, nmp
             read (fdcd, iostat=istatus) xdummy
             if (istatus /= 0) exit L1
          enddo Lx
@@ -380,7 +392,7 @@ contains
 
          read (fdcd, iostat=istatus) idummy
          if (istatus /= 0) exit L1
-         Ly: do imp = 1, nmp_dcd
+         Ly: do imp = 1, nmp
             read (fdcd, iostat=istatus) xdummy
             if (istatus /= 0) exit L1
          enddo Ly
@@ -389,7 +401,7 @@ contains
 
          read (fdcd, iostat=istatus) idummy
          if (istatus /= 0) exit L1
-         Lz: do imp = 1, nmp_dcd
+         Lz: do imp = 1, nmp
             read (fdcd, iostat=istatus) xdummy
             if (istatus /= 0) exit L1
          enddo Lz
