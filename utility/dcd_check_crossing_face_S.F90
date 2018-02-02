@@ -1,4 +1,4 @@
-program dcd_check_crossing_S_face
+program dcd_check_crossing_face_S
 
    implicit none
    integer, parameter :: PREC=8
@@ -448,4 +448,4 @@ contains
 !            if not flg_subject:
 !                continue
 
-end program dcd_check_crossing_s_face
+end program dcd_check_crossing_face_S
