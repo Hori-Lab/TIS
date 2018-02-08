@@ -28,7 +28,7 @@
 ! ################# included by 'write_tseries.F90'
 ! NOTE:  XXXXX_T_ means title string
 !        Total width of XXXX_T_ should be same as corresponding XXXX
-#define _FMT_TS_INI_TOTAL_     '(f15.3)'
+#define _FMT_TS_INI_TOTAL_     '(g15.8)'
 #define _FMT_TS_STEP_          '(1xi12)'
 #define _FMT_TS_STEP_T_        '(1xa12)'
 #define _FMT_TS_TEMP_          '(1xf8.2)'
@@ -86,6 +86,8 @@
 #define _FMT_TS_BRIDGE_T_      '(1xa10)'
 #define _FMT_TS_PULLING_       '(1xf10.2)'
 #define _FMT_TS_PULLING_T_     '(1xa10)'
+#define _FMT_TS_BBR_           '(1xf10.5)'
+#define _FMT_TS_BBR_T_         '(1xa10)'
 #define _FMT_TS_ANCHOR_        '(1xf10.2)'
 #define _FMT_TS_ANCHOR_T_      '(1xa10)'
 #define _FMT_TS_REST1D_        '(1xf10.2)'

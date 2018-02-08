@@ -80,6 +80,7 @@ subroutine setp_md_info()
 !  inmisc%i_implig         = 0
   inmisc%i_reset_struct   = 0
   inmisc%i_hydro_tensor   = 0
+  inmisc%i_BBR            = 0
 
 !  inmmc%i_modified_muca   = 0
   ! ---------------------------------------------------------------------
@@ -236,6 +237,10 @@ subroutine setp_md_info()
         cvalue = 'i_fix'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_fix, cvalue)
+
+        cvalue = 'i_BBR'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_BBR, cvalue)
         
 !        cvalue = 'i_implig'
 !        call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -486,6 +491,16 @@ subroutine setp_md_info()
      write(lunout, *) 'applying pulling option: i_pulling = 1'
   else
      error_message = 'Error: invalid value for i_pulling'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  ! -----------------------------------------------------------------
+  if(inmisc%i_BBR == 0) then
+     write(lunout, *) 'i_BBR = 0'
+  else if(inmisc%i_BBR == 1) then
+     write(lunout, *) 'i_BBR = 1'
+  else
+     write(error_message, *) 'Error: invalid value for i_BBR ', inmisc%i_BBR
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 

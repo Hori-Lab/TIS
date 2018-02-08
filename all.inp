@@ -577,6 +577,10 @@ i_hydro_tensor = 4
 ** i_neigh_diynamic = 0 : step based
 **                  = 1 : dynamic
 i_neigh_dynamic = 1
+
+** Bond-bond repulsion (for DTRNA)
+** Parameters are written in para/rna.para
+i_BBR = 1
 >>>>
 
 

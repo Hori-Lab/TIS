@@ -223,6 +223,12 @@ hb_angl = 1.5
 hb_dih_hbond = 0.15
 hb_dih_chain = 0.15
 hb_u0 = 2.43
+
+** BBR
+** This bbr_cutoff is the actual distance (not a prefactor).
+bbr_cutoff = 2.0
+bbr_dist = 0.8
+bbr_eps = 1.0
 >>>>
 
 
@@ -360,6 +366,12 @@ hb_dih_hbond = 0.15
 hb_dih_chain = 0.15
 hb_u0 = 2.93168175
 hb_cutoff_dist = 2.0
+
+** BBR
+** This bbr_cutoff is the actual distance (not a prefactor).
+bbr_cutoff = 2.0
+bbr_dist = 0.8
+bbr_eps = 1.0
 >>>>
 
 <<<< DT15_stack_param  

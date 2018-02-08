@@ -5,7 +5,7 @@ subroutine force_exv_dt15(irep, force_mp)
 
   use const_maxsize, only : PREC
   use const_physical,only : DE_MAX, SDIM
-  use const_index,   only : CLASS, E_TYPE
+  use const_index,   only : CLASS, E_TYPE, ERROR
   use var_setp,   only : indtrna15, inperi
   use var_struct, only : nmp_all, pxyz_mp_rep, &
                          lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
@@ -24,6 +24,7 @@ subroutine force_exv_dt15(irep, force_mp)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
 #endif
+  character(CARRAY_MSG_ERROR) :: error_message
 
   ! --------------------------------------------------------------------
 
@@ -86,6 +87,8 @@ subroutine force_exv_dt15(irep, force_mp)
      !   dv_dr = DE_MAX
      !else if (dv_dr > DE_MAX) then
      if (dv_dr > DE_MAX) then
+        !write(error_message,*) 'force_exv_dt15 > DE_MAX', imp1, imp2, dist, dv_dr
+        !call util_error(ERROR%WARN_ALL, error_message)
         dv_dr = DE_MAX
      end if
 

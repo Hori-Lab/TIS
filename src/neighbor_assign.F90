@@ -482,6 +482,10 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                  call util_error(ERROR%STOP_ALL, error_message)
               endif
 
+           elseif (iclass_unit(iunit) == CLASS%RNA .and. iclass_unit(junit) == CLASS%RNA) then 
+
+              i_exv_dt15 = 1 
+
            elseif ((iclass_unit(iunit) == CLASS%RNA .and. iclass_unit(junit) == CLASS%ION) .OR. &
                    (iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%RNA)) then
 

@@ -50,6 +50,7 @@ module const_maxsize
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
   integer, parameter :: MXUNIT = 20        !< maximum # of interaction units
   integer, parameter :: MXMP = 3500        !< maximum # of mass points
+  integer, parameter :: MXSOLUTE = 600     !< protein, RNA, DNA
   !integer, parameter :: MXPDBATOM = 10*MXMP  !< maximum # of atom in pdb file
 
 !  integer, parameter :: MXHBOND = 2 * MXMP !< maximum # of hydrogen bonds
@@ -81,6 +82,8 @@ module const_maxsize
 
   integer, parameter :: MXMPHBNEIGHBOR = 50
 
+  integer, parameter :: MXBBR = 1*MXMPBD*MXSOLUTE  ! Maximum number of BBR interaction per bond (nbd)
+
 !  ! MPC
 !  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis
 !  integer, parameter :: MXGRID_NY_MPC = MXGRID_NX_MPC ! the max grid number y-axis
@@ -98,7 +101,7 @@ module const_maxsize
   integer, parameter :: MXDEL_LGO = 20 !< maximum # of del-interaction residue groups
   integer, parameter :: MXDEL_GO = 100     !< maximum # of del-interaction residue groups
   integer, parameter :: MXBRIDGE = 20     !< maximum # of bridge residue pairs
-  integer, parameter :: MXPULLING = 1    !< maximum # of pulling residues
+  integer, parameter :: MXPULLING = 4    !< maximum # of pulling residues
   integer, parameter :: MXANCHOR = 1    !< maximum # of anchored residues
   integer, parameter :: MXREST1D = 1     !< maximum # of 1D-restrained residues
   integer, parameter :: MXFIX = MXMP      !< maximum # of fixed residues

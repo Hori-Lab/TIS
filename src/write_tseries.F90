@@ -208,6 +208,9 @@ subroutine write_tseries(ibefore_time, istep, &
 !           write (lunout, _FMT_TS_CYLINDER_T_,  ADVANCE = "NO") 'cylinder'
 !        end if
 
+        if(inmisc%i_BBR == 1) then
+           write (lunout, _FMT_TS_BBR_T_, ADVANCE = "NO") 'BBR'
+        end if
         
 
         write (lunout, '(a)') ''
@@ -375,7 +378,7 @@ contains
     real(PREC) :: eelect
 !    real(PREC) :: emorse
     real(PREC) :: ehbond_rna, estack_rna
-    real(PREC) :: ewindow, ebridge, epulling, eanchor, erest1d
+    real(PREC) :: ewindow, ebridge, epulling, eanchor, erest1d, ebbr
 !    real(PREC) :: ehp, eimplig, ecap, ebox, ecylinder
 
     ! ---------------------------------------------------------------------
@@ -450,6 +453,8 @@ contains
     if (ebridge > HIGH_ENERGY_JUDGE) ebridge = HIGH_ENERGY_OUT
     epulling  = tenergy(E_TYPE%PULLING)
     if (epulling > HIGH_ENERGY_JUDGE) epulling = HIGH_ENERGY_OUT
+    ebbr  = tenergy(E_TYPE%BBR)
+    if (ebbr > HIGH_ENERGY_JUDGE) ebbr = HIGH_ENERGY_OUT
     eanchor   = tenergy(E_TYPE%ANCHOR)
     if (eanchor > HIGH_ENERGY_JUDGE) eanchor = HIGH_ENERGY_OUT
     erest1d   = tenergy(E_TYPE%REST1D)
@@ -583,6 +588,10 @@ contains
 !       if(inmisc%i_implig == 1) then
 !          write (lunout, _FMT_TS_IMPLIG_, ADVANCE = "NO") eimplig
 !       end if
+
+       if(inmisc%i_BBR == 1) then
+          write (lunout, _FMT_TS_BBR_, ADVANCE = "NO") ebbr
+       end if
        
        
     end if

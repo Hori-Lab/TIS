@@ -15,7 +15,7 @@ subroutine neighbor(irep)
   use const_maxsize
   use const_index
   use var_setp,   only : inmisc, inperi
-  use var_struct, only : lexv, nmp_all, nhbneigh, lele
+  use var_struct, only : lexv, nmp_all, nhbneigh, lele, nbbr
   use var_io,     only : flg_file_out, outfile
   use var_replica,only : irep2grep
 
@@ -89,6 +89,10 @@ subroutine neighbor(irep)
      TIME_E( tm_neighbor_hb )
   endif
 
+  if (inmisc%i_BBR == 1) then
+     call neighbor_list_BBR(irep)
+  endif
+
 #ifdef MPI_PAR
   if (local_rank_mpi == 0) then
 #endif
@@ -114,6 +118,9 @@ subroutine neighbor(irep)
      endif
      if (inmisc%force_flag(INTERACT%ELE)) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') lele(irep)
+     endif
+     if (inmisc%i_BBR == 1) then
+        write(outfile%neigh(grep),'(1xi6)',advance='no') nbbr(irep)
      endif
      write(outfile%neigh(grep), *) ''
      flush(outfile%neigh(grep))

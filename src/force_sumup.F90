@@ -213,6 +213,10 @@ subroutine force_sumup(force_mp, &  ! [ o]
         call force_exv_gauss (irep, force_mp_l(1,1,tn))
      endif
   endif
+  
+  if(inmisc%i_BBR == 1) then
+     call force_BBR(irep, force_mp_l(1,1,tn))
+  end if
 
 !$omp master
   TIME_E( tm_force_exv )

@@ -349,5 +349,13 @@ interface
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_velo
+
+   subroutine energy_BBR (irep, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)  :: irep
+      real(PREC), intent(out) :: energy(:)
+      real(PREC), intent(out) :: energy_unit(:,:,:)
+   endsubroutine energy_BBR
 endinterface
 endmodule if_energy

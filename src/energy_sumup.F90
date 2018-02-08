@@ -274,6 +274,10 @@ subroutine energy_sumup(irep,          &
   if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then 
      call energy_exv_gauss (irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   endif
+
+  if (inmisc%i_BBR == 1) then
+     call energy_BBR(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  endif
 !$omp master
   TIME_E( tm_energy_exv) 
 

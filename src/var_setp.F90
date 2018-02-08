@@ -210,6 +210,9 @@ module var_setp
      real(PREC) :: hb_u0
      real(PREC) :: hb_cutoff_dist
 
+     real(PREC) :: bbr_cutoff
+     real(PREC) :: bbr_dist
+     real(PREC) :: bbr_eps
      integer    :: sz
   endtype input_dtrna_parameter
   type(input_dtrna_parameter), save :: indtrna15
@@ -430,6 +433,9 @@ module var_setp
      integer    :: i_neigh_dist
      integer    :: i_neigh_dynamic
      real(PREC) :: rneighbordist2_unit(MXUNIT, MXUNIT)
+
+     ! BBR (Bond-bond repulsion)
+     integer    :: i_BBR
 
      ! bridge
      integer    :: i_bridge

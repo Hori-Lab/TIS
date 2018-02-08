@@ -10,7 +10,8 @@ subroutine allocate_neighbor()
 !                          nhpneigh, lhp2neigh, ineigh2hp, cutoff_dmin_hp, &
 !                          cutoff_dmax_hp, nhp, &
                           ncharge, nmp_all, &
-                          nhbneigh, ineigh2hb, dtrna_hb_neigh_dist2
+                          nhbneigh, ineigh2hb, dtrna_hb_neigh_dist2, &
+                          nbbr, ibbr2mp
   use var_replica, only : n_replica_mpi
   use mpiconst
 
@@ -189,6 +190,16 @@ subroutine allocate_neighbor()
      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
   endif
 
+  if (inmisc%i_BBR == 1) then
+     allocate( nbbr(n_replica_mpi), stat=ier)
+     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+     nbbr(:) = 0
+
+     allocate( ibbr2mp(4, MXBBR, n_replica_mpi), stat=ier )
+     if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+     ibbr2mp(:,:,:) = 0
+  endif
+     
 end subroutine allocate_neighbor
 
 !######################################################################################
@@ -197,7 +208,8 @@ subroutine deallocate_neighbor
 
    use var_struct,  only : lexv, iexv2mp, lele, iele2mp, coef_ele, &
 !                           nhpneigh, ineigh2hp, lhp2neigh, cutoff_dmax_hp, cutoff_dmin_hp, &
-                           nhbneigh, ineigh2hb, dtrna_hb_neigh_dist2
+                           nhbneigh, ineigh2hb, dtrna_hb_neigh_dist2, &
+                           nbbr, ibbr2mp
 
    if (allocated(lexv))          deallocate(lexv)
    if (allocated(iexv2mp))       deallocate(iexv2mp)
@@ -212,5 +224,7 @@ subroutine deallocate_neighbor
    if (allocated(nhbneigh))      deallocate(nhbneigh)
    if (allocated(ineigh2hb))     deallocate(ineigh2hb)
    if (allocated(dtrna_hb_neigh_dist2))  deallocate(dtrna_hb_neigh_dist2)
+   if (allocated(nbbr))          deallocate(nbbr)
+   if (allocated(ibbr2mp))       deallocate(ibbr2mp)
    
 endsubroutine deallocate_neighbor

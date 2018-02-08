@@ -6,7 +6,8 @@ subroutine mloop_dtrna()
   use var_setp,    only : inmisc, indtrna15, inpara
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
-                          dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite, flg_tst_exclusive
+                          dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite, flg_tst_exclusive, &
+                          nbd, ibd2type, nbbr_bd, lbbr_bd
   use var_replica, only : n_replica_mpi
   use var_simu,    only : hb_status, flg_hb_energy, st_status, hbsite_excess, &
                           ene_st, ene_tst, ene_hb, for_hb
@@ -14,7 +15,7 @@ subroutine mloop_dtrna()
   implicit none
   integer :: ier = 0
   integer :: lunout
-  integer :: ist, itst, imp1, imp2, imp1_st, imp2_st, ihb
+  integer :: ist, itst, imp1, imp2, imp1_st, imp2_st, ihb, ibd
   logical :: flg_found
   character(CARRAY_MSG_ERROR) :: error_message
 ! **********************************************************************
@@ -151,6 +152,24 @@ subroutine mloop_dtrna()
      else
         dtrna_hb_neigh_dist2(:) = 20.0e0_PREC ** 2
      endif
+
+  endif
+
+  ! Preparation for BBR (Bond-bond repulsion)
+  if (inmisc%i_BBR == 1) then
+
+     if (allocated(lbbr_bd)) deallocate(lbbr_bd)
+     allocate( lbbr_bd(nbd), stat=ier)
+     if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+     lbbr_bd(:) = 0
+
+     nbbr_bd = 0
+     do ibd = 1, nbd
+        if (ibd2type(ibd) == BDTYPE%RNA_PS .or. ibd2type(ibd) == BDTYPE%RNA_SP) then 
+           nbbr_bd = nbbr_bd + 1
+           lbbr_bd(nbbr_bd) = ibd
+        endif
+     enddo
 
   endif
 
