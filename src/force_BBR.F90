@@ -83,8 +83,6 @@ subroutine force_BBR(irep, force_mp)
      roverdist14 = roverdist2 * roverdist4 * roverdist8
      dvdw_dr = coef * roverdist14
      !write(*,*) 'ForceBBR', imp1, imp2, jmp1, jmp2, sqrt(dist2), dvdw_dr
-     !if(dvdw_dr > DE_MAX) then
-     !   write(error_message,*) 'BBR force > DE_MAX', imp1, imp2, jmp1, jmp2, sqrt(dist2), dvdw_dr
      if(dvdw_dr > 500.0) then
         write(error_message,*) 'BBR force > 500.0', imp1, imp2, jmp1, jmp2, sqrt(dist2), dvdw_dr
         call util_error(ERROR%STOP_ALL, error_message)

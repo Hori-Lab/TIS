@@ -30,13 +30,16 @@ subroutine neighbor_list_bbr(irep)
 #endif
   real(PREC) :: vij(SDIM), vi(SDIM), vj(SDIM)
   real(PREC) :: d2, dist_cut_sq
+  character(CARRAY_MSG_ERROR) :: error_message
 
   ! -------------------------------------------------------------------
   ! --------------------------------------------------------------------
   if (inmisc%i_neigh_dynamic == 1) then
      dist_cut_sq = (indtrna15%bbr_cutoff + inpara%neigh_margin) ** 2
   else
-     dist_cut_sq = indtrna15%bbr_cutoff ** 2
+     dist_cut_sq = (indtrna15%bbr_cutoff + 5.0) ** 2
+     write(error_message,*) 'WARNING: in neighbor_list_BBR, examine this cutoff carefully', indtrna15%bbr_cutoff + 5.0
+     call util_error(ERROR%WARN_ALL, error_message)
   endif
 
   ibbr = 0

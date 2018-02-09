@@ -95,7 +95,7 @@ subroutine  energy_BBR(irep, energy_unit, energy)
      ! --------------------------------------------------------------------
      ! sum of the energy
      energy(E_TYPE%BBR) = energy(E_TYPE%BBR) + ene
-     write(*, '(1a,5(1x,i5),2(1x,g12.5))') 'Energy: ',ibbr, imp1, imp2, jmp1, jmp2, sqrt(dist2), ene
+     !write(*, '(1a,5(1x,i5),2(1x,g12.5))') 'Energy: ',ibbr, imp1, imp2, jmp1, jmp2, sqrt(dist2), ene
    
      iunit = imp2unit(imp1)
      junit = imp2unit(jmp1)
