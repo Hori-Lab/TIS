@@ -1,6 +1,3 @@
-!force_exv
-!> @brief Calculates the force related to excluded volume
-
 subroutine force_BBR(irep, force_mp)
 
   use if_util
