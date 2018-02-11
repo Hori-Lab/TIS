@@ -49,7 +49,7 @@ subroutine  energy_BBR(irep, energy_unit, energy)
   ksta = 1
   kend = nbbr(irep)
 #endif
-!$omp do private(imp1,imp2,jmp1,jmp2,vij,vi,vj,dist2,roverdist2,roverdist4,roverdist8,roverdit12,ene,iunit,junit)
+!$omp do private(imp1,imp2,jmp1,jmp2,vij,vi,vj,dist2,roverdist2,roverdist4,roverdist8,roverdist12,ene,iunit,junit)
   do ibbr=ksta, kend
 
      imp1 = ibbr2mp(1, ibbr, irep)

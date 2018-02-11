@@ -120,7 +120,7 @@ subroutine neighbor_list_bbr(irep)
   nbbr(irep) = sum( nbbr_lall(0:npar_mpi-1) )
   
   displs(0) = 0
-  recvcounts(0) = nbbr_lall(0)
+  recvcounts(0) = 4*nbbr_lall(0)
 
   do i=1, npar_mpi-1
      displs(i) = displs(i-1) + 4*nbbr_lall(i-1)
