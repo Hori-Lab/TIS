@@ -44,10 +44,11 @@ set diff_out = 1
 # 比較対象のディレクトリ
 #set revdir = /home/hori/check/data_234bd5b
 #set revdir = /home/hori/check/data_81e8c94
-set revdir = /home/hori/check/data_0e76b2f
+#set revdir = /home/hori/check/data_0e76b2f
+set revdir = /home/hori/check/data_f65cc0f
 
 # コンパイル時のcleanの有無
-set clean = 0
+set clean = 1
 # clean = 1 : Make cleanする (デフォルト)
 # clean = 0 : Make cleanしない
 #            （二度目以降のチェックで、cleanの必要のない修正のとき、時間短縮可能。
