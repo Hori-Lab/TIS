@@ -36,6 +36,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
      if (inmisc%i_temp_independent <= 1) then
         Tc = tempk - 273.15e0_PREC
         ek =  MM_A + MM_B*Tc + MM_C*Tc*Tc + MM_D*Tc*Tc*Tc
+        !ek = 1.0 / (0.03273600947 * tempk * BOLTZ_KCAL_MOL_ND - 0.00669625750)
 
      elseif (inmisc%i_temp_independent == 2) then
         Tc = insimu%tempk_ref - 273.15e0_PREC
@@ -87,6 +88,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   ! coef: j_kcal * eq**2 / (4.0e0_PREC * F_PI * e0 * ek * rij)
   inele%coef(grep) = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 &
                     / (4.0e0_PREC * F_PI * EPSI_0 * ek)
+
+  !! Only for consistency to Denesyuk
+  !!inele%coef(grep) = 332.0637090 / ek
 
   ! Kd: sqrt(e0 * ek * RT / 2 * NA**2 * eq**2 * I)
   !   = sqrt(1.0e-3 * e0 * ek * kb / 2 * NA * eq**2) * sqrt(T(K) / I(M))

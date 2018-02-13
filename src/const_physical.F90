@@ -18,6 +18,7 @@ module const_physical
   real(PREC), parameter :: JOUL2KCAL = 1.0/KCAL2JOUL   !< (J -> kcal)  [kcal/J]
   real(PREC), parameter :: JOUL2KCAL_MOL  = JOUL2KCAL * N_AVO  !< (J -> kcal/mol)
   real(PREC), parameter :: BOLTZ_KCAL_MOL = BOLTZ_J * JOUL2KCAL_MOL   !< Boltzmann constant [kcal/mol/K]
+  real(PREC), parameter :: BOLTZ_KCAL_MOL_ND = 0.0019858775  !< BOLTZ used in Denesyuk
 
   real(PREC), parameter :: DE_MAX  = 20.0e0_PREC !< limit value of force
 
