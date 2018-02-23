@@ -15,7 +15,8 @@ program show_rst
    integer :: nblock_size
    integer :: grep
    integer :: istatus 
-   integer :: nmp_real, nmp_all, n_replica_all
+   integer :: nmp_real, nmp_all, n_replica_all, nhb, nst
+   logical :: flg
    integer(L_INT) :: i_ll
    real(PREC) :: r1,r2,r3
    character(CARRAY_MSG_ERROR) :: error_message
@@ -102,6 +103,25 @@ program show_rst
          do i = 1, n_replica_all
             read (luninp) grep, n
             write(*,*) 'rep2lab:',grep, n
+         enddo
+
+      case(RSTBLK%DTRNA15)
+         write(*,*) '# DTRNA15'
+         read (luninp) i
+         write(*,*) 'grep:', i
+         read (luninp) nhb
+         write(*,*) 'ndtrna_hb:', nhb
+         read (luninp) nst
+         write(*,*) 'ndtrna_st:', nst
+
+         do i = 1, nhb
+            read (luninp)  flg
+            write(*,*) 'hb_status(',i,'):', flg
+         enddo
+
+         do i = 1, nst
+            read (luninp)  flg
+            write(*,*) 'st_status(',i,'):', flg
          enddo
 
       case default
