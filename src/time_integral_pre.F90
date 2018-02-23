@@ -139,6 +139,7 @@ subroutine time_integral_pre(flg_step_each_replica)
      !----------------------------------------------
 
 #ifdef _DEBUG
+     write(*,*) 'time_integral_pre: force_mp'
      do imp=1, nmp_real
         write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
      enddo
@@ -167,11 +168,12 @@ subroutine time_integral_pre(flg_step_each_replica)
            end do
         endif
         
-!#ifdef _DEBUG
-!        do imp=1, nmp_real
-!           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
-!        enddo
-!#endif
+#ifdef _DEBUG
+        write(*,*) 'time_integral_pre: accel_mp'
+        do imp=1, nmp_real
+           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
+        enddo
+#endif
      ! Berendsen or Constant Energy
      else if(i_simulate_type == SIM%BERENDSEN .OR. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
         if (flg_rst) then

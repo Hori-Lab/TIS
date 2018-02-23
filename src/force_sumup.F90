@@ -374,6 +374,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
 #ifdef _DEBUG
   write(*,*) 'force_sumup: END'
+  flush(6)
 #endif
 
 !---------------------------------------------------------------------------

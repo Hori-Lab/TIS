@@ -72,6 +72,8 @@ subroutine read_rst(itype_wanted)
             call MPI_bcast(insimu%i_tstep_init, L_INT, MPI_BYTE, 0, MPI_COMM_WORLD, ierr)
 #endif
             flg_done(:) = .true.
+            write(*,*) '## RESTART: step has been loaded.'
+            flush(6)
             exit
    
          !----------------------------
@@ -109,6 +111,8 @@ subroutine read_rst(itype_wanted)
 
             flg_done(grep) = .true.
             if (all(flg_done)) then
+               write(*,*) '## RESTART: xyz has been loaded.'
+               flush(6)
                exit
             endif
    
@@ -148,6 +152,8 @@ subroutine read_rst(itype_wanted)
 
             flg_done(grep) = .true.
             if (all(flg_done)) then
+               write(*,*) '## RESTART: velo has been loaded.'
+               flush(6)
                exit
             endif
    
@@ -187,6 +193,8 @@ subroutine read_rst(itype_wanted)
 
             flg_done(grep) = .true.
             if (all(flg_done)) then
+               write(*,*) '## RESTART: accel_mp has been loaded.'
+               flush(6)
                exit
             endif
    
@@ -214,6 +222,8 @@ subroutine read_rst(itype_wanted)
                lab2rep(i) = irep
             enddo
             flg_done(:) = .true.
+            write(*,*) '## RESTART: replica has been loaded.'
+            flush(6)
             exit
    
          !----------------------------
@@ -278,6 +288,8 @@ subroutine read_rst(itype_wanted)
 
             flg_done(grep) = .true.
             if (all(flg_done)) then
+               write(*,*) '## RESTART: dtrna15 has been loaded.'
+               flush(6)
                exit
             endif
   
@@ -309,6 +321,8 @@ subroutine read_rst(itype_wanted)
       case(RSTBLK%STEP)
          call MPI_bcast(insimu%i_step_sim_init, 1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
          call MPI_bcast(insimu%i_tstep_init, L_INT, MPI_BYTE, 0, MPI_COMM_WORLD, ierr)
+         write(*,*) '## RESTART: step has been received.'
+         flush(6)
 
       !----------------------------
       ! xyz_mp_rep
@@ -323,6 +337,8 @@ subroutine read_rst(itype_wanted)
          endif
          call MPI_bcast(xyz_mp_rep, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
+         write(*,*) '## RESTART: xyz has been received.'
+         flush(6)
 
       !----------------------------
       ! velo_mp
@@ -337,7 +353,8 @@ subroutine read_rst(itype_wanted)
          endif
          call MPI_bcast(velo_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
-
+         write(*,*) '## RESTART: velo_mp has been received.'
+         flush(6)
 
       !----------------------------
       ! accel_mp
@@ -352,6 +369,8 @@ subroutine read_rst(itype_wanted)
          endif
          call MPI_bcast(accel_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
+         write(*,*) '## RESTART: accel_mp has been received.'
+         flush(6)
 
       !----------------------------
       ! replica
@@ -363,6 +382,8 @@ subroutine read_rst(itype_wanted)
             i = rep2lab(irep)
             lab2rep(i) = irep
          enddo
+         write(*,*) '## RESTART: replica has been received.'
+         flush(6)
 
 
       !----------------------------
@@ -378,10 +399,12 @@ subroutine read_rst(itype_wanted)
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(ndtrna_hb, ndtrna_hb*n_replica_mpi, MPI_LOGICAL, &
+         call MPI_bcast(hb_status, ndtrna_hb*n_replica_mpi, MPI_LOGICAL, &
                         0, mpi_comm_local, ierr)
-         call MPI_bcast(ndtrna_st, ndtrna_st*n_replica_mpi, MPI_LOGICAL, &
+         call MPI_bcast(st_status, ndtrna_st*n_replica_mpi, MPI_LOGICAL, &
                         0, mpi_comm_local, ierr)
+         write(*,*) '## RESTART: dtrna15 has been received.'
+         flush(6)
 
       case default
          write(error_message,*) 'unknown identifier of block in restart file'
