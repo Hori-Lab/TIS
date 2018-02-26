@@ -111,9 +111,11 @@ subroutine energy_ele_coulomb_tp(irep, energy)
         !if(inperi%i_periodic == 0) then
         !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
         !else
-           vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
-           call util_pbneighbor(vx, imirror)
-           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+           !vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+           !call util_pbneighbor(vx, imirror)
+           !v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+           v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+           call util_pbneighbor(v21)
         !end if
         
         dist2 = dot_product(v21,v21)
@@ -126,9 +128,11 @@ subroutine energy_ele_coulomb_tp(irep, energy)
         !if(inperi%i_periodic == 0) then
         !   v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
         !else
-           vx(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
-           call util_pbneighbor(vx, imirror)
-           v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+           !vx(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
+           !call util_pbneighbor(vx, imirror)
+           !v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+           v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
+           call util_pbneighbor(v21)
         !end if
         
         dist2 = dot_product(v21,v21)

@@ -231,7 +231,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   ! ------------------------------------------------------------------------
   integer :: itp1, itp2, imp2, imirror, ig, grep
   real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp
-  real(PREC) :: v21(SDIM), vx(SDIM)
+  real(PREC) :: v21(SDIM)
 
   grep = irep2grep(irep)
 
@@ -242,16 +242,15 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   !cutoff2 = inperi%psizeh(1) ** 2   ! Assuming a cubic box
 
   ene = 0.0
-!!$omp do private(q1,imp2,v21,vx,ene,dist2,dist1,ene,imirror)
+!!$omp do private(q1,imp2,v21,ene,dist2,dist1,ene,imirror)
   do itp1 = 1, ntp
 
      q1 = charge_tp(itp1)
 
      do imp2 = 1, nmp_real
 
-        vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
-        call util_pbneighbor(vx, imirror)
-        v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+        v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
+        call util_pbneighbor(v21)
         
         dist2 = dot_product(v21,v21)
         if(dist2 > cutoff2) cycle
@@ -261,9 +260,9 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
      end do
 
      do itp2 = itp1+1, ntp
-        vx(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
-        call util_pbneighbor(vx, imirror)
-        v21(1:3) = vx(1:3) + inperi%d_mirror(1:3, imirror)
+
+        v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
+        call util_pbneighbor(v21)
         
         dist2 = dot_product(v21,v21)
         if(dist2 > cutoff2) cycle
