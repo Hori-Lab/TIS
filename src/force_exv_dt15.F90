@@ -9,6 +9,7 @@ subroutine force_exv_dt15(irep, force_mp)
   use var_setp,   only : indtrna15, inperi
   use var_struct, only : nmp_all, pxyz_mp_rep, &
                          lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
+  use var_simu, only : istep
   use mpiconst
 
   implicit none
@@ -87,8 +88,8 @@ subroutine force_exv_dt15(irep, force_mp)
      !   dv_dr = DE_MAX
      !else if (dv_dr > DE_MAX) then
      if (dv_dr > DE_MAX) then
-        !write(error_message,*) 'force_exv_dt15 > DE_MAX', imp1, imp2, dist, dv_dr
-        !call util_error(ERROR%WARN_ALL, error_message)
+        write(error_message,*) 'force_exv_dt15 > DE_MAX', istep, imp1, imp2, dist, dv_dr
+        call util_error(ERROR%WARN_ALL, error_message)
         dv_dr = DE_MAX
      end if
 

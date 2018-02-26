@@ -9,6 +9,7 @@ subroutine force_ele(irep, force_mp)
   use var_setp,   only : inele, inperi
   use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use var_replica,only : irep2grep
+  use var_simu, only : istep
   use mpiconst
 
   implicit none
@@ -27,6 +28,7 @@ subroutine force_ele(irep, force_mp)
 #ifdef MPI_PAR
   integer :: klen
 #endif
+  character(CARRAY_MSG_ERROR) :: error_message
 
   ! --------------------------------------------------------------------
 #ifdef _DEBUG
@@ -92,7 +94,8 @@ subroutine force_ele(irep, force_mp)
           exp(-dist1 * rcdist)
      
      if(dvdw_dr > DE_MAX) then
-        ! write (*, *) "electrostatic interaction", istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
+        write(error_message,*) 'force_ele > DE_MAX', istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
+        call util_error(ERROR%WARN_ALL, error_message)
         dvdw_dr = DE_MAX
      end if
      ! if(dvdw_dr > 4.0e0_PREC) dvdw_dr = 4.0e0_PREC
