@@ -217,7 +217,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   use const_index
   use var_setp,    only : inele, inperi
   use var_struct,  only : pxyz_mp_rep, coef_charge, nmp_real, lmp2charge, &
-                          ntp, xyz_tp, charge_tp
+                          ntp, xyz_tp, charge_tp, icharge2mp, ncharge
   use var_replica, only : irep2grep
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_coef
   use mpiconst
@@ -229,8 +229,8 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   real(PREC), intent(out)   :: energy(:)         ! (E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
-  integer :: itp1, itp2, imp2, imirror, ig, grep
-  real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp
+  integer :: itp1, itp2, imp2, ich2, imirror, ig, grep
+  real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp, q2, dp2
   real(PREC) :: v21(SDIM)
 
   grep = irep2grep(irep)
@@ -278,25 +278,79 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   !================================================
   !================= Fourier space ================
   !================================================
+!  ene = 0.0
+!  do ig = 1, ewld_f_n
+!    
+!     scos = 0.0
+!     ssin = 0.0
+!
+!     do itp1 = 1, ntp
+!
+!        dp = dot_product(ewld_f_rlv(:,ig), xyz_tp(:,itp1))
+!        q1 = charge_tp(itp1)
+!
+!        scos = scos + (q1 * cos(dp)) ** 2
+!        ssin = ssin + (q1 * sin(dp)) ** 2
+!
+!        do itp2 = itp1+1, ntp
+!           dp2 = dot_product(ewld_f_rlv(:,ig), xyz_tp(:,itp2))
+!           q2 = charge_tp(itp1)
+!
+!           scos = scos + (2 * q1 * q2 * cos(dp) * cos(dp2))
+!           ssin = ssin + (2 * q1 * q2 * sin(dp) * sin(dp2))
+!        enddo
+!
+!        do ich2 = 1, ncharge
+!           imp2 = icharge2mp(ich2)
+!
+!           dp2 = dot_product(ewld_f_rlv(:,ig), pxyz_mp_rep(:,imp2, irep))
+!           q2 = coef_charge(ich2, irep)
+!
+!           scos = scos + (2 * q1 * q2 * cos(dp) * cos(dp2))
+!           ssin = ssin + (2 * q1 * q2 * sin(dp) * sin(dp2))
+!        end do
+!     end do
+!      
+!     ene = ene + ewld_f_coef(ig) * (scos + ssin)
+!  end do
+!  energy(e_type%ele) = energy(e_type%ele) + ene
+
   ene = 0.0
   do ig = 1, ewld_f_n
     
      scos = 0.0
-     ssin = 0.0
 
      do itp1 = 1, ntp
 
-        dp = dot_product(ewld_f_rlv(:,ig), xyz_tp(:,itp1))
-
         q1 = charge_tp(itp1)
 
-        scos = scos + q1 * cos(dp)
-        ssin = ssin + q1 * sin(dp)
+        !!! Self
+        scos = scos + 0.5 * (q1 ** 2)
+
+        !!! Other test particles
+        do itp2 = itp1+1, ntp
+
+           v21(:) = xyz_tp(:,itp2) -  xyz_tp(:,itp1)
+           dp = dot_product(ewld_f_rlv(:,ig), v21)
+
+           scos = scos + (q1 * charge_tp(itp2) * cos(dp))
+        enddo
+
+        !!! Existing particles
+        do ich2 = 1, ncharge
+           imp2 = icharge2mp(ich2)
+
+           v21(:) = pxyz_mp_rep(:,imp2,irep) -  xyz_tp(:,itp1)
+           dp = dot_product(ewld_f_rlv(:,ig), v21)
+
+           scos = scos + (q1 * coef_charge(ich2, irep) * cos(dp))
+        end do
+
      end do
       
-     ene = ene + ewld_f_coef(ig) * (scos ** 2 + ssin ** 2)
+     ene = ene + ewld_f_coef(ig) * scos
   end do
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + 2.0 * ene
 
 
   !================================================

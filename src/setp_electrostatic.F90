@@ -306,6 +306,8 @@ subroutine setp_electrostatic()
      endif
   else if (inele%i_diele == 1) then
      write (lunout, *) "using dielectric constant as a function of temperature (Malmberg and Maryott, 1956)" 
+  else if (inele%i_diele == 2) then
+     write (lunout, *) "using dielectric constant as a function of temperature (used by Denesyuk)" 
   else
      error_message = 'Error: invalid value for inele%i_diele'
      call util_error(ERROR%STOP_ALL, error_message)
