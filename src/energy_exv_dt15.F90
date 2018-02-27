@@ -120,11 +120,11 @@ subroutine energy_exv_dt15_tp(irep, energy)
   use const_maxsize
   use const_physical
   use const_index
+  use var_simu,    only : widom_count_exv_inf
   use var_setp,    only : indtrna15, inperi
   use var_struct,  only : nmp_real, pxyz_mp_rep, &
                           exv_radius_mp, exv_epsilon_mp, &
                           ntp, xyz_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
-  use var_simu,    only : widom_flg_exv_inf
   use mpiconst
 
   implicit none
@@ -136,17 +136,18 @@ subroutine energy_exv_dt15_tp(irep, energy)
   integer :: imirror
   real(PREC) :: dist, dij, a, d_inf
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
-  real(PREC) :: ene 
   real(PREC) :: v21(SDIM), vx(SDIM)
 
   ! ------------------------------------------------------------------------
 
   a = indtrna15%exv_adjust
   d_inf = indtrna15%exv_inf
-  ene = 0.0
 
   do itp1 = 1, ntp
+!$omp do private(imp2, dij, v21, dist, roverdist, roverdist2, roverdist4, roverdist6, roverdist12)
      do imp2=1, nmp_real
+        
+        if (widom_count_exv_inf > 0) cycle
    
         !if (iclass_tp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
         !   dij = indtrna15%exv_dist
@@ -170,8 +171,8 @@ subroutine energy_exv_dt15_tp(irep, energy)
    
         dist = dist + a - dij
         if (dist < d_inf) then
-           widom_flg_exv_inf = .True.
-           return
+!$omp atomic
+           widom_count_exv_inf = widom_count_exv_inf + 1
         endif
 
         ! --------------------------------------------------------------------
@@ -180,11 +181,17 @@ subroutine energy_exv_dt15_tp(irep, energy)
         roverdist4 = roverdist2 * roverdist2
         roverdist6 = roverdist2 * roverdist4
         roverdist12 = roverdist6 * roverdist6
-        ene = ene + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+        energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) &
+                + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
    
      end do
+!$omp enddo
 
+!$omp master
      do itp2 = itp1+1, ntp
+
+        if (widom_count_exv_inf > 0) cycle
+
         !if (iclass_tp(it1) == CLASS%RNA .AND. iclass_tp(itp2) == CLASS%RNA) then
         !   dij = indtrna15%exv_dist
         !else
@@ -207,8 +214,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
       
         dist = dist + a - dij
         if (dist < d_inf) then
-           widom_flg_exv_inf = .True.
-           return
+           widom_count_exv_inf = widom_count_exv_inf + 1
         endif
 
         ! --------------------------------------------------------------------
@@ -218,10 +224,10 @@ subroutine energy_exv_dt15_tp(irep, energy)
         roverdist6 = roverdist2 * roverdist4
         roverdist12 = roverdist6 * roverdist6
       
-        ene = ene + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+        energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) &
+                + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
      enddo
+!$omp end master
   enddo
-
-  energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) + ene
 
 end subroutine energy_exv_dt15_tp
