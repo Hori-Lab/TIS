@@ -7,7 +7,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inele, inperi
+  use var_setp,    only : inele, inperi, inmisc
   use var_struct,  only : imp2unit, pxyz_mp_rep, lele, iele2mp, coef_ele
   use mpiconst
 
@@ -62,7 +62,15 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     ene = coef_ele(iele,irep)/dist1
+     if (inmisc%i_temp_independent == 0) then
+        ene = coef_ele(iele,irep)/dist1
+     else if (inmisc%i_temp_independent == 1) then
+        ene = 0.0  ! Not implemented
+     else if (inmisc%i_temp_independent == 2) then
+        ene = coef_ele(iele,irep)/dist1*inele%diele_dTcoef
+     else
+        ene = 0.0  ! to suppress compiler message
+     endif
      energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
      
      iunit = imp2unit(imp1)
