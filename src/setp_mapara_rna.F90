@@ -153,6 +153,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
   indtrna15%ba_BSP = INVALID_VALUE
   indtrna15%ba_SPS = INVALID_VALUE
   indtrna15%exv_dist = INVALID_VALUE
+  indtrna15%exv_dist_PS = INVALID_VALUE
   indtrna15%exv_rad(1:DT15EXV%MAX) = INVALID_VALUE
   indtrna15%exv_eps(1:DT15EXV%MAX) = INVALID_VALUE
   indtrna15%exv_adjust = INVALID_VALUE
@@ -1233,6 +1234,10 @@ subroutine setp_mapara_rna(lunpara, lunout)
         cvalue = 'exv_dist'
         call ukoto_rvalue2(lunout, csides(1, iequat), &
              indtrna15%exv_dist, cvalue)
+
+        cvalue = 'exv_dist_PS'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna15%exv_dist_PS, cvalue)
         
         cvalue = 'exv_adjust'
         call ukoto_rvalue2(lunout, csides(1, iequat), &
@@ -1356,6 +1361,10 @@ subroutine setp_mapara_rna(lunpara, lunout)
 
   elseif (indtrna15%exv_dist > INVALID_JUDGE) then
      error_message = 'Error: invalid value for indtrna15%exv_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna15%exv_dist_PS > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna15%exv_dist_PS'
      call util_error(ERROR%STOP_ALL, error_message)
 
   elseif (indtrna15%exv_adjust > INVALID_JUDGE) then

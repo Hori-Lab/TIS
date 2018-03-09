@@ -20,7 +20,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   use const_index
   use var_setp,    only : indtrna15, inperi
   use var_struct,  only : imp2unit, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
-                          exv_radius_mp, exv_epsilon_mp
+                          exv_radius_mp, exv_epsilon_mp, imp2type
   use mpiconst
 
   implicit none
@@ -67,7 +67,11 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
 
-     if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+     if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
+        dij  = indtrna15%exv_dist_PS
+     else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
+        dij  = indtrna15%exv_dist_PS
+     else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
         dij = indtrna15%exv_dist
      else
         dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)

@@ -207,6 +207,7 @@ ba_SPS = 20.0
 
 ** U_EV
 exv_dist = 3.2
+exv_dist_PS = 3.2
 exv_coef = 1.0
 n_sep_nlocal_P = 3
 n_sep_nlocal_S = 3

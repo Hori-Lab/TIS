@@ -47,6 +47,10 @@ subroutine mloop_neigh_dist()
               if (cut > max_cut) then
                  max_cut = cut
               endif
+              cut  = indtrna15%exv_dist_PS
+              if (cut > max_cut) then
+                 max_cut = cut
+              endif
            else
               do imp = lunit2mp(1,iunit), lunit2mp(2, iunit)
                  do jmp = lunit2mp(1,junit), lunit2mp(2, junit)
