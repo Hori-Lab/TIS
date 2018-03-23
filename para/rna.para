@@ -341,6 +341,7 @@ ba_SPS = 20.0
 
 ** U_EV
 exv_dist = 3.2
+exv_dist_PS = 3.2
 ** Other distances are defined in another place. See <<<< DT15_exv_param 
 exv_coef = 1.0
 exv_adjust = 1.5852

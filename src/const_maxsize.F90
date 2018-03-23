@@ -82,7 +82,7 @@ module const_maxsize
 
   integer, parameter :: MXMPHBNEIGHBOR = 50
 
-  integer, parameter :: MXBBR = 1*MXMPBD*MXSOLUTE  ! Maximum number of BBR interaction per bond (nbd)
+  integer, parameter :: MXBBR = 10*MXMPBD*MXSOLUTE  ! Maximum number of BBR interaction per bond (nbd)
 
 !  ! MPC
 !  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis
