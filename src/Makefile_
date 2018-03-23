@@ -184,7 +184,7 @@ FSUB2 = \
 	util_error.o util_unitstate.o\
 	util_bondangle.o util_sort_contact.o util_sort_wca.o\
 	util_ppgauss.o util_bestfit.o\
-	util_periodic.o util_pbneighbor.o util_pbindex.o\
+	util_periodic.o util_nonperiodic.o util_pbneighbor.o util_pbindex.o\
 	ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
 	ukoto_uichec2.o ukoto_uiunpk2.o
 	#read_xyz.o read_pdbatom.o read_pdbatom_pro.o\
