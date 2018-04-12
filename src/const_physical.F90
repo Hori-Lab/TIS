@@ -21,7 +21,8 @@ module const_physical
                                         ! = 0.00198720359
   real(PREC), parameter :: BOLTZ_KCAL_MOL_ND = 0.0019858775  !< BOLTZ used in Denesyuk
 
-  real(PREC), parameter :: DE_MAX  = 300.0e0_PREC !< limit value of force
+  real(PREC), parameter :: DE_MAX  = 20.0e0_PREC !< limit value of force
+  real(PREC), parameter :: MAX_ABSCOS_HBOND15_DIH = cos(179.0/180.0 * F_PI)
 
   ! judgment for numerical error
   real(PREC), parameter :: INVALID_JUDGE = 1.0e30_PREC

@@ -104,6 +104,10 @@ subroutine neighbor_list_bbr(irep)
       
         if (d2 <= dist_cut_sq) then
            ibbr = ibbr + 1
+           if (ibbr > MXBBR) then
+              write(error_message,*) 'Error: ibbr > MXBBR in neighbor_list_BBR.'
+              call util_error(ERROR%STOP_ALL, error_message)
+           endif
            ibbr2mp_l(1,ibbr) = imp1
            ibbr2mp_l(2,ibbr) = imp2
            ibbr2mp_l(3,ibbr) = jmp1
