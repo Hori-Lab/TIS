@@ -42,6 +42,7 @@ subroutine time_integral(flg_step_each_replica)
   ! -----------------------------------------------------------------
   integer    :: i,k,imp, irep, grep
   real(PREC) :: r_force(1:SDIM), dxyz(1:3), d2, d2max, d2max_2nd
+  real(PREC) :: xyz_tmp(1:3), velo_tmp(1:3), vsq
   real(PREC) :: r_boxmuller(SDIM, nmp_real, n_replica_mpi)
   real(PREC) :: random_vector(3*nmp_real) ! BROWNIAN_HI
   real(PREC) :: force_vector(3*nmp_real) ! BROWNIAN_HI
@@ -114,11 +115,11 @@ subroutine time_integral(flg_step_each_replica)
   !   endif
   !endif
 
-  ! -------------------------------------
-  ! prepare random numbers for Langevin
-  ! -------------------------------------
+  ! ------------------------------------------------
+  ! prepare random numbers for Langevin and Brownian
+  ! ------------------------------------------------
   r_boxmuller(:,:,:) = 0.0
-  if (i_simulate_type == SIM%LANGEVIN .OR. &
+  if (i_simulate_type == SIM%LANGEVIN .OR. i_simulate_type == SIM%ND_LANGEVIN .OR.&
       i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
       i_simulate_type == SIM%PS_BROWNIAN ) then
      call get_random_number()
@@ -185,6 +186,50 @@ subroutine time_integral(flg_step_each_replica)
            if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
               call simu_velo_adjst(velo_mp,irep)
            end if
+           
+        ! Langevin with Leap-frog by ND
+        else if(i_simulate_type == SIM%ND_LANGEVIN) then
+           
+           TIME_S( tm_force )
+           call force_sumup(force_mp, irep)
+           TIME_E( tm_force )
+           
+           TIME_S( tm_update ) 
+           do imp = 1, nmp_real
+              if(fix_mp(imp)) cycle
+              
+              ! x_tmp = x
+              xyz_tmp(1:3) = xyz_mp_rep(1:3,imp,irep)
+              ! vx_tmp = vx
+              velo_tmp(1:3) = velo_mp(1:3,imp,irep)
+
+              r_force(1:3) = rlan_const(3, imp, irep) * r_boxmuller(1:3, imp, irep)
+
+              velo_mp(1:3,imp,irep) =  rlan_const(1,imp,irep) * velo_mp(1:3,imp,irep) &
+                                     + rlan_const(2,imp,irep) * (force_mp(1:3,imp) + r_force(1:3))
+
+              vsq = rlan_const(4,imp,irep) * dot_product(velo_mp(1:3,imp,irep), velo_mp(1:3,imp,irep)) / tempk
+              if (vsq > 1.0) then
+                 write(*,*) 'vsq>1: ', istep, irep, imp, velo_mp(1:3,imp,irep)
+                 velo_mp(1:3,imp,irep) = velo_mp(1:3,imp,irep) / sqrt(vsq)
+              endif
+
+              ! x = 2 * x_tmp - x_old + (vx - vx_tmp) * h
+              dxyz(1:3) = xyz_tmp(1:3) - accel_mp(1:3,imp,irep) + (velo_mp(1:3,imp,irep) - velo_tmp(1:3)) * tstep
+
+              xyz_mp_rep(1:3,imp,irep) = xyz_mp_rep(1:3,imp,irep) + dxyz(1:3)
+              pxyz_mp_rep(1:3,imp,irep) = pxyz_mp_rep(1:3,imp,irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
+
+              ! x_old = x_tmp
+              accel_mp(1:3, imp, irep) = xyz_tmp(1:3)
+           end do
+           TIME_E( tm_update )
+           
+           !! correcting velocity for removing translation and rotation motion
+           !if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
+           !   call simu_velo_adjst(velo_mp,irep)
+           !end if
            
         ! Berendsen
         else if(i_simulate_type == SIM%BERENDSEN .or. i_simulate_type == SIM%CONST_ENERGY) then

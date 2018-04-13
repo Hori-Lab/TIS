@@ -174,6 +174,36 @@ subroutine time_integral_pre(flg_step_each_replica)
            write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
         enddo
 #endif
+
+     ! ND Langevin
+     else if(i_simulate_type == SIM%ND_LANGEVIN) then
+        do imp = 1, nmp_real
+           ! fric_mp(imp) = 0.555 * radius(imp)   in setp_mass_fric.F90
+           rlan_const(1, imp, irep) = exp(- fric_mp(imp) / cmass_mp(imp) * tstep)
+           rlan_const(2, imp, irep) = (1.0_PREC - rlan_const(1, imp, irep)) / fric_mp(imp)
+           rlan_const(3, imp, irep) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk / tstep)
+           rlan_const(4, imp, irep) = cmass_mp(imp) / (300.0 * BOLTZ_KCAL_MOL)
+           !write(*,*) 'pre: ',imp,fric_mp(imp),rlan_const(1:4,imp,irep)
+        end do
+        
+        !! In ND_LANGEVIN, "accel_mp" is used to store x_old, coordinates of 1 step before
+        !! See time_integral.F90
+        if (flg_rst) then
+           call read_rst(RSTBLK%ACCEL)
+        else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
+           do imp = 1, nmp_real
+              ! x_old is computed by substracting velo * h from the current coordinates
+              accel_mp(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) - velo_mp(1:3,imp,irep) * tstep
+           end do
+        endif
+        
+#ifdef _DEBUG
+        write(*,*) 'time_integral_pre: accel_mp (x_old)'
+        do imp=1, nmp_real
+           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
+        enddo
+#endif
+
      ! Berendsen or Constant Energy
      else if(i_simulate_type == SIM%BERENDSEN .OR. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
         if (flg_rst) then

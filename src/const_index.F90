@@ -29,8 +29,9 @@ module const_index
      integer :: BROWNIAN     !< 5: Brownian dynamics without hydrodynamic interaction
      integer :: BROWNIAN_HI  !< 6: Brownian dynamics with hydrodynamic interaction
      integer :: PS_BROWNIAN  !< 7: Brownian dynamics without hydrodynamic interaction
+     integer :: ND_LANGEVIN  !< 8
   endtype simu_type
-  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6,7)
+  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6,7,8)
 
   ! i_hydro_tensor: define tensor type of hydrodynamic interaction (only when SIM%BROWNIAN_HI)
   type tensor_type
