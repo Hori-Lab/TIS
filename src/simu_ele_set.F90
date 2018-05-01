@@ -52,6 +52,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
      if (inmisc%i_temp_independent <= 1) then
         ek = 1.0 / (0.03273600947 * tempk * BOLTZ_KCAL_MOL_ND - 0.00669625750)
+     else if (inmisc%i_temp_independent == 2) then
+        ek = 1.0 / (- 0.00669625750)
      else
         error_message = 'Error: invalid i_temp_independent in simu_ele_set'
         call util_error(ERROR%STOP_ALL, error_message)
