@@ -534,6 +534,9 @@ module var_setp
 !     real(PREC) :: cylinder_end
 !     real(PREC) :: cylinder_radi
 !     real(PREC) :: cylinder_coef
+
+     ! check chain crossing (ccx)
+     logical :: flg_CCX
      
      integer    :: sz
   end type input_miscellaneous

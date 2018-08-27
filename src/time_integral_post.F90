@@ -61,15 +61,18 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
   logical :: flg_step_rst, flg_step_widom
+  logical :: flg_CCX_cross
   integer :: imp1, imp2
   integer :: imp, irep, grep
   real(PREC) :: v21(3), dee
+  character(CARRAY_MSG_ERROR) :: error_message
 #ifdef _DUMP_COMMON
   integer :: lundump = outfile%dump
 #endif
 
   ! -----------------------------------------------------------------
   TIME_S( tm_others )
+  flg_CCX_cross     = .false.
   flg_step_save     = .false. 
   flg_step_rep_exc  = .false.
   flg_step_rep_save = .false.
@@ -98,6 +101,19 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   endif
   
   TIME_E( tm_others )
+
+  ! --------------------------------------------------------------
+  ! Check chain crossing (CCX)
+  ! --------------------------------------------------------------
+  if (inmisc%flg_CCX) then
+     call check_chaincrossing(flg_CCX_cross)
+      
+     if (flg_CCX_cross) then
+        flg_step_save     = .true.
+        flg_step_rep_save = .true.
+        !flg_step_rst      = .true.
+     endif
+  endif
 
   ! --------------------------------------------------------------
   ! energy calculation
@@ -369,5 +385,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      call simu_ppr()
   endif
   TIME_E( tm_others )
+
+  if (flg_CCX_cross) then
+     write(error_message,*) 'Stopped because a chain crossing detected at istep=', istep
+     call util_error(ERROR%STOP_ALL, error_message)
+  endif
 
 end subroutine time_integral_post

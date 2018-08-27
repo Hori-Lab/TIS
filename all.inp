@@ -583,6 +583,9 @@ i_neigh_dynamic = 1
 ** Bond-bond repulsion (for DTRNA)
 ** Parameters are written in para/rna.para
 i_BBR = 1
+
+** Check chain crossing (CCX)
+i_CCX = 0
 >>>>
 
 
