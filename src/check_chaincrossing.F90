@@ -13,7 +13,7 @@ subroutine check_chaincrossing(flg_cross)
 
    real(PREC), parameter :: dsq_max = 25.0
 
-   integer, save :: nmp_ccx   ! Given as an argument
+   integer, save :: nmp_ccx
    logical, save :: flg_init = .true.
    integer, save :: nbond
    integer, allocatable, save :: bonds(:,:)
@@ -33,6 +33,7 @@ subroutine check_chaincrossing(flg_cross)
    real(PREC) :: t, angle_b
    real(PREC) :: dsqt1, dsqt2
    real(PREC) :: mtx(4,4) 
+   character(CARRAY_MSG_ERROR) :: error_message
 
    real(PREC), parameter :: unit_mtx(4,4) = &
            reshape( (/1., 0., 0., 0.,  0., 1., 0., 0.,  0., 0., 1., 0.,  0., 0., 0., 1./), (/4,4/) )
@@ -73,7 +74,7 @@ subroutine check_chaincrossing(flg_cross)
                   nbond = nbond + 1
                   bonds(1,nbond) = imp
                   bonds(2,nbond) = imp + 2
-               else                           ! B
+               else    ! Base
                   continue
                endif
             enddo
@@ -83,7 +84,6 @@ subroutine check_chaincrossing(flg_cross)
    
       write(outfile%data, *) '#check_chaincrossing: The number of bonds: ', nbond
       
-      ! Debug
       do abond = 1, nbond
          write(outfile%data, *) '#check_chaincrossing: bonds ', abond, bonds(1,abond), bonds(2,abond)
       enddo
@@ -112,7 +112,7 @@ subroutine check_chaincrossing(flg_cross)
          a3t1 = 0.5 * (a1t1 + a2t1)
          a3t2 = 0.5 * (a1t2 + a2t2)
     
-         loop_b: do bbond = abond+4, nbond
+         loop_b: do bbond = abond+2, nbond
              
             bmp1 = bonds(1,bbond)
             bmp2 = bonds(2,bbond)
@@ -167,8 +167,9 @@ subroutine check_chaincrossing(flg_cross)
             call line_cross_face(a1t1, a2t1, a2t1, a2t2s, c1, c2, t, c3)
             if (0.0 < t .and. t < 1.0) then
                 if (inner_triangle(a1t1, a2t1, a2t2s, c3)) then
-                   write(outfile%data,'(a, i5,4(2x,i3),2(2x,f5.2),2x,f5.2)') &
+                   write(error_message,'(a, i5,4(2x,i3),2(2x,f5.2),2x,f5.2)') &
                          '#check_chaincrossing ', irep, amp1, amp2, bmp1, bmp2, sqrt(dsqt1), sqrt(dsqt2), t
+                   call util_error(ERROR%WARN_ALL, error_message)
                    flg_cross = .true.
                    exit loop_rep
                 endif
@@ -178,8 +179,9 @@ subroutine check_chaincrossing(flg_cross)
             call line_cross_face(a1t1, a2t2s, a2t2s, a1t2s, c1, c2, t, c3)
             if (0.0 < t .and. t < 1.0) then
                 if (inner_triangle(a1t1, a2t2s, a1t2s, c3)) then
-                   write(outfile%data,'(a, i5,4(2x,i3),2(2x,f5.2),2x,f5.2)') &
+                   write(error_message,'(a, i5,4(2x,i3),2(2x,f5.2),2x,f5.2)') &
                          '#check_chaincrossing ', irep, amp1, amp2, bmp1, bmp2, sqrt(dsqt1), sqrt(dsqt2), t
+                   call util_error(ERROR%WARN_ALL, error_message)
                    flg_cross = .true.
                    exit loop_rep
                 endif

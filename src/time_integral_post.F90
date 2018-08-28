@@ -72,7 +72,6 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   ! -----------------------------------------------------------------
   TIME_S( tm_others )
-  flg_CCX_cross     = .false.
   flg_step_save     = .false. 
   flg_step_rep_exc  = .false.
   flg_step_rep_save = .false.
@@ -105,10 +104,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! --------------------------------------------------------------
   ! Check chain crossing (CCX)
   ! --------------------------------------------------------------
-  if (inmisc%flg_CCX) then
+  if (inmisc%i_CCX > 0) then
+     flg_CCX_cross     = .false.
      call check_chaincrossing(flg_CCX_cross)
       
-     if (flg_CCX_cross) then
+     if (flg_CCX_cross .and. inmisc%i_CCX == 2) then
         flg_step_save     = .true.
         flg_step_rep_save = .true.
         !flg_step_rst      = .true.
@@ -387,8 +387,13 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   TIME_E( tm_others )
 
   if (flg_CCX_cross) then
-     write(error_message,*) 'Stopped because a chain crossing detected at istep=', istep
-     call util_error(ERROR%STOP_ALL, error_message)
+     if (inmisc%i_CCX == 1) then
+        write(error_message,*) 'Warning: chain crossing detected at istep=', istep
+        call util_error(ERROR%WARN_ALL, error_message)
+     else if (inmisc%i_CCX == 2) then
+        write(error_message,*) 'Stopped because a chain crossing detected at istep=', istep
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
   endif
 
 end subroutine time_integral_post
