@@ -4,21 +4,30 @@ program exact_coulomb
    integer, parameter :: PREC = 8
 
    ! Physical constants
-   real(PREC), parameter :: JOUL2KCAL_MOL = 1.43862e20  ! (J -> kcal/mol)
+   real(PREC), parameter :: N_AVO   = 6.022140857e23_PREC   !< Avogadro constant [/mol]
+   real(PREC), parameter :: KCAL2JOUL = 4184.0              !< (kcal -> J)  [J/kcal]
+   real(PREC), parameter :: JOUL2KCAL = 1.0/KCAL2JOUL   !< (J -> kcal)  [kcal/J]
+   real(PREC), parameter :: JOUL2KCAL_MOL  = JOUL2KCAL * N_AVO  !< (J -> kcal/mol)
+   !real(PREC), parameter :: JOUL2KCAL_MOL = 1.43862e20  ! (J -> kcal/mol)
    real(PREC), parameter :: FPI     = 3.14159265358979323846264338e0
-   real(PREC), parameter :: ELE     = 1.60217648740e-19 ! Elementary charge [C]
+   !real(PREC), parameter :: ELE     = 1.60217648740e-19 ! Elementary charge [C]
+   real(PREC), parameter :: ELE     = 1.6021766208e-19_PREC !< Elementary charge [C]
    real(PREC), parameter :: EPSI_0  = 8.854187817e-12   ! Vacuum permittivity [F/m]
    real(PREC), parameter :: ORIGIN(3) = [0.0,0.0,0.0]
 
    ! Parameters of the lattice
    integer, parameter :: NLATTICE = 50
+   !integer, parameter :: NLATTICE = 100
    integer, parameter :: MAXCELLS = (2*NLATTICE+1)**3 - 1
    integer, parameter :: FILEPDB = 10
 
-   ! Parameters of the input PDB
-   integer, parameter :: NMP = 202
    real(PREC), parameter :: CELLSIZE = 150.0
-   character(100), parameter :: filename = 'BOX150_NaCl_0050mM_eq.pdb'
+
+   ! Parameters of the input PDB
+   !integer, parameter :: NMP = 202
+   !character(100), parameter :: filename = 'BOX150_NaCl_0050mM_eq.pdb'
+   integer, parameter :: NMP = 3904
+   character(100), parameter :: filename = 'BOX150_NaCl_1000mM_eq.pdb'
 
    ! Temperature and dielectric constant
    real(PREC), parameter :: TK = 310.0
@@ -65,7 +74,7 @@ program exact_coulomb
    ene_total = 0.0e0_PREC
 
    !###################
-   !! All srounding cells
+   !! All surrounding cells
    !###################
    !norm_pre = 0.0
    norm_pre = norms(ncells)

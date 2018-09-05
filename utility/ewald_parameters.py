@@ -3,10 +3,14 @@
 import subprocess32
 import sys
 
-max_time = 5.0
-max_time_md = 30.0
+max_time = 300.0
+max_time_md = 300.0
 inp_tmpl    = 'NaCl1000_ewld_energy.inp'
 inp_tmpl_md = 'NaCl1000_ewld_energy_md.inp'
+f_log = open('ewald_param_1000_dipole.out', 'w')
+#inp_tmpl    = 'NaCl50_ewld_energy.inp'
+#inp_tmpl_md = 'NaCl50_ewld_energy_md.inp'
+#f_log = open('ewald_param_0050_dipole.out', 'w')
 
 exe1 = '../md.ewld'
 exe2 = '../md'
@@ -15,8 +19,6 @@ accuracy = 0.001  # kcal/mol
 accuracy_for_exact = 0.000001  # kcal/mol
 max_cut = 75.0  # Half of the box size
 
-
-f_log = open('ewald_param.out', 'w')
 
 
 flg_Econv = True
