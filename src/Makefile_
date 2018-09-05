@@ -28,6 +28,7 @@ UTIL8 = ../utility/a2rst
 # -DSHARE_NEIGH_PNL  : share neighboring list for exv interactions
 # -DSHARE_NEIGH_HP   : share neighboring list for hydrophobic interaction
 # -DSUB_COPY      : copy subroutine of random number generator
+# -DXCHECK        : check backbone chain crossing
 # --------------------------------------------------------------------
 # Debug
 # -D_DEBUG        : output processing status to STD
@@ -184,7 +185,7 @@ FSUB2 = \
 	util_error.o util_unitstate.o\
 	util_bondangle.o util_sort_contact.o util_sort_wca.o\
 	util_ppgauss.o util_bestfit.o\
-	util_periodic.o util_pbneighbor.o util_pbindex.o\
+	util_periodic.o util_nonperiodic.o util_pbneighbor.o util_pbindex.o\
 	ukoto_uiread2.o ukoto_uiequa2.o ukoto_uvvalu2.o\
 	ukoto_uichec2.o ukoto_uiunpk2.o
 	#read_xyz.o read_pdbatom.o read_pdbatom_pro.o\
@@ -231,6 +232,7 @@ FOBJ1 = \
 	simu_velo_adjst.o simu_velo_settemp.o simu_velo_nosehoover.o\
 	simu_radiusg.o simu_rmsd.o\
 	time_integral_pre.o time_integral.o time_integral_post.o\
+	check_chaincrossing.o\
 	min_steep_desc.o min_conj_grad.o\
 	neighbor.o\
 	neighbor_pre.o neighbor_list.o neighbor_assign.o neighbor_sort.o\

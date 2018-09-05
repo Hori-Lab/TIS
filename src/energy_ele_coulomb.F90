@@ -7,7 +7,7 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inele, inperi
+  use var_setp,    only : inele, inperi, inmisc
   use var_struct,  only : imp2unit, pxyz_mp_rep, lele, iele2mp, coef_ele
   use mpiconst
 
@@ -22,13 +22,14 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit, iele, imirror
   real(PREC) :: dist1, dist2
-  real(PREC) :: ene, cutoff2
+  real(PREC) :: ene, cutoff2, cut_inv
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
 #endif
 
   cutoff2 = inele%cutoff_ele ** 2
+  cut_inv = 1.0e0_PREC / inele%cutoff_ele
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH
@@ -62,8 +63,19 @@ subroutine energy_ele_coulomb(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
-     ene = coef_ele(iele,irep)/dist1
+     ene = coef_ele(iele,irep) * (1.0e0_PREC/dist1 - cut_inv)
+     !if (inmisc%i_temp_independent == 0) then
+     !   ene = coef_ele(iele,irep)/dist1
+     !else if (inmisc%i_temp_independent == 1) then
+     !   ene = 0.0  ! Not implemented
+     !else if (inmisc%i_temp_independent == 2) then
+     !   ene = coef_ele(iele,irep)/dist1*inele%diele_dTcoef
+     !else
+     !   ene = 0.0  ! to suppress compiler message
+     !endif
+
      energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
+     !write(*,*) 'ele', imp1, imp2, dist1, ene
      
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)

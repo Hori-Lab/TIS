@@ -234,7 +234,7 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   use const_index
   use var_setp,    only : inele, inperi
   use var_struct,  only : pxyz_mp_rep, coef_charge, nmp_real, lmp2charge, &
-                          ntp, xyz_tp, charge_tp
+                          ntp, xyz_tp, charge_tp, icharge2mp, ncharge
   use var_replica, only : irep2grep
   use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_coef
   use mpiconst
@@ -246,8 +246,8 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   real(PREC), intent(out)   :: energy(:)         ! (E_TYPE%MAX)
 
   ! ------------------------------------------------------------------------
-  integer :: itp1, itp2, imp2, imirror, ig, grep
-  real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp
+  integer :: itp1, itp2, imp2, ich2, imirror, ig, grep
+  real(PREC) :: dist1, dist2, ssin, scos, ene, cutoff2, q1, dp, q2, dp2
   real(PREC) :: v21(SDIM)
 
   grep = irep2grep(irep)
@@ -258,12 +258,11 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   cutoff2 = inele%cutoff_ele ** 2
   !cutoff2 = inperi%psizeh(1) ** 2   ! Assuming a cubic box
 
-  ene = 0.0
-!!$omp do private(q1,imp2,v21,ene,dist2,dist1,ene,imirror)
   do itp1 = 1, ntp
 
      q1 = charge_tp(itp1)
 
+!$omp do private(imp2,v21,dist2,dist1)
      do imp2 = 1, nmp_real
 
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
@@ -273,9 +272,12 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
         if(dist2 > cutoff2) cycle
 
         dist1 = sqrt(dist2)
-        ene = ene + q1 * coef_charge( lmp2charge(imp2), grep) * erfc(inele%ewld_alpha*dist1) / dist1
+        energy(E_TYPE%ELE) = energy(E_TYPE%ELE) &
+                + q1 * coef_charge( lmp2charge(imp2), grep) * erfc(inele%ewld_alpha*dist1) / dist1
      end do
+!$omp end do
 
+!$omp master
      do itp2 = itp1+1, ntp
 
         v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
@@ -285,46 +287,66 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
         if(dist2 > cutoff2) cycle
            
         dist1 = sqrt(dist2)
-        ene = ene + q1 * charge_tp(itp2) * erfc(inele%ewld_alpha*dist1) / dist1
+        energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + q1 * charge_tp(itp2) * erfc(inele%ewld_alpha*dist1) / dist1
      end do
+!$omp end master
      
   end do
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
 
 
   !================================================
   !================= Fourier space ================
   !================================================
-  ene = 0.0
+
+!$omp do private(scos,itp1,q1,itp2,v21,dp,imp2)
   do ig = 1, ewld_f_n
     
      scos = 0.0
-     ssin = 0.0
 
      do itp1 = 1, ntp
 
-        dp = dot_product(ewld_f_rlv(:,ig), xyz_tp(:,itp1))
-
         q1 = charge_tp(itp1)
 
-        scos = scos + q1 * cos(dp)
-        ssin = ssin + q1 * sin(dp)
+        !!! Self
+        scos = scos + 0.5 * (q1 ** 2)
+
+        !!! Other test particles
+        do itp2 = itp1+1, ntp
+
+           v21(:) = xyz_tp(:,itp2) -  xyz_tp(:,itp1)
+           dp = dot_product(ewld_f_rlv(:,ig), v21)
+
+           scos = scos + (q1 * charge_tp(itp2) * cos(dp))
+        enddo
+
+        !!! Existing particles
+        do ich2 = 1, ncharge
+           imp2 = icharge2mp(ich2)
+
+           v21(:) = pxyz_mp_rep(:,imp2,irep) -  xyz_tp(:,itp1)
+           dp = dot_product(ewld_f_rlv(:,ig), v21)
+
+           scos = scos + (q1 * coef_charge(ich2, irep) * cos(dp))
+        end do
+
      end do
       
-     ene = ene + ewld_f_coef(ig) * (scos ** 2 + ssin ** 2)
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + 2.0 * ewld_f_coef(ig) * scos
   end do
-  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
+!$omp end do
 
 
   !================================================
   !======= Correction for self interaction ========
   !================================================
+!$omp master
   ene = 0.0
   do itp1 = 1, ntp
      q1 = charge_tp(itp1)
      ene = ene + q1**2
   end do
   energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ewld_s_coef * ene
+!$omp end master
 
   ! Multiply coef to the total
   energy(E_TYPE%ELE) = inele%coef(grep) * energy(E_TYPE%ELE)

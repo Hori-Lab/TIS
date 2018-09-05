@@ -348,7 +348,8 @@ exv_adjust = 1.5852
 n_sep_nlocal_P = 3
 n_sep_nlocal_S = 3
 n_sep_nlocal_B = 2
-exv_inf = 0.2
+**exv_inf = 0.2
+exv_inf = 0.88729
 
 ** U_ST (consecutive)
 st_dist = 1.4

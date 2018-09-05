@@ -182,6 +182,7 @@ module var_setp
      real(PREC) :: ba_SPS
 
      real(PREC) :: exv_dist
+     real(PREC) :: exv_dist_PS
      real(PREC) :: exv_coef   ! 2013
      real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015
      real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015
@@ -533,6 +534,9 @@ module var_setp
 !     real(PREC) :: cylinder_end
 !     real(PREC) :: cylinder_radi
 !     real(PREC) :: cylinder_coef
+
+     ! check chain crossing (ccx)
+     integer :: i_CCX
      
      integer    :: sz
   end type input_miscellaneous

@@ -117,7 +117,7 @@ subroutine neighbor(irep)
         write(outfile%neigh(grep),'(1xi6)',advance='no') nhbneigh(irep)
      endif
      if (inmisc%force_flag(INTERACT%ELE)) then
-        write(outfile%neigh(grep),'(1xi6)',advance='no') lele(irep)
+        write(outfile%neigh(grep),'(1xi8)',advance='no') lele(irep)
      endif
      if (inmisc%i_BBR == 1) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') nbbr(irep)

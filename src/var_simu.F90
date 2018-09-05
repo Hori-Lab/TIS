@@ -88,7 +88,7 @@ module var_simu
   ! Widom
   integer(L_INT), save :: widom_iw
   real(PREC), save :: widom_chp
-  logical, save :: widom_flg_exv_inf
+  integer, save :: widom_count_exv_inf
 
   ! Ewald
   integer, save :: ewld_f_n

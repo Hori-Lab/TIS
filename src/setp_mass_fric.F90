@@ -69,6 +69,11 @@ subroutine setp_mass_fric()
         !visc = 1.0e-18_PREC * N_AVO / KCAL2JOUL * inpara%viscosity
         visc = 1.0e-18_PREC * JOUL2KCAL_MOL * inpara%viscosity
 
+     else if(i_simulate_type == SIM%ND_LANGEVIN) then
+
+        visc = 0.555
+        ! This visc will not be used.  Just for output below.
+
      else
         visc = -INVALID_VALUE
         error_message = 'Error: invalid i_simulate_type in setp_mass_fric'
@@ -88,6 +93,9 @@ subroutine setp_mass_fric()
            !! represented as (mass x gamma x dr/dt). [See eq. 3.77 in the manual]
            !! Thus this mass-divided friction (gamma) will be multiplied back by mass 
            !! in the velocity-Verlet procedure.
+
+        else if (i_simulate_type == SIM%ND_LANGEVIN) then
+           fric_mp(imp) = 0.555 * radius(imp)
 
         else if(i_simulate_type == SIM%BROWNIAN) then
            fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
@@ -112,7 +120,11 @@ subroutine setp_mass_fric()
         ichemical = imp2chemicaltype(imp)
         radius(imp) = inpara%radius(ichemical)
         mass = inpara%cmass(ichemical)
-        write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp) * mass
+        if (i_simulate_type == SIM%LANGEVIN) then
+           write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp) * mass
+        else
+           write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp)
+        endif
      enddo
 #ifdef MPI_PAR
      end if

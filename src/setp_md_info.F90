@@ -81,6 +81,7 @@ subroutine setp_md_info()
   inmisc%i_reset_struct   = 0
   inmisc%i_hydro_tensor   = 0
   inmisc%i_BBR            = 0
+  inmisc%i_CCX            = 0
 
 !  inmmc%i_modified_muca   = 0
   ! ---------------------------------------------------------------------
@@ -273,6 +274,11 @@ subroutine setp_md_info()
         cvalue = 'n_seed'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              insimu%n_seed, cvalue)
+
+        cvalue = 'i_CCX'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_CCX, cvalue)
+        
      end do
 
   end do

@@ -61,9 +61,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 
   logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
   logical :: flg_step_rst, flg_step_widom
+  logical :: flg_CCX_cross
   integer :: imp1, imp2
   integer :: imp, irep, grep
   real(PREC) :: v21(3), dee
+  character(CARRAY_MSG_ERROR) :: error_message
 #ifdef _DUMP_COMMON
   integer :: lundump = outfile%dump
 #endif
@@ -98,6 +100,20 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   endif
   
   TIME_E( tm_others )
+
+  ! --------------------------------------------------------------
+  ! Check chain crossing (CCX)
+  ! --------------------------------------------------------------
+  if (inmisc%i_CCX > 0) then
+     flg_CCX_cross     = .false.
+     call check_chaincrossing(flg_CCX_cross)
+      
+     if (flg_CCX_cross .and. inmisc%i_CCX == 2) then
+        flg_step_save     = .true.
+        flg_step_rep_save = .true.
+        !flg_step_rst      = .true.
+     endif
+  endif
 
   ! --------------------------------------------------------------
   ! energy calculation
@@ -257,7 +273,18 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                                      / (tstep * cmass_mp(imp)) )
                  enddo
               enddo
-           endif ! LANGEVIN
+
+           else if(i_simulate_type == SIM%ND_LANGEVIN) then
+              
+              do irep = 1, n_replica_mpi
+                 grep  = irep2grep(irep)
+                 tempk = rep2val(grep, REPTYPE%TEMP)
+                 do imp   = 1, nmp_real
+                    rlan_const(3, imp, irep) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk / tstep)
+                 enddo
+              enddo
+
+           endif ! LANGEVIN or ND_LANGEVIN
         endif
         
         if (flg_rep(REPTYPE%TEMP) .OR. flg_rep(REPTYPE%ION) .OR. &
@@ -358,5 +385,15 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      call simu_ppr()
   endif
   TIME_E( tm_others )
+
+  if (flg_CCX_cross) then
+     if (inmisc%i_CCX == 1) then
+        write(error_message,*) 'Warning: chain crossing detected at istep=', istep
+        call util_error(ERROR%WARN_ALL, error_message)
+     else if (inmisc%i_CCX == 2) then
+        write(error_message,*) 'Stopped because a chain crossing detected at istep=', istep
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  endif
 
 end subroutine time_integral_post

@@ -6,7 +6,7 @@ subroutine simu_calc_energy_dcd(istep_write)
   use if_write
   use var_io,     only : flg_file_out
   use var_replica, only : n_replica_mpi
-  use var_setp,    only : insimu
+  use var_setp,    only : insimu, inperi
   use var_simu,    only : ibefore_time, tempk, velo_mp, energy, energy_unit, &
                           rg, rg_unit, rmsd, rmsd_unit, replica_energy, &
                           ene_st, ene_tst, ene_hb
@@ -26,6 +26,13 @@ subroutine simu_calc_energy_dcd(istep_write)
   ! Read a snapshot from DCD
   ! -----------------------------------------------------------------
   call read_dcd()
+
+
+  do irep=1, n_replica_mpi
+     if (inperi%i_periodic == 1) then
+        call util_nonperiodic(irep)
+     endif
+  enddo
 
   ! -----------------------------------------------------------------
   ! calc neighbour list

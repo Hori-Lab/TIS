@@ -60,7 +60,7 @@ subroutine neighbor_list_bbr(irep)
      imp1 = ibd2mp(1,ibd)
      imp2 = ibd2mp(2,ibd)
 
-     do j = i+2, nbbr_bd
+     do j = i+1, nbbr_bd
 
         jbd = lbbr_bd(j)
 
@@ -72,6 +72,10 @@ subroutine neighbor_list_bbr(irep)
 
         jmp1 = ibd2mp(1,jbd)
         jmp2 = ibd2mp(2,jbd)
+
+        if (imp1 == jmp1 .or. imp1 == jmp2 .or. imp2 == jmp1 .or. imp2 == jmp2) then
+           cycle
+        endif
 
         if(inperi%i_periodic == 0) then
            !   0.5 * (imp1 + imp2) - 0.5 * (jmp1 + jmp2)
@@ -100,6 +104,10 @@ subroutine neighbor_list_bbr(irep)
       
         if (d2 <= dist_cut_sq) then
            ibbr = ibbr + 1
+           if (ibbr > MXBBR) then
+              write(error_message,*) 'Error: ibbr > MXBBR in neighbor_list_BBR.'
+              call util_error(ERROR%STOP_ALL, error_message)
+           endif
            ibbr2mp_l(1,ibbr) = imp1
            ibbr2mp_l(2,ibbr) = imp2
            ibbr2mp_l(3,ibbr) = jmp1

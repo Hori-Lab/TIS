@@ -59,6 +59,7 @@ i_run_mode = 2
 **           = 5 : Brownian dynamics without hydrodynamic interaction
 **           = 6 : Brownian dynamics with hydrodynamic interaction
 **           = 7 : Brownian dynamics without hydrodynamic interaction (ps time scale)
+**           = 8 : ND implementation of Langevin dynamics
 i_simulate_type = 1
 
 ** i_initial_state: define initial configuration 
@@ -370,8 +371,9 @@ diele_water = 78.0
 
 ** dielectric constant
 **            = 0 constant value (default)
-**            = 1 function of temperature and concentration of cation
-i_diele = 0
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+**            = 2 function of temperature
+i_diele = 1
 
 ** charge value
 **            = 0 constant value (default)
@@ -585,6 +587,12 @@ i_neigh_dynamic = 1
 ** Bond-bond repulsion (for DTRNA)
 ** Parameters are written in para/rna.para
 i_BBR = 1
+
+** Check chain crossing (CCX)
+i_CCX = 0
+**    = 0: No operation
+**    = 1: Warning
+**    = 2: Stop the simulation
 >>>>
 
 
