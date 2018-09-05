@@ -10,7 +10,7 @@ subroutine mloop_ewld()
 
    use const_physical
    use var_io,   only : outfile
-   use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef, ewld_s_sum, ewld_h
+   use var_simu, only : ewld_f_n, ewld_f_rlv, ewld_f_coef, ewld_s_coef, ewld_d_coef, ewld_s_sum, ewld_h
    use var_setp, only : inele, inperi
    use var_struct,only: coef_charge, ncharge
    use mpiconst
@@ -147,6 +147,7 @@ subroutine mloop_ewld()
    ! For Self interaction
    !===================================================
    ewld_s_coef = - alpha / sqrt(F_PI)
+   !ewld_d_coef = 2.0 * F_PI / ((1.0+2.0*inele%diele) * pbcsize**3)
 
    ewld_s_sum = 0.0
    do i = 1, ncharge

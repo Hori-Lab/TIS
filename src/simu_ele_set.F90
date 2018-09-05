@@ -7,8 +7,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : inele, inmisc, insimu
+  use var_setp, only : inele, inmisc, insimu, inperi
   use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type
+  use var_simu, only : ewld_d_coef
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -54,6 +55,16 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   end if
 
   inele%diele = ek
+
+  ! -----------------------------------------------------------------------
+  ! For the dipoler term in Ewald
+  if (inele%ewld_dipole == 1) then
+     ewld_d_coef = 2.0 * F_PI / ((1.0+2.0) * inperi%psize(1)**3)
+  else if (inele%ewld_dipole == 2) then
+     ewld_d_coef = 2.0 * F_PI / ((1.0+2.0*ek) * inperi%psize(1)**3)
+  else
+     ewld_d_coef = 0.0e0_PREC
+  endif
 
   ! -----------------------------------------------------------------------
   ! Charge value

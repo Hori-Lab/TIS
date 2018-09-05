@@ -61,6 +61,7 @@ subroutine setp_electrostatic()
   inele%i_function_form = -1
   inele%ewld_alpha = INVALID_VALUE
   inele%ewld_hmax = INVALID_VALUE
+  inele%ewld_dipole = -1
   
   inele%flag_ele(1:MXMP) = .false.
   icalc(1:MXUNIT) = .false. 
@@ -134,6 +135,10 @@ subroutine setp_electrostatic()
         cvalue = 'ewld_hmax'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%ewld_hmax, cvalue)
+
+        cvalue = 'ewld_dipole'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inele%ewld_dipole, cvalue)
      end do
 
      if(ctmp00(1:11) == 'CHARGE_TYPE') then
@@ -343,6 +348,10 @@ subroutine setp_electrostatic()
      endif
      if (inele%ewld_hmax > INVALID_JUDGE) then
         error_message = 'Error: invalid value for inele%ewld_hmax'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+     if (inele%ewld_dipole < 0) then
+        error_message = 'Error: invalid value for inele%ewld_dipole'
         call util_error(ERROR%STOP_ALL, error_message)
      endif
   endif

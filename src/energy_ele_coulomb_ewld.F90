@@ -25,7 +25,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   use var_setp,    only : inele, inperi
   use var_struct,  only : pxyz_mp_rep, lele, iele2mp, coef_ele, &
                           ncharge, coef_charge, icharge2mp
-  use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_sum
+  use var_simu,    only : ewld_f_n, ewld_f_coef, ewld_f_rlv, ewld_s_sum, ewld_d_coef
   use var_replica, only : irep2grep
   use mpiconst
   use time
@@ -176,6 +176,22 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   TIME_E( tm_energy_ele_EwR )
 !$omp end master
 
+!$omp master
+  if (inele%ewld_dipole > 0) then
+     !================================================
+     !======= Correction for dipolar          ========
+     !================================================
+
+     v21(1:3) = 0.0e0_PREC
+     do ich1 = 1, ncharge
+        q1 = coef_charge(ich1, irep)
+        imp1 = icharge2mp(ich1)
+        v21(1:3) = v21(1:3) + q1 * pxyz_mp_rep(1:3, imp1, irep)
+     end do
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + inele%coef(grep) * ewld_d_coef * dot_product(v21,v21)
+  endif
+!$omp end master
+
   !================================================
   !======= Correction for self interaction ========
   !================================================
@@ -203,6 +219,7 @@ subroutine energy_ele_coulomb_ewld(irep, energy, energy_unit)
   write(*,*) 'EWLD_REAL: ', e_real
   write(*,*) 'EWLD_FOUR: ', e_fourier
   write(*,*) 'EWLD_CORR: ', inele%coef(grep)*ewld_s_sum
+  write(*,*) 'EWLD_DIPL: ', e_dipole
   write(*,*) 'EWLD: ', energy(E_TYPE%ELE)
 #endif
 

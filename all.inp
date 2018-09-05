@@ -411,6 +411,10 @@ CHARGE_CHANGE 100 0.500
 ** Ewald
 ewld_alpha = 0.07
 ewld_hmax  = 10.
+ewld_dipole = 1
+*** 0: No dipoler term
+*** 1: Assume surrounded by vacuum
+*** 2: Assume surrounded by water
 >>>>
 
 

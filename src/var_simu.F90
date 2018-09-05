@@ -96,6 +96,7 @@ module var_simu
   real(PREC), allocatable, save :: ewld_f_rlv(:,:)  ! Reciplocal lattice vector (*coef)
   real(PREC), allocatable, save :: ewld_f_coef(:)
   real(PREC), save :: ewld_s_coef    ! Self interaction
+  real(PREC), save :: ewld_d_coef    ! Dipolar
   real(PREC), save :: ewld_s_sum     ! Self interaction
 
 end module var_simu

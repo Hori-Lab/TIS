@@ -557,6 +557,7 @@ module var_setp
      real(PREC) :: length_per_unit(SEQID%MAX)
      real(PREC) :: ewld_alpha
      real(PREC) :: ewld_hmax
+     integer :: ewld_dipole
      logical :: flag_ele(MXMP)
      logical :: flag_charge_change
      integer :: n_charge_change
