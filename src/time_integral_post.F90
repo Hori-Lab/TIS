@@ -104,8 +104,8 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   ! --------------------------------------------------------------
   ! Check chain crossing (CCX)
   ! --------------------------------------------------------------
+  flg_CCX_cross     = .false.
   if (inmisc%i_CCX > 0) then
-     flg_CCX_cross     = .false.
      call check_chaincrossing(flg_CCX_cross)
       
      if (flg_CCX_cross .and. inmisc%i_CCX == 2) then
