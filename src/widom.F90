@@ -5,7 +5,7 @@ subroutine widom
    use var_io,    only : outfile
    use var_setp,  only : inwidom, mts, inele, inperi
    use var_struct,only : ntp, xyz_tp
-   use var_simu,  only : istep, tempk, widom_iw, widom_chp, widom_count_exv_inf
+   use var_simu,  only : istep, tempk, widom_iw, widom_chp, widom_count_exv_inf, widom_energy
    use mt_stream
    use mpiconst
 
@@ -18,11 +18,8 @@ subroutine widom
    integer :: tn, ier
    real(PREC) :: random(SDIM)
    real(PREC) :: test_total, chp
-   real(PREC), allocatable :: energy_test(:,:)          !(E_TYPE%MAX, 0:nthreads-1)
    real(PREC) :: kT
    character(CARRAY_MSG_ERROR) :: error_message
-   character(CARRAY_MSG_ERROR),parameter :: msg_er_allocate = &
-           'failed in memory allocation at widom, PROGRAM STOP'
 
 interface
    subroutine energy_exv_dt15_tp(irep, energy)
@@ -49,16 +46,8 @@ endinterface
 
    kT = BOLTZ_KCAL_MOL * tempk
 
-   allocate( energy_test(E_TYPE%MAX, 0:nthreads-1), stat=ier)
-   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
-
-!$omp parallel private(tn, iw)
-   tn = 0
-!$ tn = omp_get_thread_num()
-   
    do iw = 1, inwidom%n_trial
 
-!$omp master
       widom_iw = widom_iw + 1
 
       ! Generate coordinates
@@ -70,38 +59,27 @@ endinterface
       enddo
 
       widom_count_exv_inf = 0
-!$omp end master
-!$omp barrier
    
       ! Call energy routines one by one
-      energy_test(:,tn) = 0.0e0_PREC
+      widom_energy(:) = 0.0e0_PREC
 
-      call energy_exv_dt15_tp(irep, energy_test(:,tn))
-!$omp barrier
+      call energy_exv_dt15_tp(irep, widom_energy(:))
       if (widom_count_exv_inf > 0) then
-!$omp master
          write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,a9,1x,a9,1x,a9)') &
-                  widom_iw, -kT*log(widom_chp/real(widom_iw)), istep, iw, 'inf', 'inf', 'NaN'
-!$omp end master
+                  widom_iw, -kT*log(widom_chp/real(widom_iw,kind=PREC)), istep, iw, 'inf', 'inf', 'NaN'
          cycle
       endif
 
       if (inele%i_function_form == 1) then ! Coulomb potential
-         call energy_ele_coulomb_tp(irep, energy_test(:,tn))
+         call energy_ele_coulomb_tp(irep, widom_energy(:))
       elseif (inele%i_function_form == 2) then ! Coulomb potential
-         call energy_ele_coulomb_ewld_tp(irep, energy_test(:,tn))
+         call energy_ele_coulomb_ewld_tp(irep, widom_energy(:))
       else
          error_message = 'Error in widom.F90'
          call util_error(ERROR%STOP_ALL, error_message)
       endif
-!$omp barrier
 
-!$omp master
-      do i = 1, nthreads
-         energy_test(E_TYPE%EXV_DT15,0) = energy_test(E_TYPE%EXV_DT15,0) + energy_test(E_TYPE%EXV_DT15,i)
-         energy_test(E_TYPE%ELE,     0) = energy_test(E_TYPE%ELE,     0) + energy_test(E_TYPE%ELE,     i)
-      enddo
-      test_total = energy_test(E_TYPE%EXV_DT15,0) + energy_test(E_TYPE%ELE,0)
+      test_total = widom_energy(E_TYPE%EXV_DT15) + widom_energy(E_TYPE%ELE)
 
       ! Calculate chemical potential
       chp = exp( - test_total / kT)
@@ -109,10 +87,8 @@ endinterface
 
       ! Output
       write(outfile%chp(irep),'(i15,1x, f10.4,1x, i10,1x, i5,1x,g11.4,1x,g11.4,1x,g11.4)') &
-                  widom_iw, -kT*log(widom_chp/real(widom_iw)), istep, iw, &
-                  test_total, energy_test(E_TYPE%EXV_DT15,0), energy_test(E_TYPE%ELE,0)
-!$omp end master
+                  widom_iw, -kT*log(widom_chp/real(widom_iw,kind=PREC)), istep, iw, &
+                  test_total, widom_energy(E_TYPE%EXV_DT15), widom_energy(E_TYPE%ELE)
    enddo
-!$omp end parallel
 
 endsubroutine widom

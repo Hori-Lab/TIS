@@ -6,7 +6,7 @@ subroutine read_rst(itype_wanted)
    use var_setp,   only : insimu
    use var_io,    only : infile
    use var_struct, only : nmp_real, nmp_all, xyz_mp_rep, ndtrna_hb, ndtrna_st
-   use var_simu,   only : velo_mp, accel_mp, hb_status, st_status
+   use var_simu,   only : velo_mp, accel_mp, hb_status, st_status, widom_iw, widom_chp
    use var_replica,only : rep2lab, grep2irep, grep2rank, n_replica_all, lab2rep
    use mpiconst
 #ifdef MPI_PAR
@@ -292,6 +292,37 @@ subroutine read_rst(itype_wanted)
                flush(6)
                exit
             endif
+
+         !----------------------------
+         ! Widom
+         !----------------------------
+         case(RSTBLK%WIDOM)
+            read (luninp) grep
+            rank = grep2rank(grep)  ! Not-replica case, rank = 0
+            irep = grep2irep(grep)  ! Not-replica case, irep = 1
+            if (irep /= 1) then
+               write(error_message,*) 'Error in restart: irep /= 1 in WIDOM block'
+               call util_error(ERROR%STOP_ALL, error_message)
+            endif
+            if (rank /= 0) then
+               write(error_message,*) 'Error in restart: rank /= 0 in WIDOM block'
+               call util_error(ERROR%STOP_ALL, error_message)
+            endif
+
+            read (luninp) widom_iw
+            read (luninp) widom_chp
+#ifdef MPI_PAR
+            if (rank == 0) then
+               call MPI_bcast(widom_iw, L_INT, MPI_BYTE, 0, mpi_comm_local, ierr)
+               call MPI_bcast(widom_chp, 1,    PREC_MPI, 0, mpi_comm_local, ierr)
+            else
+               call MPI_send(widom_iw, L_INT, MPI_BYTE, rank, TAG, mpi_comm_rep, ierr)
+               call MPI_send(widom_chp, 1,    PREC_MPI, rank, TAG, mpi_comm_rep, ierr)
+            endif
+#endif
+            write(*,*) '## RESTART: widom_iw and widom_chp have been loaded.'
+            flg_done(grep) = .true.
+            flush(6)
   
          case default
             write(error_message,*) 'Unknown block-identifier in restart file. itype=',itype
@@ -405,6 +436,22 @@ subroutine read_rst(itype_wanted)
                         0, mpi_comm_local, ierr)
          write(*,*) '## RESTART: dtrna15 has been received.'
          flush(6)
+
+
+      !----------------------------
+      ! WIDOM
+      !----------------------------
+      case(RSTBLK%WIDOM)
+         if (local_rank_mpi == 0) then
+            call MPI_recv(widom_iw, L_INT, MPI_BYTE, 0, TAG, mpi_comm_rep, istatus, ierr)
+            call MPI_recv(widom_chp, 1,    PREC_MPI, 0, TAG, mpi_comm_rep, istatus, ierr)
+            enddo
+         endif
+         call MPI_bcast(widom_iw, L_INT, MPI_BYTE, 0, mpi_comm_local, ierr)
+         call MPI_bcast(widom_chp, 1,    PREC_MPI, 0, mpi_comm_local, ierr)
+         write(*,*) '## RESTART: widom_iw and widom_chp have been received.'
+         flush(6)
+
 
       case default
          write(error_message,*) 'unknown identifier of block in restart file'

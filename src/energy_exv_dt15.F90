@@ -138,7 +138,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
 
   integer :: itp1, itp2, imp2
   integer :: imirror
-  real(PREC) :: dist, dij, a, d_inf
+  real(PREC) :: dist, dij, a, d_inf, ene
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
   real(PREC) :: v21(SDIM), vx(SDIM)
 
@@ -148,7 +148,10 @@ subroutine energy_exv_dt15_tp(irep, energy)
   d_inf = indtrna15%exv_inf
 
   do itp1 = 1, ntp
-!$omp do private(imp2, dij, v21, dist, roverdist, roverdist2, roverdist4, roverdist6, roverdist12)
+     ene = 0.0e0_PREC
+!$omp parallel do  &
+!$omp& private(imp2, dij, v21, dist, roverdist, roverdist2, roverdist4, roverdist6, roverdist12) &
+!$omp& reduction(+:ene) 
      do imp2=1, nmp_real
         
         if (widom_count_exv_inf > 0) cycle
@@ -185,13 +188,12 @@ subroutine energy_exv_dt15_tp(irep, energy)
         roverdist4 = roverdist2 * roverdist2
         roverdist6 = roverdist2 * roverdist4
         roverdist12 = roverdist6 * roverdist6
-        energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) &
-                + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+        ene = ene + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
    
      end do
-!$omp enddo
+!$omp end parallel do
+     energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) + ene
 
-!$omp master
      do itp2 = itp1+1, ntp
 
         if (widom_count_exv_inf > 0) cycle
@@ -231,7 +233,6 @@ subroutine energy_exv_dt15_tp(irep, energy)
         energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) &
                 + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
      enddo
-!$omp end master
   enddo
 
 end subroutine energy_exv_dt15_tp

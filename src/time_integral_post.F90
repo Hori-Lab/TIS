@@ -42,7 +42,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                           tstep, tempk, velo_mp, rlan_const, &
                           energy, energy_unit, rg, rg_unit, rmsd, rmsd_unit, &
                           ene_st, ene_tst, ene_hb,&
-                          replica_energy
+                          replica_energy, dxyz_mp
   use time, only : tm_energy, tm_radiusg_rmsd, &
                    tm_output, tm_replica, & 
                    time_s, time_e, tm_others !, tm_step_adj, &
@@ -142,6 +142,24 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   endif
 
   if (flg_step_widom) then
+     ! All particles need to be inside box
+     do irep = 1, n_replica_mpi
+        if (flg_file_out%neigh) then
+#ifdef MPI_PAR
+        if (local_rank_mpi == 0)then
+#endif
+           grep = irep2grep(irep)
+           write(outfile%neigh(grep), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
+                                  istep, grep, 0.0, 0.0, 0.0
+           flush(outfile%neigh(grep))
+#ifdef MPI_PAR
+        endif
+#endif
+        endif
+        call neighbor(irep)
+        dxyz_mp(:,:,irep) = 0.0e0_PREC
+     enddo
+
      call widom()
   endif
   

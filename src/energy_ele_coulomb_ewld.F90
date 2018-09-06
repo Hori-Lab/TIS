@@ -262,7 +262,8 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
 
      q1 = charge_tp(itp1)
 
-!$omp do private(imp2,v21,dist2,dist1)
+     ene = 0.0e0_PREC
+!$omp parallel do private(imp2,v21,dist2,dist1) reduction(+:ene)
      do imp2 = 1, nmp_real
 
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - xyz_tp(1:3, itp1)
@@ -272,12 +273,11 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
         if(dist2 > cutoff2) cycle
 
         dist1 = sqrt(dist2)
-        energy(E_TYPE%ELE) = energy(E_TYPE%ELE) &
-                + q1 * coef_charge( lmp2charge(imp2), grep) * erfc(inele%ewld_alpha*dist1) / dist1
+        ene = ene + q1 * coef_charge( lmp2charge(imp2), grep) * erfc(inele%ewld_alpha*dist1) / dist1
      end do
-!$omp end do
+!$omp end parallel do
+     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
 
-!$omp master
      do itp2 = itp1+1, ntp
 
         v21(1:3) = xyz_tp(1:3, itp2) - xyz_tp(1:3, itp1)
@@ -289,7 +289,6 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
         dist1 = sqrt(dist2)
         energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + q1 * charge_tp(itp2) * erfc(inele%ewld_alpha*dist1) / dist1
      end do
-!$omp end master
      
   end do
 
@@ -298,7 +297,8 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
   !================= Fourier space ================
   !================================================
 
-!$omp do private(scos,itp1,q1,itp2,v21,dp,imp2)
+  ene = 0.0e0_PREC
+!$omp parallel do private(scos,itp1,q1,itp2,v21,dp,imp2) reduction(+:ene)
   do ig = 1, ewld_f_n
     
      scos = 0.0
@@ -331,22 +331,21 @@ subroutine energy_ele_coulomb_ewld_tp(irep, energy)
 
      end do
       
-     energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + 2.0 * ewld_f_coef(ig) * scos
+     ene = ene + 2.0 * ewld_f_coef(ig) * scos
   end do
-!$omp end do
+!$omp end parallel do
+  energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
 
 
   !================================================
   !======= Correction for self interaction ========
   !================================================
-!$omp master
   ene = 0.0
   do itp1 = 1, ntp
      q1 = charge_tp(itp1)
      ene = ene + q1**2
   end do
   energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ewld_s_coef * ene
-!$omp end master
 
   ! Multiply coef to the total
   energy(E_TYPE%ELE) = inele%coef(grep) * energy(E_TYPE%ELE)

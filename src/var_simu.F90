@@ -89,6 +89,7 @@ module var_simu
   integer(L_INT), save :: widom_iw
   real(PREC), save :: widom_chp
   integer, save :: widom_count_exv_inf
+  real(PREC), allocatable, save :: widom_energy(:)
 
   ! Ewald
   integer, save :: ewld_f_n

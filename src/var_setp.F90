@@ -616,6 +616,8 @@ module var_setp
      integer :: n_K_add
      integer :: n_Cl_add
      integer :: n_max_mp_add
+     real(PREC) :: chp_init
+     integer(L_INT) :: iw_init
      integer :: sz
   endtype input_widom
 

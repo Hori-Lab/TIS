@@ -444,8 +444,9 @@ module const_index
      integer :: REPLICA
      integer :: DTRNA15
      integer :: RANDOM
+     integer :: WIDOM
   endtype rst_block
-  type(rst_block), parameter :: RSTBLK = rst_block(1,2,3,4,5,6,7)
+  type(rst_block), parameter :: RSTBLK = rst_block(1,2,3,4,5,6,7,8)
 
   type emin_type
      integer :: VOID

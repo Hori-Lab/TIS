@@ -35,6 +35,9 @@ subroutine setp_widom_para()
   inwidom%n_Cl_add = -1
   inwidom%n_max_mp_add = -1
 
+  inwidom%chp_init = 0.0
+  inwidom%iw_init = 0
+
   ! --------------------------------------------------------------------
 
 #ifdef MPI_PAR
@@ -54,36 +57,34 @@ subroutine setp_widom_para()
             
         do iequa = 1, nequat
            cvalue = 'n_step_skip'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_step_skip, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_step_skip, cvalue)
 
            cvalue = 'n_step_interval'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_step_interval, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_step_interval, cvalue)
            
            cvalue = 'n_trial'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_trial, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_trial, cvalue)
            
            cvalue = 'n_Mg_add'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_Mg_add, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_Mg_add, cvalue)
            
            cvalue = 'n_K_add'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_K_add, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_K_add, cvalue)
            
            cvalue = 'n_Na_add'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_Na_add, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_Na_add, cvalue)
            
            cvalue = 'n_Cl_add'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_Cl_add, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_Cl_add, cvalue)
            
            cvalue = 'n_max_mp_add'
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                inwidom%n_max_mp_add, cvalue)
+           call ukoto_ivalue2(lunout, csides(1, iequa), inwidom%n_max_mp_add, cvalue)
+
+           cvalue = 'iw_init'
+           call ukoto_lvalue2(lunout, csides(1, iequa), inwidom%iw_init, cvalue)
+
+           cvalue = 'chp_init'
+           call ukoto_rvalue2(lunout, csides(1, iequa), inwidom%chp_init, cvalue)
         end do
      end do
      
