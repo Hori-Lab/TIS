@@ -1,0 +1,15 @@
+#DataThief /Users/nh9632/MDcode/master_master/exp_data/U40_TanShaw2018PNAS/F3.large.jpg Friday 21-Sep-2018 2:08:23 PM
+## Tan et al's parameter
+#C(mM)  R_FRET
+ 50   66.8771
+100   55.6211
+200   41.1804
+400   41.1804
+
+
+## Amber ff14
+#C(mM)  R_FRET
+ 50    29.65  
+100    27.3439
+200    24.269 
+400    20.4804
