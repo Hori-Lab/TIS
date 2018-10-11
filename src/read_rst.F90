@@ -443,8 +443,9 @@ subroutine read_rst(itype_wanted)
       !----------------------------
       case(RSTBLK%WIDOM)
          if (local_rank_mpi == 0) then
-            call MPI_recv(widom_iw, L_INT, MPI_BYTE, 0, TAG, mpi_comm_rep, istatus, ierr)
-            call MPI_recv(widom_chp, 1,    PREC_MPI, 0, TAG, mpi_comm_rep, istatus, ierr)
+            do i = 1, n_replica_mpi
+               call MPI_recv(widom_iw, L_INT, MPI_BYTE, 0, TAG, mpi_comm_rep, istatus, ierr)
+               call MPI_recv(widom_chp, 1,    PREC_MPI, 0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
          call MPI_bcast(widom_iw, L_INT, MPI_BYTE, 0, mpi_comm_local, ierr)
