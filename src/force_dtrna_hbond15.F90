@@ -8,7 +8,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   use if_util
   use mt_stream
   use const_maxsize, only : PREC
-  use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI, MAX_ABSCOS_HBOND15_DIH
+  use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI, MAX_ABSCOS_HBOND15_DIH, MAX_ABSCOS_HBOND15_ANG
   use var_setp,    only : mts, indtrna15, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_all, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -180,25 +180,29 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      !===== Angle of 3-1=2  =====
      cos_theta312 = d1213 / (a13 * a12)
-     d = acos(cos_theta312) - dtrna_hb_nat(2,ihb)
-     pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
-     f_i(:) = pre * (v12(:) - (d1213over1313 * v13(:)))
-     f_k(:) = pre * (v13(:) - (d1213over1212 * v12(:)))
-     for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_i(:)
-     for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_k(:)
-     for_hb(:,1,ihb) = for_hb(:,1,ihb) - f_i(:) - f_k(:)
-     ex = ex - coef_dtrna_hb(2, ihb) * d**2
+     if (abs(cos_theta312) < MAX_ABSCOS_HBOND15_ANG) then
+        d = acos(cos_theta312) - dtrna_hb_nat(2,ihb)
+        pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
+        f_i(:) = pre * (v12(:) - (d1213over1313 * v13(:)))
+        f_k(:) = pre * (v13(:) - (d1213over1212 * v12(:)))
+        for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_i(:)
+        for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_k(:)
+        for_hb(:,1,ihb) = for_hb(:,1,ihb) - f_i(:) - f_k(:)
+        ex = ex - coef_dtrna_hb(2, ihb) * d**2
+     endif
 
      !===== Angle of 1=2-4  =====
      cos_theta124 = d1242 / (a12 * a42)
-     d = acos(cos_theta124) - dtrna_hb_nat(3,ihb)
-     pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
-     f_i(:) = - pre * (v42(:) - (d1242over1212 * v12(:)))
-     f_k(:) = - pre * (v12(:) - (d1242over4242 * v42(:)))
-     for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
-     for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_k(:)
-     for_hb(:,2,ihb) = for_hb(:,2,ihb) - f_i(:) - f_k(:)
-     ex = ex - coef_dtrna_hb(3, ihb) * d**2
+     if (abs(cos_theta124) < MAX_ABSCOS_HBOND15_ANG) then
+        d = acos(cos_theta124) - dtrna_hb_nat(3,ihb)
+        pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
+        f_i(:) = - pre * (v42(:) - (d1242over1212 * v12(:)))
+        f_k(:) = - pre * (v12(:) - (d1242over4242 * v42(:)))
+        for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
+        for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_k(:)
+        for_hb(:,2,ihb) = for_hb(:,2,ihb) - f_i(:) - f_k(:)
+        ex = ex - coef_dtrna_hb(3, ihb) * d**2
+     endif
 
     
      !===== Dihedral angle among 4-2=1=3 =====
