@@ -1,0 +1,35 @@
+DTf.
+file	/Users/nh9632/MDcode/master_master/exp_data/BWYVPK_Denesyuk/BWYVPK_Fig2b.png
+mainx	0
+mainy	0
+window	30	60	1714	1203
+axis	00 lin X - lin Y
+state	1
+continuous	0
+tools	1
+a4mode	0
+distance	1
+mode	0
+precision	4
+texts	\z	, 	, 	, 	\z
+colors	-8388608	-16777024	-13598720	-8372032	-16724992	-3407872	-16777012	-16777216	-16777216	-16777216	-1	-16777216
+params	7	1	1	2	3	1	4
+dump	show	1114.0	745.0
+point	60.0	120.0	76.0	120.0	60.0	120.0	2	0	-16724992
+point	240.0	120.0	NaN	NaN	NaN	NaN	0	0	-3407872
+point	120.0	120.0	NaN	NaN	NaN	NaN	0	0	-16777012
+point	267.0	46.0	NaN	NaN	NaN	NaN	0	1	-8388608
+point	267.0	941.0	NaN	NaN	NaN	NaN	0	1	-16777024
+point	1339.0	940.0	NaN	NaN	NaN	NaN	0	1	-13598720
+point	260.0	160.0	NaN	NaN	NaN	NaN	0	1	-8372032
+dpoint	470.0	185.0	NaN	NaN	NaN	NaN	3	0
+dpoint	590.0	403.0	NaN	NaN	NaN	NaN	3	0
+dpoint	731.0	506.0	NaN	NaN	NaN	NaN	3	0
+dpoint	843.0	465.0	NaN	NaN	NaN	NaN	3	0
+dpoint	969.0	643.0	NaN	NaN	NaN	NaN	3	0
+dpoint	1179.0	839.0	NaN	NaN	NaN	NaN	3	0
+dpoint	389.0	70.0	389.0	69.99999999999989	389.0	69.99999999999989	3	0
+dpoint	1206.0	907.0	1206.0	906.9999999999999	1206.0	906.9999999999999	3	0
+refs	-2	-8	-2	-16	0	-16	0	0
+xtrans	none
+ytrans	none
