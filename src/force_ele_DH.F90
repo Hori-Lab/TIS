@@ -1,7 +1,7 @@
 ! force_ele
 !> @brief This subroutine calculates the force of electrostatic interaction.
 
-subroutine force_ele(irep, force_mp)
+subroutine force_ele_DH(irep, force_mp)
 
   use const_maxsize
   use const_physical
@@ -35,7 +35,7 @@ subroutine force_ele(irep, force_mp)
 #ifdef MPI_PAR
   call MPI_barrier(MPI_COMM_local,ierr)
 #endif
-  write(*,*) '#### start force_ele'
+  write(*,*) '#### start force_ele_DH'
   call flush(6)
 #endif
 
@@ -88,7 +88,7 @@ subroutine force_ele(irep, force_mp)
           exp(-dist1 * rcdist)
      
      if(dvdw_dr > DE_MAX) then
-        write(error_message,*) 'force_ele > DE_MAX', istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
+        write(error_message,*) 'force_ele_DH > DE_MAX', istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
         call util_error(ERROR%WARN_ALL, error_message)
         dvdw_dr = DE_MAX
      end if
@@ -100,11 +100,11 @@ subroutine force_ele(irep, force_mp)
   end do
 !$omp end do nowait
 #ifdef _DEBUG
-  write(*,*) '#### end force_ele'
+  write(*,*) '#### end force_ele_DH'
   call flush(6)
 #ifdef MPI_PAR
   call MPI_barrier(MPI_COMM_local,ierr)
 #endif
 #endif
 
-end subroutine force_ele
+end subroutine force_ele_DH

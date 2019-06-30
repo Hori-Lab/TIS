@@ -243,7 +243,7 @@ FOBJ1 = \
 	energy_exv_rep12.o energy_exv_rep6.o energy_exv_restype.o\
 	energy_exv_wca.o energy_exv_dt15.o energy_exv_gauss.o energy_BBR.o\
 	energy_anchor.o energy_rest1d.o energy_bridge.o energy_pulling.o\
-	energy_ele.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o energy_ele_coulomb_brute.o\
+	energy_ele_DH.o energy_ele_coulomb.o energy_ele_coulomb_ewld.o energy_ele_coulomb_brute.o\
 	energy_window.o\
 	energy_dtrna_stack.o energy_dtrna_stack_nlocal.o\
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
@@ -252,7 +252,7 @@ FOBJ1 = \
 	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o\
 	force_exv_wca.o force_exv_dt15.o force_exv_gauss.o force_BBR.o\
 	force_bridge.o force_pulling.o force_anchor.o force_rest1d.o\
-	force_ele.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
+	force_ele_DH.o force_ele_coulomb.o force_ele_coulomb_ewld.o\
 	force_dtrna_stack.o force_dtrna_stack_nlocal.o\
 	force_dtrna_hbond13.o force_dtrna_hbond15.o force_window.o\
 	write_rep_traject.o write_rep_result.o write_rep_table.o\

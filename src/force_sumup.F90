@@ -228,7 +228,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        call force_ele(irep, force_mp_l(1,1,tn))
+        call force_ele_DH(irep, force_mp_l(1,1,tn))
         !if(inele%i_calc_method == 0) then         ! neighboring list (default)
         !   call force_ele(irep, force_mp_l(1,1,tn))
         !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer

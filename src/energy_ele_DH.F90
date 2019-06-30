@@ -1,7 +1,7 @@
-! energy_ele
+! energy_ele_DH
 !> @brief Calculate the energy of electrostatic interaction 
 
-subroutine energy_ele(irep, energy, energy_unit)
+subroutine energy_ele_DH(irep, energy, energy_unit)
 
   use const_maxsize
   use const_physical
@@ -94,4 +94,4 @@ subroutine energy_ele(irep, energy, energy_unit)
   end do
 !$omp end do nowait
 
-end subroutine energy_ele
+end subroutine energy_ele_DH

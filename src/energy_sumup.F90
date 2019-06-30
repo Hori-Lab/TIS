@@ -287,7 +287,7 @@ subroutine energy_sumup(irep,          &
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        call energy_ele_DH(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         !if(inele%i_calc_method == 0) then         ! neighboring list (default)
         !   call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer
