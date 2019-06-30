@@ -74,13 +74,7 @@ subroutine force_ele(irep, force_mp)
      imp2 = iele2mp(2, iele1, irep)
      imirror = iele2mp(3, iele1, irep)
 
-     !if(inperi%i_periodic == 0) then
-     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     !else
-        v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     !end if
-
-     ! v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
+     v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
 
      dist2 = dot_product(v21,v21)
      if(dist2 > cutoff2) cycle
