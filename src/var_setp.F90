@@ -546,6 +546,7 @@ module var_setp
   !==========================================
   ! electrostatic
   type input_electrostatic
+     integer    :: i_semi
      integer    :: i_diele
      integer    :: i_charge
      integer    :: i_function_form
@@ -555,6 +556,7 @@ module var_setp
      real(PREC) :: diele_dTcoef
      real(PREC) :: cutoff_ele
      real(PREC) :: ionic_strength
+     real(PREC) :: conc_Mg
      real(PREC) :: cdist(MXREPLICA)
      real(PREC) :: coef(MXREPLICA)
      real(PREC) :: coef_charge_type(SEQID%MAX)
@@ -652,5 +654,22 @@ module var_setp
 !     integer    :: sz !< size of the structure
 !  end type input_enmparameter
 !  type(input_enmparameter), save :: inenm
+
+  !==========================================
+  ! PMF for semiexplicit ion model
+  type input_pmf
+     logical    :: flag
+     character(CARRAY_MXFILE) :: path(PMFTYPE%MAX)
+     real(PREC) :: pmf(MXPMFBIN, PMFTYPE%MAX)
+     integer    :: Nbin(PMFTYPE%MAX)
+     real(PREC) :: Rmin(PMFTYPE%MAX)
+     real(PREC) :: Rbin(PMFTYPE%MAX)
+     real(PREC) :: Rmerge(PMFTYPE%MAX)
+     integer :: sz
+  endtype input_pmf
+
+  type(input_pmf), save :: inpmf
+
+  !==========================================
 
 end module var_setp
