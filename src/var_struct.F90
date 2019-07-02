@@ -267,8 +267,13 @@ module var_struct
   real(PREC), allocatable, save :: pxyz_ele_rep(:,:,:) ! (SDIM, ncharge, REPLICA)
 
   !> parameters for elctrostatic(K computer)
-  integer, allocatable, save :: lele_k(:,:)        ! (ncharge, REPLICA)
-  integer, allocatable, save :: iele2charge_k(:,:,:) ! (ncharge, ncharge, REPLICA)
+  !integer, allocatable, save :: lele_k(:,:)        ! (ncharge, REPLICA)
+  !integer, allocatable, save :: iele2charge_k(:,:,:) ! (ncharge, ncharge, REPLICA)
+
+  ! ----------------------------------------------------------------
+  !> Numerical tables of PMF + DH potential for the semiexplicit model
+  real(PREC), allocatable, save :: pmfdh_energy(:,:,:)     ! (bin, REPLICA, PMFTYPE)
+  real(PREC), allocatable, save :: pmfdh_force(:,:,:)      ! (bin, REPLICA, PMFTYPE)
 
   ! ----------------------------------------------------------------
   !> parameters for neighboring (general) list

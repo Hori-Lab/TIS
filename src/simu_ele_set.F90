@@ -7,8 +7,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : inele, inmisc, insimu, inperi
-  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type
+  use var_setp, only : inele, inmisc, insimu, inperi, inpmf
+  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, &
+                         pmfdh_energy, pmfdh_force
   use var_simu, only : ewld_d_coef
 
   implicit none
@@ -18,12 +19,18 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   real(PREC), intent(in) :: ionic_strength
 
   integer :: icharge, icharge_change, imp
-  real(PREC) :: ek, Tc, lb
+  integer :: itype, ibin
+  real(PREC) :: ek, Tc, lb, xi, Zp, theta, b, b3
+  real(PREC) :: r, DH, e_add, Rbininv
+  real(PREC) :: v1, v2, c1v1, c2v2
   character(CARRAY_MSG_ERROR) :: error_message
   real(PREC), parameter ::  MM_A=87.740e0_PREC, MM_B=-0.4008e0_PREC  ! i_diele=1
   real(PREC), parameter ::  MM_C=9.398e-4_PREC, MM_D=-1.410e-6_PREC  ! i_diele=1
 
   integer :: ifunc_seq2id
+
+  Zp = 1.0 ! To suppress compiler warning
+  b = inele%length_per_unit( ifunc_seq2id('P  '))
 
   ! -----------------------------------------------------------------------
   ! Dielectric constant
@@ -80,6 +87,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   ! -----------------------------------------------------------------------
   ! Charge value
   if(inele%i_charge == 1) then
+
      ! Bjerrum length
      if (inmisc%i_temp_independent <= 1) then
         lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * tempk) * 1.0e10_PREC
@@ -91,6 +99,33 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         call util_error(ERROR%STOP_ALL, error_message)
      endif
 
+     ! Calculate phosphate charge taking into account monovalent salt condensation
+     ! Implicit ion model
+     if (inele%i_semi == 0) then
+        !xi = lb / b   ! ~ 0.4
+        !theta = 1.0 - 1.0/xi
+        !Zp = 1.0 - theta
+        !Zp = 1.0 / xi
+        Zp = b / lb
+
+     ! Semiexplicit ion model
+     else if (inele%i_semi > 0) then
+        xi = lb / b 
+        b3 = b ** 3
+      
+        v1 = 4 * F_PI * F_E * b3 * (xi - 1.0e0_PREC) * 2
+        v2 = 4 * F_PI * F_E * b3 * (xi - 0.5e0_PREC) * (2 + 1)
+        c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
+        c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
+      
+        ! Currently, only with divalent ion
+        theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC*F_E * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
+               / (4.0e0_PREC * F_E * c2v2)
+
+        Zp = 1.0 - theta
+     endif
+
+     ! Reflect Zp
      loop_charge:&
      do icharge = 1, ncharge
         imp = icharge2mp(icharge)
@@ -101,7 +136,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
            endif
         enddo
         if (imp2type(imp) == MPTYPE%RNA_PHOS) then
-           coef_charge(icharge,grep) = inele%length_per_unit( ifunc_seq2id('P  ')) / lb
+           coef_charge(icharge,grep) = - Zp
         endif
      enddo loop_charge
   endif
@@ -127,5 +162,44 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
                             / (2.0_PREC * N_AVO * ELE**2)  )       &
                      * sqrt(insimu%tempk_ref / ionic_strength)
   endif
+
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  ! Semiexplicit model
+  if (inele%i_semi > 0) then
+     if(inele%i_charge /= 1) then
+        error_message = 'i_charge must be 1 for semiexplicit ion model'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+
+     itype = PMFTYPE%MG_P
+   
+     do ibin = 1, inpmf%Nbin(itype)
+   
+        r = inpmf%Rmin(itype) + inpmf%Rbin(itype) * real(ibin-1, kind=PREC)
+                    
+        DH = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 / (4.0e0_PREC * F_PI * EPSI_0 * ek) &
+            * 2.0     &  ! Mg charge
+            * (- Zp)  &  ! Phosphate charge
+            * exp(-r / inele%cdist(grep)) / r
+   
+        if (itype == PMFTYPE%MG_P) then
+           e_add = (DH - inpmf%pmf(ibin, itype)) * exp(- (inpmf%Rmerge(itype) ** 2) / (r*r))
+        else
+           error_message = 'q must be 2 in simu_set_semiexplicit'
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+        
+        pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
+     enddo
+   
+     Rbininv = 1.0 / inpmf%Rbin(itype)
+     do ibin = 1, inpmf%Nbin(itype) - 1
+        pmfdh_force(ibin,grep,itype) = - Rbininv * &
+                   (pmfdh_energy(ibin+1, grep, itype) - pmfdh_energy(ibin, grep, itype))
+     enddo
+
+  endif ! Semiexplicit model
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 end subroutine simu_ele_set
