@@ -17,12 +17,14 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_maxsize
   use const_index
   use const_physical
+  use var_replica,only : irep2grep
   use var_setp,   only : inpro, inmisc, indtrna13, indtrna15, inperi !, inrna
   use var_struct, only : nunit_real, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
                          lmp2LJ, iLJ2mp, coef_LJ, &
                          lmp2wca,iwca2mp,coef_wca, &
-                         iclass_unit, ires_mp, nmp_all
+                         iclass_unit, ires_mp, nmp_all, &
+                         lmp2charge, coef_charge
 !                         lmp2morse, &!lmp2rna_bp, lmp2rna_st, &
 !                         imorse2mp, &!irna_bp2mp, irna_st2mp, &
 !                         coef_morse_a, coef_morse_fD
@@ -41,7 +43,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! local variables
-  integer :: n
+  integer :: n, grep
   integer :: klen, ksta, kend
   integer :: inum, imp, jmp, kmp
   integer :: imp1, imp2, imirror
@@ -97,6 +99,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   isep_nlocal  = inpro%n_sep_nlocal
+
+  grep = irep2grep(irep)
 
   iexv     = 0
   isearch  = 1
@@ -490,6 +494,22 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                    (iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%RNA)) then
 
               i_exv_dt15 = 1 
+
+              ! Semi explicit model
+              ! Excluded volume is not computed for phosphate-Mg interactions,
+              ! excepting in case phosphate do not have charge (terminal).
+              if (inele%i_semi > 0) then
+                 ! Phosphate - Mg
+                 if (imp2type(imp) == MPTYPE%RNA_PHOS) then  !!! imp is phosphate
+                    if (coef_charge(lmp2charge(imp),grep) > ZERO_JUDGE) then
+                       i_exv_dt15 = 0
+                    endif
+                 else if (imp2type(jmp) == MPTYPE%RNA_PHOS) then  !!! jmp is phosphate
+                    if (coef_charge(lmp2charge(jmp),grep) > ZERO_JUDGE) then
+                       i_exv_dt15 = 0
+                    endif
+                 endif
+              endif
 
            elseif ((iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%LIG) .OR. &
                    (iclass_unit(iunit) == CLASS%LIG .and. iclass_unit(junit) == CLASS%ION)) then

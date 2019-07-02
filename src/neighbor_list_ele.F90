@@ -14,10 +14,10 @@ subroutine neighbor_list_ele(jrep)
 
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inele, inperi, inpara
+  use var_setp,    only : inmisc, inele, inperi, inpara, inpmf
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
                           imp2unit, ncharge, icharge2mp, coef_charge, &
-                          lele, iele2mp, coef_ele, ncharge
+                          lele, iele2mp, coef_ele, ncharge, imp2type
   use var_replica, only : irep2grep
   use time
   use mpiconst
@@ -27,8 +27,8 @@ subroutine neighbor_list_ele(jrep)
 
   integer, intent(in) :: jrep
 
-  integer :: imp, jmp, iunit, junit, irep, grep
-  integer :: icharge, jcharge, iele, imirror
+  integer :: imp, jmp, iunit, junit, irep, grep, imptype, jmptype
+  integer :: icharge, jcharge, iele, imirror, ipmf
   integer :: icalc(MXUNIT, MXUNIT)
   real(PREC) :: dist2, rneighbor2_ele, v21(3)
   character(CARRAY_MSG_ERROR) :: error_message
@@ -97,9 +97,11 @@ subroutine neighbor_list_ele(jrep)
   endif
 
   ! iele2mp(3,:,:) is used even in case of non-periodic boundary
-  iele2mp(3,:,irep) = 1
+  iele2mp(3,:,irep) = 1  ! periodic mirror index
+  iele2mp(4,:,irep) = 0  ! semiexplicit flag
 #ifdef SHARE_NEIGH
   iele2mp_l(3, :) = 1
+  iele2mp_l(4, :) = 0
 #endif
 
   iele = 0
@@ -112,6 +114,7 @@ subroutine neighbor_list_ele(jrep)
 #endif
 
      imp = icharge2mp(icharge)
+     imptype = imp2type(imp) 
      iunit = imp2unit(imp)
 
      jcharge = icharge + 1
@@ -135,6 +138,15 @@ subroutine neighbor_list_ele(jrep)
 
            if(dist2 < rneighbor2_ele) then
               iele = iele + 1
+
+              ipmf = 0
+              if (inele%i_semi > 0) then
+                 jmptype = imp2type(jmp)
+                 if ((imptype == MPTYPE%RNA_PHOS .and. jmptype == MPTYPE%ION_MG) .or.&
+                     (imptype == MPTYPE%ION_MG   .and. jmptype == MPTYPE%RNA_PHOS)) then
+                    ipmf = PMFTYPE%MG_P
+                 endif
+              endif
 #ifdef MPI_PAR2
 
 #ifdef SHARE_NEIGH
@@ -143,6 +155,7 @@ subroutine neighbor_list_ele(jrep)
               if(inperi%i_periodic == 1) then
                  iele2mp_l(3, iele) = imirror
               end if
+              iele2mp_l(4, iele) = ipmf
               coef_ele_l(iele) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
 #else
               iele2mp(1, iele, irep) = imp
@@ -150,6 +163,7 @@ subroutine neighbor_list_ele(jrep)
               if(inperi%i_periodic == 1) then
                  iele2mp(3, iele, irep) = imirror
               end if
+              iele2mp(4, iele, irep) = ipmf
               coef_ele(iele, irep) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
 #endif
 
@@ -159,6 +173,7 @@ subroutine neighbor_list_ele(jrep)
               if(inperi%i_periodic == 1) then
                  iele2mp(3, iele, irep) = imirror
               end if
+              iele2mp(4, iele, irep) = ipmf
               coef_ele(iele, irep) = coef_charge(icharge,grep) * coef_charge(jcharge,grep) * inele%coef(grep)
 #endif
            end if
@@ -183,8 +198,10 @@ subroutine neighbor_list_ele(jrep)
 
   !n_index = 2 + inperi%n_mirror_index   !! n_mirror_index =  1 if periodic 
   !                                      !!                   0  otherwise
-  n_index = 3
+  !n_index = 3
   !!! Now index 3 is always used regardless i_periodic
+  n_index = 4
+  !!! The forth index was added for semiexplicit model
    
   disp (0) = 0
   count(0) = n_index*nele_lall(0)
