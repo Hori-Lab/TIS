@@ -113,15 +113,24 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         xi = lb / b 
         b3 = b ** 3
       
-        v1 = 4 * F_PI * F_E * b3 * (xi - 1.0e0_PREC) * 2
-        v2 = 4 * F_PI * F_E * b3 * (xi - 0.5e0_PREC) * (2 + 1)
+        ! Currently, only with divalent ion
+
+        ! Formal derivation
+        !v1 = 4 * F_PI * F_E * b3 * (xi - 1.0e0_PREC) * 2
+        !v2 = 4 * F_PI * F_E * b3 * (xi - 0.5e0_PREC) * (2 + 1)
+        !c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
+        !c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
+        !theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC*F_E * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
+        !       / (4.0e0_PREC * F_E * c2v2)
+
+        ! Eliminate F_E (v1 is actually v1/e, v2 is v2/e [e is the base of the natural logarithm])
+        v1 = 4 * F_PI * b3 * (xi - 1.0e0_PREC) * 2
+        v2 = 4 * F_PI * b3 * (xi - 0.5e0_PREC) * (2 + 1)
         c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
         c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
       
-        ! Currently, only with divalent ion
-        theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC*F_E * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
-               / (4.0e0_PREC * F_E * c2v2)
-
+        theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
+               / (4.0e0_PREC * c2v2)
         Zp = 1.0 - theta
      endif
 
