@@ -137,7 +137,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
   indtrna13%hb_angl = INVALID_VALUE
   indtrna13%hb_dih_hbond = INVALID_VALUE
   indtrna13%hb_dih_chain = INVALID_VALUE
-  indtrna13%hb_u0 = INVALID_VALUE
+  !indtrna13%hb_u0 = INVALID_VALUE
   indtrna13%bbr_cutoff = INVALID_VALUE
   indtrna13%bbr_dist = INVALID_VALUE
   indtrna13%bbr_eps = INVALID_VALUE
@@ -169,12 +169,12 @@ subroutine setp_mapara_rna(lunpara, lunout)
   indtrna15%st_nlocal_dist = INVALID_VALUE
   indtrna15%st_nlocal_angl = INVALID_VALUE
   indtrna15%st_nlocal_dih  = INVALID_VALUE
-  indtrna15%st_nlocal_u0   = INVALID_VALUE
+  !indtrna15%st_nlocal_u0   = INVALID_VALUE
   indtrna15%hb_dist = INVALID_VALUE
   indtrna15%hb_angl = INVALID_VALUE
   indtrna15%hb_dih_hbond = INVALID_VALUE
   indtrna15%hb_dih_chain = INVALID_VALUE
-  indtrna15%hb_u0 = INVALID_VALUE
+  !indtrna15%hb_u0 = INVALID_VALUE
   indtrna15%hb_cutoff_dist = INVALID_VALUE
   indtrna15%bbr_cutoff = INVALID_VALUE
   indtrna15%bbr_dist = INVALID_VALUE
@@ -997,9 +997,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequat), &
              indtrna13%hb_dih_chain, cvalue)
 
-        cvalue = 'hb_u0'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             indtrna13%hb_u0, cvalue)
+        !cvalue = 'hb_u0'
+        !call ukoto_rvalue2(lunout, csides(1, iequat), &
+        !     indtrna13%hb_u0, cvalue)
 
         cvalue = 'bbr_cutoff'
         call ukoto_rvalue2(lunout, csides(1, iequat), indtrna13%bbr_cutoff, cvalue)
@@ -1097,9 +1097,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
      error_message = 'Error: invalid value for indtrna13%hb_dih_chain'
      call util_error(ERROR%STOP_ALL, error_message)
 
-  elseif (indtrna13%hb_u0 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for indtrna13%hb_u0'
-     call util_error(ERROR%STOP_ALL, error_message)
+  !elseif (indtrna13%hb_u0 > INVALID_JUDGE) then
+  !   error_message = 'Error: invalid value for indtrna13%hb_u0'
+  !   call util_error(ERROR%STOP_ALL, error_message)
 
   elseif (indtrna13%bbr_cutoff > INVALID_JUDGE) then
      error_message = 'Error: invalid value for indtrna13%bbr_cutoff'
@@ -1279,9 +1279,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequat), &
              indtrna15%st_nlocal_dih, cvalue)
 
-        cvalue = 'st_nlocal_u0'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             indtrna15%st_nlocal_u0, cvalue)
+        !cvalue = 'st_nlocal_u0'
+        !call ukoto_rvalue2(lunout, csides(1, iequat), &
+        !     indtrna15%st_nlocal_u0, cvalue)
 
         cvalue = 'hb_dist'
         call ukoto_rvalue2(lunout, csides(1, iequat), &
@@ -1299,9 +1299,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
         call ukoto_rvalue2(lunout, csides(1, iequat), &
              indtrna15%hb_dih_chain, cvalue)
 
-        cvalue = 'hb_u0'
-        call ukoto_rvalue2(lunout, csides(1, iequat), &
-             indtrna15%hb_u0, cvalue)
+        !cvalue = 'hb_u0'
+        !call ukoto_rvalue2(lunout, csides(1, iequat), &
+        !     indtrna15%hb_u0, cvalue)
 
         cvalue = 'hb_cutoff_dist'
         call ukoto_rvalue2(lunout, csides(1, iequat), &
@@ -1407,9 +1407,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
      error_message = 'Error: invalid value for indtrna15%st_nlocal_dih'
      call util_error(ERROR%STOP_ALL, error_message)
 
-  elseif (indtrna15%st_nlocal_u0 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for indtrna15%st_nlocal_u0'
-     call util_error(ERROR%STOP_ALL, error_message)
+  !elseif (indtrna15%st_nlocal_u0 > INVALID_JUDGE) then
+  !   error_message = 'Error: invalid value for indtrna15%st_nlocal_u0'
+  !   call util_error(ERROR%STOP_ALL, error_message)
 
   elseif (indtrna15%hb_dist > INVALID_JUDGE) then
      error_message = 'Error: invalid value for indtrna15%hb_dist'
@@ -1427,9 +1427,9 @@ subroutine setp_mapara_rna(lunpara, lunout)
      error_message = 'Error: invalid value for indtrna15%hb_dih_chain'
      call util_error(ERROR%STOP_ALL, error_message)
 
-  elseif (indtrna15%hb_u0 > INVALID_JUDGE) then
-     error_message = 'Error: invalid value for indtrna15%hb_u0'
-     call util_error(ERROR%STOP_ALL, error_message)
+  !elseif (indtrna15%hb_u0 > INVALID_JUDGE) then
+  !   error_message = 'Error: invalid value for indtrna15%hb_u0'
+  !   call util_error(ERROR%STOP_ALL, error_message)
 
   elseif (indtrna15%hb_cutoff_dist > INVALID_JUDGE) then
      error_message = 'Error: invalid value for indtrna15%hb_cutoff_dist'

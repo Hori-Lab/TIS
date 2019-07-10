@@ -202,13 +202,13 @@ module var_setp
      real(PREC) :: st_nlocal_dist
      real(PREC) :: st_nlocal_angl
      real(PREC) :: st_nlocal_dih
-     real(PREC) :: st_nlocal_u0
+     !real(PREC) :: st_nlocal_u0
 
      real(PREC) :: hb_dist
      real(PREC) :: hb_angl
      real(PREC) :: hb_dih_hbond
      real(PREC) :: hb_dih_chain
-     real(PREC) :: hb_u0
+     !real(PREC) :: hb_u0
      real(PREC) :: hb_cutoff_dist
 
      real(PREC) :: bbr_cutoff
