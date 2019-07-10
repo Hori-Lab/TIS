@@ -7,7 +7,7 @@ subroutine simu_set_dtrna(grep, tempk)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp, only : indtrna13, indtrna15, inmisc
+  use var_setp, only : indtrna, indtrna13, indtrna15, indtrna19, inmisc, inele
   use var_struct, only : idtrna_st2nn, ndtrna_st, coef_dtrna_st
   use var_simu, only : beta_hbond15
 
@@ -37,19 +37,37 @@ subroutine simu_set_dtrna(grep, tempk)
 
   else if (inmisc%i_dtrna_model == 2015) then
 
-     do ist = 1, ndtrna_st
-        inn= idtrna_st2nn(ist)
-        h  = indtrna15%st_h(inn)
-        s  = indtrna15%st_s(inn)
-        Tm = indtrna15%st_Tm(inn)
-        if (inmisc%i_temp_independent == 0) then
-           coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
-        else if (inmisc%i_temp_independent > 0) then
-           coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
-        endif
-     enddo
+     if (inele%i_semi == 0) then
+        do ist = 1, ndtrna_st
+           inn= idtrna_st2nn(ist)
+           h  = indtrna15%st_h(inn)
+           s  = indtrna15%st_s(inn)
+           Tm = indtrna15%st_Tm(inn)
+           if (inmisc%i_temp_independent == 0) then
+              coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
+           else if (inmisc%i_temp_independent > 0) then
+              coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
+           endif
+        enddo
+   
+        beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
 
-     beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
+     else
+        do ist = 1, ndtrna_st
+           inn= idtrna_st2nn(ist)
+           h  = indtrna19%st_h(inn)
+           s  = indtrna19%st_s(inn)
+           Tm = indtrna19%st_Tm(inn)
+           if (inmisc%i_temp_independent == 0) then
+              coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
+           else if (inmisc%i_temp_independent > 0) then
+              coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
+           endif
+        enddo
+   
+        beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
+
+     endif
 
   endif
 

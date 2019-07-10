@@ -18,7 +18,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_index
   use const_physical
   use var_replica,only : irep2grep
-  use var_setp,   only : inpro, inmisc, indtrna13, indtrna15, inperi !, inrna
+  use var_setp,   only : inpro, inmisc, indtrna13, indtrna, inperi !, inrna
   use var_struct, only : nunit_real, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
                          lmp2LJ, iLJ2mp, coef_LJ, &
@@ -457,11 +457,11 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               if (iclass_unit(iunit) == CLASS%RNA) then
                  select case (imp2type(imp))
                  case (MPTYPE%RNA_PHOS) !P
-                    isep_nlocal_rna = indtrna15%n_sep_nlocal_P
+                    isep_nlocal_rna = indtrna%n_sep_nlocal_P
                  case (MPTYPE%RNA_SUGAR)!S
-                    isep_nlocal_rna = indtrna15%n_sep_nlocal_S
+                    isep_nlocal_rna = indtrna%n_sep_nlocal_S
                  case (MPTYPE%RNA_BASE) !B 
-                    isep_nlocal_rna = indtrna15%n_sep_nlocal_B
+                    isep_nlocal_rna = indtrna%n_sep_nlocal_B
                  case default 
                     isep_nlocal_rna = -1 ! to suppress compiler warning
                     error_message = 'Error: logical defect in neighbor_assign'

@@ -3,7 +3,7 @@ subroutine mloop_dtrna()
   use const_maxsize
   use const_index
   use var_io,      only : outfile
-  use var_setp,    only : inmisc, indtrna15, inpara
+  use var_setp,    only : inmisc, indtrna, inpara
   use var_struct,  only : ndtrna_hb, ndtrna_st, ndtrna_tst, &
                           idtrna_st2mp, idtrna_tst2st, idtrna_tst2side, idtrna_tst2mp, &
                           dtrna_hb_nat, dtrna_hb_neigh_dist2, nhbsite, flg_tst_exclusive, &
@@ -147,7 +147,7 @@ subroutine mloop_dtrna()
      ! calc square of distance for neighbor list
      if (inmisc%i_neigh_dynamic == 1) then
         do ihb = 1, ndtrna_hb
-           dtrna_hb_neigh_dist2(ihb) = (dtrna_hb_nat(1,ihb) + indtrna15%hb_cutoff_dist + inpara%neigh_margin) ** 2
+           dtrna_hb_neigh_dist2(ihb) = (dtrna_hb_nat(1,ihb) + indtrna%hb_cutoff_dist + inpara%neigh_margin) ** 2
         enddo
      else
         dtrna_hb_neigh_dist2(:) = 20.0e0_PREC ** 2

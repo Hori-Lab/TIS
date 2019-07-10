@@ -7,9 +7,9 @@ subroutine neighbor_list_bbr(irep)
   use const_physical
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inperi, indtrna15, inpara
+  use var_setp,    only : inmisc, inperi, indtrna, inpara
   use var_struct,  only : nbbr_bd, lbbr_bd, nbbr, ibbr2mp, &
-                          ibd2mp, xyz_mp_rep, pxyz_mp_rep, ibd2type
+                          ibd2mp, xyz_mp_rep, ibd2type
   use mpiconst
 
   implicit none
@@ -35,10 +35,10 @@ subroutine neighbor_list_bbr(irep)
   ! -------------------------------------------------------------------
   ! --------------------------------------------------------------------
   if (inmisc%i_neigh_dynamic == 1) then
-     dist_cut_sq = (indtrna15%bbr_cutoff + inpara%neigh_margin) ** 2
+     dist_cut_sq = (indtrna%bbr_cutoff + inpara%neigh_margin) ** 2
   else
-     dist_cut_sq = (indtrna15%bbr_cutoff + 5.0) ** 2
-     write(error_message,*) 'WARNING: in neighbor_list_BBR, examine this cutoff carefully', indtrna15%bbr_cutoff + 5.0
+     dist_cut_sq = (indtrna%bbr_cutoff + 5.0) ** 2
+     write(error_message,*) 'WARNING: in neighbor_list_BBR, examine this cutoff carefully', indtrna%bbr_cutoff + 5.0
      call util_error(ERROR%WARN_ALL, error_message)
   endif
 
