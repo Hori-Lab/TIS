@@ -489,9 +489,10 @@ module const_index
      integer :: K    !< 10 
      integer :: NA   !< 11
      integer :: X1   !< 12
+     integer :: CHX  !< 13
      integer :: MAX
   endtype dtrna15_exv
-  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,12,12)
+  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,12,13,13)
 
   type seq2id
      integer :: ALA  !< 1

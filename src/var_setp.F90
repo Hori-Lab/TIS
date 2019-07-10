@@ -184,9 +184,9 @@ module var_setp
      real(PREC) :: exv_dist
      real(PREC) :: exv_dist_PS
      real(PREC) :: exv_coef   ! 2013
-     real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015
-     real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015
-     real(PREC) :: exv_adjust ! 2015
+     real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015 & 2019
+     real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015 & 2019
+     real(PREC) :: exv_adjust ! 2015 & 2019
      real(PREC) :: exv_inf    ! 2015 for Widom insertion
      integer :: n_sep_nlocal_P
      integer :: n_sep_nlocal_S
@@ -216,8 +216,10 @@ module var_setp
      real(PREC) :: bbr_eps
      integer    :: sz
   endtype input_dtrna_parameter
-  type(input_dtrna_parameter), save :: indtrna15
   type(input_dtrna_parameter), save :: indtrna13
+  type(input_dtrna_parameter), save :: indtrna15
+  type(input_dtrna_parameter), save :: indtrna19
+  type(input_dtrna_parameter), save :: indtrna
 
 
   !==========================================

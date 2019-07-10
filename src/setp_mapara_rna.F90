@@ -7,7 +7,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
   use const_maxsize
   use const_index
   use const_physical
-  use var_setp, only : indtrna13, indtrna15, inarna !, inrna
+  use var_setp, only : indtrna13, indtrna15, indtrna19, inarna !, inrna
   use mpiconst
 
   implicit none
@@ -179,6 +179,44 @@ subroutine setp_mapara_rna(lunpara, lunout)
   indtrna15%bbr_cutoff = INVALID_VALUE
   indtrna15%bbr_dist = INVALID_VALUE
   indtrna15%bbr_eps = INVALID_VALUE
+
+  indtrna19%energy_unit = INVALID_VALUE
+  indtrna19%i_use_atom_base  = -1
+  indtrna19%i_use_atom_sugar = -1
+  indtrna19%bd_PS  = INVALID_VALUE
+  indtrna19%bd_SB  = INVALID_VALUE
+  indtrna19%bd_SP  = INVALID_VALUE
+  indtrna19%ba_PSB = INVALID_VALUE
+  indtrna19%ba_PSP = INVALID_VALUE
+  indtrna19%ba_BSP = INVALID_VALUE
+  indtrna19%ba_SPS = INVALID_VALUE
+  indtrna19%exv_dist = INVALID_VALUE
+  indtrna19%exv_dist_PS = INVALID_VALUE
+  indtrna19%exv_rad(1:DT15EXV%MAX) = INVALID_VALUE
+  indtrna19%exv_eps(1:DT15EXV%MAX) = INVALID_VALUE
+  indtrna19%exv_adjust = INVALID_VALUE
+  indtrna19%exv_inf = INVALID_VALUE
+  indtrna19%n_sep_nlocal_P = -1
+  indtrna19%n_sep_nlocal_S = -1
+  indtrna19%n_sep_nlocal_B = -1
+  indtrna19%st_dist = INVALID_VALUE
+  indtrna19%st_dih = INVALID_VALUE
+  indtrna19%st_h(1:16) = INVALID_VALUE
+  indtrna19%st_s(1:16) = INVALID_VALUE
+  indtrna19%st_Tm(1:16) = INVALID_VALUE
+  indtrna19%st_nlocal_dist = INVALID_VALUE
+  indtrna19%st_nlocal_angl = INVALID_VALUE
+  indtrna19%st_nlocal_dih  = INVALID_VALUE
+  !indtrna19%st_nlocal_u0   = INVALID_VALUE
+  indtrna19%hb_dist = INVALID_VALUE
+  indtrna19%hb_angl = INVALID_VALUE
+  indtrna19%hb_dih_hbond = INVALID_VALUE
+  indtrna19%hb_dih_chain = INVALID_VALUE
+  !indtrna19%hb_u0 = INVALID_VALUE
+  indtrna19%hb_cutoff_dist = INVALID_VALUE
+  indtrna19%bbr_cutoff = INVALID_VALUE
+  indtrna19%bbr_dist = INVALID_VALUE
+  indtrna19%bbr_eps = INVALID_VALUE
 
   inarna%bond_SP = INVALID_VALUE
   inarna%bond_PS = INVALID_VALUE
@@ -1560,6 +1598,10 @@ subroutine setp_mapara_rna(lunpara, lunout)
      write(lunout,'(a,a2,3(x1g10.3))') '---reading exv parameter: ',ctype, param1, param2
   enddo
 
+  ! CHX does not exist in DT15
+  indtrna15%exv_rad(DT15EXV%CHX) = 999999.9_PREC   ! R
+  indtrna15%exv_eps(DT15EXV%CHX) = 999999.9_PREC   ! epsilon
+
   do itype = 1, DT15EXV%MAX
      if(indtrna15%exv_rad(itype) > INVALID_JUDGE) then
         error_message = 'Error: invalid value for indtrna15%exv_rad'
@@ -1567,6 +1609,406 @@ subroutine setp_mapara_rna(lunpara, lunout)
 
      else if(indtrna15%exv_eps(itype) > INVALID_JUDGE) then
         error_message = 'Error: invalid value for indtrna15%exv_eps'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     endif
+  enddo
+
+
+  ! -------------------------------------------------------------------
+  rewind(lunpara)
+  call ukoto_uiread2(lunpara, lunout, 'para_NHT19_rna  ', kfind, &
+       CARRAY_MXLINE, nlines, cwkinp)
+  
+  if(kfind /= 'FIND') then
+     error_message = 'Error: cannot find "para_NHT19_rna" in the rna.para file'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+  
+  do iline = 1, nlines
+     call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+     
+     do iequat = 1, nequat
+        cvalue = 'energy_unit_rna'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%energy_unit, cvalue)
+
+        cvalue = 'i_use_atom_base'
+        call ukoto_ivalue2(lunout, csides(1, iequat), &
+             indtrna19%i_use_atom_base, cvalue)
+
+        cvalue = 'i_use_atom_sugar'
+        call ukoto_ivalue2(lunout, csides(1, iequat), &
+             indtrna19%i_use_atom_sugar, cvalue)
+
+        cvalue = 'bd_PS'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%bd_PS, cvalue)
+
+        cvalue = 'bd_SB'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%bd_SB, cvalue)
+
+        cvalue = 'bd_SP'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%bd_SP, cvalue)
+        
+        cvalue = 'ba_PSB'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%ba_PSB, cvalue )
+        
+        cvalue = 'ba_PSP'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%ba_PSP, cvalue)
+        
+        cvalue = 'ba_BSP'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%ba_BSP, cvalue)
+        
+        cvalue = 'ba_SPS'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%ba_SPS, cvalue)
+           
+        cvalue = 'exv_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%exv_dist, cvalue)
+
+        cvalue = 'exv_dist_PS'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%exv_dist_PS, cvalue)
+        
+        cvalue = 'exv_adjust'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%exv_adjust, cvalue)
+
+        cvalue = 'exv_inf'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%exv_inf, cvalue)
+
+        cvalue = 'n_sep_nlocal_P'
+        call ukoto_ivalue2(lunout, csides(1, iequat), &
+             indtrna19%n_sep_nlocal_P, cvalue)
+
+        cvalue = 'n_sep_nlocal_S'
+        call ukoto_ivalue2(lunout, csides(1, iequat), &
+             indtrna19%n_sep_nlocal_S, cvalue)
+
+        cvalue = 'n_sep_nlocal_B'
+        call ukoto_ivalue2(lunout, csides(1, iequat), &
+             indtrna19%n_sep_nlocal_B, cvalue)
+
+        cvalue = 'st_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%st_dist, cvalue)
+
+        cvalue = 'st_dih'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%st_dih, cvalue)
+
+        cvalue = 'st_nlocal_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%st_nlocal_dist, cvalue)
+
+        cvalue = 'st_nlocal_angl'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%st_nlocal_angl, cvalue)
+
+        cvalue = 'st_nlocal_dih'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%st_nlocal_dih, cvalue)
+
+        !cvalue = 'st_nlocal_u0'
+        !call ukoto_rvalue2(lunout, csides(1, iequat), &
+        !     indtrna19%st_nlocal_u0, cvalue)
+
+        cvalue = 'hb_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%hb_dist, cvalue)
+
+        cvalue = 'hb_angl'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%hb_angl, cvalue)
+
+        cvalue = 'hb_dih_hbond'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%hb_dih_hbond, cvalue)
+
+        cvalue = 'hb_dih_chain'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%hb_dih_chain, cvalue)
+
+        !cvalue = 'hb_u0'
+        !call ukoto_rvalue2(lunout, csides(1, iequat), &
+        !     indtrna19%hb_u0, cvalue)
+
+        cvalue = 'hb_cutoff_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), &
+             indtrna19%hb_cutoff_dist, cvalue)
+
+        cvalue = 'bbr_cutoff'
+        call ukoto_rvalue2(lunout, csides(1, iequat), indtrna19%bbr_cutoff, cvalue)
+
+        cvalue = 'bbr_dist'
+        call ukoto_rvalue2(lunout, csides(1, iequat), indtrna19%bbr_dist, cvalue)
+
+        cvalue = 'bbr_eps'
+        call ukoto_rvalue2(lunout, csides(1, iequat), indtrna19%bbr_eps, cvalue)
+     end do
+  end do
+
+
+  if (indtrna19%energy_unit > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%energy_unit'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%i_use_atom_base < 0) then
+     error_message = 'Error: invalid value for indtrna19%i_use_atom_base'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%i_use_atom_sugar < 0) then
+     error_message = 'Error: invalid value for indtrna19%i_use_atom_sugar'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bd_PS > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bd_PS'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bd_SB > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bd_SB'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bd_SP > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bd_SP'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%ba_PSB > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%ba_PSB'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%ba_PSP > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%ba_PSP'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%ba_BSP > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%ba_BSP'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%ba_SPS > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%ba_SPS'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%exv_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%exv_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%exv_dist_PS > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%exv_dist_PS'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%exv_adjust > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%exv_adjust'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%exv_inf > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%exv_inf'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%n_sep_nlocal_P < 0) then
+     error_message = 'Error: invalid value for indtrna19%n_sep_nlocal_P'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%n_sep_nlocal_S < 0) then
+     error_message = 'Error: invalid value for indtrna19%n_sep_nlocal_S'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%n_sep_nlocal_B < 0) then
+     error_message = 'Error: invalid value for indtrna19%n_sep_nlocal_B'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%st_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%st_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%st_dih > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%st_dih'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%st_nlocal_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%st_nlocal_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%st_nlocal_angl > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%st_nlocal_angl'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%st_nlocal_dih > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%st_nlocal_dih'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  !elseif (indtrna19%st_nlocal_u0 > INVALID_JUDGE) then
+  !   error_message = 'Error: invalid value for indtrna19%st_nlocal_u0'
+  !   call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%hb_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%hb_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%hb_angl > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%hb_angl'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%hb_dih_hbond > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%hb_dih_hbond'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%hb_dih_chain > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%hb_dih_chain'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  !elseif (indtrna19%hb_u0 > INVALID_JUDGE) then
+  !   error_message = 'Error: invalid value for indtrna19%hb_u0'
+  !   call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%hb_cutoff_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%hb_cutoff_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bbr_cutoff > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bbr_cutoff'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bbr_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bbr_dist'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  elseif (indtrna19%bbr_dist > INVALID_JUDGE) then
+     error_message = 'Error: invalid value for indtrna19%bbr_eps'
+     call util_error(ERROR%STOP_ALL, error_message)
+
+  endif
+
+  ! -----------------------------------------------------------------
+  ! using atoms of base (DT_RNA15)
+  if(indtrna19%i_use_atom_base == USE_RNA_BASE%COM) then
+     write (lunout, *) 'using the center of mass for base in DT_RNA'
+  else if (indtrna19%i_use_atom_base == USE_RNA_BASE%PuN1_PyN3) then
+     write (lunout, *) 'using N1 for purine and N3 for pyrimidine in DT_RNA'
+  else
+     error_message = 'Error: invalid value for indtrna19%i_use_atom_base'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  ! using atoms of sugar (DT_RNA15)
+  if(indtrna19%i_use_atom_sugar == USE_RNA_SUGAR%COM) then
+     write (lunout, *) 'using the center of mass for sugar in DT_RNA'
+  else if (indtrna19%i_use_atom_sugar == USE_RNA_SUGAR%COM_RING) then
+     write (lunout, *) 'using the center of mass of sugar-ring position for sugar in DT_RNA'
+  else if (indtrna19%i_use_atom_sugar == USE_RNA_SUGAR%C4) then
+     write (lunout, *) 'using C4 position for sugar in DT_RNA'
+  else
+     error_message = 'Error: invalid value for indtrna19%i_use_atom_sugar'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  ! -----------------------------------------------------------------
+  rewind(lunpara)
+     
+  call ukoto_uiread2(lunpara, lunout, 'NHT19_stack_param', kfind, &
+       CARRAY_MXLINE, nlines, cwkinp)
+
+  if(kfind /= 'FIND') then
+     error_message = 'Error: cannot find "NHT19_stack_param" in the rna.para file'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  do iline = 1, nlines
+     ctmp = cwkinp(iline)
+     read (ctmp, *) ctype, param1, param2, param3
+
+     itype = ifunc_nn2id(ctype(1:2))
+     indtrna19%st_h(itype) = param1   ! h
+     indtrna19%st_s(itype) = param2   ! s
+     indtrna19%st_Tm(itype) = param3  ! Tm
+
+     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
+  enddo
+
+  do inn = 1, 16
+     if(indtrna19%st_h(inn) > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for indtrna19%cst_h'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     else if(indtrna19%st_s(inn) > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for indtrna19%cst_h'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     else if(indtrna19%st_Tm(inn) > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for indtrna19%cst_h'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  enddo
+
+  ! -----------------------------------------------------------------
+  rewind(lunpara)
+     
+  call ukoto_uiread2(lunpara, lunout, 'NHT19_exv_param ', kfind, &
+       CARRAY_MXLINE, nlines, cwkinp)
+
+  if(kfind /= 'FIND') then
+     error_message = 'Error: cannot find "NHT19_exv_param" in the rna.para file'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
+  do iline = 1, nlines
+     ctmp = cwkinp(iline)
+     read (ctmp, *) ctype, param1, param2
+
+     if (ctype(1:3) == 'CHX') then
+        itype = DT15EXV%CHX
+     else if (ctype(1:3) == 'Mg2') then
+        itype = DT15EXV%MG2
+     else if (ctype(1:3) == 'Ca2') then
+        itype = DT15EXV%CA2
+     else if (ctype(1:1) == 'P') then
+        itype = DT15EXV%P
+     else if (ctype(1:1) == 'S') then
+        itype = DT15EXV%S
+     else if (ctype(1:1) == 'A') then
+        itype = DT15EXV%A
+     else if (ctype(1:1) == 'G') then
+        itype = DT15EXV%G
+     else if (ctype(1:1) == 'C') then
+        itype = DT15EXV%C
+     else if (ctype(1:1) == 'U') then
+        itype = DT15EXV%U
+     else if (ctype(1:2) == 'X1') then
+        itype = DT15EXV%X1
+     else
+        itype = 0  ! to supress compiler warning
+        error_message = 'Error: invalid line in NHT19_exv_param in rna.para'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+     indtrna19%exv_rad(itype) = param1   ! R
+     indtrna19%exv_eps(itype) = param2   ! epsilon
+
+     write(lunout,'(a,a3,3(x1g10.3))') '---reading exv parameter: ',ctype, param1, param2
+  enddo
+
+  ! K, Cl, Na does not exist in NHT19
+  indtrna19%exv_rad(DT15EXV%K) = 999999.9   ! R
+  indtrna19%exv_eps(DT15EXV%K) = 999999.9   ! epsilon
+  indtrna19%exv_rad(DT15EXV%CL) = 999999.9   ! R
+  indtrna19%exv_eps(DT15EXV%CL) = 999999.9   ! epsilon
+  indtrna19%exv_rad(DT15EXV%NA) = 999999.9   ! R
+  indtrna19%exv_eps(DT15EXV%NA) = 999999.9   ! epsilon
+
+  do itype = 1, DT15EXV%MAX
+     if(indtrna19%exv_rad(itype) > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for indtrna19%exv_rad'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     else if(indtrna19%exv_eps(itype) > INVALID_JUDGE) then
+        error_message = 'Error: invalid value for indtrna19%exv_eps'
         call util_error(ERROR%STOP_ALL, error_message)
 
      endif
@@ -1663,6 +2105,7 @@ subroutine setp_mapara_rna(lunpara, lunout)
 !  call MPI_Bcast (inrna,   inrna%sz,   MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (indtrna13, indtrna13%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (indtrna15, indtrna15%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast (indtrna19, indtrna19%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast (inarna,  inarna%sz,  MPI_BYTE,0,MPI_COMM_WORLD,ierr)
   
 #endif
