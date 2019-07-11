@@ -1315,6 +1315,10 @@ contains
          site_local = 1
       else if (atom(1:3) == "O4'") then
          site_local = 2
+      else if (atom(1:3) == "O3'") then
+         site_local = 3
+      else if (atom(1:3) == "O5'") then
+         site_local = 4
       else if (atom(1:3) == "OP1") then
          site_local = 1
       else if (atom(1:3) == "OP2") then

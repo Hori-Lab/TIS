@@ -48,8 +48,8 @@ subroutine setp_dtrna15()
 
      if (cmp2atom(imp) == ' S  ') then
         imp2hbsite(1,imp) = ihbsite + 1
-        imp2hbsite(2,imp) = ihbsite + 2
-        ihbsite = ihbsite + 2
+        imp2hbsite(2,imp) = ihbsite + 4
+        ihbsite = ihbsite + 4
      else if (cmp2atom(imp) == ' P  ') then
         imp2hbsite(1,imp) = ihbsite + 1
         imp2hbsite(2,imp) = ihbsite + 2
@@ -111,9 +111,11 @@ subroutine setp_dtrna15()
      else if (iclass_mp(imp) == CLASS%RNA) then
 
         if (cmp2atom(imp) == ' S  ') then
-           nvalence_hbsite(ihbsite+1) = 2
-           nvalence_hbsite(ihbsite+2) = 1
-           ihbsite = ihbsite + 2
+           nvalence_hbsite(ihbsite+1) = 2  ! O2'
+           nvalence_hbsite(ihbsite+2) = 1  ! O4'
+           nvalence_hbsite(ihbsite+3) = 1  ! O3'
+           nvalence_hbsite(ihbsite+4) = 1  ! O5'
+           ihbsite = ihbsite + 4
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%S))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%S)
         else if (cmp2atom(imp) == ' P  ') then
