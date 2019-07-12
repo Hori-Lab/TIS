@@ -18,7 +18,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : indtrna, inperi
+  use var_setp,    only : indtrna, inperi, inmisc
   use var_struct,  only : imp2unit, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp, imp2type
   use mpiconst
@@ -67,22 +67,30 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
 
-     if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
-        dij  = indtrna%exv_dist_PS
-     else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
-        dij  = indtrna%exv_dist_PS
-     else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        dij = indtrna%exv_dist
+     if (inmisc%i_dtrna_model == 2019) then
+
+        if (imp2type(imp1) == MPTYPE%RNA_BASE .AND. imp2type(imp2) == MPTYPE%RNA_BASE) then
+           dij = indtrna%exv_dist
+        else
+           dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+        endif
+
      else
-        dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+
+        if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
+           dij  = indtrna%exv_dist_PS
+        else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
+           dij  = indtrna%exv_dist_PS
+        else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+           dij = indtrna%exv_dist
+        else
+           dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+        endif
+
      endif
      
-     !if(inperi%i_periodic == 0) then
-     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     !else
-        imirror = iexv2mp(3, iexv, irep)
-        v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     !end if
+     imirror = iexv2mp(3, iexv, irep)
+     v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      
      dist = sqrt(dot_product(v21,v21))
 

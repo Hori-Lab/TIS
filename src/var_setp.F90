@@ -665,7 +665,7 @@ module var_setp
      real(PREC) :: pmf(MXPMFBIN, PMFTYPE%MAX)
      integer    :: Nbin(PMFTYPE%MAX)
      real(PREC) :: Rmin(PMFTYPE%MAX)
-     real(PREC) :: Rmax(PMFTYPE%MAX)
+     real(PREC) :: Rmax(0:PMFTYPE%MAX)
      real(PREC) :: Rbin(PMFTYPE%MAX)
      real(PREC) :: Rmerge(PMFTYPE%MAX)
      integer :: sz
