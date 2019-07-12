@@ -90,14 +90,14 @@ subroutine force_ele_DH(irep, force_mp)
      dist1 = sqrt(dist2)
      rdist1 = 1.0 / dist1
 
+     ! PMF + DH (semiexplicit model)
+     if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf) then 
+        dvdw_dr = rdist1 * force_pmfdh(dist1, grep)
+
      ! DH
-     if (ipmf == 0) then 
+     else
         dvdw_dr = coef_ele(iele1, irep) * rdist1 * rdist1 &
                  * (rdist1 + rcdist) * exp(-dist1 * rcdist)
-
-     ! PMF + DH (semiexplicit model)
-     else
-        dvdw_dr = rdist1 * force_pmfdh(dist1, grep)
 
      endif
      
@@ -123,7 +123,7 @@ subroutine force_ele_DH(irep, force_mp)
 contains
    
    real(PREC) function force_pmfdh(r, grep)
-      use var_struct, only : pmfdh_force
+      use var_simu, only : pmfdh_force
       implicit none
       real(PREC),intent(in) :: r
       integer, intent(in) :: grep

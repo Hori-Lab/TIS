@@ -70,7 +70,11 @@ subroutine neighbor_list_ele(jrep)
   grep = irep2grep(irep)
   if (inmisc%i_neigh_dynamic == 1) then 
      if (inele%i_function_form == 0) then       ! Debye-Huckel
-        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele * inele%cdist(grep))**2
+        if (inele%i_DH_cutoff_type == 0) then
+           rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele * inele%cdist(grep))**2
+        else
+           rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele)**2
+        endif
      else if (inele%i_function_form == 1) then  ! Coulomb 
         rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
@@ -83,7 +87,11 @@ subroutine neighbor_list_ele(jrep)
      endif
   else ! Step based
      if (inele%i_function_form == 0) then       ! Debye-Huckel
-        rneighbor2_ele = (1.2 * inele%cutoff_ele * inele%cdist(grep))**2
+        if (inele%i_DH_cutoff_type == 0) then
+           rneighbor2_ele = (1.2 * inele%cutoff_ele * inele%cdist(grep))**2
+        else
+           rneighbor2_ele = (1.2 * inele%cutoff_ele)**2
+        endif
      else if (inele%i_function_form == 1) then  ! Coulomb 
         rneighbor2_ele = (1.2 * inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)

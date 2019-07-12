@@ -28,7 +28,11 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
 #endif
 
   grep = irep2grep(irep)
-  cutoff2 = (inele%cutoff_ele * inele%cdist(grep))**2
+  if (inele%i_DH_cutoff_type == 0) then
+     cutoff2 = (inele%cutoff_ele * inele%cdist(grep))**2
+  else
+     cutoff2 = inele%cutoff_ele**2
+  endif
   rcdist = 1.0 / inele%cdist(grep)
 
   ew = inele%diele_water
@@ -69,8 +73,13 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
      ! --------------------------------------------------------------------
      dist1 = sqrt(dist2)
      
+     ! PMF + DH (semiexplicit model)
+     if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf)) then 
+
+        ene = energy_pmfdh(dist1, grep)
+
      ! DH
-     if (ipmf == 0) then 
+     else
         if (inmisc%i_temp_independent == 0) then
            ene = coef_ele(iele1,irep)/dist1*exp(-dist1*rcdist)
    
@@ -87,10 +96,6 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
            ene = 0.0  ! to suppress compiler message
         endif
 
-     ! PMF + DH (semiexplicit model)
-     else
-        ene = energy_pmfdh(dist1, grep)
-
      endif
      
      ! --------------------------------------------------------------------
@@ -106,7 +111,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
 contains
    
    real(PREC) function energy_pmfdh(r, grep)
-      use var_struct, only : pmfdh_energy
+      use var_simu, only : pmfdh_energy
       implicit none
       real(PREC),intent(in) :: r
       integer, intent(in) :: grep

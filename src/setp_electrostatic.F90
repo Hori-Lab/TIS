@@ -61,6 +61,7 @@ subroutine setp_electrostatic()
   inele%i_calc_method = 0
   inele%n_charge_change = 0
   inele%i_function_form = -1
+  inele%i_DH_cutoff_type = 0  ! Default cutoff_ele x Debye length
   inele%ewld_alpha = INVALID_VALUE
   inele%ewld_hmax = INVALID_VALUE
   inele%ewld_dipole = -1
@@ -102,6 +103,10 @@ subroutine setp_electrostatic()
      ctmp00 = cwkinp(iline)
 
      do iequa = 1, nequat
+        cvalue = 'i_DH_cutoff_type'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inele%i_DH_cutoff_type, cvalue)
+
         cvalue = 'cutoff_ele'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%cutoff_ele, cvalue)

@@ -553,6 +553,7 @@ module var_setp
      integer    :: i_charge
      integer    :: i_function_form
      integer    :: i_calc_method
+     integer    :: i_DH_cutoff_type
      real(PREC) :: diele
      real(PREC) :: diele_water
      real(PREC) :: diele_dTcoef
