@@ -38,7 +38,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
   ew = inele%diele_water
   ek = inele%diele
 
-  if (inele%i_semi > 0) then
+  if (inmisc%i_dtrna_model == 2019) then
      Rmin = inpmf%Rmin(PMFTYPE%MG_P)
      Rbininv = 1.0 / inpmf%Rbin(PMFTYPE%MG_P)
   endif

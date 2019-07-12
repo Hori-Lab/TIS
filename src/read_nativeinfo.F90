@@ -520,7 +520,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
      ! ------------------------------------------------------------------
      ! read hydrogen bond of DT model
      if(cline(1:7) == 'hb-dist') then
-        if (inmisc%i_dtrna_model == 2015) then
+        if (inmisc%i_dtrna_model == 2015 .or.&
+            inmisc%i_dtrna_model == 2019 ) then
            read (cline, *, iostat = input_status) &
                 cline_head, ihb_read, iunit1, iunit2,  &
                 imp1, imp2, imp1un, imp2un,             &
@@ -586,7 +587,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            coef_dtrna_hb(0, ihb_read) = energy0
         endif
 
-        if (inmisc%i_dtrna_model == 2015) then
+        if (inmisc%i_dtrna_model == 2015 .or.&
+            inmisc%i_dtrna_model == 2019 ) then
            if (imp2 < imp1) then
               atmp = a11
               a11 = a12

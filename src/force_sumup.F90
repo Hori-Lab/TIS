@@ -151,7 +151,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
 
-     else if (inmisc%i_dtrna_model == 2015) then
+     else if (inmisc%i_dtrna_model == 2015 .or.&
+              inmisc%i_dtrna_model == 2019 ) then
 !$omp master
   TIME_S( tm_force_dtrna_st ) 
 !$omp end master

@@ -40,7 +40,8 @@ subroutine write_hbond(ene_hb, tempk)
    
       enddo
 
-   else if (inmisc%i_dtrna_model == 2015) then
+   else if (inmisc%i_dtrna_model == 2015 .or.&
+            inmisc%i_dtrna_model == 2019 ) then
    
       do irep = 1, n_replica_mpi
    

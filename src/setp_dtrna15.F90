@@ -11,7 +11,7 @@ subroutine setp_dtrna15()
                          list_hb_at_hbsite, num_hb_at_hbsite, &
                          exv_radius_mp, exv_epsilon_mp
   use var_replica, only : n_replica_mpi
-  use var_setp,    only : indtrna, indtrna15, indtrna19, inele
+  use var_setp,    only : indtrna, indtrna15, indtrna19, inmisc
   implicit none
   
   ! -------------------------------------------------------------
@@ -22,14 +22,17 @@ subroutine setp_dtrna15()
   ! -------------------------------------------------------------
 
   ! copy indtrna
-  if (inele%i_semi > 0) then
+  if (inmisc%i_dtrna_model == 2019) then
 
      indtrna = indtrna19
 
-  else
+  else if (inmisc%i_dtrna_model == 2015) then
 
      indtrna = indtrna15
 
+  else
+     error_message = 'Error: invalid i_dtrna_model in setp_dtrna15'
+     call util_error(ERROR%STOP_ALL, error_message)
   endif
 
   ! -------------------------------------------------------------

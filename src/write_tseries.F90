@@ -151,7 +151,7 @@ subroutine write_tseries(ibefore_time, istep, &
         endif
    
         if (inmisc%class_flag(CLASS%RNA)) then
-           if (inmisc%i_dtrna_model == 2015) then
+           if (inmisc%i_dtrna_model == 2015 .or. inmisc%i_dtrna_model == 2019) then
               write (lunout, _FMT_TS_STACK_T_,   ADVANCE = "NO") 'stack'
               write (lunout, _FMT_TS_STACK_T_,   ADVANCE = "NO") 'tstack'
               write (lunout, _FMT_TS_HBOND_T_,    ADVANCE = "NO") 'hbond'
@@ -532,7 +532,7 @@ contains
        endif
 
        if (inmisc%class_flag(CLASS%RNA)) then
-          if (inmisc%i_dtrna_model == 2015) then
+          if (inmisc%i_dtrna_model == 2015 .or. inmisc%i_dtrna_model == 2019) then
              write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") estack_rna
              write (lunout, _FMT_TS_STACK_,   ADVANCE = "NO") tenergy(E_TYPE%TSTACK_DTRNA)
              write (lunout, _FMT_TS_HBOND_,    ADVANCE = "NO") ehbond_rna

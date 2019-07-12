@@ -185,7 +185,8 @@ subroutine allocate_neighbor()
 !  end if
 
   ! for hydrogen-bonding interaction in DTRNA2015
-  if (inmisc%i_dtrna_model == 2015) then
+  if (inmisc%i_dtrna_model == 2015 .or. &
+      inmisc%i_dtrna_model == 2019 ) then
      allocate( nhbneigh(n_replica_mpi), stat=ier)
      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
 

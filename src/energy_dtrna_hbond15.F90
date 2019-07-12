@@ -95,7 +95,8 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
      return
   endif
   
-  if (inmisc%i_dtrna_model /= 2015) then
+  if (inmisc%i_dtrna_model /= 2015 .and.&
+      inmisc%i_dtrna_model /= 2019 ) then
      return
   endif
 

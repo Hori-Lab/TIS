@@ -30,7 +30,8 @@ subroutine neighbor_list_hb(irep)
 !  real(PREC) :: dist_cut_sq
 
   ! -------------------------------------------------------------------
-  if (inmisc%i_dtrna_model /= 2015) then
+  if (inmisc%i_dtrna_model /= 2015 .and.&
+      inmisc%i_dtrna_model /= 2019 )then
      !nhbneigh(:) = 0   ! this is not allocated
      return
   end if

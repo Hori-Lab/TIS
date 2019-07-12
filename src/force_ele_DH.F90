@@ -6,7 +6,7 @@ subroutine force_ele_DH(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inele, inperi, inpmf
+  use var_setp,   only : inele, inperi, inpmf, inmisc
   use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use var_replica,only : irep2grep
   use var_simu, only : istep
@@ -48,7 +48,7 @@ subroutine force_ele_DH(irep, force_mp)
   ek_simu = inele%diele
   ek = inele%diele_water
 
-  if (inele%i_semi > 0) then
+  if (inmisc%i_dtrna_model == 2019) then
      Rmin = inpmf%Rmin(PMFTYPE%MG_P)
      Rbininv = 1.0 / inpmf%Rbin(PMFTYPE%MG_P)
   endif
@@ -91,7 +91,7 @@ subroutine force_ele_DH(irep, force_mp)
      rdist1 = 1.0 / dist1
 
      ! PMF + DH (semiexplicit model)
-     if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf) then 
+     if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf)) then 
         dvdw_dr = rdist1 * force_pmfdh(dist1, grep)
 
      ! DH

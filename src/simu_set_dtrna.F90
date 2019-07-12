@@ -37,37 +37,35 @@ subroutine simu_set_dtrna(grep, tempk)
 
   else if (inmisc%i_dtrna_model == 2015) then
 
-     if (inele%i_semi == 0) then
-        do ist = 1, ndtrna_st
-           inn= idtrna_st2nn(ist)
-           h  = indtrna15%st_h(inn)
-           s  = indtrna15%st_s(inn)
-           Tm = indtrna15%st_Tm(inn)
-           if (inmisc%i_temp_independent == 0) then
-              coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
-           else if (inmisc%i_temp_independent > 0) then
-              coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
-           endif
-        enddo
+     do ist = 1, ndtrna_st
+        inn= idtrna_st2nn(ist)
+        h  = indtrna15%st_h(inn)
+        s  = indtrna15%st_s(inn)
+        Tm = indtrna15%st_Tm(inn)
+        if (inmisc%i_temp_independent == 0) then
+           coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
+        else if (inmisc%i_temp_independent > 0) then
+           coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
+        endif
+     enddo
    
-        beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
+     beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
 
-     else
-        do ist = 1, ndtrna_st
-           inn= idtrna_st2nn(ist)
-           h  = indtrna19%st_h(inn)
-           s  = indtrna19%st_s(inn)
-           Tm = indtrna19%st_Tm(inn)
-           if (inmisc%i_temp_independent == 0) then
-              coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
-           else if (inmisc%i_temp_independent > 0) then
-              coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
-           endif
-        enddo
+  else if (inmisc%i_dtrna_model == 2019) then
+
+     do ist = 1, ndtrna_st
+        inn= idtrna_st2nn(ist)
+        h  = indtrna19%st_h(inn)
+        s  = indtrna19%st_s(inn)
+        Tm = indtrna19%st_Tm(inn)
+        if (inmisc%i_temp_independent == 0) then
+           coef_dtrna_st(0,ist,grep) = - h + BOLTZ_KCAL_MOL * (tempk - Tm) * s
+        else if (inmisc%i_temp_independent > 0) then
+           coef_dtrna_st(0,ist,grep) = - h - BOLTZ_KCAL_MOL * Tm * s
+        endif
+     enddo
    
-        beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
-
-     endif
+     beta_hbond15 = 1.0e0_PREC / (tempk * BOLTZ_KCAL_MOL) 
 
   endif
 

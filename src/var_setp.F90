@@ -548,7 +548,6 @@ module var_setp
   !==========================================
   ! electrostatic
   type input_electrostatic
-     integer    :: i_semi
      integer    :: i_diele
      integer    :: i_charge
      integer    :: i_function_form

@@ -151,10 +151,6 @@ subroutine setp_electrostatic()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%ewld_dipole, cvalue)
 
-        cvalue = 'i_semi'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inele%i_semi, cvalue)
-
         if(csides(1, iequa) == 'path_pmf_Mg_P') then
            inpmf%path(PMFTYPE%MG_P) = csides(2, iequa)
         end if

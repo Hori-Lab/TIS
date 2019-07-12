@@ -82,7 +82,8 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      return
   endif
 
-  if (inmisc%i_dtrna_model /= 2015) then
+  if (inmisc%i_dtrna_model /= 2015 .and.&
+      inmisc%i_dtrna_model /= 2019 ) then
      return
   endif
 

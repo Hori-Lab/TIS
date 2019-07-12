@@ -88,7 +88,8 @@ subroutine simu_initial()
   ! stacking and H-bonding in DTRNA15
   ! -----------------------------------------------------------------
   if (flg_rst) then
-     if (inmisc%class_flag(CLASS%RNA) .and. inmisc%i_dtrna_model==2015) then
+     if (inmisc%class_flag(CLASS%RNA) .and. &
+         (inmisc%i_dtrna_model==2015 .or. inmisc%i_dtrna_model==2019)) then
         call read_rst(RSTBLK%DTRNA15)
      endif
   endif

@@ -51,7 +51,8 @@ subroutine mloop_dtrna()
   endif
 
 
-  if (inmisc%i_dtrna_model == 2015) then
+  if (inmisc%i_dtrna_model == 2015 .or.&
+      inmisc%i_dtrna_model == 2019 ) then
      
      flg_hb_energy = .False.
 

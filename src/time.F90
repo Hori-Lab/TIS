@@ -157,7 +157,8 @@ subroutine time_write( lunout )
 !     write(lunout, fmt=fmt1) '_neighbor(hp)  ', total_time(tm_neighbor_hp), trate*total_time(tm_neighbor_hp)
 !  end if
 
-  if (inmisc%i_dtrna_model == 2015) then
+  if (inmisc%i_dtrna_model == 2015 .or.&
+      inmisc%i_dtrna_model == 2019 ) then
      write(lunout, fmt=fmt1) '_neighbor(hb)   ', total_time(tm_neighbor_hb), trate*total_time(tm_neighbor_hb)
   end if
 

@@ -99,16 +99,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
      endif
 
      ! Calculate phosphate charge taking into account monovalent salt condensation
-     ! Implicit ion model
-     if (inele%i_semi == 0) then
-        !xi = lb / b   ! ~ 0.4
-        !theta = 1.0 - 1.0/xi
-        !Zp = 1.0 - theta
-        !Zp = 1.0 / xi
-        Zp = b / lb
-
      ! Semiexplicit ion model
-     else if (inele%i_semi > 0) then
+     if (inmisc%i_dtrna_model == 2019) then
         xi = lb / b 
         b3 = b ** 3
       
@@ -131,6 +123,15 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
                / (4.0e0_PREC * c2v2)
         Zp = 1.0 - theta
+
+     ! Implicit ion model
+     else
+        !xi = lb / b   ! ~ 0.4
+        !theta = 1.0 - 1.0/xi
+        !Zp = 1.0 - theta
+        !Zp = 1.0 / xi
+        Zp = b / lb
+
      endif
 
      ! Reflect Zp
@@ -174,7 +175,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! Semiexplicit model
-  if (inele%i_semi > 0) then
+  if (inmisc%i_dtrna_model == 2019) then
+
      if(inele%i_charge /= 1) then
         error_message = 'i_charge must be 1 for semiexplicit ion model'
         call util_error(ERROR%STOP_ALL, error_message)

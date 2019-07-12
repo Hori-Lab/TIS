@@ -148,7 +148,7 @@ subroutine neighbor_list_ele(jrep)
               iele = iele + 1
 
               ipmf = 0
-              if (inele%i_semi > 0) then
+              if (inmisc%i_dtrna_model == 2019) then
                  jmptype = imp2type(jmp)
                  if ((imptype == MPTYPE%RNA_PHOS .and. jmptype == MPTYPE%ION_MG) .or.&
                      (imptype == MPTYPE%ION_MG   .and. jmptype == MPTYPE%RNA_PHOS)) then
