@@ -10,6 +10,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use var_setp, only : inele, inmisc, insimu, inperi, inpmf
   use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type
   use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
+  use var_io, only : outfile
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -27,6 +28,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   real(PREC), parameter ::  MM_C=9.398e-4_PREC, MM_D=-1.410e-6_PREC  ! i_diele=1
 
   integer :: ifunc_seq2id
+  logical, save :: flg_output = .True.
 
   Zp = 1.0 ! To suppress compiler warning
   b = inele%length_per_unit( ifunc_seq2id('P  '))
@@ -212,5 +214,42 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
   endif ! Semiexplicit model
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  if (flg_output) then
+     
+     if (inmisc%i_dtrna_model == 2019) then
+        write(outfile%data,'(a)') '<<<< simu_ele_set'
+        write(outfile%data,'(a,1x,g10.5)') 'ek:', ek
+        write(outfile%data,'(a,1x,g10.5)') 'b:', b 
+        write(outfile%data,'(a,1x,g10.5)') 'lb:', lb
+        write(outfile%data,'(a,1x,g10.5)') 'theta:', theta
+        write(outfile%data,'(a,1x,g10.5)') 'Zp:', Zp
+   
+        write(outfile%data,'(a)') ''
+        write(outfile%data,'(a)') '<<<<<< Effective potential for Mg-P'
+        write(outfile%data,'(a)') '<<    r     W(r)     PMF       DH      W-PMF'
+
+        itype = PMFTYPE%MG_P
+      
+        do ibin = 1, inpmf%Nbin(itype)
+           r = inpmf%Rmin(itype) + inpmf%Rbin(itype) * real(ibin-1, kind=PREC)
+           DH = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 / (4.0e0_PREC * F_PI * EPSI_0 * ek) &
+               * 2.0     &  ! Mg charge
+               * (- Zp)  &  ! Phosphate charge
+               * exp(-r / inele%cdist(grep)) / r
+      
+           e_add = (DH - inpmf%pmf(ibin, itype)) * exp(- (inpmf%Rmerge(itype) ** 2) / (r*r))
+           
+           pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
+
+           write(outfile%data, '(5(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add 
+        enddo
+
+        write(outfile%data,*) '>>>>>>'
+        write(outfile%data,*) '>>>>'
+     endif
+
+     flg_output = .False.
+  endif
 
 end subroutine simu_ele_set
