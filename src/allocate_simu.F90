@@ -6,6 +6,7 @@ subroutine allocate_simu()
   use var_io,      only : i_simulate_type
   use var_struct,  only : nmp_all, nmp_real, nunit_all
   use var_replica, only : n_replica_all, n_replica_mpi
+  use var_setp,    only : inpmf
   use var_simu,    only : dxyz_mp, velo_mp, accel_mp, force_mp, rcmass_mp, &
 !                          energy_unit_muca, &
                           rlan_const, nLAN_CONST, &
@@ -17,9 +18,11 @@ subroutine allocate_simu()
 #endif
                           replica_energy, &
                           sasa, &
-                          diffuse_tensor, random_tensor
+                          diffuse_tensor, random_tensor, &
+                          pmfdh_energy, pmfdh_force
 
   implicit none
+  integer :: i, maxbin
   integer :: ier = 0
   character(CARRAY_MSG_ERROR) :: error_message
 ! **********************************************************************
@@ -120,6 +123,18 @@ subroutine allocate_simu()
      allocate(random_tensor(1:3*nmp_real, 1:3*nmp_real), stat=ier)
      if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
   endif
+
+  ! pmf
+  maxbin = 0
+  do i = 1, PMFTYPE%MAX
+     if (maxbin < inpmf%Nbin(i)) then
+        maxbin = inpmf%Nbin(i)
+     endif
+  enddo
+  allocate( pmfdh_energy(maxbin, n_replica_all, PMFTYPE%MAX), stat=ier)
+  if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
+  allocate( pmfdh_force(maxbin, n_replica_all, PMFTYPE%MAX), stat=ier)
+  if (ier /= 0) call util_error(ERROR%STOP_ALL,error_message)
 
 #ifdef _DEBUG
   write(*,*) '##### end allocate_simu'

@@ -8,9 +8,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_physical
   use const_index
   use var_setp, only : inele, inmisc, insimu, inperi, inpmf
-  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, &
-                         pmfdh_energy, pmfdh_force
-  use var_simu, only : ewld_d_coef
+  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type
+  use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -200,6 +199,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         endif
         
         pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
+        !write(*,*) ibin, r, inpmf%pmf(ibin,itype), DH, e_add, pmfdh_energy(ibin,grep,itype)
      enddo
    
      Rbininv = 1.0 / inpmf%Rbin(itype)

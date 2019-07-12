@@ -10,7 +10,7 @@ subroutine setpara( xyz_mp_init )
   use const_physical
   use var_io,    only : infile, outfile, ifile_pdb, num_file,  &
                          i_run_mode, i_seq_read_style
-  use var_setp,   only : inpara, inmisc, fix_mp, inperi !, inflp, inmmc
+  use var_setp,   only : inpara, inmisc, fix_mp, inperi, inele !, inflp, inmmc
   use var_struct, only : xyz_ref_mp, iontype_mp, nmp_all
 !  use var_mgo,    only : inmgo
 !  use var_implig, only : inimplig
@@ -257,7 +257,9 @@ subroutine setpara( xyz_mp_init )
   ! Energy minimization
   if (i_run_mode == RUN%EMIN     ) call setp_minimize_para()
 
-  if(inmisc%i_dtrna_model == 2015) call setp_dtrna15()
+  if (inmisc%i_dtrna_model == 2015) call setp_dtrna15()
+
+  if (inele%i_semi > 0) call setp_pmf()
 
 #ifdef _DEBUG
   write(*,*) '#### end setpara'

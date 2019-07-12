@@ -271,11 +271,6 @@ module var_struct
   !integer, allocatable, save :: iele2charge_k(:,:,:) ! (ncharge, ncharge, REPLICA)
 
   ! ----------------------------------------------------------------
-  !> Numerical tables of PMF + DH potential for the semiexplicit model
-  real(PREC), allocatable, save :: pmfdh_energy(:,:,:)     ! (bin, REPLICA, PMFTYPE)
-  real(PREC), allocatable, save :: pmfdh_force(:,:,:)      ! (bin, REPLICA, PMFTYPE)
-
-  ! ----------------------------------------------------------------
   !> parameters for neighboring (general) list
   integer, allocatable, save :: lexv(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
   integer, allocatable, save :: iexv2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)

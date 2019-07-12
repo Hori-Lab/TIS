@@ -21,7 +21,6 @@ module var_io
      integer :: msf           = 26 ! fmat
      integer :: para_fsasa    = 27 ! sasa
      integer :: para_exv      = 28 ! excluded volume
-     integer :: pmf_Mg_P      = 29
      integer :: dcd(MXREPLICA)
      integer :: velo(MXREPLICA)
      integer :: sz
