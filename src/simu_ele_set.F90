@@ -8,7 +8,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_physical
   use const_index
   use var_setp, only : inele, inmisc, insimu, inperi, inpmf
-  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type
+  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, num_ion
   use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
   use var_io, only : outfile
 
@@ -18,17 +18,18 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   real(PREC), intent(in) :: tempk
   real(PREC), intent(in) :: ionic_strength
 
-  integer :: icharge, icharge_change, imp
+  integer :: icharge, icharge_change, imp, i
   integer :: itype, ibin
   real(PREC) :: ek, Tc, lb, xi, Zp, theta, b, b3
   real(PREC) :: r, DH, e_add, Rbininv
   real(PREC) :: v1, v2, c1v1, c2v2
+  real(PREC) :: conc_Mg
   character(CARRAY_MSG_ERROR) :: error_message
   real(PREC), parameter ::  MM_A=87.740e0_PREC, MM_B=-0.4008e0_PREC  ! i_diele=1
   real(PREC), parameter ::  MM_C=9.398e-4_PREC, MM_D=-1.410e-6_PREC  ! i_diele=1
 
   integer :: ifunc_seq2id
-  logical, save :: flg_output = .True.
+  logical, save :: flg_first = .True.
 
   Zp = 1.0 ! To suppress compiler warning
   b = inele%length_per_unit( ifunc_seq2id('P  '))
@@ -106,6 +107,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         xi = lb / b 
         b3 = b ** 3
       
+        conc_Mg = num_ion(IONTYPE%MG) / (N_AVO * 1.0e-27_PREC * inperi%psize(1) * inperi%psize(2) * inperi%psize(3))
+
         ! Currently, only with divalent ion
 
         ! Formal derivation
@@ -120,7 +123,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         v1 = 4 * F_PI * b3 * (xi - 1.0e0_PREC) * 2
         v2 = 4 * F_PI * b3 * (xi - 0.5e0_PREC) * (2 + 1)
         c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
-        c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
+        c2v2 = (N_AVO * 1.0e-27_PREC) * conc_Mg  * v2
       
         theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
                / (4.0e0_PREC * c2v2)
@@ -215,10 +218,13 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   endif ! Semiexplicit model
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-  if (flg_output) then
+  if (flg_first) then
      
      if (inmisc%i_dtrna_model == 2019) then
         write(outfile%data,'(a)') '<<<< simu_ele_set'
+        write(outfile%data,'(a,1x,i10)') '#Mg:', num_ion(IONTYPE%MG)
+        write(outfile%data,'(a,1x,3(g10.5))') 'Box:', (inperi%psize(i), i=1,3)
+        write(outfile%data,'(a,1x,g12.7)') '[Mg]:', conc_Mg
         write(outfile%data,'(a,1x,g10.5)') 'ek:', ek
         write(outfile%data,'(a,1x,g10.5)') 'b:', b 
         write(outfile%data,'(a,1x,g10.5)') 'lb:', lb
@@ -249,7 +255,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         write(outfile%data,*) '>>>>'
      endif
 
-     flg_output = .False.
+     flg_first = .False.
   endif
 
 end subroutine simu_ele_set

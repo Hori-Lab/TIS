@@ -10,6 +10,7 @@ module var_struct
 
   use const_maxsize
   use const_physical
+  use const_index
   implicit none
 
   ! ----------------------------------------------------------------
@@ -23,6 +24,8 @@ module var_struct
   integer, save :: iontype_mp(MXMP) !< type of ion
   integer, save :: iclass_unit(MXUNIT) !< class of unit
   integer, save :: iclass_mp(MXMP) !< class of mp
+  integer, save :: num_ion(IONTYPE%MAX_ION)
+  character(3), save :: char_ion(IONTYPE%MAX_ION)
   real(PREC), allocatable, save :: xyz_mp_rep(:,:,:) !< coordinate of mp
   real(PREC), allocatable, save :: pxyz_mp_rep(:,:,:) !< coordinate of mp
   real(PREC), save :: xyz_ref_mp(SDIM, MXMP) !< coordinate of reference structure

@@ -11,7 +11,7 @@ subroutine read_seq()
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all, &
                          lunit2mp, iclass_unit, iclass_mp, &
                          nres, ires_mp, cmp2seq, cmp2atom, imp2unit, &
-                         iontype_mp
+                         iontype_mp, char_ion, num_ion
 #ifdef MPI_PAR
   use mpiconst
   use var_struct, only : imp2type
@@ -134,18 +134,24 @@ subroutine read_seq()
   lunit2mp(2, iunit) = imp
   nres = ires
 
+  num_ion(IONTYPE%NA)  = inion%num_na_ion
+  num_ion(IONTYPE%K)   = inion%num_k_ion
+  num_ion(IONTYPE%CL)  = inion%num_cl_ion
+  num_ion(IONTYPE%MG)  = inion%num_mg_ion
+  num_ion(IONTYPE%CA2) = inion%num_ca_ion
+
   if (inmisc%class_flag(CLASS%ION)) then
      iunit = iunit + 1
      lunit2mp(1, iunit) = imp + 1
      
      do im = 1, IONTYPE%MAX_ION
-        do jm = 1, inion%num_ion(im)
+        do jm = 1, num_ion(im)
            imp = imp + 1
            ires = ires + 1
            ires_mp(imp) = ires
            iontype_mp(imp) = im
-           cmp2seq(imp) = inion%char_ion(im)
-           cmp2atom(imp) = inion%char_ion(im)
+           cmp2seq(imp) = char_ion(im)
+           cmp2atom(imp) = char_ion(im)
         end do
      end do
      lunit2mp(2, iunit) = imp

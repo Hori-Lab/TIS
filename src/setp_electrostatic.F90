@@ -115,10 +115,6 @@ subroutine setp_electrostatic()
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%ionic_strength, cvalue)
 
-        cvalue = 'conc_Mg'
-        call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inele%conc_Mg, cvalue)
-
         cvalue = 'diele_water'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%diele_water, cvalue)

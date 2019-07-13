@@ -7,10 +7,12 @@ subroutine read_xyz_cg(xyz_mp_init)
   use const_maxsize
   use const_physical
   use const_index
-  use var_io,    only : ifile_pdb, num_file
+  use var_setp,   only : inion
+  use var_io,     only : ifile_pdb, num_file
   use var_struct, only : nunit_real, nunit_all, nmp_real, nmp_all,  &
                          lunit2mp, ires_mp, iclass_unit, iclass_mp, &
-                         cmp2seq, cmp2atom, imp2type, imp2unit, nres
+                         cmp2seq, cmp2atom, imp2type, imp2unit, nres, &
+                         num_ion
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -24,7 +26,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   ! ---------------------------------------------------------------------
   ! local variables
   logical :: flg_rna
-  integer :: i, iunit, imp, iclass
+  integer :: i, iunit, imp, iclass, itype
   integer :: nunitpdb, nunitpdb_old, nmppdb, nrespdb
   integer :: lunpdb
   character(CARRAY_MSG_ERROR) :: error_message
@@ -80,17 +82,69 @@ subroutine read_xyz_cg(xyz_mp_init)
      lunit2mp(1, iunit) = lunit2mp(2, iunit - 1) + 1
   end do
 
+  num_ion(:) = 0
+  itype = 0
   do iunit = 1, nunit_all
      iclass = iclass_unit(iunit)
      do imp = lunit2mp(1, iunit), lunit2mp(2, iunit)
         imp2unit(imp) = iunit
         iclass_mp(imp) = iclass
      end do
+
+     ! Count the number of ions just read from PDB
+     if (iclass == CLASS%ION) then
+        do imp = lunit2mp(1, iunit), lunit2mp(2, iunit)
+           ! Caution: 
+           ! imp2type is one of MPTYPE
+           ! num_ion has to be one of IONTYPE
+           if (imp2type(imp) == MPTYPE%ION_MG) then
+              itype = IONTYPE%MG
+           else if (imp2type(imp) == MPTYPE%ION_CA2) then
+              itype = IONTYPE%CA2
+           else if (imp2type(imp) == MPTYPE%ION_K) then
+              itype = IONTYPE%K
+           else if (imp2type(imp) == MPTYPE%ION_NA) then
+              itype = IONTYPE%NA
+           else if (imp2type(imp) == MPTYPE%ION_CL) then
+              itype = IONTYPE%CL
+           else
+              write (error_message, *) 'Error: invalid ion type in read_xyz_cg', imp2type(imp), ' imp=', imp
+              call util_error(ERROR%STOP_ALL, error_message)
+           endif
+
+           num_ion( itype ) = num_ion( itype ) + 1
+
+        enddo
+     endif
   end do
 
   nmp_real = lunit2mp(2, nunit_real)
   nmp_all  = lunit2mp(2, nunit_all)
   nres = nrespdb
+
+  ! Check the number of ions
+  if (inion%num_na_ion /= num_ion(IONTYPE%NA)) then
+     write (error_message, *) 'Error: The number of Na ions is inconsistent. In inp: ',&
+                               inion%num_na_ion,', but in PDB: ', num_ion(IONTYPE%NA)
+     call util_error(ERROR%STOP_ALL, error_message)
+  else if (inion%num_cl_ion /= num_ion(IONTYPE%CL)) then
+     write (error_message, *) 'Error: The number of Cl ions is inconsistent. In inp: ',&
+                               inion%num_cl_ion,', but in PDB: ', num_ion(IONTYPE%CL)
+     call util_error(ERROR%STOP_ALL, error_message)
+  else if (inion%num_k_ion /= num_ion(IONTYPE%K)) then
+     write (error_message, *) 'Error: The number of K ions is inconsistent. In inp: ',&
+                               inion%num_k_ion,', but in PDB: ', num_ion(IONTYPE%K)
+     call util_error(ERROR%STOP_ALL, error_message)
+  else if (inion%num_mg_ion /= num_ion(IONTYPE%MG)) then
+     write (error_message, *) 'Error: The number of Mg ions is inconsistent. In inp: ',&
+                               inion%num_mg_ion,', but in PDB: ', num_ion(IONTYPE%MG)
+     call util_error(ERROR%STOP_ALL, error_message)
+  else if (inion%num_ca_ion /= num_ion(IONTYPE%CA2)) then
+     write (error_message, *) 'Error: The number of Mg ions is inconsistent. In inp: ',&
+                               inion%num_ca_ion,', but in PDB: ', num_ion(IONTYPE%CA2)
+     call util_error(ERROR%STOP_ALL, error_message)
+  endif
+
 
 #ifdef MPI_PAR
   endif
@@ -106,6 +160,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   call MPI_Bcast(imp2type,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(imp2unit,  MXMP,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(xyz_mp_init,3*MXMP,          PREC_MPI,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(num_ion,   IONTYPE%MAX_ION,  MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
 #endif
   
 #ifdef _DEBUG

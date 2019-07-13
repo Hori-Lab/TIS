@@ -58,8 +58,6 @@ module var_setp
      integer :: num_cl_ion
      integer :: num_mg_ion
      integer :: num_ca_ion
-     integer :: num_ion(IONTYPE%MAX_ION)
-     character(3) :: char_ion(IONTYPE%MAX_ION)
 
      integer    :: sz
   end type input_ion_parameter
@@ -558,7 +556,6 @@ module var_setp
      real(PREC) :: diele_dTcoef
      real(PREC) :: cutoff_ele
      real(PREC) :: ionic_strength
-     real(PREC) :: conc_Mg
      real(PREC) :: cdist(MXREPLICA)
      real(PREC) :: coef(MXREPLICA)
      real(PREC) :: coef_charge_type(SEQID%MAX)
