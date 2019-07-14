@@ -214,7 +214,7 @@ FOBJ1 = \
 	setp_para_ion.o setp_nativestruct.o\
 	setp_native_charge.o\
 	setp_mapara_exv.o\
-	setp_electrostatic.o setp_dtrna15.o\
+	setp_electrostatic.o setp_dtrna15.o setp_pmf.o\
 	main_loop.o\
 	mloop_neigh_dist.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o\
