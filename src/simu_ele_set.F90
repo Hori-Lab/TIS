@@ -238,7 +238,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         write(outfile%data,'(a)') '<<<< simu_ele_set'
         write(outfile%data,'(a,1x,i10)') '#Mg:', num_ion(IONTYPE%MG)
         write(outfile%data,'(a,1x,3(g10.5))') 'Box:', (inperi%psize(i), i=1,3)
-        write(outfile%data,'(a,1x,g12.7)') '[Mg]:', conc_Mg
+        write(outfile%data,'(a,1x,f9.6)') '[M+]:', ionic_strength
+        write(outfile%data,'(a,1x,f9.6)') '[Mg++]:', conc_Mg
         write(outfile%data,'(a,1x,g10.5)') 'ek:', ek
         write(outfile%data,'(a,1x,g10.5)') 'b:', b 
         write(outfile%data,'(a,1x,g10.5)') 'lb:', lb
