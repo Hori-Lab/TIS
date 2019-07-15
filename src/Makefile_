@@ -77,6 +77,14 @@ OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
 LIB =
 
+##------ gfortran (MPI)
+#FC = mpifort
+#FC_UTIL = mpifort
+#CPP = -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP 
+#INC = 
+#OPT = -fopenmp -O3 -ffree-line-length-none -fno-range-check
+#LIB = 
+
 #------ intel (single)
 #FC = ifort
 #FC_UTIL = ifort
