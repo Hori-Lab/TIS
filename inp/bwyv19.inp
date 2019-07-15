@@ -24,12 +24,12 @@ psizez = 1000.0
 i_seq_read_style = 4
 i_go_native_read_style = 2
 1    rna    bwyv_cg.pdb
-2    ion    BOX150_Mg5.pdb
+2    ion    BOX1000_Mg120.pdb
 >>>>
 
 <<<< initial_struct
 1       bwyv_cg.pdb
-2       BOX150_Mg5.pdb
+2       BOX1000_Mg120.pdb
 >>>>
 
 <<<< initial_ion
