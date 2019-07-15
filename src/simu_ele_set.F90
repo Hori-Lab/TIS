@@ -110,32 +110,39 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         xi = lb / b 
         b3 = b ** 3
       
-        conc_Mg = num_ion(IONTYPE%MG) / (N_AVO * 1.0e-27_PREC * inperi%psize(1) * inperi%psize(2) * inperi%psize(3))
+        if (num_ion(IONTYPE%MG) > 0) then
+           conc_Mg = num_ion(IONTYPE%MG) / (N_AVO * 1.0e-27_PREC * inperi%psize(1) * inperi%psize(2) * inperi%psize(3))
+   
+           ! Currently, only with divalent ion
+   
+           ! Formal derivation
+           !v1 = 4 * F_PI * F_E * b3 * (xi - 1.0e0_PREC) * 2
+           !v2 = 4 * F_PI * F_E * b3 * (xi - 0.5e0_PREC) * (2 + 1)
+           !c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
+           !c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
+           !theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC*F_E * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
+           !       / (4.0e0_PREC * F_E * c2v2)
+   
+           ! Eliminate F_E (v1 is actually v1/e, v2 is v2/e [e is the base of the natural logarithm])
+           v1 = 4 * F_PI * b3 * (xi - 1.0e0_PREC) * 2
+           v2 = 4 * F_PI * b3 * (xi - 0.5e0_PREC) * (2 + 1)
+           c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
+           c2v2 = (N_AVO * 1.0e-27_PREC) * conc_Mg  * v2
+         
+           theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
+                  / (4.0e0_PREC * c2v2)
+           Zp = 1.0 - theta
+        else
 
-        ! Currently, only with divalent ion
+           theta = 1.0 - 1.0/xi
+           Zp = b / lb
 
-        ! Formal derivation
-        !v1 = 4 * F_PI * F_E * b3 * (xi - 1.0e0_PREC) * 2
-        !v2 = 4 * F_PI * F_E * b3 * (xi - 0.5e0_PREC) * (2 + 1)
-        !c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
-        !c2v2 = (N_AVO * 1.0e-27_PREC) * inele%conc_Mg  * v2
-        !theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC*F_E * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
-        !       / (4.0e0_PREC * F_E * c2v2)
-
-        ! Eliminate F_E (v1 is actually v1/e, v2 is v2/e [e is the base of the natural logarithm])
-        v1 = 4 * F_PI * b3 * (xi - 1.0e0_PREC) * 2
-        v2 = 4 * F_PI * b3 * (xi - 0.5e0_PREC) * (2 + 1)
-        c1v1 = (N_AVO * 1.0e-27_PREC) * ionic_strength * v1
-        c2v2 = (N_AVO * 1.0e-27_PREC) * conc_Mg  * v2
-      
-        theta = (-c1v1**2 + sqrt(c1v1**4 + 8.0e0_PREC * c1v1**2 * c2v2 * (1.0e0_PREC - 1.0e0_PREC/xi))) &
-               / (4.0e0_PREC * c2v2)
-        Zp = 1.0 - theta
+        endif
 
      ! Implicit ion model
      else
-        !xi = lb / b   ! ~ 0.4
-        !theta = 1.0 - 1.0/xi
+        xi = lb / b   ! ~ 0.4
+        theta = 1.0 - 1.0/xi
         !Zp = 1.0 - theta
         !Zp = 1.0 / xi
         Zp = b / lb
@@ -183,7 +190,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   ! Semiexplicit model
-  if (inmisc%i_dtrna_model == 2019) then
+  if (inmisc%i_dtrna_model == 2019 .and. num_ion(IONTYPE%MG) > 0) then
 
      if(inele%i_charge /= 1) then
         error_message = 'i_charge must be 1 for semiexplicit ion model'
@@ -238,27 +245,29 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         write(outfile%data,'(a,1x,g10.5)') 'theta:', theta
         write(outfile%data,'(a,1x,g10.5)') 'Zp:', Zp
    
-        write(outfile%data,'(a)') ''
-        write(outfile%data,'(a)') '<<<<<< Effective potential for Mg-P'
-        write(outfile%data,'(a)') '<<    r     W(r)     PMF       DH      W-PMF'
-
-        itype = PMFTYPE%MG_P
-      
-        do ibin = 1, inpmf%Nbin(itype)
-           r = inpmf%Rmin(itype) + inpmf%Rbin(itype) * real(ibin-1, kind=PREC)
-           DH = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 / (4.0e0_PREC * F_PI * EPSI_0 * ek) &
-               * 2.0     &  ! Mg charge
-               * (- Zp)  &  ! Phosphate charge
-               * exp(-r / inele%cdist(grep)) / r
-      
-           e_add = (DH - inpmf%pmf(ibin, itype)) * exp(- (inpmf%Rmerge(itype) ** 2) / (r*r))
-           
-           pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
-
-           write(outfile%data, '(5(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add 
-        enddo
-
-        write(outfile%data,*) '>>>>>>'
+        if (num_ion(IONTYPE%MG) > 0) then
+           write(outfile%data,'(a)') ''
+           write(outfile%data,'(a)') '<<<<<< Effective potential for Mg-P'
+           write(outfile%data,'(a)') '<<    r     W(r)     PMF       DH      W-PMF'
+   
+           itype = PMFTYPE%MG_P
+         
+           do ibin = 1, inpmf%Nbin(itype)
+              r = inpmf%Rmin(itype) + inpmf%Rbin(itype) * real(ibin-1, kind=PREC)
+              DH = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 / (4.0e0_PREC * F_PI * EPSI_0 * ek) &
+                  * 2.0     &  ! Mg charge
+                  * (- Zp)  &  ! Phosphate charge
+                  * exp(-r / inele%cdist(grep)) / r
+         
+              e_add = (DH - inpmf%pmf(ibin, itype)) * exp(- (inpmf%Rmerge(itype) ** 2) / (r*r))
+              
+              pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
+   
+              write(outfile%data, '(5(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add 
+           enddo
+   
+           write(outfile%data,*) '>>>>>>'
+        endif
         write(outfile%data,*) '>>>>'
      endif
 
