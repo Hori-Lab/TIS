@@ -11,6 +11,9 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, num_ion
   use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
   use var_io, only : outfile
+#ifdef MPI_PAR
+  use mpiconst
+#endif
 
   implicit none
   ! ----------------------------------------------------------------------
@@ -219,6 +222,10 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   if (flg_first) then
+
+#ifdef MPI_PAR
+  if (myrank == 0) then
+#endif
      
      if (inmisc%i_dtrna_model == 2019) then
         write(outfile%data,'(a)') '<<<< simu_ele_set'
@@ -254,6 +261,10 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         write(outfile%data,*) '>>>>>>'
         write(outfile%data,*) '>>>>'
      endif
+
+#ifdef MPI_PAR
+  end if
+#endif
 
      flg_first = .False.
   endif
