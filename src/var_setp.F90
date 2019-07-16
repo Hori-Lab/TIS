@@ -337,6 +337,7 @@ module var_setp
      integer    :: n_step_save
      integer    :: n_step_rst
      integer    :: n_step_neighbor
+     integer    :: n_step_progress
      real(PREC) :: tstep_size
 
      ! offset

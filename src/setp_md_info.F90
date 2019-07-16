@@ -51,6 +51,7 @@ subroutine setp_md_info()
   insimu%n_step_save      = -1
   insimu%n_step_rst       = -1
   insimu%n_step_neighbor  = -1
+  insimu%n_step_progress  = 1000000
   insimu%i_com_zeroing_ini = 0
   insimu%i_com_zeroing    = -1
   insimu%i_no_trans_rot   = -1
@@ -160,6 +161,10 @@ subroutine setp_md_info()
         cvalue = 'n_step_neighbor'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              insimu%n_step_neighbor, cvalue)
+
+        cvalue = 'n_step_progress'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             insimu%n_step_progress, cvalue)
 
         cvalue = 'i_com_zeroing_ini'
         call ukoto_ivalue2(lunout, csides(1, iequa), &

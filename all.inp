@@ -321,6 +321,7 @@ i_output_energy_style = 0
 ** DTRNA model version. This has to be set appropriately if DTRNA is used. (default = 0)
 i_dtrna_model = 2013
 **            = 2015
+**            = 2019
 
 **       = 0 : EXV is not applied to native-contact pairs (default)
 **       = 1 : EXV is applied to any pairs including native-contact pairs
@@ -364,6 +365,16 @@ dfcontact_enm = 6.5
 ** electrostatic (required only when electrostatic interaction is used)
 **************************************************************
 **<<<< electrostatic
+path_pmf_Mg_P = ./para/PMF_RISM/pmf_Mg_P_1264
+pmf_merge = 5.0
+
+i_DH_cutoff_type = 1
+# For only Debye-Huckel
+# 0: cutoff_ele x Debye length (default)
+#    cutoff_ele works as a scaling factor
+# 1: cutoff_ele
+#    cutoff_ele works as the cutoff distance
+
 cutoff_ele = 20.0
 ** cutoff_ele is scaled by Debye length.
 ionic_strength = 0.05
@@ -456,6 +467,9 @@ n_step_rst = 1000
 
 ** how often the neighbor list is to be updated (typical value: 100)
 n_step_neighbor = 100
+
+** how often the progress is shown in STD out (default: 1000000)
+n_step_progress = 1000000
 
 ** temperature used in simulation (in Kelvin)
 tempk = 300.0

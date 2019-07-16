@@ -50,6 +50,7 @@ n_tstep(1) = 100000
 tstep_size = 0.05
 n_step_save = 100
 n_step_neighbor = 100
+n_step_progress = 10000
 n_step_rst = 10000
 i_com_zeroing = 1
 i_no_trans_rot = 0
@@ -81,7 +82,6 @@ i_output_energy_style = 1
 <<<< electrostatic
 path_pmf_Mg_P = ./para/PMF_RISM/pmf_Mg_P_1264
 pmf_merge = 5.0
-conc_Mg = 0.0002
 
 i_DH_cutoff_type = 1
 # For only Debye-Huckel
