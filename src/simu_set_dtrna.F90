@@ -21,7 +21,7 @@ subroutine simu_set_dtrna(grep, tempk)
 
   ! -----------------------------------------------------------------------
 
-  if (inmisc%i_dtrna_model == 2013) then
+  if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
    
      do ist = 1, ndtrna_st
         inn= idtrna_st2nn(ist)

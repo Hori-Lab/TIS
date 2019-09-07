@@ -137,7 +137,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
   if (inmisc%class_flag(CLASS%RNA)) then
 
-     if (inmisc%i_dtrna_model == 2013) then
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
 !$omp master
   TIME_S( tm_force_dtrna_st ) 
 !$omp end master

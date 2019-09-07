@@ -257,7 +257,7 @@ subroutine setpara( xyz_mp_init )
   ! Energy minimization
   if (i_run_mode == RUN%EMIN     ) call setp_minimize_para()
 
-  if(inmisc%i_dtrna_model == 2015) call setp_dtrna15()
+  if(inmisc%i_dtrna_model == 2015 .or. inmisc%i_dtrna_model == 2018) call setp_dtrna15()
 
 #ifdef _DEBUG
   write(*,*) '#### end setpara'

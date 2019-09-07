@@ -16,7 +16,7 @@ subroutine write_hbond(ene_hb, tempk)
    integer :: irep, grep
    integer :: ihb, ineigh
 
-   if (inmisc%i_dtrna_model == 2013) then
+   if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
 
       do irep = 1, n_replica_mpi
    

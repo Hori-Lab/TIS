@@ -79,7 +79,7 @@ subroutine energy_sumup(irep,          &
      ene_st(:,irep)   = 0.0e0_PREC
      ene_tst(:,irep)  = 0.0e0_PREC
 
-     if (inmisc%i_dtrna_model == 2013) then
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
         ene_hb(:,irep) = 0.0e0_PREC
      endif
   endif
@@ -121,7 +121,7 @@ subroutine energy_sumup(irep,          &
      if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
      ene_tst_l(:,:) = 0.0e0_PREC
 
-     if (inmisc%i_dtrna_model == 2013) then
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
         allocate( ene_hb_l(1:ndtrna_hb, 0:nthreads-1), stat=ier)
         if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
         ene_hb_l(:,:) = 0.0e0_PREC
@@ -180,6 +180,12 @@ subroutine energy_sumup(irep,          &
   if (inmisc%i_dtrna_model == 2013) then
      call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_st_l(:,tn))
      call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_hb_l(:,tn))
+
+  else if (inmisc%i_dtrna_model == 2018) then
+     call energy_dtrna_stack(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_st_l(:,tn))
+     call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_hb_l(:,tn))
+     call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+
   else if (inmisc%i_dtrna_model == 2015) then
      call energy_dtrna_stack_nlocal(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_tst_l(:,tn), st_status_l(:,tn))
 
@@ -372,7 +378,7 @@ subroutine energy_sumup(irep,          &
                            MPI_SUM, mpi_comm_local, ierr)
      endif
 
-     if (inmisc%i_dtrna_model == 2013 .and. ndtrna_hb > 0) then
+     if ((inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) .and. ndtrna_hb > 0) then
         call mpi_allreduce(ene_hb_l, ene_hb(1,irep), &
                            ndtrna_hb, PREC_MPI, &
                            MPI_SUM, mpi_comm_local, ierr)
@@ -380,7 +386,7 @@ subroutine energy_sumup(irep,          &
 #else
      ene_st(:,irep) = ene_st_l(:,0)
      ene_tst(:,irep) = ene_tst_l(:,0)
-     if (inmisc%i_dtrna_model == 2013) then
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
         ene_hb(:,irep) = ene_hb_l(:,0)
      endif
 #endif
@@ -388,7 +394,7 @@ subroutine energy_sumup(irep,          &
      if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
      deallocate( ene_tst_l,stat=ier)
      if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
-     if (inmisc%i_dtrna_model == 2013) then
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
         deallocate( ene_hb_l,stat=ier)
         if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_deallocate)
      endif

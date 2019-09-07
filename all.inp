@@ -321,6 +321,7 @@ i_output_energy_style = 0
 ** DTRNA model version. This has to be set appropriately if DTRNA is used. (default = 0)
 i_dtrna_model = 2013
 **            = 2015
+**            = 2018
 
 **       = 0 : EXV is not applied to native-contact pairs (default)
 **       = 1 : EXV is applied to any pairs including native-contact pairs

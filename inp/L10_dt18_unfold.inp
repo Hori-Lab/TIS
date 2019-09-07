@@ -1,0 +1,106 @@
+<<<< filenames
+path = ./
+filename = L10_dt18_unfold
+OUTPUT psf dcd
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para = ./para
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 2
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 1
+>>>>
+
+<<<< periodic_bound
+psizex = 150.0
+psizey = 150.0
+psizez = 150.0
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    rna    L10.cg.pdb
+2    ion    BOX150_net22_NaCl50mM.pdb
+>>>>
+
+<<<< initial_struct
+1        L10_0009_000001.rna.pdb
+2        L10_0009_000001.ion.pdb
+>>>>
+
+<<<< initial_ion
+num_k_ion =  0
+num_na_ion = 101
+num_cl_ion = 79
+num_mg_ion = 0
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all)  L10_para13.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 1000000
+tstep_size = 0.05
+n_step_save = 1000
+n_step_neighbor = 100
+n_step_rst =  100000
+i_com_zeroing = 0
+i_no_trans_rot = 0
+tempk = 333.15
+n_seed = 5000
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+i_neigh_dynamic = 1
+i_rand_type = 2
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_DTRNA
+LOCAL(2)      NOTHING
+NLOCAL(1/1)   DTRNA ELE EXV_DT15
+NLOCAL(1/2)   ELE EXV_DT15
+NLOCAL(2/2)   ELE EXV_DT15
+
+i_dtrna_model = 2018
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< electrostatic
+cutoff_ele = 50.0
+
+ionic_strength = 9999.9
+diele_water = 99999.0
+
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
+
+**            = 0 constant value (default)
+i_charge = 0
+
+**           = 1 Coulomb
+i_function_form = 1
+
+**            = 0 neighboring list (default)
+i_calc_method = 0
+
+CHARGE_CHANGE  69   0.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000010
+>>>>
