@@ -222,6 +222,7 @@ FOBJ1 = \
 	mloop_ewld.o\
 	mloop_simulator.o\
 	simu_para.o simu_checkforce.o\
+	xyz_unwrap.o\
 	simu_initial.o simu_initial_xyz.o simu_md_plotxyz.o simu_initial_ion.o\
 	simu_para2.o simu_ele_set.o simu_set_dtrna.o simu_set_rouse.o\
 	simu_logicalcheck.o simu_replica_exchange.o simu_replica_opt_temp.o\

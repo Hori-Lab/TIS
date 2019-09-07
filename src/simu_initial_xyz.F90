@@ -7,15 +7,16 @@ subroutine simu_initial_xyz()
   use const_maxsize
   use const_index
 !  use if_readpdb
+  use var_setp, only : inperi
   use var_io,    only : ifile_ini, num_file, i_initial_state, pdbatom
-  use var_struct, only : nunit_real, nmp_real, lunit2mp, xyz_mp_rep, cmp2seq, imp2type
+  use var_struct, only : nmp_all, nunit_real, nmp_real, lunit2mp, xyz_mp_rep, cmp2seq, imp2type
   use mpiconst
 
   implicit none
 
   integer :: i, imp, iunit
   integer :: lunini, iclass, nunit_atom(2)
-  integer :: nini, nmpini, nunitini, nunitini_old, nresini
+  integer :: nini, nmpini, nmpini_old, nunitini, nunitini_old, nresini
   integer :: lunit2mpini(2, MXUNIT), iresini_mp(MXMP)
 !  integer :: lunit2atom(2, MXUNIT)
 !  integer,    allocatable :: iatomnum(:)
@@ -55,9 +56,13 @@ subroutine simu_initial_xyz()
      !call read_pdbatom(lunini, nunit_atom, lunit2atom, pdb_atom)
 
      if(i_initial_state == INISTAT%CG) then
+        nmpini_old = nmpini
         call read_pdb_cg(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
                          xyz_mp_rep(:,:,1), cini2seq, cini2atom, imp2type)
 
+        if (iclass == CLASS%PRO .or. iclass == CLASS%RNA .or. iclass == CLASS%LIG) then
+           call xyz_unwrap(nmp_all, xyz_mp_rep(:,:,1), nmpini_old+1, nmpini, inperi%psize)
+        endif
 !     else if (iclass == CLASS%PRO) then
 !!        call read_pdb_pro(lunini, nunitini, nmpini, nresini, lunit2mpini, iresini_mp, &
 !!                          cini2seq, imp2type, iatomnum, xyz, cname_ha) ! aicg

@@ -85,14 +85,13 @@ module const_index
 
   type class_type
      integer :: VOID
-     integer :: LIP    !<  1: Lipid
-     integer :: PRO    !<  2: Protein
-     integer :: RNA    !<  3: RNA
-     integer :: LIG    !<  4: Ligand (not implicit)
-     integer :: ION    !<  5: Ion
-     integer :: MAX    !<  6: Maximum value
+     integer :: PRO    !<  1: Protein
+     integer :: RNA    !<  2: RNA
+     integer :: LIG    !<  3: Ligand (not implicit)
+     integer :: ION    !<  4: Ion
+     integer :: MAX    !<  5: Maximum value
   endtype class_type
-  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5,6)
+  type(class_type), parameter :: CLASS = class_type(0,1,2,3,4,5)
 
   type energy_type
      integer :: TOTAL         !<  1: Total energy
