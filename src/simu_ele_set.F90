@@ -235,7 +235,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 #endif
      
      write(outfile%data,'(a)') '<<<< simu_ele_set'
-     write(outfile%data,'(a,i)') 'i_dtrna_model: ', inmisc%i_dtrna_model
+     write(outfile%data,'(a,i4)') 'i_dtrna_model: ', inmisc%i_dtrna_model
 
      if (inmisc%i_dtrna_model == 2019) then
         write(outfile%data,'(a,1x,i10)') '#Mg:', num_ion(IONTYPE%MG)
