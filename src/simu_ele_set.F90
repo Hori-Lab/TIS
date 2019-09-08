@@ -277,7 +277,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
      write(outfile%data,'(a)') '<<<<<< Charges'
      write(outfile%data,'(a)') '#  imp   coef_charge'
      do imp = 1, nmp_all
-        if (abs(coef_charge(lmp2charge(imp),grep)) > ZERO_JUDGE) then
+        if (lmp2charge(imp) /= 0) then
            write(outfile%data,'(i8,1x,f8.4)') imp, coef_charge(lmp2charge(imp),grep)
         endif
      enddo
