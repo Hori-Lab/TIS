@@ -501,14 +501,15 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               if (inmisc%i_dtrna_model == 2019) then
                  ! Phosphate - Mg
                  if (imp2type(imp) == MPTYPE%RNA_PHOS) then  !!! imp is phosphate
-                    if (coef_charge(lmp2charge(imp),grep) > ZERO_JUDGE) then
+                    if (coef_charge(lmp2charge(imp),grep) < ZERO_JUDGE) then !  Phosphate charge is negative
                        i_exv_dt15 = 0
                     endif
                  else if (imp2type(jmp) == MPTYPE%RNA_PHOS) then  !!! jmp is phosphate
-                    if (coef_charge(lmp2charge(jmp),grep) > ZERO_JUDGE) then
+                    if (coef_charge(lmp2charge(jmp),grep) < ZERO_JUDGE) then !  Phosphate charge is negative
                        i_exv_dt15 = 0
                     endif
                  endif
+                 write(*,*) imp,jmp,i_exv_dt15
               endif
 
            elseif ((iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%LIG) .OR. &
