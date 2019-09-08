@@ -8,7 +8,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_physical
   use const_index
   use var_setp, only : inele, inmisc, insimu, inperi, inpmf
-  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, num_ion
+  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, num_ion, nmp_all, lmp2charge
   use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
   use var_io, only : outfile
 #ifdef MPI_PAR
@@ -163,6 +163,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
            coef_charge(icharge,grep) = - Zp
         endif
      enddo loop_charge
+
   endif
    
   ! ----------------------------------------------------------------------
@@ -229,22 +230,23 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   if (flg_first) then
-
 #ifdef MPI_PAR
   if (myrank == 0) then
 #endif
      
+     write(outfile%data,'(a)') '<<<< simu_ele_set'
+     write(outfile%data,'(a,i)') 'i_dtrna_model: ', inmisc%i_dtrna_model
+
      if (inmisc%i_dtrna_model == 2019) then
-        write(outfile%data,'(a)') '<<<< simu_ele_set'
         write(outfile%data,'(a,1x,i10)') '#Mg:', num_ion(IONTYPE%MG)
-        write(outfile%data,'(a,1x,3(g10.5))') 'Box:', (inperi%psize(i), i=1,3)
+        write(outfile%data,'(a,1x,3(g12.5))') 'Box:', (inperi%psize(i), i=1,3)
         write(outfile%data,'(a,1x,f9.6)') '[M+]:', ionic_strength
         write(outfile%data,'(a,1x,f9.6)') '[Mg++]:', conc_Mg
-        write(outfile%data,'(a,1x,g10.5)') 'ek:', ek
-        write(outfile%data,'(a,1x,g10.5)') 'b:', b 
-        write(outfile%data,'(a,1x,g10.5)') 'lb:', lb
-        write(outfile%data,'(a,1x,g10.5)') 'theta:', theta
-        write(outfile%data,'(a,1x,g10.5)') 'Zp:', Zp
+        write(outfile%data,'(a,1x,g12.5)') 'ek:', ek
+        write(outfile%data,'(a,1x,g12.5)') 'b:', b 
+        write(outfile%data,'(a,1x,g12.5)') 'lb:', lb
+        write(outfile%data,'(a,1x,g12.5)') 'theta:', theta
+        write(outfile%data,'(a,1x,g12.5)') 'Zp:', Zp
    
         if (num_ion(IONTYPE%MG) > 0) then
            write(outfile%data,'(a)') ''
@@ -269,8 +271,19 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
    
            write(outfile%data,*) '>>>>>>'
         endif
-        write(outfile%data,*) '>>>>'
      endif
+
+     write(outfile%data,'(a)') ''
+     write(outfile%data,'(a)') '<<<<<< Charges'
+     write(outfile%data,'(a)') '#  imp   coef_charge'
+     do imp = 1, nmp_all
+        if (abs(coef_charge(lmp2charge(imp),grep)) > ZERO_JUDGE) then
+           write(outfile%data,'(i8,1x,f8.4)') imp, coef_charge(lmp2charge(imp),grep)
+        endif
+     enddo
+     write(outfile%data,'(a)') '>>>>>>'
+
+     write(outfile%data,'(a)') '>>>>'
 
 #ifdef MPI_PAR
   end if
