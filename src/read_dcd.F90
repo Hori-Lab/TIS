@@ -32,7 +32,11 @@ subroutine read_dcd()
 
   ! ---------------------------------------------------------------------
   ! variables in the header section
-  integer, save :: ihead=1
+  integer, save :: ihead = 0
+  integer, save :: iformat = 1
+  logical, save :: flg_unitcell = .false.
+  ! ** 0: charmm
+  ! ** 1: default
   integer :: num, ntitle, nblock_size
   !integer :: nset, istrt, nsavc, nstep, nver
   !real(4) :: delta
@@ -49,137 +53,124 @@ subroutine read_dcd()
   end do
         
   ! ---------------------------------------------------------------------
-  if (ihead == 1) then
+  if (ihead == 0) then
+
+     ! Check the format either iformat = 0  CHARMM style
+     !                                   1  default
+     flg_unitcell = .false.
+     irep = 1
+     grep = irep2grep(irep)
+     read (ifile(grep)) nblock_size
+     do i = 1, nblock_size, 4
+       read(ifile(grep)) idummy
+       if (i == 45 .and. idummy == 1) then
+          flg_unitcell = .true.
+       endif
+     enddo
+     read (ifile(grep)) nblock_size
+     read (ifile(grep)) nblock_size
+     read (ifile(grep)) ntitle
+     read (ifile(grep)) title
+     if (title(1:3) == 'Git' .or. title(1:3) == 'Caf') then
+        iformat = 1
+     else
+        iformat = 0
+     endif
+
+     rewind(ifile(grep))
+
      do irep = 1, n_replica_mpi
 
         grep = irep2grep(irep)
 
-        !if (flg_rep(REPTYPE%TEMP)) then
-        !   tempk_l = rep2val(grep, REPTYPE%TEMP)
-        !else
-        !   tempk_l = tempk
-        !end if
-
-        ! ... block size 
-        !nblock_size = 84
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
-
-        do i = 1, nblock_size, 4
-          read(ifile(grep)) idummy
-        enddo
-
-        ! ... 'CORD' for coordinate and 'VELD' for velocity
-        !hdr = "CORD"
-        !read (ifile(grep)) hdr
-
-        !istrt = int(ibefore_time + istep, kind=4)
-        !nset = int((ntstep-istrt), kind=4) / insimu%n_step_save + 1
-        ! ... the number of frames
-        !read (ifile(grep)) nset
-        ! ... starting step number
-        !read (ifile(grep)) istrt
-
-        ! ... step interval
-        !nsavc = insimu%n_step_save
-        !read (ifile(grep)) nsavc
-
-        ! ... the number of steps
-        !nstep = int(ntstep, kind=4)
-        !read (ifile(grep)) nstep
-
-        ! ... read integer x 4 times
-        !num = 0
-        !read (ifile(grep)) nunit_real
-        !read (ifile(grep)) idummy
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-
-        ! ... the number of free atoms, where it is set to be 0.
-        !read (ifile(grep)) num
-
-        ! ... time-step
-        !delta = insimu%tstep_size 
-        !read (ifile(grep)) delta
-
-        ! ... unit-cell information
-        !num = 0
-        !read (ifile(grep)) num
-
-        ! ... read int x eight times
-        !num = 0
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-        !read (ifile(grep)) num
-
-        ! version if CHARMm
-        !nver = 24
-        !read (ifile(grep)) nver
-
-        ! block-size
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
-
-        ! block-size
-        !ntitle = 3 + nunit_real
-        !nblock_size = 4 + 80*ntitle
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
-
-        ! the line number of title lines
-        read (ifile(grep)) ntitle
-
-        ! title text
-        !title(1:40)  = "==================== Molecular Dynamics "
-        !title(41:80) = "Code : CafeMol ver 1.0.722 ============="
-        read (ifile(grep)) title
-        !title(1:40)  = "==================== Developped by Kyoto"
-        !title(41:80) = " University ============================"
-        read (ifile(grep)) title
-        !read (ifile(grep)) title
-
-        ! temperature and lunit2mp is needed
-        ! when you transfer dcd file to movie file.
-        !read (title, *) tempk
-        !read (title, *) tempk_l
-        read (ifile(grep)) title
-        !read (ifile(grep)) title
-        write(*,*) 'nunit_real =', nunit_real
-        do iunit = 1, nunit_real
-           !read (title, '(i6)') lunit2mp(2, iunit)
+        if (iformat == 1) then
+           ! ... block size 
+           !nblock_size = 84
+   
+           read (ifile(grep)) nblock_size
+           do i = 1, nblock_size, 4
+             read(ifile(grep)) idummy
+           enddo
+           read (ifile(grep)) nblock_size
+   
+           ! block-size
+           !ntitle = 3 + nunit_real
+           !nblock_size = 4 + 80*ntitle
+           read (ifile(grep)) nblock_size
+   
+           ! the line number of title lines
+           read (ifile(grep)) ntitle
+           ! title text
+           !title(1:40)  = "==================== Molecular Dynamics "
+           !title(41:80) = "Code : CafeMol ver 1.0.722 ============="
            read (ifile(grep)) title
-        end do
+           !title(1:40)  = "==================== Developped by Kyoto"
+           !title(41:80) = " University ============================"
+           read (ifile(grep)) title
+           !read (ifile(grep)) title
+   
+           ! temperature and lunit2mp is needed
+           ! when you transfer dcd file to movie file.
+           !read (title, *) tempk
+           !read (title, *) tempk_l
+           read (ifile(grep)) title
+           !read (ifile(grep)) title
+           write(*,*) 'nunit_real =', nunit_real
+           do iunit = 1, nunit_real
+              !read (title, '(i6)') lunit2mp(2, iunit)
+              read (ifile(grep)) title
+           end do
+           read (ifile(grep)) nblock_size
+   
+           ! block-size
+           !nblock_size = 4
+           read (ifile(grep)) nblock_size
+           read (ifile(grep)) idummy
+           read (ifile(grep)) nblock_size
 
-        ! block-size
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
+        else
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
+           do i = 1, nblock_size, 4
+             read(ifile(grep)) idummy
+           enddo
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
+   
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
+           do i = 1, nblock_size, 4
+             read(ifile(grep)) idummy
+           enddo
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
 
-        ! block-size
-        !nblock_size = 4
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
-
-        ! the number of atoms
-        !read (ifile(grep)) nmp_real
-        read (ifile(grep)) idummy
-
-        ! block-size
-        read (ifile(grep)) nblock_size
-        !write(*,*) 'nblock_size:',nblock_size
-
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
+           do i = 1, nblock_size, 4
+             read(ifile(grep)) idummy
+           enddo
+           read (ifile(grep)) nblock_size
+           write(*,*) nblock_size
+        endif
      end do
+
+     ihead = 1
+
   end if
 
   !
   !  dcd coordinate part
   !
   do irep = 1, n_replica_mpi
+     
+     if (iformat == 0 .and. flg_unitcell) then
+        read (ifile(grep)) nblock_size
+        do i = 1, nblock_size, 4
+          read(ifile(grep)) idummy
+        enddo
+        read (ifile(grep)) nblock_size
+     endif
 
      !num = nmp_real*4
      grep = irep2grep(irep)
@@ -203,8 +194,6 @@ subroutine read_dcd()
   end do
 
   pxyz_mp_rep(:,:,:) = xyz_mp_rep(:,:,:)
-
-  ihead = 2
 
   deallocate(xyz)
 
