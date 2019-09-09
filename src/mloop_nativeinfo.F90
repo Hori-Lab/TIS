@@ -273,7 +273,8 @@ subroutine mloop_nativeinfo(istep_sim)
      call MPI_Bcast(idtrna_hb2mp, 6*MXDTRNAHB,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
      call MPI_Bcast(dtrna_hb_nat, 6*MXDTRNAHB,PREC_MPI,   0,MPI_COMM_WORLD,ierr)
      call MPI_Bcast(coef_dtrna_hb,7*MXDTRNAHB,PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-     if (inmisc%i_dtrna_model == 2015) then
+     if (inmisc%i_dtrna_model == 2015 .or.&
+         inmisc%i_dtrna_model == 2019 ) then
         call MPI_Bcast(idtrna_hb2hbsite, 3*2*MXDTRNAHB,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
         call MPI_Bcast(flg_hb_tertiary, MXDTRNAHB,MPI_LOGICAL, 0,MPI_COMM_WORLD,ierr)
      endif

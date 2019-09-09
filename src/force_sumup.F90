@@ -151,7 +151,8 @@ subroutine force_sumup(force_mp, &  ! [ o]
   TIME_E( tm_force_dtrna_hb ) 
 !$omp end master
 
-     else if (inmisc%i_dtrna_model == 2015) then
+     else if (inmisc%i_dtrna_model == 2015 .or.&
+              inmisc%i_dtrna_model == 2019 ) then
 !$omp master
   TIME_S( tm_force_dtrna_st ) 
 !$omp end master
@@ -228,7 +229,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        call force_ele(irep, force_mp_l(1,1,tn))
+        call force_ele_DH(irep, force_mp_l(1,1,tn))
         !if(inele%i_calc_method == 0) then         ! neighboring list (default)
         !   call force_ele(irep, force_mp_l(1,1,tn))
         !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer

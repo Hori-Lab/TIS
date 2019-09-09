@@ -125,16 +125,10 @@ subroutine setp_para_ion()
   call MPI_Bcast (inion, inion%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
 #endif
 
-  inion%num_ion(IONTYPE%NA) = inion%num_na_ion
-  inion%num_ion(IONTYPE%K)  = inion%num_k_ion
-  inion%num_ion(IONTYPE%CL) = inion%num_cl_ion
-  inion%num_ion(IONTYPE%MG) = inion%num_mg_ion
-  inion%num_ion(IONTYPE%CA2)= inion%num_ca_ion
-
 ! CURRENTLY NOT USED
-  !inion%char_ion(IONTYPE%NA) = 'NA'
-  !inion%char_ion(IONTYPE%K ) = 'K '
-  !inion%char_ion(IONTYPE%CL) = 'CL'
-  !inion%char_ion(IONTYPE%MG) = 'MG'
+!  inion%char_ion(IONTYPE%NA) = 'NA'
+!  inion%char_ion(IONTYPE%K ) = 'K '
+!  inion%char_ion(IONTYPE%CL) = 'CL'
+!  inion%char_ion(IONTYPE%MG) = 'MG'
 
 end subroutine setp_para_ion

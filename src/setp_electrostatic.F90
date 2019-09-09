@@ -8,7 +8,7 @@ subroutine setp_electrostatic()
   use const_physical
   use var_io,  only : infile, outfile
   use var_struct, only : nunit_real, lunit2mp
-  use var_setp, only : inele, inmisc
+  use var_setp, only : inele, inmisc, inpmf
 
 #ifdef MPI_PAR
   use mpiconst
@@ -31,6 +31,7 @@ subroutine setp_electrostatic()
   logical :: icalc(MXUNIT)
   real(PREC) :: rcharge
   real(PREC) :: read_charge_change_value
+  real(PREC) :: rvalue
 
   character(4) :: kfind
   character(12) :: char12
@@ -40,6 +41,7 @@ subroutine setp_electrostatic()
   character(CARRAY_MXCOLM) :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: cvalue
   character(CARRAY_MXCOLM) :: ctmp00
+  character(CARRAY_MXCOLM) :: ctmp02
   character(CARRAY_MXCOLM) :: csides(2, CARRAY_MXEQUA)
   character(CARRAY_MSG_ERROR) :: error_message
 
@@ -59,6 +61,7 @@ subroutine setp_electrostatic()
   inele%i_calc_method = 0
   inele%n_charge_change = 0
   inele%i_function_form = -1
+  inele%i_DH_cutoff_type = 0  ! Default cutoff_ele x Debye length
   inele%ewld_alpha = INVALID_VALUE
   inele%ewld_hmax = INVALID_VALUE
   inele%ewld_dipole = -1
@@ -100,6 +103,10 @@ subroutine setp_electrostatic()
      ctmp00 = cwkinp(iline)
 
      do iequa = 1, nequat
+        cvalue = 'i_DH_cutoff_type'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inele%i_DH_cutoff_type, cvalue)
+
         cvalue = 'cutoff_ele'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
              inele%cutoff_ele, cvalue)
@@ -139,6 +146,15 @@ subroutine setp_electrostatic()
         cvalue = 'ewld_dipole'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inele%ewld_dipole, cvalue)
+
+        if(csides(1, iequa) == 'path_pmf_Mg_P') then
+           inpmf%path(PMFTYPE%MG_P) = csides(2, iequa)
+        end if
+
+        cvalue = 'pmf_merge'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             rvalue, cvalue)
+        inpmf%Rmerge(1:PMFTYPE%MAX) = rvalue
      end do
 
      if(ctmp00(1:11) == 'CHARGE_TYPE') then
@@ -377,6 +393,7 @@ subroutine setp_electrostatic()
   end if
 
   call MPI_Bcast(inele, inele%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(inpmf, inpmf%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
 #endif
 
 end subroutine setp_electrostatic

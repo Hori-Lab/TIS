@@ -100,4 +100,9 @@ module var_simu
   real(PREC), save :: ewld_d_coef    ! Dipolar
   real(PREC), save :: ewld_s_sum     ! Self interaction
 
+  ! Semiexplicit
+  ! Numerical tables of PMF + DH potential for the semiexplicit model
+  real(PREC), allocatable, save :: pmfdh_energy(:,:,:)     ! (bin, REPLICA, PMFTYPE)
+  real(PREC), allocatable, save :: pmfdh_force(:,:,:)      ! (bin, REPLICA, PMFTYPE)
+
 end module var_simu

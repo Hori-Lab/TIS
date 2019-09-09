@@ -6,9 +6,9 @@ subroutine calc_size_structures()
   use const_maxsize, only : M_INT, S_REAL, LOGIC
   use var_io,   only : infile, outfile, num_file
   use var_setp, only : inpara, inpro, inion, inperi,&
-                       indtrna13, indtrna15, inarna, &
+                       indtrna, indtrna13, indtrna15, indtrna19, inarna, &
                        insimu, inwidom, inmisc, &
-                       inligand, inele, inexv
+                       inligand, inele, inexv, inpmf
 !  use var_mgo,     only : inmgo
   use var_replica, only : inrep
 !  use var_implig,  only : inimplig, inimplig_bindsite
@@ -40,15 +40,16 @@ subroutine calc_size_structures()
   infile%sz = sizeof(infile)
   outfile%sz = sizeof(outfile)
   num_file%sz = sizeof(num_file)
-  inperi%sz = sizeof(inperi)
 
   ! var_setp
   inpara%sz = sizeof(inpara)
   inpro%sz  = sizeof(inpro)
   inion%sz  = sizeof(inion)
 !  inrna%sz  = sizeof(inrna)
+  indtrna%sz= sizeof(indtrna)
   indtrna13%sz= sizeof(indtrna13)
   indtrna15%sz= sizeof(indtrna15)
+  indtrna19%sz= sizeof(indtrna19)
   inarna%sz = sizeof(inarna)
   insimu%sz = sizeof(insimu)
 !  inann%sz  = sizeof(inann)
@@ -65,6 +66,8 @@ subroutine calc_size_structures()
 !  insasa%sz= sizeof(insasa)
   inexv%sz= sizeof(inexv)
 !  inenm%sz  = sizeof(inenm)
+  inperi%sz = sizeof(inperi)
+  inpmf%sz = sizeof(inpmf)
 
 !  ! var_mgo
 !  inmgo%sz  = sizeof(inmgo)

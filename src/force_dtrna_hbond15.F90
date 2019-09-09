@@ -9,7 +9,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   use mt_stream
   use const_maxsize, only : PREC
   use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI, MAX_ABSCOS_HBOND15_DIH, MAX_ABSCOS_HBOND15_ANG
-  use var_setp,    only : mts, indtrna15, inperi
+  use var_setp,    only : mts, indtrna, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_all, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                           nhbsite, nvalence_hbsite, idtrna_hb2hbsite, &
@@ -105,7 +105,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      !===== Distance =====
      d = a12 - dtrna_hb_nat(1,ihb)
-     if (abs(d) > indtrna15%hb_cutoff_dist) then  ! 2.0 Angstrom
+     if (abs(d) > indtrna%hb_cutoff_dist) then  ! 2.0 Angstrom
         cycle
      else
         !hb_status_l(ihb) = .True.

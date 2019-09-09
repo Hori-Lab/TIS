@@ -8,6 +8,7 @@ module const_physical
 
   real(PREC), parameter :: F_PI    = 3.14159265358979323846264338e0_PREC !< Circular constant (Pi)
   real(PREC), parameter :: F_2PI   = 2.0 * F_PI
+  !real(PREC), parameter :: F_E     = 2.71828182845904523536028747135266249775724709369995e0_PREC
 
   real(PREC), parameter :: EPSI_0  = 8.854187817e-12_PREC  !< Vacuum permittivity [F/m]
   real(PREC), parameter :: ELE     = 1.6021766208e-19_PREC !< Elementary charge [C]

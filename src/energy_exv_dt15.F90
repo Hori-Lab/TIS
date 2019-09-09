@@ -18,7 +18,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : indtrna15, inperi
+  use var_setp,    only : indtrna, inperi, inmisc
   use var_struct,  only : imp2unit, pxyz_mp_rep, lexv, iexv2mp, iclass_mp, &
                           exv_radius_mp, exv_epsilon_mp, imp2type
   use mpiconst
@@ -43,8 +43,8 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
 
   ! ------------------------------------------------------------------------
 
-  a = indtrna15%exv_adjust
-  d_inf = indtrna15%exv_inf
+  a = indtrna%exv_adjust
+  d_inf = indtrna%exv_inf
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
@@ -67,22 +67,30 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
 
-     if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
-        dij  = indtrna15%exv_dist_PS
-     else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
-        dij  = indtrna15%exv_dist_PS
-     else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        dij = indtrna15%exv_dist
+     if (inmisc%i_dtrna_model == 2019) then
+
+        if (imp2type(imp1) == MPTYPE%RNA_BASE .AND. imp2type(imp2) == MPTYPE%RNA_BASE) then
+           dij = indtrna%exv_dist
+        else
+           dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+        endif
+
      else
-        dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+
+        if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
+           dij  = indtrna%exv_dist_PS
+        else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
+           dij  = indtrna%exv_dist_PS
+        else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+           dij = indtrna%exv_dist
+        else
+           dij = exv_radius_mp(imp1) + exv_radius_mp(imp2)
+        endif
+
      endif
      
-     !if(inperi%i_periodic == 0) then
-     !   v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     !else
-        imirror = iexv2mp(3, iexv, irep)
-        v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
-     !end if
+     imirror = iexv2mp(3, iexv, irep)
+     v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      
      dist = sqrt(dot_product(v21,v21))
 
@@ -125,7 +133,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
   use const_physical
   use const_index
   use var_simu,    only : widom_count_exv_inf
-  use var_setp,    only : indtrna15, inperi
+  use var_setp,    only : indtrna
   use var_struct,  only : nmp_real, pxyz_mp_rep, &
                           exv_radius_mp, exv_epsilon_mp, &
                           ntp, xyz_tp, tp_exv_dt15_rad, tp_exv_dt15_eps
@@ -137,15 +145,14 @@ subroutine energy_exv_dt15_tp(irep, energy)
   real(PREC), intent(inout) :: energy(E_TYPE%MAX)         ! (E_TYPE%MAX)
 
   integer :: itp1, itp2, imp2
-  integer :: imirror
   real(PREC) :: dist, dij, a, d_inf, ene
   real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
-  real(PREC) :: v21(SDIM), vx(SDIM)
+  real(PREC) :: v21(SDIM) !, vx(SDIM)
 
   ! ------------------------------------------------------------------------
 
-  a = indtrna15%exv_adjust
-  d_inf = indtrna15%exv_inf
+  a = indtrna%exv_adjust
+  d_inf = indtrna%exv_inf
 
   do itp1 = 1, ntp
      ene = 0.0e0_PREC
@@ -157,7 +164,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
         if (widom_count_exv_inf > 0) cycle
    
         !if (iclass_tp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        !   dij = indtrna15%exv_dist
+        !   dij = indtrna%exv_dist
         !else
            dij = tp_exv_dt15_rad(itp1) + exv_radius_mp(imp2)
         !endif
@@ -199,7 +206,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
         if (widom_count_exv_inf > 0) cycle
 
         !if (iclass_tp(it1) == CLASS%RNA .AND. iclass_tp(itp2) == CLASS%RNA) then
-        !   dij = indtrna15%exv_dist
+        !   dij = indtrna%exv_dist
         !else
            dij = tp_exv_dt15_rad(itp1) + tp_exv_dt15_rad(itp2) 
         !endif

@@ -19,7 +19,7 @@ subroutine allocate_neighbor()
 
   integer :: ier
   integer :: ncharge_mpi
-  integer :: n_index, n_index_tail
+  integer :: n_index, n_index_ele, n_index_tail
   logical :: flg_error
   character(CARRAY_MSG_ERROR) :: error_message
   
@@ -32,6 +32,12 @@ subroutine allocate_neighbor()
   !n_index = 2 + inperi%n_mirror_index
   n_index = 3
   ! Regardless i_periodic, always use the third argument in iele2mp and iexv2mp.
+
+  n_index_ele = 4
+  ! 1: i
+  ! 2: j
+  ! 3: periodic index
+  ! 4: for semiexplicit model
 
   n_index_tail = 1 + inperi%n_mirror_index
   
@@ -89,13 +95,13 @@ subroutine allocate_neighbor()
 #ifdef MPI_PAR2
 
 #ifdef SHARE_NEIGH
-     allocate( iele2mp(n_index, MXMPELE*ncharge, n_replica_mpi),    stat=ier)
+     allocate( iele2mp(n_index_ele, MXMPELE*ncharge, n_replica_mpi),    stat=ier)
 #else
-     allocate( iele2mp(n_index, MXMPELE*ncharge/npar_mpi+1, n_replica_mpi),    stat=ier)
+     allocate( iele2mp(n_index_ele, MXMPELE*ncharge/npar_mpi+1, n_replica_mpi),    stat=ier)
 #endif
 
 #else
-     allocate( iele2mp(n_index, MXMPELE*ncharge, n_replica_mpi),    stat=ier)
+     allocate( iele2mp(n_index_ele, MXMPELE*ncharge, n_replica_mpi),    stat=ier)
 #endif
 
      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
@@ -179,7 +185,8 @@ subroutine allocate_neighbor()
 !  end if
 
   ! for hydrogen-bonding interaction in DTRNA2015
-  if (inmisc%i_dtrna_model == 2015) then
+  if (inmisc%i_dtrna_model == 2015 .or. &
+      inmisc%i_dtrna_model == 2019 ) then
      allocate( nhbneigh(n_replica_mpi), stat=ier)
      if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
 

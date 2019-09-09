@@ -127,7 +127,8 @@ subroutine energy_sumup(irep,          &
         ene_hb_l(:,:) = 0.0e0_PREC
      endif
 
-     if (inmisc%i_dtrna_model == 2015) then
+     if (inmisc%i_dtrna_model == 2015 .or. &
+         inmisc%i_dtrna_model == 2019 ) then
         allocate( st_status_l(1:ndtrna_st, 0:nthreads-1), stat=ier)
         if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
         st_status_l(:,:) = .True.
@@ -186,7 +187,8 @@ subroutine energy_sumup(irep,          &
      call energy_dtrna_hbond13(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_hb_l(:,tn))
      call energy_exv_dt15(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
-  else if (inmisc%i_dtrna_model == 2015) then
+  else if (inmisc%i_dtrna_model == 2015 .or.&
+           inmisc%i_dtrna_model == 2019 ) then
      call energy_dtrna_stack_nlocal(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn), ene_tst_l(:,tn), st_status_l(:,tn))
 
 !############### Collect all information into st_status_l(:,0) within a process
@@ -293,7 +295,7 @@ subroutine energy_sumup(irep,          &
 
      if (inele%i_function_form == 0) then     ! Debye-Huckel (default)
 
-        call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
+        call energy_ele_DH(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         !if(inele%i_calc_method == 0) then         ! neighboring list (default)
         !   call energy_ele(irep, energy_l(:,tn), energy_unit_l(:,:,:,tn))
         !else if(inele%i_calc_method == 1) then    ! neighboring list for K computer

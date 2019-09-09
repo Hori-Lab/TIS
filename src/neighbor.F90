@@ -83,7 +83,8 @@ subroutine neighbor(irep)
 !  endif
 !  TIME_E( tm_neighbor_hp )
 
-  if (inmisc%i_dtrna_model == 2015) then
+  if (inmisc%i_dtrna_model == 2015 .or.&
+      inmisc%i_dtrna_model == 2019 )then
      TIME_S( tm_neighbor_hb )
      call neighbor_list_hb(irep)
      TIME_E( tm_neighbor_hb )
@@ -113,7 +114,8 @@ subroutine neighbor(irep)
      if (inmisc%force_flag(INTERACT%EXV_GAUSS)) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV_GAUSS,irep) - lexv(1,E_TYPE%EXV_GAUSS,irep) + 1
      endif
-     if (inmisc%i_dtrna_model == 2015) then
+     if (inmisc%i_dtrna_model == 2015 .or.&
+         inmisc%i_dtrna_model == 2019 ) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') nhbneigh(irep)
      endif
      if (inmisc%force_flag(INTERACT%ELE)) then

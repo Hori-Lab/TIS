@@ -4,8 +4,8 @@ subroutine  energy_BBR(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : indtrna15, inperi
-  use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
+  use var_setp,    only : indtrna, inperi
+  use var_struct,  only : imp2unit, xyz_mp_rep, &
                           nbbr, ibbr2mp
   use mpiconst
 
@@ -37,9 +37,9 @@ subroutine  energy_BBR(irep, energy_unit, energy)
 
   ! ------------------------------------------------------------------------
   ! for speed up
-  cutoff2 = indtrna15%bbr_cutoff ** 2
-  cdist2 = indtrna15%bbr_dist ** 2
-  coef = indtrna15%bbr_eps
+  cutoff2 = indtrna%bbr_cutoff ** 2
+  cdist2 = indtrna%bbr_dist ** 2
+  coef = indtrna%bbr_eps
 
 #ifdef MPI_PAR3
   klen=(nbbr(irep)-1+npar_mpi)/npar_mpi

@@ -488,9 +488,10 @@ module const_index
      integer :: K    !< 10 
      integer :: NA   !< 11
      integer :: X1   !< 12
+     integer :: CHX  !< 13
      integer :: MAX
   endtype dtrna15_exv
-  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,12,12)
+  type(dtrna15_exv), parameter :: DT15EXV = dtrna15_exv(1,2,3,4,5,6,7,8,9,10,11,12,13,13)
 
   type seq2id
      integer :: ALA  !< 1
@@ -538,4 +539,10 @@ module const_index
   type(seq2id), parameter :: SEQID = seq2id(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,&
                              20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,40)
   
+
+  type pmf_type
+     integer :: MG_P
+     integer :: MAX
+  endtype pmf_type
+  type(pmf_type), parameter :: PMFTYPE = pmf_type(1,1)
 endmodule const_index

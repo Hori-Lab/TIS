@@ -552,6 +552,8 @@ subroutine inp_energy_func()
         write (lunout, *) 'i_dtrna_model = 2015'
      else if(inmisc%i_dtrna_model == 2018) then
         write (lunout, *) 'i_dtrna_model = 2018'
+     else if(inmisc%i_dtrna_model == 2019) then
+        write (lunout, *) 'i_dtrna_model = 2019'
      else
         error_message = 'Error: invalid value for inmisc%i_dtrna_model'
         call util_error(ERROR%STOP_ALL, error_message)

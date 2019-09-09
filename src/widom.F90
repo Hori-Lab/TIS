@@ -12,10 +12,8 @@ subroutine widom
    implicit none
 
    integer, parameter :: irep = 1
-   integer :: i
    integer :: iw
    integer :: tp1
-   integer :: tn, ier
    real(PREC) :: random(SDIM)
    real(PREC) :: test_total, chp
    real(PREC) :: kT

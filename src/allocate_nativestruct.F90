@@ -488,7 +488,8 @@ subroutine allocate_nativestruct()
          if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
          flg_hb_tertiary(:) = .False.
 
-         if (inmisc%i_dtrna_model == 2015) then
+         if (inmisc%i_dtrna_model == 2015 .or. &
+             inmisc%i_dtrna_model == 2019 ) then
             ! tertiary stacking
             allocate( idtrna_tst2mp(6,MXDTRNATST), stat=ier) 
             if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)

@@ -6,7 +6,7 @@ subroutine force_exv_dt15(irep, force_mp)
   use const_maxsize, only : PREC
   use const_physical,only : DE_MAX, SDIM
   use const_index,   only : CLASS, E_TYPE, ERROR, MPTYPE
-  use var_setp,   only : indtrna15, inperi
+  use var_setp,   only : indtrna, inperi, inmisc
   use var_struct, only : nmp_all, pxyz_mp_rep, imp2type, &
                          lexv, iexv2mp, iclass_mp, exv_radius_mp, exv_epsilon_mp
   use var_simu, only : istep
@@ -29,7 +29,7 @@ subroutine force_exv_dt15(irep, force_mp)
 
   ! --------------------------------------------------------------------
 
-  a = indtrna15%exv_adjust
+  a = indtrna%exv_adjust
   a2 = a*a
 
 #ifdef MPI_PAR
@@ -57,14 +57,26 @@ subroutine force_exv_dt15(irep, force_mp)
      imp2 = iexv2mp(2, iexv, irep)
      imirror = iexv2mp(3, iexv, irep)
 
-     if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
-        dij  = indtrna15%exv_dist_PS
-     else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
-        dij  = indtrna15%exv_dist_PS
-     else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-        dij  = indtrna15%exv_dist
+     if (inmisc%i_dtrna_model == 2019) then
+
+        if (imp2type(imp1) == MPTYPE%RNA_BASE .AND. imp2type(imp2) == MPTYPE%RNA_BASE) then
+           dij  = indtrna%exv_dist
+        else
+           dij  = exv_radius_mp(imp1)  + exv_radius_mp(imp2)
+        endif
+
      else
-        dij  = exv_radius_mp(imp1)  + exv_radius_mp(imp2)
+
+        if (imp2type(imp1) == MPTYPE%RNA_PHOS .AND. imp2type(imp2) == MPTYPE%RNA_SUGAR) then
+           dij  = indtrna%exv_dist_PS
+        else if (imp2type(imp1) == MPTYPE%RNA_SUGAR .AND. imp2type(imp2) == MPTYPE%RNA_PHOS) then
+           dij  = indtrna%exv_dist_PS
+        else if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
+           dij  = indtrna%exv_dist
+        else
+           dij  = exv_radius_mp(imp1)  + exv_radius_mp(imp2)
+        endif
+
      endif
 
      !if(inperi%i_periodic == 0) then

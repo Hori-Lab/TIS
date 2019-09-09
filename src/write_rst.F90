@@ -98,7 +98,8 @@ subroutine write_rst()
       enddo
          
       ! DTRNA15
-      if (inmisc%class_flag(CLASS%RNA) .and. inmisc%i_dtrna_model==2015) then
+      if (inmisc%class_flag(CLASS%RNA) .and.&
+          (inmisc%i_dtrna_model==2015 .or. inmisc%i_dtrna_model==2019)) then
          write(lunout) RSTBLK%DTRNA15
          nblock_size = calc_size(3, 0, 0, 0, ndtrna_hb+ndtrna_st)
          write(lunout) nblock_size

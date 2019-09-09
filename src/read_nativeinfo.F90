@@ -520,7 +520,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
      ! ------------------------------------------------------------------
      ! read hydrogen bond of DT model
      if(cline(1:7) == 'hb-dist') then
-        if (inmisc%i_dtrna_model == 2015) then
+        if (inmisc%i_dtrna_model == 2015 .or.&
+            inmisc%i_dtrna_model == 2019 ) then
            read (cline, *, iostat = input_status) &
                 cline_head, ihb_read, iunit1, iunit2,  &
                 imp1, imp2, imp1un, imp2un,             &
@@ -545,12 +546,20 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               error_message = 'invalid nHB or atom names:' // cline
               call util_error(ERROR%STOP_ALL, error_message)
            endselect
+
+           if(input_status /= 0) then
+              write(*,*) input_status
+              error_message = 'read error =>' // cline
+              call util_error(ERROR%STOP_ALL, error_message)
+           end if
+
         else
            read (cline, *, iostat = input_status) &
                 cline_head, ihb_read, iunit1, iunit2,  &
                 imp1, imp2, imp1un, imp2un,             &
                 energy0, dist, coef
         endif
+
         if(input_status > 0) then
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
@@ -586,7 +595,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            coef_dtrna_hb(0, ihb_read) = energy0
         endif
 
-        if (inmisc%i_dtrna_model == 2015) then
+        if (inmisc%i_dtrna_model == 2015 .or.&
+            inmisc%i_dtrna_model == 2019 ) then
            if (imp2 < imp1) then
               atmp = a11
               a11 = a12
@@ -1315,6 +1325,10 @@ contains
          site_local = 1
       else if (atom(1:3) == "O4'") then
          site_local = 2
+      else if (atom(1:3) == "O3'") then
+         site_local = 3
+      else if (atom(1:3) == "O5'") then
+         site_local = 4
       else if (atom(1:3) == "OP1") then
          site_local = 1
       else if (atom(1:3) == "OP2") then

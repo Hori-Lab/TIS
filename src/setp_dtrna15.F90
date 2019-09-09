@@ -11,13 +11,29 @@ subroutine setp_dtrna15()
                          list_hb_at_hbsite, num_hb_at_hbsite, &
                          exv_radius_mp, exv_epsilon_mp
   use var_replica, only : n_replica_mpi
-  use var_setp,    only : indtrna15
+  use var_setp,    only : indtrna, indtrna15, indtrna19, inmisc
   implicit none
   
   ! -------------------------------------------------------------
   integer :: imp, ihbsite
   integer :: ier
   character(CARRAY_MSG_ERROR) :: error_message
+
+  ! -------------------------------------------------------------
+
+  ! copy indtrna
+  if (inmisc%i_dtrna_model == 2019) then
+
+     indtrna = indtrna19
+
+  else if (inmisc%i_dtrna_model == 2015) then
+
+     indtrna = indtrna15
+
+  else
+     error_message = 'Error: invalid i_dtrna_model in setp_dtrna15'
+     call util_error(ERROR%STOP_ALL, error_message)
+  endif
 
   ! -------------------------------------------------------------
 
@@ -35,8 +51,8 @@ subroutine setp_dtrna15()
 
      if (cmp2atom(imp) == ' S  ') then
         imp2hbsite(1,imp) = ihbsite + 1
-        imp2hbsite(2,imp) = ihbsite + 2
-        ihbsite = ihbsite + 2
+        imp2hbsite(2,imp) = ihbsite + 4
+        ihbsite = ihbsite + 4
      else if (cmp2atom(imp) == ' P  ') then
         imp2hbsite(1,imp) = ihbsite + 1
         imp2hbsite(2,imp) = ihbsite + 2
@@ -79,51 +95,53 @@ subroutine setp_dtrna15()
      if (iclass_mp(imp) == CLASS%ION) then
 
         if (cmp2seq(imp) == 'Mg ') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%MG2))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%MG2)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%MG2))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%MG2)
         else if (cmp2seq(imp) == 'K  ') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%K))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%K)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%K))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%K)
         else if (cmp2seq(imp) == 'Na ') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%NA))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%NA)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%NA))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%NA)
         else if (cmp2seq(imp) == 'Cl ') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%CL))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%CL)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%CL))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%CL)
         else if (cmp2seq(imp) == 'Ca2') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%CA2))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%CA2)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%CA2))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%CA2)
         endif
 
      else if (iclass_mp(imp) == CLASS%RNA) then
 
         if (cmp2atom(imp) == ' S  ') then
-           nvalence_hbsite(ihbsite+1) = 2
-           nvalence_hbsite(ihbsite+2) = 1
-           ihbsite = ihbsite + 2
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%S))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%S)
+           nvalence_hbsite(ihbsite+1) = 2  ! O2'
+           nvalence_hbsite(ihbsite+2) = 1  ! O4'
+           nvalence_hbsite(ihbsite+3) = 1  ! O3'
+           nvalence_hbsite(ihbsite+4) = 1  ! O5'
+           ihbsite = ihbsite + 4
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%S))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%S)
         else if (cmp2atom(imp) == ' P  ') then
            nvalence_hbsite(ihbsite+1) = 1
            nvalence_hbsite(ihbsite+2) = 1
            ihbsite = ihbsite + 2
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%P))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%P)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%P))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%P)
         else if (cmp2atom(imp) == ' Ab ') then
            nvalence_hbsite(ihbsite+1) = 1
            nvalence_hbsite(ihbsite+2) = 1
            nvalence_hbsite(ihbsite+3) = 2
            nvalence_hbsite(ihbsite+4) = 1
            ihbsite = ihbsite + 4
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%A))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%A)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%A))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%A)
         else if (cmp2atom(imp) == ' Cb ') then
            nvalence_hbsite(ihbsite+1) = 2
            nvalence_hbsite(ihbsite+2) = 1
            nvalence_hbsite(ihbsite+3) = 2
            ihbsite = ihbsite + 3
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%C))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%C)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%C))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%C)
         else if (cmp2atom(imp) == ' Gb ') then
            nvalence_hbsite(ihbsite+1) = 1
            nvalence_hbsite(ihbsite+2) = 2
@@ -131,22 +149,22 @@ subroutine setp_dtrna15()
            nvalence_hbsite(ihbsite+4) = 2
            nvalence_hbsite(ihbsite+5) = 1
            ihbsite = ihbsite + 5
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%G))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%G)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%G))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%G)
         else if (cmp2atom(imp) == ' Ub ') then
            nvalence_hbsite(ihbsite+1) = 1
            nvalence_hbsite(ihbsite+2) = 1
            nvalence_hbsite(ihbsite+3) = 1
            ihbsite = ihbsite + 3
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%U))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%U)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%U))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%U)
         endif
 
      else if (iclass_mp(imp) == CLASS%LIG) then
 
         if (cmp2atom(imp) == ' X1 ') then
-           exv_epsilon_mp(imp) = sqrt(indtrna15%exv_eps(DT15EXV%X1))
-           exv_radius_mp(imp)  = indtrna15%exv_rad(DT15EXV%X1)
+           exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%X1))
+           exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%X1)
         endif
 
      else

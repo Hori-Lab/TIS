@@ -58,8 +58,6 @@ module var_setp
      integer :: num_cl_ion
      integer :: num_mg_ion
      integer :: num_ca_ion
-     integer :: num_ion(IONTYPE%MAX_ION)
-     character(3) :: char_ion(IONTYPE%MAX_ION)
 
      integer    :: sz
   end type input_ion_parameter
@@ -184,9 +182,9 @@ module var_setp
      real(PREC) :: exv_dist
      real(PREC) :: exv_dist_PS
      real(PREC) :: exv_coef   ! 2013
-     real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015
-     real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015
-     real(PREC) :: exv_adjust ! 2015
+     real(PREC) :: exv_rad(DT15EXV%MAX)  ! 2015 & 2019
+     real(PREC) :: exv_eps(DT15EXV%MAX)  ! 2015 & 2019
+     real(PREC) :: exv_adjust ! 2015 & 2019
      real(PREC) :: exv_inf    ! 2015 for Widom insertion
      integer :: n_sep_nlocal_P
      integer :: n_sep_nlocal_S
@@ -202,13 +200,13 @@ module var_setp
      real(PREC) :: st_nlocal_dist
      real(PREC) :: st_nlocal_angl
      real(PREC) :: st_nlocal_dih
-     real(PREC) :: st_nlocal_u0
+     !real(PREC) :: st_nlocal_u0
 
      real(PREC) :: hb_dist
      real(PREC) :: hb_angl
      real(PREC) :: hb_dih_hbond
      real(PREC) :: hb_dih_chain
-     real(PREC) :: hb_u0
+     !real(PREC) :: hb_u0
      real(PREC) :: hb_cutoff_dist
 
      real(PREC) :: bbr_cutoff
@@ -216,8 +214,10 @@ module var_setp
      real(PREC) :: bbr_eps
      integer    :: sz
   endtype input_dtrna_parameter
-  type(input_dtrna_parameter), save :: indtrna15
   type(input_dtrna_parameter), save :: indtrna13
+  type(input_dtrna_parameter), save :: indtrna15
+  type(input_dtrna_parameter), save :: indtrna19
+  type(input_dtrna_parameter), save :: indtrna
 
 
   !==========================================
@@ -337,6 +337,7 @@ module var_setp
      integer    :: n_step_save
      integer    :: n_step_rst
      integer    :: n_step_neighbor
+     integer    :: n_step_progress
      real(PREC) :: tstep_size
 
      ! offset
@@ -550,6 +551,7 @@ module var_setp
      integer    :: i_charge
      integer    :: i_function_form
      integer    :: i_calc_method
+     integer    :: i_DH_cutoff_type
      real(PREC) :: diele
      real(PREC) :: diele_water
      real(PREC) :: diele_dTcoef
@@ -652,5 +654,23 @@ module var_setp
 !     integer    :: sz !< size of the structure
 !  end type input_enmparameter
 !  type(input_enmparameter), save :: inenm
+
+  !==========================================
+  ! PMF for semiexplicit ion model
+  type input_pmf
+     logical    :: flag
+     character(CARRAY_MXFILE) :: path(PMFTYPE%MAX)
+     real(PREC) :: pmf(MXPMFBIN, PMFTYPE%MAX)
+     integer    :: Nbin(PMFTYPE%MAX)
+     real(PREC) :: Rmin(PMFTYPE%MAX)
+     real(PREC) :: Rmax(0:PMFTYPE%MAX)
+     real(PREC) :: Rbin(PMFTYPE%MAX)
+     real(PREC) :: Rmerge(PMFTYPE%MAX)
+     integer :: sz
+  endtype input_pmf
+
+  type(input_pmf), save :: inpmf
+
+  !==========================================
 
 end module var_setp

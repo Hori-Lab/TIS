@@ -60,7 +60,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   logical, intent(inout) :: flg_exit_loop_mstep
 
   logical :: flg_step_save, flg_step_rep_exc, flg_step_rep_save, flg_step_rep_opt
-  logical :: flg_step_rst, flg_step_widom
+  logical :: flg_step_rst, flg_step_widom, flg_step_progress
   logical :: flg_CCX_cross
   integer :: imp1, imp2
   integer :: imp, irep, grep
@@ -78,8 +78,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   flg_step_rep_opt  = .false.
   flg_step_rst      = .false.
   flg_step_widom    = .false.
+  flg_step_progress = .false.
 
-  if (mod(istep, insimu%n_step_save)   == 0) flg_step_save = .true.
+  if (mod(istep, insimu%n_step_save) == 0) flg_step_save = .true.
+  if (istep == 1 .or. istep == 10000 .or. mod(istep, insimu%n_step_progress) == 0) flg_step_progress = .true.
 
   if (i_run_mode == RUN%REPLICA) then
      if (n_replica_mpi == count(flg_step_each_replica))    flg_step_rep_exc  = .true.
@@ -383,6 +385,16 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
 #endif
   if (flg_step_rst) then
      call write_rst()
+  endif
+#ifdef MPI_PAR
+  endif
+#endif
+
+#ifdef MPI_PAR
+  if (myrank == 0) then
+#endif
+  if (flg_step_progress) then
+     call write_progress(istep, ntstep)
   endif
 #ifdef MPI_PAR
   endif

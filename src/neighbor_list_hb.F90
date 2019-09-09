@@ -30,14 +30,15 @@ subroutine neighbor_list_hb(irep)
 !  real(PREC) :: dist_cut_sq
 
   ! -------------------------------------------------------------------
-  if (inmisc%i_dtrna_model /= 2015) then
+  if (inmisc%i_dtrna_model /= 2015 .and.&
+      inmisc%i_dtrna_model /= 2019 )then
      !nhbneigh(:) = 0   ! this is not allocated
      return
   end if
 
   ! --------------------------------------------------------------------
 !  if (inmisc%i_neigh_dynamic == 1) then
-!     dist_cut_sq = (dtrna_hb_longest + indtrna15%hb_cutoff_dist + inpara%neigh_margin) ** 2
+!     dist_cut_sq = (dtrna_hb_longest + indtrna%hb_cutoff_dist + inpara%neigh_margin) ** 2
 !  else
 !     dist_cut_sq = 20.0e0_PREC ** 2
 !  endif

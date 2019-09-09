@@ -109,6 +109,8 @@ module const_maxsize
   integer, parameter :: MXGRP = 10
   integer, parameter :: MXMPGRP = 1000
 
+  integer, parameter :: MXPMFBIN = 3000
+
 !  ! Multiple Go model
 !  integer, parameter :: MXSYSTEM_MGO = 20 !< maximum # of systems in multiple-Go simulation
   integer, parameter :: MXSTATE_MGO = 1   !< maximum # of states in multiple-Go simulation

@@ -4,8 +4,8 @@ subroutine force_BBR(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : indtrna15, inperi
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, nbbr, ibbr2mp
+  use var_setp,   only : indtrna, inperi
+  use var_struct, only : nmp_all, xyz_mp_rep, nbbr, ibbr2mp
   use mpiconst
   use var_simu, only : istep
 
@@ -28,9 +28,9 @@ subroutine force_BBR(irep, force_mp)
   character(CARRAY_MSG_ERROR) :: error_message
 
   ! --------------------------------------------------------------------
-  cutoff2 = indtrna15%bbr_cutoff ** 2
-  cdist2 = indtrna15%bbr_dist ** 2
-  coef = 6.0e0_PREC * indtrna15%bbr_eps / cdist2
+  cutoff2 = indtrna%bbr_cutoff ** 2
+  cdist2 = indtrna%bbr_dist ** 2
+  coef = 6.0e0_PREC * indtrna%bbr_eps / cdist2
 
 #ifdef MPI_PAR
   klen=(nbbr(irep)-1+npar_mpi)/npar_mpi
