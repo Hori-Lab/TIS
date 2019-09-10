@@ -509,7 +509,6 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                        i_exv_dt15 = 0
                     endif
                  endif
-                 write(*,*) imp,jmp,i_exv_dt15
               endif
 
            elseif ((iclass_unit(iunit) == CLASS%ION .and. iclass_unit(junit) == CLASS%LIG) .OR. &

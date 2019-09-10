@@ -50,6 +50,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
+  use var_io,      only : i_run_mode
   use var_setp,    only : inmisc, mts, indtrna, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -89,6 +90,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   integer :: ihbsitelist_excess(1:nhbsite)
   integer :: nhb_seq
   integer :: hb_seq(1:ndtrna_hb)
+  logical, allocatable :: hb_status_save(:)
 
   ! --------------------------------------------------------------------
   if (.not. inmisc%class_flag(CLASS%RNA)) then
@@ -98,6 +100,11 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   if (inmisc%i_dtrna_model /= 2015 .and.&
       inmisc%i_dtrna_model /= 2019 ) then
      return
+  endif
+
+  if (i_run_mode == RUN%CHECK_FORCE) then
+     allocate(hb_status_save(ndtrna_hb))
+     hb_status_save(:) = hb_status(:,irep)
   endif
 
 !#ifdef MPI_PAR3
@@ -364,7 +371,11 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
      ! Delete it
      hb_status( ihb_delete, irep ) = .False.
-     ene_hb( ihb_delete, irep ) = 0.0e0_PREC
+
+     !! This line was commented out because ene_hb has be kept for i_run_mode=RUN%CHECK_FORCE
+     !! Othe cases, in normal run, ene_hb will not be refered when hb_status is False,
+     !! thus it does not have to zero cleared.
+     !ene_hb( ihb_delete, irep ) = 0.0e0_PREC
 
      ! Update hbsite_excess and nhbsite_excess
      do i = 1, 3
@@ -399,6 +410,10 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
 ! Wait until the master finishes deletions
 !$omp barrier
+
+  if (i_run_mode == RUN%CHECK_FORCE) then
+     hb_status(:,irep) = hb_status_save(:)
+  endif
 
 #ifdef MPI_PAR3
      if (local_rank_mpi == 0) then
