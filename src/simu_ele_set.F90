@@ -266,7 +266,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
               
               pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
    
-              write(outfile%data, '(5(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add 
+              write(outfile%data, '(6(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add , pmfdh_force(ibin,grep,itype)
            enddo
    
            write(outfile%data,*) '>>>>>>'

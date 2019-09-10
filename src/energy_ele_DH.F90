@@ -111,7 +111,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
 contains
    
    real(PREC) function energy_pmfdh(r, grep)
-      use var_simu, only : pmfdh_energy
+      use var_simu, only : pmfdh_energy, pmfdh_force
       implicit none
       real(PREC),intent(in) :: r
       integer, intent(in) :: grep
@@ -153,7 +153,8 @@ contains
 
       ibin = floor( (r - Rmin) * Rbininv) + 1
 
-      energy_pmfdh = pmfdh_energy(ibin, grep, PMFTYPE%MG_P)
+      energy_pmfdh = pmfdh_energy(ibin, grep, PMFTYPE%MG_P) &
+                   - pmfdh_force(ibin,grep,PMFTYPE%MG_P) * (r - (Rmin + real(ibin-1,kind=PREC)/Rbininv))
 
    endfunction energy_pmfdh
 
