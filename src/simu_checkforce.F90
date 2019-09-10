@@ -31,7 +31,7 @@ subroutine simu_checkforce()
   integer :: lunout
   integer :: i, imp, idimn
   integer :: ier = 0
-  real(PREC) :: af_ene, xyz_save, ddrand
+  real(PREC) :: af_ene, xyz_save, pxyz_save, ddrand
   real(PREC) :: force_mp(SDIM, MXMP), ff(SDIM), zure(3)
   character(CARRAY_MSG_ERROR) :: error_message
   ! -----------------------------------------------------------------
@@ -99,6 +99,7 @@ subroutine simu_checkforce()
   do imp = 1, nmp_real
      do idimn = 1, 3
         xyz_save = xyz_mp_rep(idimn, imp, IDX_REPLICA)
+        pxyz_save = pxyz_mp_rep(idimn, imp, IDX_REPLICA)
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_mp_rep(idimn, imp, IDX_REPLICA) + small
         pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_mp_rep(idimn, imp, IDX_REPLICA) + small
 !        call simu_copyxyz(IDX_REPLICA)
@@ -114,13 +115,15 @@ subroutine simu_checkforce()
    
         ff(idimn) = -(af_ene - energy(E_TYPE%TOTAL, IDX_REPLICA)) * 0.5_PREC / small
         xyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_save
-        pxyz_mp_rep(idimn, imp, IDX_REPLICA) = xyz_save
+        pxyz_mp_rep(idimn, imp, IDX_REPLICA) = pxyz_save
      end do
  
 #ifdef MPI_PAR
      if (myrank == 0) then
 #endif
-        write (lunout, "('imp=', i4, 2x, 'f_energy', 3f10.4, 2x, 'f_force=', 3f10.4)") &
+        !write (lunout, "('imp=', i4, 2x, 'f_energy', 3f10.4, 2x, 'f_force=', 3f10.4)") &
+        !       imp, (ff(i), i = 1, 3), (force_mp(i, imp), i = 1, 3)
+        write (lunout, "('imp=', i4, 2x, 'f_energy', 3(1x,g10.4), 2x, 'f_force=', 3(1x,g10.4))") &
                imp, (ff(i), i = 1, 3), (force_mp(i, imp), i = 1, 3)
 
         zure(1:3) = ff(1:3) - force_mp(1:3, imp)
