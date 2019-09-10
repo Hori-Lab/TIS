@@ -10,7 +10,7 @@ subroutine setp_mass_fric()
   use const_physical
   use var_io, only : infile, outfile, i_simulate_type
   use var_setp, only : inmisc, inpara
-  use var_struct, only : lunit2mp, cmass_mp, fric_mp, nmp_all, radius
+  use var_struct, only : lunit2mp, cmass_mp, fric_mp, nmp_all, radius, iclass_mp, imp2type
 
 #ifdef MPI_PAR
   use mpiconst
@@ -306,46 +306,101 @@ contains
       else if (cmp2atom(imp) == ' X1 ') then
          imp2chemicaltype = CHEMICALTYPE%X1
       ! ------ protein ------
-      else if (cmp2seq(imp) == 'ALA') then
-         imp2chemicaltype = CHEMICALTYPE%ALA
-      else if (cmp2seq(imp) == 'ARG') then
-         imp2chemicaltype = CHEMICALTYPE%ARG
-      else if (cmp2seq(imp) == 'ASN') then
-         imp2chemicaltype = CHEMICALTYPE%ASN
-      else if (cmp2seq(imp) == 'ASP') then
-         imp2chemicaltype = CHEMICALTYPE%ASP
-      else if (cmp2seq(imp) == 'CYS') then
-         imp2chemicaltype = CHEMICALTYPE%CYS
-      else if (cmp2seq(imp) == 'GLN') then
-         imp2chemicaltype = CHEMICALTYPE%GLN
-      else if (cmp2seq(imp) == 'GLU') then
-         imp2chemicaltype = CHEMICALTYPE%GLU
-      else if (cmp2seq(imp) == 'GLY') then
-         imp2chemicaltype = CHEMICALTYPE%GLY
-      else if (cmp2seq(imp) == 'HIS') then
-         imp2chemicaltype = CHEMICALTYPE%HIS
-      else if (cmp2seq(imp) == 'ILE') then
-         imp2chemicaltype = CHEMICALTYPE%ILE
-      else if (cmp2seq(imp) == 'LEU') then
-         imp2chemicaltype = CHEMICALTYPE%LEU
-      else if (cmp2seq(imp) == 'LYS') then
-         imp2chemicaltype = CHEMICALTYPE%LYS
-      else if (cmp2seq(imp) == 'MET') then
-         imp2chemicaltype = CHEMICALTYPE%MET
-      else if (cmp2seq(imp) == 'PHE') then
-         imp2chemicaltype = CHEMICALTYPE%PHE
-      else if (cmp2seq(imp) == 'PRO') then
-         imp2chemicaltype = CHEMICALTYPE%PRO
-      else if (cmp2seq(imp) == 'SER') then
-         imp2chemicaltype = CHEMICALTYPE%SER
-      else if (cmp2seq(imp) == 'THR') then
-         imp2chemicaltype = CHEMICALTYPE%THR
-      else if (cmp2seq(imp) == 'TRP') then
-         imp2chemicaltype = CHEMICALTYPE%TRP
-      else if (cmp2seq(imp) == 'TYR') then
-         imp2chemicaltype = CHEMICALTYPE%TYR
-      else if (cmp2seq(imp) == 'VAL') then
-         imp2chemicaltype = CHEMICALTYPE%VAL
+      else if (iclass_mp(imp) == CLASS%PRO) then
+         if (cmp2seq(imp) == 'ALA') then
+            imp2chemicaltype = CHEMICALTYPE%AA_ALA
+         else if (cmp2seq(imp) == 'ARG') then
+            imp2chemicaltype = CHEMICALTYPE%AA_ARG
+         else if (cmp2seq(imp) == 'ASN') then
+            imp2chemicaltype = CHEMICALTYPE%AA_ASN
+         else if (cmp2seq(imp) == 'ASP') then
+            imp2chemicaltype = CHEMICALTYPE%AA_ASP
+         else if (cmp2seq(imp) == 'CYS') then
+            imp2chemicaltype = CHEMICALTYPE%AA_CYS
+         else if (cmp2seq(imp) == 'GLN') then
+            imp2chemicaltype = CHEMICALTYPE%AA_GLN
+         else if (cmp2seq(imp) == 'GLU') then
+            imp2chemicaltype = CHEMICALTYPE%AA_GLU
+         else if (cmp2seq(imp) == 'GLY') then
+            imp2chemicaltype = CHEMICALTYPE%AA_GLY
+         else if (cmp2seq(imp) == 'HIS') then
+            imp2chemicaltype = CHEMICALTYPE%AA_HIS
+         else if (cmp2seq(imp) == 'ILE') then
+            imp2chemicaltype = CHEMICALTYPE%AA_ILE
+         else if (cmp2seq(imp) == 'LEU') then
+            imp2chemicaltype = CHEMICALTYPE%AA_LEU
+         else if (cmp2seq(imp) == 'LYS') then
+            imp2chemicaltype = CHEMICALTYPE%AA_LYS
+         else if (cmp2seq(imp) == 'MET') then
+            imp2chemicaltype = CHEMICALTYPE%AA_MET
+         else if (cmp2seq(imp) == 'PHE') then
+            imp2chemicaltype = CHEMICALTYPE%AA_PHE
+         else if (cmp2seq(imp) == 'PRO') then
+            imp2chemicaltype = CHEMICALTYPE%AA_PRO
+         else if (cmp2seq(imp) == 'SER') then
+            imp2chemicaltype = CHEMICALTYPE%AA_SER
+         else if (cmp2seq(imp) == 'THR') then
+            imp2chemicaltype = CHEMICALTYPE%AA_THR
+         else if (cmp2seq(imp) == 'TRP') then
+            imp2chemicaltype = CHEMICALTYPE%AA_TRP
+         else if (cmp2seq(imp) == 'TYR') then
+            imp2chemicaltype = CHEMICALTYPE%AA_TYR
+         else if (cmp2seq(imp) == 'VAL') then
+            imp2chemicaltype = CHEMICALTYPE%AA_VAL
+         else
+            imp2chemicaltype = CHEMICALTYPE%UNKNOWN
+            write(error_message,*) 'Error: unknown chemical type in setp_mass_fric; imp= ',imp
+            call util_error(ERROR%STOP_ALL, error_message)
+         endif
+      ! ------ protein SOP-SC ------
+      else if (iclass_mp(imp) == CLASS%SOPSC .and. imp2type(imp) == MPTYPE%SOPSC) then
+         if (cmp2seq(imp) == 'ALA') then
+            imp2chemicaltype = CHEMICALTYPE%SC_ALA
+         else if (cmp2seq(imp) == 'ARG') then
+            imp2chemicaltype = CHEMICALTYPE%SC_ARG
+         else if (cmp2seq(imp) == 'ASN') then
+            imp2chemicaltype = CHEMICALTYPE%SC_ASN
+         else if (cmp2seq(imp) == 'ASP') then
+            imp2chemicaltype = CHEMICALTYPE%SC_ASP
+         else if (cmp2seq(imp) == 'CYS') then
+            imp2chemicaltype = CHEMICALTYPE%SC_CYS
+         else if (cmp2seq(imp) == 'GLN') then
+            imp2chemicaltype = CHEMICALTYPE%SC_GLN
+         else if (cmp2seq(imp) == 'GLU') then
+            imp2chemicaltype = CHEMICALTYPE%SC_GLU
+         else if (cmp2seq(imp) == 'GLY') then
+            imp2chemicaltype = CHEMICALTYPE%SC_GLY
+         else if (cmp2seq(imp) == 'HIS') then
+            imp2chemicaltype = CHEMICALTYPE%SC_HIS
+         else if (cmp2seq(imp) == 'ILE') then
+            imp2chemicaltype = CHEMICALTYPE%SC_ILE
+         else if (cmp2seq(imp) == 'LEU') then
+            imp2chemicaltype = CHEMICALTYPE%SC_LEU
+         else if (cmp2seq(imp) == 'LYS') then
+            imp2chemicaltype = CHEMICALTYPE%SC_LYS
+         else if (cmp2seq(imp) == 'MET') then
+            imp2chemicaltype = CHEMICALTYPE%SC_MET
+         else if (cmp2seq(imp) == 'PHE') then
+            imp2chemicaltype = CHEMICALTYPE%SC_PHE
+         else if (cmp2seq(imp) == 'PRO') then
+            imp2chemicaltype = CHEMICALTYPE%SC_PRO
+         else if (cmp2seq(imp) == 'SER') then
+            imp2chemicaltype = CHEMICALTYPE%SC_SER
+         else if (cmp2seq(imp) == 'THR') then
+            imp2chemicaltype = CHEMICALTYPE%SC_THR
+         else if (cmp2seq(imp) == 'TRP') then
+            imp2chemicaltype = CHEMICALTYPE%SC_TRP
+         else if (cmp2seq(imp) == 'TYR') then
+            imp2chemicaltype = CHEMICALTYPE%SC_TYR
+         else if (cmp2seq(imp) == 'VAL') then
+            imp2chemicaltype = CHEMICALTYPE%SC_VAL
+         else
+            imp2chemicaltype = CHEMICALTYPE%UNKNOWN
+            write(error_message,*) 'Error: unknown chemical type in setp_mass_fric; imp= ',imp
+            call util_error(ERROR%STOP_ALL, error_message)
+         endif
+      else if (iclass_mp(imp) == CLASS%SOPSC .and. imp2type(imp) == MPTYPE%SOPBB) then
+         imp2chemicaltype = CHEMICALTYPE%BB
       else
          imp2chemicaltype = CHEMICALTYPE%UNKNOWN
          write(error_message,*) 'Error: unknown chemical type in setp_mass_fric; imp= ',imp

@@ -240,43 +240,70 @@ module const_index
 
   type chemical_type
      integer :: UNKNOWN !<  0: Default value is stored here
-     integer :: ALA     !<  1
-     integer :: ARG     !<  2
-     integer :: ASN     !<  3
-     integer :: ASP     !<  4
-     integer :: CYS     !<  5
-     integer :: GLN     !<  6
-     integer :: GLU     !<  7
-     integer :: GLY     !<  8
-     integer :: HIS     !<  9
-     integer :: ILE     !< 10
-     integer :: LEU     !< 11
-     integer :: LYS     !< 12
-     integer :: MET     !< 13
-     integer :: PHE     !< 14
-     integer :: PRO     !< 15
-     integer :: SER     !< 16
-     integer :: THR     !< 17
-     integer :: TRP     !< 18
-     integer :: TYR     !< 19
-     integer :: VAL     !< 20
-     integer :: P       !< 21: Phosphate
-     integer :: S       !< 22: Ribose sugar
-     integer :: A       !< 23: Adenine
-     integer :: G       !< 24: Guanine
-     integer :: U       !< 25: Uracyl
-     integer :: C       !< 26: Cytosine
-     integer :: MG      !< 27: ion
-     integer :: CA2     !< 28: ion
-     integer :: K       !< 29: ion
-     integer :: NA      !< 30: ion
-     integer :: CL      !< 31: ion
-     integer :: X1      !< 32: ligand (for rod)
-     integer :: MAX     !< 32
+     integer :: AA_ALA  !<  1
+     integer :: AA_ARG  !<  2
+     integer :: AA_ASN  !<  3
+     integer :: AA_ASP  !<  4
+     integer :: AA_CYS  !<  5
+     integer :: AA_GLN  !<  6
+     integer :: AA_GLU  !<  7
+     integer :: AA_GLY  !<  8
+     integer :: AA_HIS  !<  9
+     integer :: AA_ILE  !< 10
+     integer :: AA_LEU  !< 11
+     integer :: AA_LYS  !< 12
+     integer :: AA_MET  !< 13
+     integer :: AA_PHE  !< 14
+     integer :: AA_PRO  !< 15
+     integer :: AA_SER  !< 16
+     integer :: AA_THR  !< 17
+     integer :: AA_TRP  !< 18
+     integer :: AA_TYR  !< 19
+     integer :: AA_VAL  !< 20
+     integer :: SC_ALA  !< 21
+     integer :: SC_ARG  !< 22
+     integer :: SC_ASN  !< 23
+     integer :: SC_ASP  !< 24
+     integer :: SC_CYS  !< 25
+     integer :: SC_GLN  !< 26
+     integer :: SC_GLU  !< 27
+     integer :: SC_GLY  !< 28
+     integer :: SC_HIS  !< 29
+     integer :: SC_ILE  !< 30
+     integer :: SC_LEU  !< 31
+     integer :: SC_LYS  !< 32
+     integer :: SC_MET  !< 33
+     integer :: SC_PHE  !< 34
+     integer :: SC_PRO  !< 35
+     integer :: SC_SER  !< 36
+     integer :: SC_THR  !< 37
+     integer :: SC_TRP  !< 38
+     integer :: SC_TYR  !< 39
+     integer :: SC_VAL  !< 40
+     integer :: BB      !< 41
+     integer :: P       !< 42 Phosphate
+     integer :: S       !< 43: Ribose sugar
+     integer :: A       !< 44: Adenine
+     integer :: G       !< 45: Guanine
+     integer :: U       !< 46: Uracyl
+     integer :: C       !< 47: Cytosine
+     integer :: MG      !< 48: ion
+     integer :: CA2     !< 49: ion
+     integer :: K       !< 50: ion
+     integer :: NA      !< 51: ion
+     integer :: CL      !< 52: ion
+     integer :: X1      !< 53: ligand (for rod)
+     integer :: AAMIN   !< 1
+     integer :: AAMAX   !< 20
+     integer :: SCMIN   !< 21
+     integer :: SCMAX   !< 40
+     integer :: MAX     !< 53
   endtype chemical_type
   type(chemical_type), parameter :: CHEMICALTYPE = &
-       chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,&
-                     20,21,22,23,24,25,26,27,28,29,30,31,32,32)
+       chemical_type( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20, &
+                        21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40, &
+                        41,42,43,44,45,46,47,48,49,50,51,52,53, &
+                         1, 20, 21, 40, 53 )
 
   type ion_type
      integer :: VOID      !< 0

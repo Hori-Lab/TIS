@@ -57,6 +57,10 @@ subroutine  energy_exv_rep6(irep, energy_unit, energy)
 
      imp1 = iexv2mp(1, iexv, irep)
      imp2 = iexv2mp(2, iexv, irep)
+
+#ifdef _DEBUG_NLOCAL
+     write(*,*) 'EXV6 ', imp1, imp2
+#endif
      
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
