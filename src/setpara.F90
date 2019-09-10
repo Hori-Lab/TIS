@@ -273,6 +273,10 @@ subroutine setpara( xyz_mp_init )
      call setp_sopsc()
   endif
 
+  if (inmisc%class_flag(CLASS%SOPSC)) then
+     call setp_sopsc()
+  endif
+
 #ifdef _DEBUG
   write(*,*) '#### end setpara'
 #endif

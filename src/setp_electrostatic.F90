@@ -393,6 +393,20 @@ subroutine setp_electrostatic()
      endif
   endif
 
+  if (.not. inmisc%class_flag(CLASS%SOPSC)) then
+     inele%i_sopsc_consec_res = 1  ! Default
+     write (lunout, *) "i_sopsc_consec_res = 1 (not relevant if no SOPSC unit)"
+  else
+     if (inele%i_sopsc_consec_res == 0) then
+        write (lunout, *) "i_sopsc_consec_res = 0"
+     else if (inele%i_sopsc_consec_res == 1) then
+        write (lunout, *) "i_sopsc_consec_res = 1"
+     else
+        error_message = 'Error: invalid value for inele%i_sopsc_consec_res'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+  endif
+
   if (inele%i_calc_method /= 0) then
      error_message = 'Error: invalid value for inele%i_calc_method (only 0 is valid in the current code)'
      call util_error(ERROR%STOP_ALL, error_message)
