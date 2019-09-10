@@ -65,6 +65,10 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
    
      imp1 = iLJ2mp(1, iLJ)
      imp2 = iLJ2mp(2, iLJ)
+
+#ifdef _DEBUG_NLOCAL
+     write(*,*) 'LJ ', imp1, imp2
+#endif
         
      if(inperi%i_periodic == 0) then
         v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)

@@ -123,7 +123,7 @@ subroutine setp_mapara(lunpara, lunout)
   !==================================
   ! Read mass
   rewind(lunpara)
-  call ukoto_uiread2(lunpara, lunout, 'chemical_property', kfind, &
+  call ukoto_uiread2(lunpara, lunout, 'mass            ', kfind, &
        CARRAY_MXLINE, nlines, cwkinp)
    
   if(kfind /= 'FIND') then
@@ -140,7 +140,22 @@ subroutine setp_mapara(lunpara, lunout)
         write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading mass: ', trim(cdummy),trim(ctype), x
         inpara%cmass( char2ichem(ctype) ) = x
      end if
+  end do
+  
+  !==================================
+  ! Read Stokes radii
+  rewind(lunpara)
+  call ukoto_uiread2(lunpara, lunout, 'stokes_radius   ', kfind, &
+       CARRAY_MXLINE, nlines, cwkinp)
+   
+  if(kfind /= 'FIND') then
+     error_message = 'Error: cannot find "stokes_radius" field in the general%para file'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
 
+  do iline = 1, nlines
+     cline = cwkinp(iline)
+     
      if(cline(1:6) == 'RADIUS') then
         write(ctype, '(100a)') (' ', i=1,100)
         read (cline, *) cdummy, ctype, x
@@ -174,46 +189,89 @@ contains
       else if (c(1:2) == 'C ') then
          char2ichem = CHEMICALTYPE%C
       ! ------ protein ------
-      else if (c(1:3) =='ALA') then
-         char2ichem = CHEMICALTYPE%ALA
-      else if (c(1:3) =='ARG') then
-         char2ichem = CHEMICALTYPE%ARG
-      else if (c(1:3) =='ASN') then
-         char2ichem = CHEMICALTYPE%ASN
-      else if (c(1:3) =='ASP') then
-         char2ichem = CHEMICALTYPE%ASP
-      else if (c(1:3) =='CYS') then
-         char2ichem = CHEMICALTYPE%CYS
-      else if (c(1:3) =='GLN') then
-         char2ichem = CHEMICALTYPE%GLN
-      else if (c(1:3) =='GLU') then
-         char2ichem = CHEMICALTYPE%GLU
-      else if (c(1:3) =='GLY') then
-         char2ichem = CHEMICALTYPE%GLY
-      else if (c(1:3) =='HIS') then
-         char2ichem = CHEMICALTYPE%HIS
-      else if (c(1:3) =='ILE') then
-         char2ichem = CHEMICALTYPE%ILE
-      else if (c(1:3) =='LEU') then
-         char2ichem = CHEMICALTYPE%LEU
-      else if (c(1:3) =='LYS') then
-         char2ichem = CHEMICALTYPE%LYS
-      else if (c(1:3) =='MET') then
-         char2ichem = CHEMICALTYPE%MET
-      else if (c(1:3) =='PHE') then
-         char2ichem = CHEMICALTYPE%PHE
-      else if (c(1:3) =='PRO') then
-         char2ichem = CHEMICALTYPE%PRO
-      else if (c(1:3) =='SER') then
-         char2ichem = CHEMICALTYPE%SER
-      else if (c(1:3) =='THR') then
-         char2ichem = CHEMICALTYPE%THR
-      else if (c(1:3) =='TRP') then
-         char2ichem = CHEMICALTYPE%TRP
-      else if (c(1:3) =='TYR') then
-         char2ichem = CHEMICALTYPE%TYR
-      else if (c(1:3) =='VAL') then
-         char2ichem = CHEMICALTYPE%VAL
+      else if (c(1:6) =='AA_ALA') then
+         char2ichem = CHEMICALTYPE%AA_ALA
+      else if (c(1:6) =='AA_ARG') then
+         char2ichem = CHEMICALTYPE%AA_ARG
+      else if (c(1:6) =='AA_ASN') then
+         char2ichem = CHEMICALTYPE%AA_ASN
+      else if (c(1:6) =='AA_ASP') then
+         char2ichem = CHEMICALTYPE%AA_ASP
+      else if (c(1:6) =='AA_CYS') then
+         char2ichem = CHEMICALTYPE%AA_CYS
+      else if (c(1:6) =='AA_GLN') then
+         char2ichem = CHEMICALTYPE%AA_GLN
+      else if (c(1:6) =='AA_GLU') then
+         char2ichem = CHEMICALTYPE%AA_GLU
+      else if (c(1:6) =='AA_GLY') then
+         char2ichem = CHEMICALTYPE%AA_GLY
+      else if (c(1:6) =='AA_HIS') then
+         char2ichem = CHEMICALTYPE%AA_HIS
+      else if (c(1:6) =='AA_ILE') then
+         char2ichem = CHEMICALTYPE%AA_ILE
+      else if (c(1:6) =='AA_LEU') then
+         char2ichem = CHEMICALTYPE%AA_LEU
+      else if (c(1:6) =='AA_LYS') then
+         char2ichem = CHEMICALTYPE%AA_LYS
+      else if (c(1:6) =='AA_MET') then
+         char2ichem = CHEMICALTYPE%AA_MET
+      else if (c(1:6) =='AA_PHE') then
+         char2ichem = CHEMICALTYPE%AA_PHE
+      else if (c(1:6) =='AA_PRO') then
+         char2ichem = CHEMICALTYPE%AA_PRO
+      else if (c(1:6) =='AA_SER') then
+         char2ichem = CHEMICALTYPE%AA_SER
+      else if (c(1:6) =='AA_THR') then
+         char2ichem = CHEMICALTYPE%AA_THR
+      else if (c(1:6) =='AA_TRP') then
+         char2ichem = CHEMICALTYPE%AA_TRP
+      else if (c(1:6) =='AA_TYR') then
+         char2ichem = CHEMICALTYPE%AA_TYR
+      else if (c(1:6) =='AA_VAL') then
+         char2ichem = CHEMICALTYPE%AA_VAL
+      ! ------ protein SOP-SC ------
+      else if (c(1:6) =='SC_ALA') then
+         char2ichem = CHEMICALTYPE%SC_ALA
+      else if (c(1:6) =='SC_ARG') then
+         char2ichem = CHEMICALTYPE%SC_ARG
+      else if (c(1:6) =='SC_ASN') then
+         char2ichem = CHEMICALTYPE%SC_ASN
+      else if (c(1:6) =='SC_ASP') then
+         char2ichem = CHEMICALTYPE%SC_ASP
+      else if (c(1:6) =='SC_CYS') then
+         char2ichem = CHEMICALTYPE%SC_CYS
+      else if (c(1:6) =='SC_GLN') then
+         char2ichem = CHEMICALTYPE%SC_GLN
+      else if (c(1:6) =='SC_GLU') then
+         char2ichem = CHEMICALTYPE%SC_GLU
+      else if (c(1:6) =='SC_GLY') then
+         char2ichem = CHEMICALTYPE%SC_GLY
+      else if (c(1:6) =='SC_HIS') then
+         char2ichem = CHEMICALTYPE%SC_HIS
+      else if (c(1:6) =='SC_ILE') then
+         char2ichem = CHEMICALTYPE%SC_ILE
+      else if (c(1:6) =='SC_LEU') then
+         char2ichem = CHEMICALTYPE%SC_LEU
+      else if (c(1:6) =='SC_LYS') then
+         char2ichem = CHEMICALTYPE%SC_LYS
+      else if (c(1:6) =='SC_MET') then
+         char2ichem = CHEMICALTYPE%SC_MET
+      else if (c(1:6) =='SC_PHE') then
+         char2ichem = CHEMICALTYPE%SC_PHE
+      else if (c(1:6) =='SC_PRO') then
+         char2ichem = CHEMICALTYPE%SC_PRO
+      else if (c(1:6) =='SC_SER') then
+         char2ichem = CHEMICALTYPE%SC_SER
+      else if (c(1:6) =='SC_THR') then
+         char2ichem = CHEMICALTYPE%SC_THR
+      else if (c(1:6) =='SC_TRP') then
+         char2ichem = CHEMICALTYPE%SC_TRP
+      else if (c(1:6) =='SC_TYR') then
+         char2ichem = CHEMICALTYPE%SC_TYR
+      else if (c(1:6) =='SC_VAL') then
+         char2ichem = CHEMICALTYPE%SC_VAL
+      else if (c(1:3) =='BB ') then
+         char2ichem = CHEMICALTYPE%BB
       ! ------ ions ------
       else if (c(1:2) == 'MG') then
          char2ichem = CHEMICALTYPE%MG
@@ -229,7 +287,7 @@ contains
       else if (c(1:2) == 'X1') then
          char2ichem = CHEMICALTYPE%X1
       else
-         write(error_message,*) 'Error: unknown chemical type in "chemical_property"',&
+         write(error_message,*) 'Error: unknown chemical type in "mass" or "stokes_radius"',&
                                 'field in para/general.para;', c
          call util_error(ERROR%STOP_ALL, error_message)
       end if

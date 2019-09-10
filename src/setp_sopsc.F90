@@ -5,7 +5,7 @@ subroutine setp_sopsc()
    use const_index
    use const_maxsize
    use var_struct, only : nmp_all, cmp2seq, iclass_mp,&
-                          exv_radius_mp, exv_epsilon_mp
+                          exv_radius_mp, exv_epsilon_mp, imp2type
    use var_setp,   only : inexv, insopsc
    use var_io,     only : infile, outfile
 #ifdef MPI_PAR
@@ -112,46 +112,49 @@ subroutine setp_sopsc()
          cycle
       endif
  
-      !exv_epsilon_mp(imp) = 
- 
-      if (cmp2seq(imp) == 'ALA') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%ALA )
+      if (imp2type(imp) == MPTYPE%SOPBB) then
+         exv_radius_mp(imp)  = 99999.999
+         !! This value will not be used.
+         !! Instead, inexv%exv_rad_sopsc_BB_BB and inexv%exv_rad_sop_BB_SC are used.
+
+      else if (cmp2seq(imp) == 'ALA') then
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_ALA )
       else if (cmp2seq(imp) == 'ARG') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%ARG )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_ARG )
       else if (cmp2seq(imp) == 'ASN') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%ASN )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_ASN )
       else if (cmp2seq(imp) == 'ASP') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%ASP )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_ASP )
       else if (cmp2seq(imp) == 'CYS') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%CYS )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_CYS )
       else if (cmp2seq(imp) == 'GLN') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%GLN )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_GLN )
       else if (cmp2seq(imp) == 'GLU') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%GLU )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_GLU )
       else if (cmp2seq(imp) == 'GLY') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%GLY )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_GLY )
       else if (cmp2seq(imp) == 'HIS') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%HIS )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_HIS )
       else if (cmp2seq(imp) == 'ILE') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%ILE )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_ILE )
       else if (cmp2seq(imp) == 'LEU') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%LEU )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_LEU )
       else if (cmp2seq(imp) == 'MET') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%MET )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_MET )
       else if (cmp2seq(imp) == 'PHE') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%PHE )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_PHE )
       else if (cmp2seq(imp) == 'PRO') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%PRO )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_PRO )
       else if (cmp2seq(imp) == 'SER') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SER )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_SER )
       else if (cmp2seq(imp) == 'THR') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%THR )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_THR )
       else if (cmp2seq(imp) == 'TRP') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%TRP )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_TRP )
       else if (cmp2seq(imp) == 'TYR') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%TYR )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_TYR )
       else if (cmp2seq(imp) == 'VAL') then
-         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%VAL )
+         exv_radius_mp(imp)  = inexv%exv_rad_sopsc( CHEMICALTYPE%SC_VAL )
       endif
 
    enddo
