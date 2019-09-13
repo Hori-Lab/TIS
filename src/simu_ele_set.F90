@@ -134,6 +134,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
            Zp = 1.0 - theta
         else
 
+           conc_Mg = 0.0
            theta = 1.0 - 1.0/xi
            Zp = b / lb
 
