@@ -481,16 +481,16 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            imp2 = imp2un + jj
         end if
 
-        if (imp1 > imp2) then
-           imp_tmp = imp1
-           imp1 = imp2
-           imp2 = imp_tmp
-        endif
+        !if (imp1 > imp2) then
+        !   imp_tmp = imp1
+        !   imp1 = imp2
+        !   imp2 = imp_tmp
+        !endif
 
-        if (imp2 /= imp1+3) then
-           error_message = 'read error =>' // cline
-           call util_error(ERROR%STOP_ALL, error_message)
-        end if
+        !if (imp2 /= imp1+3) then
+        !   error_message = 'read error =>' // cline
+        !   call util_error(ERROR%STOP_ALL, error_message)
+        !end if
 
         ibsdist = ibsdist + 1
         !!!! Caution: read this code carefully!
@@ -801,8 +801,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
                 imp1 == idtrna_st2mp(6,ist_read)) ) then
               continue
            else
-              error_message = 'read error =>' // cline
-              call util_error(ERROR%STOP_ALL, error_message)
+              ! For circRNA
+              idtrna_st2mp(3,ist_read) = imp1
+              idtrna_st2mp(4,ist_read) = imp2
+              idtrna_st2mp(5,ist_read) = imp3
+              idtrna_st2mp(6,ist_read) = imp4
+              !error_message = 'read error =>' // cline
+              !call util_error(ERROR%STOP_ALL, error_message)
            endif
               
            dtrna_st_nat(2, ist_read) = dih
@@ -823,8 +828,13 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
                 imp1 == idtrna_st2mp(7,ist_read)) ) then
               continue
            else
-              error_message = 'read error =>' // cline
-              call util_error(ERROR%STOP_ALL, error_message)
+              ! For circRNA
+              !idtrna_st2mp(4,ist_read) = imp1  ! Already given in PSPS line
+              !idtrna_st2mp(5,ist_read) = imp2  ! Already given in PSPS line
+              !idtrna_st2mp(6,ist_read) = imp3  ! Already given in PSPS line
+              idtrna_st2mp(7,ist_read) = imp4
+              !error_message = 'read error =>' // cline
+              !call util_error(ERROR%STOP_ALL, error_message)
            endif
 
            dtrna_st_nat(3, ist_read) = dih
