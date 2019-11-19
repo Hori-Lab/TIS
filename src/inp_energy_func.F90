@@ -57,6 +57,7 @@ subroutine inp_energy_func()
   inmisc%i_temp_independent = 0   ! default
   inmisc%i_dtrna_model = 0  ! default
   inmisc%i_exv_all = 0 !default
+  inmisc%i_exv_from_file = 0
 
   ! ----------------------------------------------------------------------
   ! read energy function
@@ -405,6 +406,10 @@ subroutine inp_energy_func()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_exv_all, cvalue)
 
+        cvalue = 'i_exv_from_file'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             inmisc%i_exv_from_file, cvalue)
+
      end do
   end do
 
@@ -413,11 +418,13 @@ subroutine inp_energy_func()
 
   call MPI_Bcast(inmisc%flg_coef_from_ninfo,   1,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(inmisc%i_residuenergy_radii,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(inmisc%i_residuenergy_radii,  1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_triple_angle_term,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_temp_independent,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_dtrna_model,         1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(inmisc%i_exv_all,             1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(inmisc%i_exv_from_file,       1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   
 #endif
 

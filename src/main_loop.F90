@@ -108,6 +108,9 @@ subroutine main_loop()
      if (inmisc%i_neigh_dynamic == 1) then
         call mloop_neigh_dist()
      endif
+     if (inmisc%i_exv_from_file == 1) then
+        call mloop_neigh_exv_pairs()
+     endif
 
      ! -------------------------------------------------------------------
      ! writing the native structure

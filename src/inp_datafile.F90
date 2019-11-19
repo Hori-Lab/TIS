@@ -12,6 +12,7 @@ subroutine inp_datafile()
                          i_run_mode
   use var_struct, only : iclass_unit
   use var_replica,only : n_replica_all
+  use var_setp, only   : inmisc
   use mpiconst
 
   implicit none
@@ -443,6 +444,39 @@ subroutine inp_datafile()
         call util_error(ERROR%STOP_ALL, error_message)
      endif
   endif
+
+
+  ! --------------------------------------------------------------------
+  ! open exv file
+  if (inmisc%i_exv_from_file == 1) then
+     ! --------------------------------------------------------------------
+     ! Reading "exv_file" field in input file
+     ! --------------------------------------------------------------------
+     rewind(luninp)
+     call ukoto_uiread2(luninp, lunout, 'exv_file        ', kfind, &
+                        CARRAY_MXLINE, nlines, cwkinp)   
+     if(kfind /= 'FIND') then
+        error_message = 'Error: cannot find "energy_dcd" field in the input file'
+        call util_error(ERROR%STOP_ALL, error_message)
+     end if
+
+     do iline = 1, nlines
+        call ukoto_uiequa2(lunout, cwkinp(iline), nequat, csides)
+   
+        do iequa = 1, nequat
+           
+           if (csides(1,iequa) == 'EXV_WCA') then
+              cname = csides(2,iequa)
+              open(infile%exv(E_TYPE%EXV_WCA), file = cname, status = 'old', action = 'read', iostat=iopen_status)
+              if(iopen_status > 0) then 
+                 error_message = 'Error: cannot open the file: ' // cname
+                 call util_error(ERROR%STOP_ALL, error_message)
+              end if
+           endif
+        end do
+     end do
+  endif
+
 
 #ifdef MPI_PAR
   end if

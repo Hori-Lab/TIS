@@ -277,6 +277,8 @@ module var_struct
   !> parameters for neighboring (general) list
   integer, allocatable, save :: lexv(:,:,:)   ! (2, E_TYPE%MAX, REPLICA)  !replica
   integer, allocatable, save :: iexv2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
+  integer, allocatable, save :: iexv_pairs(:,:) ! (2,nmp_all*nmp_all) 
+  integer, save :: nexv_pairs
 
   integer, allocatable, save :: nbbr_bd         ! Number of bonds that are subject of BBR
   integer, allocatable, save :: lbbr_bd(:)      ! (MXBD) list of bonds (see mloop_dtrna.F90)

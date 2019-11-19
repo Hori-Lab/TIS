@@ -52,11 +52,16 @@ subroutine neighbor(irep)
       !inmisc%force_flag(INTERACT%PAIR_RNA) .OR.& inmisc%force_flag(INTERACT%STACK_RNA) .OR.&
       !inmisc%force_flag(INTERACT%MORSE) .OR. inmisc%force_flag(INTERACT%SASA) .OR.&
       !inmisc%force_flag(INTERACT%AICG1) .OR. inmisc%force_flag(INTERACT%AICG2)) then
-     ! make neighborlist
-     call neighbor_list(irep, ineigh2mp, lmp2neigh)
 
-     ! assign iconcal2con and iexv2mp
-     call neighbor_assign(irep, ineigh2mp, lmp2neigh)
+     if (inmisc%i_exv_from_file == 1) then    
+        call neighbor_list_exv(irep)
+     else
+        ! make neighborlist
+        call neighbor_list(irep, ineigh2mp, lmp2neigh)
+
+        ! assign iconcal2con and iexv2mp
+        call neighbor_assign(irep, ineigh2mp, lmp2neigh)
+     endif
 
   else
      lexv(1, 1:E_TYPE%MAX,:) = 1

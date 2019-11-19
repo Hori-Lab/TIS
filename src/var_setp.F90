@@ -396,6 +396,7 @@ module var_setp
      integer    :: i_temp_independent
      logical    :: flg_coef_from_ninfo
      integer    :: i_exv_all
+     integer    :: i_exv_from_file
 
      ! redefine_parameter
      integer    :: i_redef_para

@@ -4,6 +4,7 @@
 module var_io
 
   use const_maxsize
+  use const_index
 
   implicit none
 
@@ -23,6 +24,7 @@ module var_io
      integer :: para_exv      = 28 ! excluded volume
      integer :: dcd(MXREPLICA)
      integer :: velo(MXREPLICA)
+     integer :: exv(E_TYPE%MAX)
      integer :: sz
   end type inunit
   type(inunit), save :: infile

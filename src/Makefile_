@@ -64,18 +64,18 @@ VERSION += -DVERDATE="\"$(DATESEQ)\""
 # --------------------------------------------------------------------
 
 #------ gfortran
-FC = gfortran
-FC_UTIL = gfortran
-CPP = -cpp -DTIME -DSUB_COPY
-#CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
-#CPP = -cpp -DTIME -D_DEBUG
-INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
-#OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
-LIB =
+#FC = gfortran
+#FC_UTIL = gfortran
+#CPP = -cpp -DTIME -DSUB_COPY
+##CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
+##CPP = -cpp -DTIME -D_DEBUG
+#INC =
+#OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+##OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+##OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+##OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
+##OPT = -O0 -g -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fbacktrace
+#LIB =
 
 ##------ gfortran (MPI)
 #FC = mpifort
@@ -86,18 +86,18 @@ LIB =
 #LIB = 
 
 #------ intel (single)
-#FC = ifort
-#FC_UTIL = ifort
-#CPP = -cpp -DTIME
-##CPP = -cpp -DTIME -DPREC_INTEL16 -D_DEBUG_REP
-#INC =
-##OPT = -fast
-##OPT = -openmp -fast
-#OPT = -O3 -qopenmp -ipo
-##OPT = -O2 -i-static -traceback -fpe0 -check all
-##OPT = -O3 -i-static -xHost -ipo -vec-threshold=70
-##OPT = -O0 -g -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -fp-model strict -fp-speculation=off -prec-div -prec-sqrt
-#LIB =
+FC = ifort
+FC_UTIL = ifort
+CPP = -cpp -DTIME
+#CPP = -cpp -DTIME -DPREC_INTEL16 -D_DEBUG_REP
+INC =
+#OPT = -fast
+#OPT = -openmp -fast
+OPT = -O3 -qopenmp -ipo
+#OPT = -O2 -i-static -traceback -fpe0 -check all
+#OPT = -O3 -i-static -xHost -ipo -vec-threshold=70
+#OPT = -O0 -g -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -fp-model strict -fp-speculation=off -prec-div -prec-sqrt
+LIB =
 
 #------ intel (MPI)
 #FC = mpiifort
@@ -224,7 +224,7 @@ FOBJ1 = \
 	setp_mapara_exv.o\
 	setp_electrostatic.o setp_dtrna15.o setp_pmf.o\
 	main_loop.o\
-	mloop_neigh_dist.o\
+	mloop_neigh_dist.o mloop_neigh_exv_pairs.o\
 	mloop_nativeinfo.o mloop_ninfo_inp.o\
 	mloop_del_int.o mloop_dtrna.o mloop_widom.o\
 	mloop_ewld.o\
@@ -245,6 +245,7 @@ FOBJ1 = \
 	min_steep_desc.o min_conj_grad.o\
 	neighbor.o\
 	neighbor_pre.o neighbor_list.o neighbor_assign.o neighbor_sort.o\
+	neighbor_list_exv.o\
 	neighbor_list_ele.o neighbor_list_hb.o neighbor_list_BBR.o\
 	energy_sumup.o\
 	energy_allrep.o energy_velo.o energy_bond.o energy_fene.o energy_rouse.o energy_bangle.o\
