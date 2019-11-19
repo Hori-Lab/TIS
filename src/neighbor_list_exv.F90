@@ -79,17 +79,15 @@ subroutine neighbor_list_exv(irep)
   enddo
 
   lexv(2,E_TYPE%EXV_WCA,irep) = iexv(0)
-  write(*,*) inmisc%rneighbordist2_unit(1,1)
-  write(*,*) lexv(2,E_TYPE%EXV_WCA,irep)
-
-  write(*,*) '####'
-  do ipair = lexv(1,E_TYPE%EXV_WCA,irep), lexv(2,E_TYPE%EXV_WCA,irep)
-     write(*,*) iexv2mp(1,ipair,irep), iexv2mp(2,ipair,irep), iexv2mp(3,ipair,irep)
-  enddo
-  write(*,*) '####'
-
 
 #ifdef _DEBUG
+  write(*,*) inmisc%rneighbordist2_unit(1,1)
+  write(*,*) lexv(2,E_TYPE%EXV_WCA,irep)
+  !write(*,*) '####'
+  !do ipair = lexv(1,E_TYPE%EXV_WCA,irep), lexv(2,E_TYPE%EXV_WCA,irep)
+  !   write(*,*) iexv2mp(1,ipair,irep), iexv2mp(2,ipair,irep), iexv2mp(3,ipair,irep)
+  !enddo
+  !write(*,*) '####'
   write(6,*) '####### end neighbor_list_exv'
 #endif
 end subroutine neighbor_list_exv
