@@ -23,17 +23,19 @@
 
 module const_maxsize
 
+  use,intrinsic :: ISO_FORTRAN_ENV, only: REAL64, INT64
+
   implicit none
 
 #ifdef PREC_INTEL16
   integer, parameter :: PREC = 16 !< precision of floating-point
 #else
-  integer, parameter :: PREC = 8  !< precision of floating-point (default, 4 or 8)
+  integer, parameter :: PREC = REAL64  !< precision of floating-point (default, 4 or 8)
 #endif
   integer, save      :: S_REAL    !< byte size of default real   (single precision)
   integer, save      :: M_INT     !< byte size of default integer   (medium-size integer)
   integer, save      :: LOGIC     !< byte size of default logical
-  integer, parameter :: L_INT = 8 !< byte size of larger integer ("long long int" in C)
+  integer, parameter :: L_INT = INT64 !< byte size of larger integer ("long long int" in C)
 
   ! Files
   integer, parameter :: MXPDB = 20    !< maximum # of input PDB files
@@ -44,7 +46,7 @@ module const_maxsize
   integer, parameter :: MXSIM = 10     !< maximum # of simulation stages
 !  integer, parameter :: MXSEARCHINGTF = 1000  !< maximum # of cycles for simulated searching TF
   integer, parameter :: MX_REP_OPT_STAGE = 10000 !< maximum # of cycles for Feedback-optimized REM
-  integer(L_INT), parameter :: MX_NTSTEP = 2000000000
+  integer(L_INT), parameter :: MX_NTSTEP = huge(0_L_INT) - 10
 
   ! Molecules and interactions
   integer, parameter :: MXATOM_MP = 60     !< maximum # of atoms for each mass point
