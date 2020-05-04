@@ -81,7 +81,8 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   flg_step_progress = .false.
 
   if (mod(istep, insimu%n_step_save) == 0) flg_step_save = .true.
-  if (istep == 1 .or. istep == 10000 .or. mod(istep, insimu%n_step_progress) == 0) flg_step_progress = .true.
+  if (istep == insimu%i_tstep_init .or. istep == insimu%i_tstep_init + 10000 .or. &
+      mod(istep, insimu%n_step_progress) == 0) flg_step_progress = .true.
 
   if (i_run_mode == RUN%REPLICA) then
      if (n_replica_mpi == count(flg_step_each_replica))    flg_step_rep_exc  = .true.
