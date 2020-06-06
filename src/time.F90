@@ -5,6 +5,7 @@
 module time
 
 use mpiconst
+use const_maxsize
 use const_index
 use var_io, only : i_run_mode, i_simulate_type
 use var_setp, only : inmisc, inele
@@ -87,7 +88,7 @@ integer,parameter :: tm_energy_ele_EwF    = 120
 
 integer,parameter :: NMAX         =  120
 
-real(8) :: total_time(NMAX)
+real(PREC) :: total_time(NMAX)
 
 contains
 
@@ -100,7 +101,7 @@ subroutine time_write( lunout )
   character(len=32),parameter :: fmt1 = '(a17,f16.4,f10.2)'
   character(len=32),parameter :: fmt2 = '(a36)'
 
-  real(8) :: comm, ope, mloop, trate
+  real(PREC) :: comm, ope, mloop, trate
 
   mloop = total_time(tm_main_loop)
   comm  = sum( total_time(tmc_neighbor:tmc_random) )
@@ -230,7 +231,7 @@ subroutine time_initialize
   integer :: ierr
 #endif
 
-  total_time(1:NMAX) = 0.0_8
+  total_time(1:NMAX) = 0.0_PREC
 
 #ifdef MPI_PAR
   call mpi_barrier(MPI_COMM_WORLD,ierr)
@@ -246,9 +247,9 @@ subroutine time_s( no )
 #ifdef MPI_PAR
   total_time(no) = total_time(no) - mpi_wtime()
 #else
-  integer t, t_rate
+  integer(L_INT) t, t_rate
   call system_clock(t,t_rate)
-  total_time(no) = total_time(no) - t/dble(t_rate)
+  total_time(no) = total_time(no) - t/real(t_rate, kind=PREC)
 #endif
 
 end subroutine time_s
@@ -261,10 +262,9 @@ subroutine time_e( no )
 #ifdef MPI_PAR
   total_time(no) = total_time(no) + mpi_wtime()
 #else
-  integer t, t_rate
+  integer(L_INT) t, t_rate
   call system_clock(t,t_rate)
-  total_time(no) = total_time(no) + t/dble(t_rate)
-
+  total_time(no) = total_time(no) - t/real(t_rate, kind=PREC)
 #endif
 
 end subroutine time_e
