@@ -66,7 +66,7 @@ integer,parameter :: tm_neighbor_hb       =  54
 ! for energy
 !integer,parameter :: tm_energy_sasa       = 100  !sasa
 integer,parameter :: tm_energy_local       = 100
-!integer,parameter :: tm_energy_velo       = 101
+integer,parameter :: tm_energy_kinetic     = 101
 !integer,parameter :: tm_energy_bond       = 102
 !integer,parameter :: tm_energy_bangle     = 103
 !integer,parameter :: tm_energy_dih        = 104
@@ -172,7 +172,7 @@ subroutine time_write( lunout )
 
   write(lunout, fmt=fmt1) 'energy          ', total_time(tm_energy), trate*total_time(tm_energy)
   write(lunout, fmt=fmt1) '_energy(comm)   ', total_time(tmc_energy), trate*total_time(tmc_energy)
-!  write(lunout, fmt=fmt1) '_energy(velo)  ', total_time(tm_energy_velo), trate*total_time(tm_energy_velo)
+  write(lunout, fmt=fmt1) '_energy(kinetic)', total_time(tm_energy_kinetic), trate*total_time(tm_energy_kinetic)
 !  write(lunout, fmt=fmt1) '_energy(bond)  ', total_time(tm_energy_bond), trate*total_time(tm_energy_bond)
 !  write(lunout, fmt=fmt1) '_energy(bangle)', total_time(tm_energy_bangle), trate*total_time(tm_energy_bangle)
   write(lunout, fmt=fmt1) '_energy(local)  ', total_time(tm_energy_local), trate*total_time(tm_energy_local)

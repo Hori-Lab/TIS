@@ -49,5 +49,12 @@ interface
       real(PREC), intent(in) :: tempk
    endsubroutine write_hbond
 
+   subroutine write_T(tempk, energy)
+      use const_maxsize
+      implicit none
+      real(PREC), intent(in) :: tempk
+      real(PREC), intent(in) :: energy(:,:)
+   endsubroutine write_T
+
 endinterface
 endmodule if_write

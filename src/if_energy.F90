@@ -342,13 +342,13 @@ interface
      real(PREC), intent(inout) :: energy_unit(:,:,:)
    end subroutine energy_pulling
    
-   subroutine energy_velo(velo_mp, energy_unit, energy)
+   subroutine energy_kinetic(velo_mp, energy_unit, energy)
       use const_maxsize
       implicit none
       real(PREC), intent(in)    :: velo_mp(:,:)
       real(PREC), intent(inout) :: energy(:)
       real(PREC), intent(inout) :: energy_unit(:,:,:)
-   endsubroutine energy_velo
+   endsubroutine energy_kinetic
 
    subroutine energy_BBR (irep, energy_unit, energy)
       use const_maxsize

@@ -4,7 +4,7 @@ path = ./
 ** the output file names up to the suffix
 filename = md
 
-OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh hb hball st stall tst tstall
+OUTPUT pdb crd velo dcd vdcd movie psf rst chp neigh hb hball st stall tst tstall T
 **    pdb: PDB file format (coordinate)
 **    crd: CARD file format (coordinate)
 **    velo: CARD file format (velocity)

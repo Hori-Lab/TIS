@@ -54,6 +54,7 @@ module var_io
      integer :: dcd(MXREPLICA)
      integer :: vdcd(MXREPLICA)
      integer :: pdb(MXREPLICA)
+     integer :: T(MXREPLICA)
      integer :: sz
   ! CAUTION: 'iopen_lunnum' is next I/O unit number.
   end type outunit
@@ -105,6 +106,7 @@ module var_io
      logical :: tstall
      logical :: hb
      logical :: hball
+     logical :: T
   end type fileout
   type(fileout), save :: flg_file_out
 

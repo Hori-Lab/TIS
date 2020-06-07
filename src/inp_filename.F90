@@ -18,7 +18,7 @@ subroutine inp_filename()
   integer :: irep       ! index for replica
   integer :: iline, nlines, iequa, nequat
   integer :: imovie, ivelo, idcd, ivdcd, ipdb, ipsf, irst, iopt, ichp, ineigh, iee
-  integer :: ist, istall, itst, itstall, ihb, ihball
+  integer :: ist, istall, itst, itstall, ihb, ihball, itemp
   integer :: i_cend_save    ! array index indicating the terminal-end of 'filename_save'
   integer :: n_zeroize
   character(CARRAY_MXFILE) :: filename_header
@@ -41,6 +41,7 @@ subroutine inp_filename()
   character(CARRAY_MXFILE) :: filename_tstall
   character(CARRAY_MXFILE) :: filename_hb
   character(CARRAY_MXFILE) :: filename_hball
+  character(CARRAY_MXFILE) :: filename_temp
   character(4)  :: kfind
   character(CARRAY_MXCOLM)  :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: ctmp00
@@ -91,6 +92,7 @@ subroutine inp_filename()
   filename_tstall    = "./md.tstall"
   filename_hb       = "./md.hb"
   filename_hball    = "./md.hball"
+  filename_temp     = "./md.T"
 
   imovie = 0
   ivelo  = 0
@@ -109,6 +111,7 @@ subroutine inp_filename()
   itstall= 0
   ihb    = 0
   ihball = 0
+  itemp  = 0
 
   ! -----------------------------------------------------------------------
   ! read input file
@@ -231,6 +234,10 @@ subroutine inp_filename()
                  filename_hb = filename_header
                  filename_hb(n:n+2) = '.hb'
                  ihb = 1
+              else if (char7 == 'T') then
+                 filename_temp = filename_header
+                 filename_temp(n:n+1) = '.T'
+                 itemp = 1
               end if
 
               isw = 0
@@ -270,6 +277,7 @@ subroutine inp_filename()
   call MPI_Bcast(filename_tstall,CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_hb,    CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(filename_hball, CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(filename_temp,  CARRAY_MXFILE, MPI_CHARACTER,0,MPI_COMM_WORLD,ierr)
 ! --------------------------------------------------------------------------
   call MPI_Bcast(ipdb,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ipsf,   1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
@@ -288,6 +296,7 @@ subroutine inp_filename()
   call MPI_Bcast(itstall,1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ihb,    1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ihball, 1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(itemp,  1, MPI_INTEGER  ,0,MPI_COMM_WORLD,ierr)
 #endif
   
   ! -----------------------------------------------------------------------
@@ -1298,6 +1307,58 @@ subroutine inp_filename()
 #endif
   else
      flg_file_out%hball = .False.
+  end if
+
+  ! -----------------------------------------------------------------------
+  ! open T(temperature) file 
+  ! -----------------------------------------------------------------------
+  if(itemp == 1) then
+     flg_file_out%T = .True.
+#ifdef MPI_PAR
+     if (local_rank_mpi == 0) then
+#endif
+     n = index(path, ' ')
+     m = index(filename_temp, ' ')
+
+     if(path /= '')then
+        filename = path(1:n-1)//'/'//filename_temp(1:m-1)
+     else
+        filename = filename_temp
+     end if
+  
+     filename_temp = filename
+     i_cend_save     = index(filename_temp, '.T') - 1
+     lunnum = iopen_lunnum
+     iopen_lunnum = iopen_lunnum + n_replica_all
+#ifdef MPI_REP
+     jlen = (n_replica_all-1+npar_rep)/npar_rep
+     jsta = 1+jlen*local_rank_rep
+     jend = min(jsta+jlen-1, n_replica_all)
+     lunnum = lunnum + jsta - 1
+     do irep = jsta, jend
+#else
+     do irep = 1, n_replica_all
+#endif
+        outfile%T(irep) = lunnum
+        lunnum = lunnum + 1
+        if (flg_replica) then 
+           write(crep,'(i100)') irep + n_zeroize
+           filename =  filename_save(1:i_cend_save) // '_'  &
+                      // crep(101-FILENAME_DIGIT_REPLICA:100) // '.T'
+        endif ! replica
+        write (*, '(a12,i3,a3,a)') "open T file(",outfile%T(irep),"): ", trim(filename)
+        open(outfile%T(irep), file = filename, status = FILE_STATUS,  &
+             action = 'write', iostat = iopen_status)
+        if(iopen_status > 0) then
+           error_message = 'Error: cannot open the file: ' // filename
+           call util_error(ERROR%STOP_STD, error_message)
+        end if
+     enddo
+#ifdef MPI_PAR
+     end if
+#endif
+  else
+     flg_file_out%T = .False.
   end if
 
   ! -----------------------------------------------------------------------
