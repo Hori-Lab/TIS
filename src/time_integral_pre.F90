@@ -54,6 +54,17 @@ subroutine time_integral_pre(flg_step_each_replica)
 
   integer :: ianc, igrp
 
+  interface
+  subroutine force_sumup(force_mp, irep)
+     use const_physical
+     use const_maxsize
+     use var_struct, only : nmp_all
+     implicit none
+     real(PREC), intent(out) :: force_mp(SDIM, nmp_all)
+     integer,    intent(in)  :: irep
+  endsubroutine force_sumup
+  endinterface
+
 #ifdef _DEBUG
   write(6,*) '###### start time_integral_pre'
 #endif
@@ -120,7 +131,7 @@ subroutine time_integral_pre(flg_step_each_replica)
      endif
      
      ! calc force and acceleration
-     call force_sumup(force_mp, irep)
+     call force_sumup(force_mp(:,:,irep), irep)
 
      !mcanonical
      ! multicanonical algorithm --------------------
@@ -141,7 +152,7 @@ subroutine time_integral_pre(flg_step_each_replica)
 #ifdef _DEBUG
      write(*,*) 'time_integral_pre: force_mp'
      do imp=1, nmp_real
-        write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp),force_mp(2,imp),force_mp(3,imp)
+        write(6,'(2i5,1p3d15.7)'),irep,imp,force_mp(1,imp,irep),force_mp(2,imp,irep),force_mp(3,imp,irep)
      enddo
 #endif
         
@@ -164,7 +175,7 @@ subroutine time_integral_pre(flg_step_each_replica)
         else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
            do imp = 1, nmp_real
               r_force(1:3) = rlan_const(1, imp, irep) *  r_boxmuller(1:3, imp, irep)
-              accel_mp(1:3, imp, irep) = force_mp(1:3, imp) * rcmass_mp(imp) + r_force(1:3)
+              accel_mp(1:3, imp, irep) = force_mp(1:3, imp, irep) * rcmass_mp(imp) + r_force(1:3)
            end do
         endif
         
@@ -210,7 +221,7 @@ subroutine time_integral_pre(flg_step_each_replica)
            call read_rst(RSTBLK%ACCEL)
         else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
            do imp = 1, nmp_real
-              accel_mp(1:3, imp, irep) = force_mp(1:3, imp) * rcmass_mp(imp)
+              accel_mp(1:3, imp, irep) = force_mp(1:3, imp, irep) * rcmass_mp(imp)
            end do
            if((i_simulate_type /= SIM%MPC)) then
               call simu_velo_settemp(velo_mp, irep, tempk)
@@ -223,7 +234,7 @@ subroutine time_integral_pre(flg_step_each_replica)
            call read_rst(RSTBLK%ACCEL)
         else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
            do imp = 1, nmp_real
-              accel_mp(1:3, imp, irep) = force_mp(1:3, imp) * rcmass_mp(imp)
+              accel_mp(1:3, imp, irep) = force_mp(1:3, imp, irep) * rcmass_mp(imp)
            end do
         end if
            

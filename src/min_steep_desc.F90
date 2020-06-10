@@ -61,11 +61,11 @@ subroutine min_steep_desc(flg_converge)
       velo_mp(:,:,:) = 0.0e0_PREC
 
       TIME_S( tm_force )
-      call force_sumup(force_mp, IREP)
+      call force_sumup(force_mp(:,:,IREP), IREP)
       TIME_E( tm_force )
 
       ! Calc max(|Fn|)
-      norm_max = max(maxval(force_mp), abs(minval(force_mp)))
+      norm_max = max(maxval(force_mp(:,:,IREP)), abs(minval(force_mp(:,:,IREP))))
       !Debug: write(*,*) 'norm_max=',norm_max
 
       TIME_S( tm_energy )
@@ -83,9 +83,9 @@ subroutine min_steep_desc(flg_converge)
    pxyz(:,:) = pxyz_mp_rep(:,:,IREP)
    dxyz(:,:) = dxyz_mp(:,:,IREP)
 
-   xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:) / norm_max
-   pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:) / norm_max
-   dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:) / norm_max
+   xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:,IREP) / norm_max
+   pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:,IREP) / norm_max
+   dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:,IREP) / norm_max
 
    ! Calc energy
    TIME_S( tm_energy )
@@ -109,9 +109,9 @@ subroutine min_steep_desc(flg_converge)
       ! Update to a candidate structure: 
       !         xyz(n+1) = xyz(n) + lambda * F(n) / norm_max
       !         where norm_max ||F(n)|| is max(|F(n)|)
-      xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:) / norm_max
-      pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:) / norm_max
-      dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:) / norm_max
+      xyz_mp_rep(:,:,IREP) = xyz(:,:) + lambda * force_mp(:,:,IREP) / norm_max
+      pxyz_mp_rep(:,:,IREP) = pxyz(:,:) + lambda * force_mp(:,:,IREP) / norm_max
+      dxyz_mp(:,:,IREP) = dxyz_mp(:,:,IREP) + lambda * force_mp(:,:,IREP) / norm_max
 
       ! Calc energy
       TIME_S( tm_energy )
@@ -138,11 +138,11 @@ subroutine min_steep_desc(flg_converge)
 
    ! Calc force
    TIME_S( tm_force )
-   call force_sumup(force_mp, IREP)
+   call force_sumup(force_mp(:,:,IREP), IREP)
    TIME_E( tm_force )
 
    ! Calc max(|Fn|)
-   norm_max = max(maxval(force_mp), abs(minval(force_mp)))
+   norm_max = max(maxval(force_mp(:,:,IREP)), abs(minval(force_mp(:,:,IREP))))
    !Debug: write(*,*) 'norm_max=',norm_max
 
    ! Check the convergence

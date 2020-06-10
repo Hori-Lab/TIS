@@ -74,11 +74,11 @@ subroutine min_conj_grad(flg_converge)
       e_total = energy(E_TYPE%TOTAL, IREP)
 
       TIME_S( tm_force )
-      call force_sumup(force_mp, IREP)
+      call force_sumup(force_mp(:,:,IREP), IREP)
       TIME_E( tm_force )
 
       allocate(pvec(SDIM, nmp_all))
-      pvec(:,:) = force_mp(:,:)
+      pvec(:,:) = force_mp(:,:,IREP)
       norm_max = max(maxval(pvec), abs(minval(pvec)))
    endif
  
@@ -103,7 +103,7 @@ subroutine min_conj_grad(flg_converge)
    call force_sumup(force_new, IREP)
    TIME_E( tm_force )
 
-   dotp1 = func_dotp(-force_mp, pvec)
+   dotp1 = func_dotp(-force_mp(:,:,IREP), pvec)
    dotp2 = func_dotp(-force_new, pvec)
 
    ! "Strong Wolfe" condition is tested.
@@ -156,8 +156,8 @@ subroutine min_conj_grad(flg_converge)
    !dotp2 = func_dotp(force_mp, force_mp)
 
    ! PR (Polak-Ribiere) method
-   dotp1 = func_dotp(-force_new, (force_mp - force_new))
-   dotp2 = func_dotp(force_mp, force_mp)
+   dotp1 = func_dotp(-force_new, (force_mp(:,:,IREP) - force_new))
+   dotp2 = func_dotp(force_mp(:,:,IREP), force_mp(:,:,IREP))
 
    ! modification for PR method
    beta = max(dotp1 / dotp2, 0.0e0_PREC)
@@ -172,7 +172,7 @@ subroutine min_conj_grad(flg_converge)
    endif
 
    e_total = e_total_new
-   force_mp(:,:) = force_new(:,:)
+   force_mp(:,:,IREP) = force_new(:,:)
 
 
 ! ###########################################################################

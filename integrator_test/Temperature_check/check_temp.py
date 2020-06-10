@@ -2,16 +2,20 @@
 
 import sys
 
-t = 0.0
+tk = 0.0
+tc = 0.0
+tc_com = 0.0
 n = 0
 
 for il, l in enumerate(open(sys.argv[1] + '.T')):
     #if il < 1000:
     #    continue
-    t += float(l.split()[1])
+    tk += float(l.split()[1])
+    tc += float(l.split()[2])
+    tc_com += float(l.split()[3])
     n += 1
 
-print(t / float(n))
+print(tk / float(n) , tc / float(n) , tc_com / float(n))
 
 #nmp = int(open(sys.argv[1]+'.psf').readline().split()[0])
 #

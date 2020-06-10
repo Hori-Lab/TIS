@@ -195,7 +195,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
      endif
 
      if (flg_file_out%T) then
-        call write_T(tempk, energy)
+        call write_T()
      endif
 
      if (flg_file_out%opt) then
