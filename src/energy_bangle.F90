@@ -7,8 +7,7 @@ subroutine energy_bangle(irep, energy_unit, energy)
 
   use const_maxsize
   use const_index
-  use var_struct,  only : xyz_mp_rep, imp2unit, &
-                          nba, iba2mp, ba_nat, coef_ba
+  use var_struct,  only : xyz_mp_rep, imp2unit, nba, iba2mp, ba_nat, coef_ba
   use mpiconst
 
   implicit none
@@ -34,8 +33,7 @@ subroutine energy_bangle(irep, energy_unit, energy)
   ksta = 1
   kend = nba
 #endif
-!$omp do private(imp1,imp2,imp3,co_theta,dba, &
-!$omp&           efull,iunit,junit)
+!$omp do private(imp1,imp2,imp3,co_theta,dba, efull,iunit,junit)
   do iba=ksta,kend
      imp1 = iba2mp(1, iba)
      imp2 = iba2mp(2, iba)
@@ -43,10 +41,9 @@ subroutine energy_bangle(irep, energy_unit, energy)
      call util_bondangle(imp1, imp2, imp3, co_theta, xyz_mp_rep(:,:, irep))
      dba = acos(co_theta) - ba_nat(iba)
 
-     efull = coef_ba(1, iba) * dba**2 + coef_ba(2, iba) * (co_theta + 1.0e0_PREC)
+     efull = coef_ba(iba) * dba**2
      
      ! --------------------------------------------------------------------
-     ! sum of the energy
      energy(E_TYPE%BANGLE) = energy(E_TYPE%BANGLE) + efull
 
      iunit = imp2unit(imp1)

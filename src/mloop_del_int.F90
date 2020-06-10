@@ -61,8 +61,7 @@ subroutine mloop_del_int()
 
         if(idel_mp(imp1) == 1 .or. idel_mp(imp2) == 1 .or. idel_mp(imp3) == 1) then
            factor_ba(iba) = 0.0e0_PREC
-           coef_ba(1, iba) = 0.0e0_PREC
-           coef_ba(2, iba) = 0.0e0_PREC
+           coef_ba(iba) = 0.0e0_PREC
         end if
      end do
 

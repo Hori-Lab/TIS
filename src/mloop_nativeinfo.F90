@@ -172,7 +172,7 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(iba2type,    MXMPBA*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(ba_nat,      MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(factor_ba,   MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(coef_ba,   2*MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_ba,     MXMPBA*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
   ! dihedral
   call MPI_Bcast(ndih,        1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)

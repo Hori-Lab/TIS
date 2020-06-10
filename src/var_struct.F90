@@ -89,7 +89,7 @@ module var_struct
   integer,    allocatable, save :: iunit2ba(:,:)     !(2, MXUNIT)
   real(PREC), allocatable, save :: ba_nat(:)         !(MXBA)
   real(PREC), allocatable, save :: factor_ba(:)      !(MXBA)
-  real(PREC), allocatable, save :: coef_ba(:,:)      !(2, MXBA)
+  real(PREC), allocatable, save :: coef_ba(:)        !(MXBA)
   real(PREC), allocatable, save :: correct_ba_mgo(:) !(MXBA)
 !  real(PREC), allocatable, save :: fba_para_x(:,:)   !(10, nfba)
 !  real(PREC), allocatable, save :: fba_para_y(:,:)   !(10, nfba)

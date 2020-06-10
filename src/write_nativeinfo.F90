@@ -127,7 +127,6 @@ subroutine write_nativeinfo(lunout)
   ! write the bond angle
   if (nba > 0) then
      write (lunout, '(a)') '<<<< native bond angles '
-     write (lunout, '(a)') '** coef_ba(kcal/mol) = factor_ba * correct_ba_mgo * cba * energy_unit_protein'
      write (lunout, '(a)', ADVANCE='NO') '**      iba iunit1-iunit2   imp1 - imp2 - imp3'
      write (lunout, '(a)')               ' imp1un-imp2un-imp3un      ba_nat    factor_ba  correct_mgo      coef_ba'
      do iba = 1, nba
@@ -143,7 +142,7 @@ subroutine write_nativeinfo(lunout)
              'angl', iba, iunit1, iunit2, &
              imp1, imp2, imp3, imp1un, imp2un, imp3un, &
              ba_nat(iba) * 180.0e0_PREC / F_PI, &
-             factor_ba(iba), correct_ba_mgo(iba), coef_ba(1, iba)
+             factor_ba(iba), correct_ba_mgo(iba), coef_ba(iba)
         if (iclass_unit(iunit1) == CLASS%PRO) then
            write(lunout, '(a4)') ' ppp'
         else if (iclass_unit(iunit1) == CLASS%RNA) then

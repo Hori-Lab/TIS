@@ -237,7 +237,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         ba_nat(iba) = (ba / 180.0e0_PREC) * F_PI
         factor_ba(iba) = factor
         if (inmisc%flg_coef_from_ninfo) then
-           coef_ba(1,iba) = coef
+           coef_ba(iba) = coef
         endif
 
         if (ctype3 /= '   ') then
