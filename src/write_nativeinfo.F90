@@ -63,7 +63,7 @@ subroutine write_nativeinfo(lunout)
         imp2un = imp2 - lunit2mp(1, iunit1) + 1
         write (lunout, "(a4, 7(1xi6), 4(1xf12.4))", ADVANCE='NO') &
              'bond', ibd, iunit1, iunit2, imp1, imp2, imp1un, imp2un, &
-             bd_nat(ibd), factor_bd(ibd), correct_bd_mgo(ibd), coef_bd(1, ibd)
+             bd_nat(ibd), factor_bd(ibd), correct_bd_mgo(ibd), coef_bd(ibd)
         if (iclass_unit(iunit1) == CLASS%PRO) then
            write(lunout, '(a3)') ' pp'
         else if (iclass_unit(iunit1) == CLASS%RNA) then

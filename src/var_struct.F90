@@ -59,7 +59,7 @@ module var_struct
   integer,    allocatable, save :: ibd2type(:)       !(MXBD)
   real(PREC), allocatable, save :: bd_nat(:)         !(MXBD)
   real(PREC), allocatable, save :: factor_bd(:)      !(MXBD)
-  real(PREC), allocatable, save :: coef_bd(:,:)      !(2, MXBD)
+  real(PREC), allocatable, save :: coef_bd(:)        !(MXBD)
   real(PREC), allocatable, save :: correct_bd_mgo(:) !(MXBD)
 
   !> parameters for FENE potential
