@@ -74,6 +74,10 @@ subroutine setp_mass_fric()
         visc = 0.555
         ! This visc will not be used.  Just for output below.
 
+     else if(i_simulate_type == SIM%CONST_ENERGY) then
+
+        visc = 0.0
+
      else
         visc = -INVALID_VALUE
         error_message = 'Error: invalid i_simulate_type in setp_mass_fric'
@@ -106,6 +110,10 @@ subroutine setp_mass_fric()
 
         else if(i_simulate_type == SIM%PS_BROWNIAN) then
            fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
+
+        else if(i_simulate_type == SIM%CONST_ENERGY) then
+
+           fric_mp(imp) = 0.0e0_PREC
 
         endif
      enddo

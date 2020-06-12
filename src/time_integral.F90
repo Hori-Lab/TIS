@@ -23,9 +23,9 @@ subroutine time_integral(flg_step_each_replica)
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, &
-                          accel_mp, velo_mp, force_mp, rcmass_mp, cmass_cs, &
+                          accel_mp, velo_mp, force_mp, rcmass_mp, & !cmass_cs, &
                           rlan_const, &
-                          ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
+                          !ics, jcs, ncs, velo_yojou, evcs, xyz_cs, velo_cs, &
                           diffuse_tensor, random_tensor, dxyz_mp
 #ifdef TIME
   use time, only : tm_random, tmc_random, &
