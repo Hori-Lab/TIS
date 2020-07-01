@@ -194,6 +194,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
         call write_hbond(ene_hb, tempk)
      endif
 
+     if (flg_file_out%T) then
+        call write_T()
+     endif
+
      if (flg_file_out%opt) then
         ! something to write to opt file
      endif

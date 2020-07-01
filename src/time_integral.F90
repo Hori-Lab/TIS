@@ -18,7 +18,7 @@ subroutine time_integral(flg_step_each_replica)
   use if_mloop
   use if_write
   use if_energy
-  use var_io,     only : i_run_mode, i_simulate_type, outfile, flg_file_out
+  use var_io,      only : i_run_mode, i_simulate_type, outfile, flg_file_out
   use var_setp,    only : insimu, fix_mp, inmisc, inpara
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
@@ -161,7 +161,7 @@ subroutine time_integral(flg_step_each_replica)
            TIME_E( tm_update )
            
            TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
+           call force_sumup(force_mp(:,:,irep), irep)
            TIME_E( tm_force )
            
            TIME_S( tm_update ) 
@@ -171,9 +171,9 @@ subroutine time_integral(flg_step_each_replica)
               ! R(t+h)
               r_force(1:3) = rlan_const(1, imp, irep) *  r_boxmuller(1:3, imp, irep)
               ! a(t+h) temporary
-              accelaf(1:3) = force_mp(1:3, imp) * rcmass_mp(imp) + r_force(1:3)
+              accelaf(1:3) = force_mp(1:3, imp, irep) * rcmass_mp(imp) + r_force(1:3)
               
-              ! v(h+h) update velocity
+              ! v(t+h) update velocity
               velo_mp(1:3, imp, irep) = rlan_const(2, imp, irep) * velo_mp(1:3, imp, irep) &
                    + rlan_const(3, imp, irep) * (accel_mp(1:3, imp, irep) + accelaf(1:3))
               
@@ -191,7 +191,7 @@ subroutine time_integral(flg_step_each_replica)
         else if(i_simulate_type == SIM%ND_LANGEVIN) then
            
            TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
+           call force_sumup(force_mp(:,:,irep), irep)
            TIME_E( tm_force )
            
            TIME_S( tm_update ) 
@@ -206,7 +206,7 @@ subroutine time_integral(flg_step_each_replica)
               r_force(1:3) = rlan_const(3, imp, irep) * r_boxmuller(1:3, imp, irep)
 
               velo_mp(1:3,imp,irep) =  rlan_const(1,imp,irep) * velo_mp(1:3,imp,irep) &
-                                     + rlan_const(2,imp,irep) * (force_mp(1:3,imp) + r_force(1:3))
+                                     + rlan_const(2,imp,irep) * (force_mp(1:3,imp,irep) + r_force(1:3))
 
               vsq = rlan_const(4,imp,irep) * dot_product(velo_mp(1:3,imp,irep), velo_mp(1:3,imp,irep)) / tempk
               if (vsq > 1.0) then
@@ -246,7 +246,7 @@ subroutine time_integral(flg_step_each_replica)
            TIME_E( tm_update )
            
            TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
+           call force_sumup(force_mp(:,:,irep), irep)
            TIME_E( tm_force )
            
            TIME_S( tm_update )
@@ -254,7 +254,7 @@ subroutine time_integral(flg_step_each_replica)
               if(fix_mp(imp)) cycle
               
               ! a(t+h) temporary
-              accelaf(1:3) = force_mp(1:3, imp) * rcmass_mp(imp)
+              accelaf(1:3) = force_mp(1:3, imp, irep) * rcmass_mp(imp)
               
               ! v(t+h) update velocity
               velo_mp(1:3, imp, irep) = velo_mp(1:3, imp, irep)             &
@@ -275,57 +275,57 @@ subroutine time_integral(flg_step_each_replica)
            end if
            TIME_E( tm_update )
            
-        ! Nose-Hoover
-        else if(i_simulate_type == SIM%NOSEHOOVER) then
-           TIME_S( tm_update )
-           velo_cs(ncs) = velo_cs(ncs) + tsteph * velo_yojou(ncs) / cmass_cs(ncs)
-           xyz_cs(ncs) = xyz_cs(ncs) + tstep * velo_cs(ncs)
-           evcs(ncs) = exp(-tsteph * velo_cs(ncs))
-           do ics = 1, ncs-1
-              jcs = ncs - ics
-              velo_cs(jcs) = evcs(jcs+1) * velo_cs(jcs) + tsteph * velo_yojou(jcs) / cmass_cs(jcs)
-              xyz_cs(jcs) = xyz_cs(jcs) + tstep * velo_cs(jcs)
-              evcs(jcs) = exp(-tsteph * velo_cs(jcs))
-           end do
-           
-           do imp = 1, nmp_real
-              if(fix_mp(imp)) cycle
-              velo_mp(1:3, imp, irep) = evcs(1) * velo_mp(1:3, imp, irep) &
-                   + tsteph * accel_mp(1:3, imp, irep)
-              dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
-              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
-              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
-           end do
-           TIME_E( tm_update )
-           
-           TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
-           TIME_E( tm_force )
-           
-           TIME_S( tm_update )
-           do imp = 1, nmp_real
-              if(fix_mp(imp)) cycle
-              accel_mp(1:3, imp, irep) = force_mp(1:3, imp) * rcmass_mp(imp)
-              velo_mp(1:3, imp, irep) = evcs(1) &
-                   * (  velo_mp(1:3, imp, irep) &
-                   + tsteph * accel_mp(1:3, imp, irep) )
-           end do
-           
-           call simu_velo_nosehoover(velo_mp, irep, tempk, velo_yojou(1))
-           
-           do ics = 1, ncs - 1
-              velo_cs(ics) = evcs(ics + 1) * (velo_cs(ics) + tsteph * velo_yojou(ics) / cmass_cs(ics))
-              velo_yojou(ics + 1) = cmass_cs(ics) * velo_cs(ics)**2 - BOLTZ_KCAL_MOL * tempk
-           end do
-           velo_cs(ncs) = velo_cs(ncs) + tsteph * velo_yojou(ncs) / cmass_cs(ncs)
-           
-           ! correcting velocity for removing translation and rotation motion
-           if ((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
-              call simu_velo_adjst(velo_mp, irep)
-           end if
-           
-           TIME_E( tm_update )
+!        ! Nose-Hoover
+!        else if(i_simulate_type == SIM%NOSEHOOVER) then
+!           TIME_S( tm_update )
+!           velo_cs(ncs) = velo_cs(ncs) + tsteph * velo_yojou(ncs) / cmass_cs(ncs)
+!           xyz_cs(ncs) = xyz_cs(ncs) + tstep * velo_cs(ncs)
+!           evcs(ncs) = exp(-tsteph * velo_cs(ncs))
+!           do ics = 1, ncs-1
+!              jcs = ncs - ics
+!              velo_cs(jcs) = evcs(jcs+1) * velo_cs(jcs) + tsteph * velo_yojou(jcs) / cmass_cs(jcs)
+!              xyz_cs(jcs) = xyz_cs(jcs) + tstep * velo_cs(jcs)
+!              evcs(jcs) = exp(-tsteph * velo_cs(jcs))
+!           end do
+!           
+!           do imp = 1, nmp_real
+!              if(fix_mp(imp)) cycle
+!              velo_mp(1:3, imp, irep) = evcs(1) * velo_mp(1:3, imp, irep) &
+!                   + tsteph * accel_mp(1:3, imp, irep)
+!              dxyz(1:3) = tstep * velo_mp(1:3, imp, irep)
+!              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+!              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+!              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
+!           end do
+!           TIME_E( tm_update )
+!           
+!           TIME_S( tm_force )
+!           call force_sumup(force_mp(:,:,irep), irep)
+!           TIME_E( tm_force )
+!           
+!           TIME_S( tm_update )
+!           do imp = 1, nmp_real
+!              if(fix_mp(imp)) cycle
+!              accel_mp(1:3, imp, irep) = force_mp(1:3, imp, irep) * rcmass_mp(imp)
+!              velo_mp(1:3, imp, irep) = evcs(1) &
+!                   * (  velo_mp(1:3, imp, irep) &
+!                   + tsteph * accel_mp(1:3, imp, irep) )
+!           end do
+!           
+!           call simu_velo_nosehoover(velo_mp, irep, tempk, velo_yojou(1))
+!           
+!           do ics = 1, ncs - 1
+!              velo_cs(ics) = evcs(ics + 1) * (velo_cs(ics) + tsteph * velo_yojou(ics) / cmass_cs(ics))
+!              velo_yojou(ics + 1) = cmass_cs(ics) * velo_cs(ics)**2 - BOLTZ_KCAL_MOL * tempk
+!           end do
+!           velo_cs(ncs) = velo_cs(ncs) + tsteph * velo_yojou(ncs) / cmass_cs(ncs)
+!           
+!           ! correcting velocity for removing translation and rotation motion
+!           if ((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
+!              call simu_velo_adjst(velo_mp, irep)
+!           end if
+!           
+!           TIME_E( tm_update )
            
         else if(i_simulate_type == SIM%BROWNIAN .or. i_simulate_type == SIM%PS_BROWNIAN) then
            
@@ -333,7 +333,7 @@ subroutine time_integral(flg_step_each_replica)
            do imp = 1, nmp_real
               if(fix_mp(imp)) cycle
               
-              dxyz(1:3) =  rlan_const(1, imp, irep) * force_mp(1:3, imp)  &
+              dxyz(1:3) =  rlan_const(1, imp, irep) * force_mp(1:3, imp, irep)  &
                          + rlan_const(2, imp, irep) * r_boxmuller(1:3, imp, irep)
 
               xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
@@ -343,7 +343,7 @@ subroutine time_integral(flg_step_each_replica)
            TIME_E( tm_update )
            
            TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
+           call force_sumup(force_mp(:,:,irep), irep)
            TIME_E( tm_force )
            
         else if(i_simulate_type == SIM%BROWNIAN_HI) then
@@ -351,7 +351,7 @@ subroutine time_integral(flg_step_each_replica)
            call simu_hydro_tensors(irep,tempk)
 
            random_vector = reshape(r_boxmuller(:,:,irep), (/ 3*nmp_real /) )
-           force_vector = reshape(force_mp(:, 1:nmp_real), (/ 3*nmp_real /) )
+           force_vector = reshape(force_mp(:, 1:nmp_real, irep), (/ 3*nmp_real /) )
 
            TIME_S( tm_update )
            do imp = 1, nmp_real
@@ -372,7 +372,7 @@ subroutine time_integral(flg_step_each_replica)
            TIME_E( tm_update )
            
            TIME_S( tm_force )
-           call force_sumup(force_mp, irep)
+           call force_sumup(force_mp(:,:,irep), irep)
            TIME_E( tm_force )
 
         end if

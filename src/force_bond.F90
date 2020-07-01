@@ -2,28 +2,20 @@
 !> @brief This subroutine calculates the interaction force for (local) bond length.
 
 ! ************************************************************************
-!subroutine force_bond(irep, force_mp, force_mp_mgo, ene_unit)
 subroutine force_bond(irep, force_mp)
 
   use const_maxsize
-  use var_struct, only : xyz_mp_rep, nmp_all, & !imp2unit, &
-                         nbd, ibd2mp, bd_nat, coef_bd
-!  use var_mgo,    only : inmgo, ibd2sysmbr_mgo
+  use var_struct, only : xyz_mp_rep, nmp_all, nbd, ibd2mp, bd_nat, coef_bd
   use mpiconst
 
   implicit none
 
   integer,    intent(in)    :: irep
   real(PREC), intent(inout) :: force_mp(3, nmp_all)
-!  real(PREC), intent(inout) :: ene_unit(nunit_all, nunit_all)
-!  real(PREC), intent(inout) :: force_mp_mgo(3, nmp_all, &
-!                                            inmgo%nstate_max_mgo, inmgo%nsystem_mgo)
 
   integer :: ibd, imp1, imp2
-!  integer :: iunit, junit, isys, istat
   integer :: ksta, kend
   real(PREC) :: dist, ddist, ddist2, for
-!  real(PREC) :: efull
   real(PREC) :: force(3), v21(3)
 #ifdef MPI_PAR
   integer :: klen
@@ -46,7 +38,6 @@ subroutine force_bond(irep, force_mp)
   kend = nbd
 #endif
 !$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for,force)
-!!$omp&          efull,iunit,junit,isys,istat)
   do ibd = ksta, kend
 
      imp1 = ibd2mp(1, ibd)
@@ -58,32 +49,11 @@ subroutine force_bond(irep, force_mp)
      ddist = dist - bd_nat(ibd)
      ddist2 = ddist**2
 
-     ! calc force
-     for = (coef_bd(1, ibd) + 2.0e0_PREC * coef_bd(2, ibd) * ddist2) * &
-          (-2.0e0_PREC * ddist / dist)
+     for = coef_bd(ibd) * ddist2 * (-2.0e0_PREC * ddist / dist)
      force(1:3) = for * v21(1:3)
 
-!     if(inmgo%i_multi_mgo == 0) then
-        force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
-        force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
-
-!     else
-!        ! calc energy
-!        efull = (coef_bd(1, ibd) + coef_bd(2, ibd) * ddist2) * ddist2
-!        iunit = imp2unit(imp1)
-!        junit = imp2unit(imp2)
-!        ene_unit(iunit, junit) = ene_unit(iunit, junit) + efull
-!
-!        isys = ibd2sysmbr_mgo(1, ibd)
-!        if(isys == 0) then
-!           force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
-!           force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
-!        else
-!           istat = ibd2sysmbr_mgo(2, ibd)
-!           force_mp_mgo(1:3, imp1, istat, isys) = force_mp_mgo(1:3, imp1, istat, isys) - force(1:3)
-!           force_mp_mgo(1:3, imp2, istat, isys) = force_mp_mgo(1:3, imp2, istat, isys) + force(1:3)
-!        end if
-!     end if
+     force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
+     force_mp(1:3, imp2) = force_mp(1:3, imp2) + force(1:3)
   end do
 !$omp end do nowait
 

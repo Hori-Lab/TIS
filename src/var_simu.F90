@@ -27,7 +27,7 @@ module var_simu
   real(PREC), save :: accelaf(SDIM)
   real(PREC), allocatable,save  :: velo_mp(:,:,:)  ! (SDIM, nmp_real, n_replica_mpi)
   real(PREC), allocatable,save  :: accel_mp(:,:,:) ! (SDIM, nmp_real, n_replica_mpi)
-  real(PREC), allocatable, save :: force_mp(:,:)   ! (SDIM, nmp_all)
+  real(PREC), allocatable, save :: force_mp(:,:,:) ! (SDIM, nmp_all)
   real(PREC), allocatable, save :: rcmass_mp(:)    ! (nmp_all)
 
 !  ! mcanonical

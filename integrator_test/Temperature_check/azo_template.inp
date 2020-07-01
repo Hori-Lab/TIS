@@ -1,10 +1,11 @@
 <<<< filenames
-path = ./data
+path = ##PATH##
 filename = azo
-OUTPUT pdb dcd psf rst st hb neigh T
-path_pdb = ./pdb
-path_ini = ./pdb
-path_natinfo = ./ninfo
+OUTPUT pdb rst neigh T
+path_pdb = ../../pdb
+path_ini = ../../pdb
+path_natinfo = ../../ninfo
+path_para = ../../para
 >>>> 
 
 <<<< job_cntl  
@@ -46,15 +47,15 @@ NINFO(all/all) dtrna15.ninfo
 
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 100000
-tstep_size = 0.05
-n_step_save = 1
+n_tstep(1) = ##STEP##
+tstep_size = ##STEPSIZE##
+n_step_save = 10
 n_step_neighbor = 100
-n_step_rst = 100
+n_step_rst = 100000
 i_com_zeroing = 0
 i_no_trans_rot = 0
 tempk = 310.0
-n_seed = 5
+n_seed = ##SEED##
 i_mass = 1
 i_fric = 1
 i_redef_para = 1
@@ -110,5 +111,5 @@ i_calc_method = 0
 >>>>
 
 <<<< redefine_para
-viscosity = 0.000015
+viscosity = ##VISCOSITY##
 >>>>

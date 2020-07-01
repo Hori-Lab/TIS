@@ -142,9 +142,14 @@ subroutine energy_sumup(irep,          &
   energy_l(:,tn) = 0.0e0_PREC
   energy_unit_l(:,:,:,tn) = 0.0e0_PREC
 
-  call energy_velo(velo_mp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+!$omp master
+  TIME_S( tm_energy_kinetic)
+!$omp end master
+
+  call energy_kinetic(velo_mp, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 
 !$omp master
+  TIME_E( tm_energy_kinetic)
   TIME_S( tm_energy_local)
 !$omp end master
 

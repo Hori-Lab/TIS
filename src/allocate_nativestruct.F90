@@ -67,9 +67,9 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    factor_bd(:) = 0.0e0_PREC
 
-   allocate( coef_bd(2, MXMPBD*nmp_all), stat=ier)
+   allocate( coef_bd(MXMPBD*nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_bd(:,:) = 0.0e0_PREC
+   coef_bd(:) = 0.0e0_PREC
 
    allocate( correct_bd_mgo(MXMPBD*nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
@@ -126,9 +126,9 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    factor_ba(:) = 0.0e0_PREC
 
-   allocate( coef_ba(2, MXMPBA*nmp_all), stat=ier)
+   allocate( coef_ba(MXMPBA*nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_ba(:,:) = 0.0e0_PREC
+   coef_ba(:) = 0.0e0_PREC
    
    allocate( correct_ba_mgo(MXMPBA*nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)

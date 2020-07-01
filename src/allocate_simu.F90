@@ -46,7 +46,7 @@ subroutine allocate_simu()
   if(ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
 
   ! force_mp
-  allocate( force_mp(SDIM, nmp_all), stat=ier)
+  allocate( force_mp(SDIM, nmp_all, n_replica_mpi), stat=ier)
   if (ier /= 0) call util_error(ERROR%STOP_ALL, error_message)
   
   ! rcmass_mp

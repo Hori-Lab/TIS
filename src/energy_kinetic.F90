@@ -1,7 +1,7 @@
-! energy_velo
+! energy_kinetic
 !> @brief Calculate the kinetic energy
 
-subroutine energy_velo(velo_mp, energy_unit, energy)
+subroutine energy_kinetic(velo_mp, energy_unit, energy)
       
   use const_maxsize
   use const_index
@@ -57,4 +57,4 @@ subroutine energy_velo(velo_mp, energy_unit, energy)
   end do
 !$omp end do nowait
    
-end subroutine energy_velo
+end subroutine energy_kinetic

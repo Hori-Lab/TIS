@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./data
-filename = azo
-OUTPUT pdb dcd psf rst st hb neigh T
+filename = azo_fix
+OUTPUT pdb dcd psf rst
 path_pdb = ./pdb
 path_ini = ./pdb
 path_natinfo = ./ninfo
@@ -24,12 +24,12 @@ psizez = 350.0
 i_seq_read_style = 4
 i_go_native_read_style = 2
 1    rna    azo.rna.min.pdb
-2    ion    azo_05_12_fix_equil.ion.pdb
+2    ion    azo_05_12.ion.min.pdb
 >>>>
 
 <<<< initial_struct
 1           azo.rna.min.pdb
-2           azo_05_12_fix_equil.ion.pdb
+2           azo_05_12.ion.min.pdb
 >>>>
 
 <<<< initial_ion
@@ -40,17 +40,17 @@ num_mg_ion = 129
 
 <<<< native_info_sim1
 ** all-in-one-file style
-NINFO(all/all) dtrna15.ninfo
+NINFO(all/all)  dtrna15_fix.ninfo
 >>>>
 
 
 <<<< md_information
 n_step_sim = 1
-n_tstep(1) = 100000
+n_tstep(1) = 10000000
 tstep_size = 0.05
-n_step_save = 1
+n_step_save = 10000
 n_step_neighbor = 100
-n_step_rst = 100
+n_step_rst = 1000000
 i_com_zeroing = 0
 i_no_trans_rot = 0
 tempk = 310.0
@@ -59,13 +59,17 @@ i_mass = 1
 i_fric = 1
 i_redef_para = 1
 i_neigh_dynamic = 1
+i_fix = 1
 >>>>
 
+<<<< fix_para
+FIX_MP(1-587)
+>>>>
 
 <<<< energy_function       
 LOCAL(1)      L_DTRNA
 LOCAL(2)      NOTHING
-NLOCAL(1/1)   DTRNA ELE EXV_DT15
+NLOCAL(1/1)   DTRNA
 NLOCAL(1/2)   ELE EXV_DT15
 NLOCAL(2/2)   ELE EXV_DT15
 
@@ -79,7 +83,7 @@ i_output_energy_style = 1
 >>>>
 
 <<<< electrostatic
-cutoff_ele = 50.0
+cutoff_ele = 100.0
 
 ionic_strength = 0.1
 diele_water = 99999.0
