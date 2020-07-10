@@ -4,6 +4,7 @@
 !#define _DEBUG_REP
 module time
 
+use,intrinsic :: ISO_FORTRAN_ENV, only: REAL64, INT64
 use mpiconst
 use const_index
 use var_io, only : i_run_mode, i_simulate_type
@@ -87,7 +88,8 @@ integer,parameter :: tm_energy_ele_EwF    = 120
 
 integer,parameter :: NMAX         =  120
 
-real(8) :: total_time(NMAX)
+integer(INT64) :: total_clock(NMAX)
+real(REAL64) :: total_time(NMAX)
 
 contains
 
@@ -100,7 +102,19 @@ subroutine time_write( lunout )
   character(len=32),parameter :: fmt1 = '(a17,f16.4,f10.2)'
   character(len=32),parameter :: fmt2 = '(a36)'
 
-  real(8) :: comm, ope, mloop, trate
+  real(REAL64) :: comm, ope, mloop, trate
+
+#ifdef MPI_PAR
+
+#else
+  integer :: i
+  integer(INT64) t, t_rate
+
+  call system_clock(t,t_rate)
+  do i = 1, NMAX
+     total_time(i) = total_clock(i) / real(t_rate, kind=REAL64)
+  enddo
+#endif
 
   mloop = total_time(tm_main_loop)
   comm  = sum( total_time(tmc_neighbor:tmc_random) )
@@ -230,7 +244,8 @@ subroutine time_initialize
   integer :: ierr
 #endif
 
-  total_time(1:NMAX) = 0.0_8
+  total_clock(1:NMAX) = 0
+  total_time(1:NMAX) = 0.0_REAL64
 
 #ifdef MPI_PAR
   call mpi_barrier(MPI_COMM_WORLD,ierr)
@@ -246,9 +261,9 @@ subroutine time_s( no )
 #ifdef MPI_PAR
   total_time(no) = total_time(no) - mpi_wtime()
 #else
-  integer t, t_rate
-  call system_clock(t,t_rate)
-  total_time(no) = total_time(no) - t/dble(t_rate)
+  integer(INT64) t
+  call system_clock(t)
+  total_clock(no) = total_clock(no) - t
 #endif
 
 end subroutine time_s
@@ -261,10 +276,9 @@ subroutine time_e( no )
 #ifdef MPI_PAR
   total_time(no) = total_time(no) + mpi_wtime()
 #else
-  integer t, t_rate
-  call system_clock(t,t_rate)
-  total_time(no) = total_time(no) + t/dble(t_rate)
-
+  integer(INT64) t
+  call system_clock(t)
+  total_clock(no) = total_clock(no) + t
 #endif
 
 end subroutine time_e
