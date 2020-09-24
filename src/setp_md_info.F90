@@ -43,6 +43,8 @@ subroutine setp_md_info()
 
   ! ---------------------------------------------------------------------
   ! default setting 
+  insimu%i_stop_wall_time = 0  ! default
+  insimu%n_stop_wall_time_sec = -1
   insimu%n_step_sim       = -1
   insimu%i_step_sim_init  =  1  ! default
   insimu%n_tstep(1:MXSIM) = -1
@@ -145,6 +147,14 @@ subroutine setp_md_info()
            call ukoto_lvalue2(lunout, csides(1, iequa), &
                 insimu%n_tstep(isim), cvalue)
         end if
+
+        cvalue = 'i_stop_wall_time'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             insimu%i_stop_wall_time, cvalue)
+
+        cvalue = 'n_stop_wall_time_sec'
+        call ukoto_ivalue2(lunout, csides(1, iequa), &
+             insimu%n_stop_wall_time_sec, cvalue)
 
         cvalue = 'tstep_size'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
@@ -287,6 +297,21 @@ subroutine setp_md_info()
      end do
 
   end do
+
+  if(insimu%i_stop_wall_time == 0) then
+     ! default. No wall time control
+     continue
+
+  else if (insimu%i_stop_wall_time == 1) then
+     if (insimu%n_stop_wall_time_sec < 1) then
+        error_message = 'Error: invalid n_stop_wall_time_sec (should be >= 1 or i_stop_wall_time = 0)'
+        call util_error(ERROR%STOP_ALL, error_message)
+     endif
+
+  else
+     error_message = 'Error: invalid i_stop_wall_timeumber (should be n_seed >= 1 or n_seed =-1(system time))'
+     call util_error(ERROR%STOP_ALL, error_message)
+  end if
 
   if(insimu%n_seed <= -2 .or. insimu%n_seed == 0) then
      error_message = 'Error: invalid n_seed number (should be n_seed >= 1 or n_seed =-1(system time))'

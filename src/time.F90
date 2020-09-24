@@ -91,6 +91,9 @@ integer,parameter :: NMAX         =  120
 integer(INT64) :: total_clock(NMAX)
 real(REAL64) :: total_time(NMAX)
 
+integer(INT64) :: wall_clock_0
+real(REAL64) :: wall_time_0
+
 contains
 
 !--------------------------------------------------
@@ -242,6 +245,8 @@ subroutine time_initialize
   implicit none
 #ifdef MPI_PAR
   integer :: ierr
+#else
+  integer(INT64) t
 #endif
 
   total_clock(1:NMAX) = 0
@@ -249,6 +254,13 @@ subroutine time_initialize
 
 #ifdef MPI_PAR
   call mpi_barrier(MPI_COMM_WORLD,ierr)
+#endif
+
+#ifdef MPI_PAR
+  wall_time_0 = - mpi_wtime()
+#else
+  call system_clock(t)
+  wall_clock_0 = - t
 #endif
 
 end subroutine time_initialize
@@ -282,5 +294,19 @@ subroutine time_e( no )
 #endif
 
 end subroutine time_e
+
+!--------------------------------------------------
+integer function wall_time_in_sec()
+  implicit none
+  integer(INT64) t, t_rate
+
+#ifdef MPI_PAR
+  wall_time_in_sec = wall_time_0 + mpi_wtime()
+#else
+  call system_clock(t, t_rate)
+  wall_time_in_sec = (wall_clock_0 + t) / real(t_rate, kind=REAL64)
+#endif
+
+end function wall_time_in_sec
 
 end module time

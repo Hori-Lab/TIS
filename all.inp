@@ -459,6 +459,12 @@ FLP_DEL(40-45)
 ** md_information (required)
 **************************************************************
 <<<< md_information
+** 
+* = 0  (default) No wall time. Only n_step(x) will be used.
+* = 1  Simulation will run until 
+i_stop_wall_time = 0
+n_stop_wall_time_sec = 10
+
 ** the number of switching the potential
 n_step_sim = 1
 

@@ -241,7 +241,7 @@ FOBJ1 = \
 	simu_velo_adjst.o simu_velo_settemp.o simu_velo_nosehoover.o\
 	simu_radiusg.o simu_rmsd.o\
 	time_integral_pre.o time_integral.o time_integral_post.o\
-	check_chaincrossing.o\
+	check_chaincrossing.o check_wall_time.o\
 	min_steep_desc.o min_conj_grad.o\
 	neighbor.o\
 	neighbor_pre.o neighbor_list.o neighbor_assign.o neighbor_sort.o\

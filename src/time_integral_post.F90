@@ -80,6 +80,11 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
   flg_step_widom    = .false.
   flg_step_progress = .false.
 
+  if (flg_exit_loop_mstep) then
+     ! In case stop by wall time
+     flg_step_rst = .true.
+  endif
+
   if (mod(istep, insimu%n_step_save) == 0) flg_step_save = .true.
   if (istep == insimu%i_tstep_init .or. istep == insimu%i_tstep_init + 10000 .or. &
       mod(istep, insimu%n_step_progress) == 0) flg_step_progress = .true.
@@ -101,7 +106,7 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
         flg_step_widom = .true.
      endif
   endif
-  
+
   TIME_E( tm_others )
 
   ! --------------------------------------------------------------

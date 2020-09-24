@@ -137,6 +137,12 @@ subroutine mloop_simulator()
         TIME_E( tm_tinte )
 
         ! -----------------------------------------------------------------
+        ! Check wall time
+        if (insimu%i_stop_wall_time == 1) then
+           call check_wall_time(flg_exit_loop_mstep)
+        endif
+
+        ! -----------------------------------------------------------------
         ! treatment after time integral
         ! -----------------------------------------------------------------
         TIME_S( tm_tinte_post )

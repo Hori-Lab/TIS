@@ -329,6 +329,8 @@ module var_setp
   !> structure for parameters reading from "md_information" field in input file
   type input_simuparameter
      ! step
+     integer    :: i_stop_wall_time
+     integer    :: n_stop_wall_time_sec
      integer    :: n_step_sim
      integer    :: i_step_sim_init
      integer(L_INT) :: n_tstep(MXSIM)
