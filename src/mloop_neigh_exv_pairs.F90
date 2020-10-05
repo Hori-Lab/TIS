@@ -3,7 +3,7 @@ subroutine mloop_neigh_exv_pairs()
   use const_maxsize
   use const_index
   use var_io,     only : infile
-  use var_struct, only : iexv_pairs, nexv_pairs
+  use var_struct, only : iexv_pairs, nexv_pairs, nmp_all
                           
   use mpiconst
 
