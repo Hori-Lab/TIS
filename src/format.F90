@@ -10,7 +10,7 @@
 #define _FMT_REP_TABLE_VALUE_  '(f12.4,1x)'
 #define _FMT_REP_TABLE_STEP_   '(i12,1x)'
 ! trajectory
-#define _FMT_REP_TRAJ_STEP_    '(i10,1x)'
+#define _FMT_REP_TRAJ_STEP_    '(i12,1x)'
 #define _FMT_REP_TRAJ_R2L_A_   '(i5,1x)'
 #define _FMT_REP_TRAJ_R2L_L_   '(i5)'
 
