@@ -691,6 +691,8 @@ contains
             bondtype2str = ' SA'
          else if (cmp2atom(imp2) == ' Ub ') then
             bondtype2str = ' SU'
+         else if (cmp2atom(imp2) == ' Tb ') then
+            bondtype2str = ' ST'
          else if (cmp2atom(imp2) == ' Gb ') then
             bondtype2str = ' SG'
          else if (cmp2atom(imp2) == ' Cb ') then
@@ -716,11 +718,13 @@ contains
    endfunction bondtype2str
 
    character(4) function angletype2str()
-        if (iba2type(iba) == BATYPE%RNA_RSP .OR. iba2type(iba) == BATYPE%RNA_YSP) then
+        if (iba2type(iba) == BATYPE%TIS_RSP .OR. iba2type(iba) == BATYPE%TIS_YSP) then
            if (cmp2atom(imp1) == ' Ab ') then
               angletype2str = ' ASP'
            else if (cmp2atom(imp1) == ' Ub ') then
               angletype2str = ' USP'
+           else if (cmp2atom(imp1) == ' Tb ') then
+              angletype2str = ' TSP'
            else if (cmp2atom(imp1) == ' Gb ') then
               angletype2str = ' GSP'
            else if (cmp2atom(imp1) == ' Cb ') then
@@ -737,15 +741,17 @@ contains
                write(*,*) imp1
               call util_error(ERROR%STOP_ALL, error_message)
            endif
-        else if (iba2type(iba) == BATYPE%RNA_PSP) then
+        else if (iba2type(iba) == BATYPE%TIS_PSP) then
            angletype2str = ' PSP'
-        else if (iba2type(iba) == BATYPE%RNA_SPS) then
+        else if (iba2type(iba) == BATYPE%TIS_SPS) then
            angletype2str = ' SPS'
-        else if (iba2type(iba) == BATYPE%RNA_PSR .OR. iba2type(iba) == BATYPE%RNA_PSY) then
+        else if (iba2type(iba) == BATYPE%TIS_PSR .OR. iba2type(iba) == BATYPE%TIS_PSY) then
            if (cmp2atom(imp3) == ' Ab ') then
               angletype2str = ' PSA'
            else if (cmp2atom(imp3) == ' Ub ') then
               angletype2str = ' PSU'
+           else if (cmp2atom(imp3) == ' Tb ') then
+              angletype2str = ' PST'
            else if (cmp2atom(imp3) == ' Gb ') then
               angletype2str = ' PSG'
            else if (cmp2atom(imp3) == ' Cb ') then
@@ -762,7 +768,7 @@ contains
                write(*,*) imp3
               call util_error(ERROR%STOP_ALL, error_message)
            endif
-!        else if (iba2type(iba) == BATYPE%RNA_BSB) then
+!        else if (iba2type(iba) == BATYPE%TIS_BSB) then
 !           angletype2str = ' BSB'
         else
            error_message = 'Error: logical defect in write_native_info (undefined BATYPE)'
@@ -770,56 +776,56 @@ contains
         endif
    endfunction angletype2str
 
-   character(5) function dihtype2str()
-      if (idih2type(idih) == DIHTYPE%RNA_RSPS .OR. idih2type(idih) == DIHTYPE%RNA_YSPS) then
-         if      (cmp2atom(imp1) == ' Ab ') then
-            dihtype2str = ' ASPS'
-         else if (cmp2atom(imp1) == ' Ub ') then
-            dihtype2str = ' USPS'
-         else if (cmp2atom(imp1) == ' Gb ') then
-            dihtype2str = ' GSPS'
-         else if (cmp2atom(imp1) == ' Cb ') then
-            dihtype2str = ' CSPS'
-         else if (cmp2atom(imp1) == ' Rb ') then
-            dihtype2str = ' RSPS'
-         else if (cmp2atom(imp1) == ' Yb ') then
-            dihtype2str = ' YSPS'
-         else if (cmp2atom(imp1) == ' Nb ') then
-            dihtype2str = ' NSPS'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-                           &//cmp2atom(imp1)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (idih2type(idih) == DIHTYPE%RNA_PSPS) then
-         dihtype2str = ' PSPS'
-      else if (idih2type(idih) == DIHTYPE%RNA_SPSR .OR. idih2type(idih) == DIHTYPE%RNA_SPSY) then
-         if      (cmp2atom(imp4) == ' Ab ') then
-            dihtype2str = ' SPSA'
-         else if (cmp2atom(imp4) == ' Ub ') then
-            dihtype2str = ' SPSU'
-         else if (cmp2atom(imp4) == ' Gb ') then
-            dihtype2str = ' SPSG'
-         else if (cmp2atom(imp4) == ' Cb ') then
-            dihtype2str = ' SPSC'
-         else if (cmp2atom(imp4) == ' Rb ') then
-            dihtype2str = ' SPSR'
-         else if (cmp2atom(imp4) == ' Yb ') then
-            dihtype2str = ' SPSY'
-         else if (cmp2atom(imp4) == ' Nb ') then
-            dihtype2str = ' SPSN'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-                           &//cmp2atom(imp4)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (idih2type(idih) == DIHTYPE%RNA_SPSP) then
-         dihtype2str = ' SPSP'
-      else
-         error_message = 'Error: logical defect in write_native_info (undefined DIHTYPE)'
-         call util_error(ERROR%STOP_ALL, error_message)
-      endif
-   endfunction dihtype2str
+!   character(5) function dihtype2str()
+!      if (idih2type(idih) == DIHTYPE%RNA_RSPS .OR. idih2type(idih) == DIHTYPE%RNA_YSPS) then
+!         if      (cmp2atom(imp1) == ' Ab ') then
+!            dihtype2str = ' ASPS'
+!         else if (cmp2atom(imp1) == ' Ub ') then
+!            dihtype2str = ' USPS'
+!         else if (cmp2atom(imp1) == ' Gb ') then
+!            dihtype2str = ' GSPS'
+!         else if (cmp2atom(imp1) == ' Cb ') then
+!            dihtype2str = ' CSPS'
+!         else if (cmp2atom(imp1) == ' Rb ') then
+!            dihtype2str = ' RSPS'
+!         else if (cmp2atom(imp1) == ' Yb ') then
+!            dihtype2str = ' YSPS'
+!         else if (cmp2atom(imp1) == ' Nb ') then
+!            dihtype2str = ' NSPS'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!                           &//cmp2atom(imp1)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (idih2type(idih) == DIHTYPE%RNA_PSPS) then
+!         dihtype2str = ' PSPS'
+!      else if (idih2type(idih) == DIHTYPE%RNA_SPSR .OR. idih2type(idih) == DIHTYPE%RNA_SPSY) then
+!         if      (cmp2atom(imp4) == ' Ab ') then
+!            dihtype2str = ' SPSA'
+!         else if (cmp2atom(imp4) == ' Ub ') then
+!            dihtype2str = ' SPSU'
+!         else if (cmp2atom(imp4) == ' Gb ') then
+!            dihtype2str = ' SPSG'
+!         else if (cmp2atom(imp4) == ' Cb ') then
+!            dihtype2str = ' SPSC'
+!         else if (cmp2atom(imp4) == ' Rb ') then
+!            dihtype2str = ' SPSR'
+!         else if (cmp2atom(imp4) == ' Yb ') then
+!            dihtype2str = ' SPSY'
+!         else if (cmp2atom(imp4) == ' Nb ') then
+!            dihtype2str = ' SPSN'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!                           &//cmp2atom(imp4)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (idih2type(idih) == DIHTYPE%RNA_SPSP) then
+!         dihtype2str = ' SPSP'
+!      else
+!         error_message = 'Error: logical defect in write_native_info (undefined DIHTYPE)'
+!         call util_error(ERROR%STOP_ALL, error_message)
+!      endif
+!   endfunction dihtype2str
    
    character(4) function gotype2str()
       if (iclass_unit(iunit) == CLASS%PRO .AND. iclass_unit(junit) == CLASS%PRO) then
@@ -1021,149 +1027,149 @@ contains
       endif
    endfunction gotype2str
    
-   character(4) function bptype2str()
-      if (cmp2atom(imp1) == ' Ab ' .OR. cmp2atom(imp2) == ' Ab ') then
-         bptype2str(1:3) = ' A-'
-         if      (cmp2atom(imp1) == ' Ub ' .OR. cmp2atom(imp2) == ' Ub ') then
-            bptype2str(4:4) = 'U'
-         else if (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
-            bptype2str(4:4) = 'G'
-         else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
-            bptype2str(4:4) = 'C'
-         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
-            bptype2str(4:4) = 'R'
-         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Ab ' .AND. cmp2atom(imp2) == ' Ab ') then
-            bptype2str(4:4) = 'A'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Ub ' .OR. cmp2atom(imp2) == ' Ub ') then
-         bptype2str(1:3) = ' U-'
-         if      (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
-            bptype2str(4:4) = 'G'
-         else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
-            bptype2str(4:4) = 'C'
-         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
-            bptype2str(4:4) = 'R'
-         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Ub ' .AND. cmp2atom(imp2) == ' Ub ') then
-            bptype2str(4:4) = 'U'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
-         bptype2str(1:3) = ' G-'
-         if      (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
-            bptype2str(4:4) = 'C'
-         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
-            bptype2str(4:4) = 'R'
-         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Gb ' .AND. cmp2atom(imp2) == ' Gb ') then
-            bptype2str(4:4) = 'G'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
-         bptype2str(1:3) = ' C-'
-         if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
-            bptype2str(4:4) = 'R'
-         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Cb ' .AND. cmp2atom(imp2) == ' Cb ') then
-            bptype2str(4:4) = 'C'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
-         bptype2str(1:3) = ' R-'
-         if      (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Rb ' .AND. cmp2atom(imp2) == ' Rb ') then
-            bptype2str(4:4) = 'R'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
-         bptype2str(1:3) = ' Y-'
-         if      (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
-            bptype2str(4:4) = 'N'
-         else if (cmp2atom(imp1) == ' Yb ' .AND. cmp2atom(imp2) == ' Yb ') then
-            bptype2str(4:4) = 'Y'
-         else
-            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-               &//cmp2atom(imp1)//','//cmp2atom(imp2)
-            call util_error(ERROR%STOP_ALL, error_message)
-         endif
-      else if (cmp2atom(imp1) == ' Nb ' .AND. cmp2atom(imp2) == ' Nb ') then
-            bptype2str = ' N-N'
-      else
-         error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
-            &//cmp2atom(imp1)//','//cmp2atom(imp2)
-         call util_error(ERROR%STOP_ALL, error_message)
-      endif
-      
-   endfunction bptype2str
+!   character(4) function bptype2str()
+!      if (cmp2atom(imp1) == ' Ab ' .OR. cmp2atom(imp2) == ' Ab ') then
+!         bptype2str(1:3) = ' A-'
+!         if      (cmp2atom(imp1) == ' Ub ' .OR. cmp2atom(imp2) == ' Ub ') then
+!            bptype2str(4:4) = 'U'
+!         else if (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
+!            bptype2str(4:4) = 'G'
+!         else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
+!            bptype2str(4:4) = 'C'
+!         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
+!            bptype2str(4:4) = 'R'
+!         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Ab ' .AND. cmp2atom(imp2) == ' Ab ') then
+!            bptype2str(4:4) = 'A'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Ub ' .OR. cmp2atom(imp2) == ' Ub ') then
+!         bptype2str(1:3) = ' U-'
+!         if      (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
+!            bptype2str(4:4) = 'G'
+!         else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
+!            bptype2str(4:4) = 'C'
+!         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
+!            bptype2str(4:4) = 'R'
+!         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Ub ' .AND. cmp2atom(imp2) == ' Ub ') then
+!            bptype2str(4:4) = 'U'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Gb ' .OR. cmp2atom(imp2) == ' Gb ') then
+!         bptype2str(1:3) = ' G-'
+!         if      (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
+!            bptype2str(4:4) = 'C'
+!         else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
+!            bptype2str(4:4) = 'R'
+!         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Gb ' .AND. cmp2atom(imp2) == ' Gb ') then
+!            bptype2str(4:4) = 'G'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Cb ' .OR. cmp2atom(imp2) == ' Cb ') then
+!         bptype2str(1:3) = ' C-'
+!         if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
+!            bptype2str(4:4) = 'R'
+!         else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Cb ' .AND. cmp2atom(imp2) == ' Cb ') then
+!            bptype2str(4:4) = 'C'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Rb ' .OR. cmp2atom(imp2) == ' Rb ') then
+!         bptype2str(1:3) = ' R-'
+!         if      (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else if (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Rb ' .AND. cmp2atom(imp2) == ' Rb ') then
+!            bptype2str(4:4) = 'R'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Yb ' .OR. cmp2atom(imp2) == ' Yb ') then
+!         bptype2str(1:3) = ' Y-'
+!         if      (cmp2atom(imp1) == ' Nb ' .OR. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str(4:4) = 'N'
+!         else if (cmp2atom(imp1) == ' Yb ' .AND. cmp2atom(imp2) == ' Yb ') then
+!            bptype2str(4:4) = 'Y'
+!         else
+!            error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!               &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!            call util_error(ERROR%STOP_ALL, error_message)
+!         endif
+!      else if (cmp2atom(imp1) == ' Nb ' .AND. cmp2atom(imp2) == ' Nb ') then
+!            bptype2str = ' N-N'
+!      else
+!         error_message = 'Error: logical defect in write_native_info (undefined cmp2atom) '&
+!            &//cmp2atom(imp1)//','//cmp2atom(imp2)
+!         call util_error(ERROR%STOP_ALL, error_message)
+!      endif
+!      
+!   endfunction bptype2str
 
-   character(4) function bstype2str()
-      if (cmp2atom(imp1) == ' Ab ') then
-         bstype2str(1:3) = ' A-'
-      else if (cmp2atom(imp1) == ' Ub ') then
-         bstype2str(1:3) = ' U-'
-      else if (cmp2atom(imp1) == ' Gb ') then
-         bstype2str(1:3) = ' G-'
-      else if (cmp2atom(imp1) == ' Cb ') then
-         bstype2str(1:3) = ' C-'
-      else if (cmp2atom(imp1) == ' Rb ') then
-         bstype2str(1:3) = ' R-'
-      else if (cmp2atom(imp1) == ' Yb ') then
-         bstype2str(1:3) = ' Y-'
-      else if (cmp2atom(imp1) == ' Nb ') then
-         bstype2str(1:3) = ' N-'
-      else
-         error_message = 'Error: logical defect in write_native_info (undefined STACK)'
-         call util_error(ERROR%STOP_ALL, error_message)
-      endif
-      if (cmp2atom(imp2) == ' Ab ') then
-         bstype2str(4:4) = 'A'
-      else if (cmp2atom(imp2) == ' Ub ') then
-         bstype2str(4:4) = 'U'
-      else if (cmp2atom(imp2) == ' Gb ') then
-         bstype2str(4:4) = 'G'
-      else if (cmp2atom(imp2) == ' Cb ') then
-         bstype2str(4:4) = 'C'
-      else if (cmp2atom(imp2) == ' Rb ') then
-         bstype2str(4:4) = 'R'
-      else if (cmp2atom(imp2) == ' Yb ') then
-         bstype2str(4:4) = 'Y'
-      else if (cmp2atom(imp2) == ' Nb ') then
-         bstype2str(4:4) = 'N'
-      else
-         error_message = 'Error: logical defect in write_native_info (undefined STACK)'
-         call util_error(ERROR%STOP_ALL, error_message)
-      endif
-   endfunction bstype2str
+!   character(4) function bstype2str()
+!      if (cmp2atom(imp1) == ' Ab ') then
+!         bstype2str(1:3) = ' A-'
+!      else if (cmp2atom(imp1) == ' Ub ') then
+!         bstype2str(1:3) = ' U-'
+!      else if (cmp2atom(imp1) == ' Gb ') then
+!         bstype2str(1:3) = ' G-'
+!      else if (cmp2atom(imp1) == ' Cb ') then
+!         bstype2str(1:3) = ' C-'
+!      else if (cmp2atom(imp1) == ' Rb ') then
+!         bstype2str(1:3) = ' R-'
+!      else if (cmp2atom(imp1) == ' Yb ') then
+!         bstype2str(1:3) = ' Y-'
+!      else if (cmp2atom(imp1) == ' Nb ') then
+!         bstype2str(1:3) = ' N-'
+!      else
+!         error_message = 'Error: logical defect in write_native_info (undefined STACK)'
+!         call util_error(ERROR%STOP_ALL, error_message)
+!      endif
+!      if (cmp2atom(imp2) == ' Ab ') then
+!         bstype2str(4:4) = 'A'
+!      else if (cmp2atom(imp2) == ' Ub ') then
+!         bstype2str(4:4) = 'U'
+!      else if (cmp2atom(imp2) == ' Gb ') then
+!         bstype2str(4:4) = 'G'
+!      else if (cmp2atom(imp2) == ' Cb ') then
+!         bstype2str(4:4) = 'C'
+!      else if (cmp2atom(imp2) == ' Rb ') then
+!         bstype2str(4:4) = 'R'
+!      else if (cmp2atom(imp2) == ' Yb ') then
+!         bstype2str(4:4) = 'Y'
+!      else if (cmp2atom(imp2) == ' Nb ') then
+!         bstype2str(4:4) = 'N'
+!      else
+!         error_message = 'Error: logical defect in write_native_info (undefined STACK)'
+!         call util_error(ERROR%STOP_ALL, error_message)
+!      endif
+!   endfunction bstype2str
 end subroutine write_nativeinfo

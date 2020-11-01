@@ -1227,17 +1227,17 @@ contains
       if (c3 == 'ppp') then
          str2angletype = BATYPE%PRO
       else if (c3 == 'PSP') then
-         str2angletype = BATYPE%RNA_PSP
+         str2angletype = BATYPE%TIS_PSP
       else if (c3 == 'SPS') then
-         str2angletype = BATYPE%RNA_SPS
+         str2angletype = BATYPE%TIS_SPS
       else if (c3 == 'ASP' .OR. c3 == 'GSP' .OR. c3 == 'RSP') then
-         str2angletype = BATYPE%RNA_RSP
-      else if (c3 == 'USP' .OR. c3 == 'CSP' .OR. c3 == 'YSP') then
-         str2angletype = BATYPE%RNA_YSP
+         str2angletype = BATYPE%TIS_RSP
+      else if (c3 == 'USP' .OR. c3 == 'TSP' .OR. c3 == 'CSP' .OR. c3 == 'YSP') then
+         str2angletype = BATYPE%TIS_YSP
       else if (c3 == 'PSA' .OR. c3 == 'PSG' .OR. c3 == 'PSR') then
-         str2angletype = BATYPE%RNA_PSR
-      else if (c3 == 'PSU' .OR. c3 == 'PSC' .OR. c3 == 'PSY') then
-         str2angletype = BATYPE%RNA_PSY
+         str2angletype = BATYPE%TIS_PSR
+      else if (c3 == 'PSU' .OR. c3 == 'PST' .OR. c3 == 'PSC' .OR. c3 == 'PSY') then
+         str2angletype = BATYPE%TIS_PSY
       else
          str2angletype = BATYPE%VOID
          error_message = 'Error: in read_nativeinfo, unknown angletype'//c3
@@ -1245,44 +1245,44 @@ contains
       endif
    endfunction str2angletype
 
-   integer function str2dihtype(c4)
-      use const_index
-      implicit none
-      character(4), intent(in) :: c4
-      if (c4 == 'pppp') then
-         str2dihtype = DIHTYPE%PRO
-      else if (c4 == 'PSPS') then
-         str2dihtype = DIHTYPE%RNA_PSPS
-      else if (c4 == 'SPSP') then
-         str2dihtype = DIHTYPE%RNA_SPSP
-      else if (c4 == 'ASPS' .OR. c4 == 'GSPS' .OR. c4 == 'RSPS') then
-         str2dihtype = DIHTYPE%RNA_RSPS
-      else if (c4 == 'USPS' .OR. c4 == 'CSPS' .OR. c4 == 'YSPS') then
-         str2dihtype = DIHTYPE%RNA_YSPS
-      else if (c4 == 'SPSA' .OR. c4 == 'SPSG' .OR. c4 == 'SPSR') then
-         str2dihtype = DIHTYPE%RNA_SPSR
-      else if (c4 == 'SPSU' .OR. c4 == 'SPSC' .OR. c4 == 'SPSY') then
-         str2dihtype = DIHTYPE%RNA_SPSY
-      else if (c4 == 'ASSA' .OR. c4 == 'ASSG' .OR. c4 == 'ASSR' .OR. &
-               c4 == 'GSSA' .OR. c4 == 'GSSG' .OR. c4 == 'GSSR' .OR. &
-               c4 == 'RSSA' .OR. c4 == 'RSSG' .OR. c4 == 'RSSR' .OR. &
-               c4 == 'ASSU' .OR. c4 == 'ASSC' .OR. c4 == 'ASSY' .OR. &
-               c4 == 'GSSU' .OR. c4 == 'GSSC' .OR. c4 == 'GSSY' .OR. &
-               c4 == 'RSSU' .OR. c4 == 'RSSC' .OR. c4 == 'RSSY' .OR. &
-               c4 == 'USSA' .OR. c4 == 'USSG' .OR. c4 == 'USSR' .OR. &
-               c4 == 'CSSA' .OR. c4 == 'CSSG' .OR. c4 == 'CSSR' .OR. &
-               c4 == 'YSSA' .OR. c4 == 'YSSG' .OR. c4 == 'YSSR' .OR. &
-               c4 == 'USSU' .OR. c4 == 'USSC' .OR. c4 == 'USSY' .OR. &
-               c4 == 'CSSU' .OR. c4 == 'CSSC' .OR. c4 == 'CSSY' .OR. &
-               c4 == 'YSSU' .OR. c4 == 'YSSC' .OR. c4 == 'YSSY' ) then
-         ! These are "stack dihedral" supported in previous version.
-         str2dihtype = DIHTYPE%VOID
-      else
-         str2dihtype = DIHTYPE%VOID
-         error_message = 'Error: in read_nativeinfo, unknown dihtype'//c4
-         call util_error(ERROR%STOP_ALL, error_message)
-      endif
-   endfunction str2dihtype
+!   integer function str2dihtype(c4)
+!      use const_index
+!      implicit none
+!      character(4), intent(in) :: c4
+!      if (c4 == 'pppp') then
+!         str2dihtype = DIHTYPE%PRO
+!      else if (c4 == 'PSPS') then
+!         str2dihtype = DIHTYPE%RNA_PSPS
+!      else if (c4 == 'SPSP') then
+!         str2dihtype = DIHTYPE%RNA_SPSP
+!      else if (c4 == 'ASPS' .OR. c4 == 'GSPS' .OR. c4 == 'RSPS') then
+!         str2dihtype = DIHTYPE%RNA_RSPS
+!      else if (c4 == 'USPS' .OR. c4 == 'CSPS' .OR. c4 == 'YSPS') then
+!         str2dihtype = DIHTYPE%RNA_YSPS
+!      else if (c4 == 'SPSA' .OR. c4 == 'SPSG' .OR. c4 == 'SPSR') then
+!         str2dihtype = DIHTYPE%RNA_SPSR
+!      else if (c4 == 'SPSU' .OR. c4 == 'SPSC' .OR. c4 == 'SPSY') then
+!         str2dihtype = DIHTYPE%RNA_SPSY
+!      else if (c4 == 'ASSA' .OR. c4 == 'ASSG' .OR. c4 == 'ASSR' .OR. &
+!               c4 == 'GSSA' .OR. c4 == 'GSSG' .OR. c4 == 'GSSR' .OR. &
+!               c4 == 'RSSA' .OR. c4 == 'RSSG' .OR. c4 == 'RSSR' .OR. &
+!               c4 == 'ASSU' .OR. c4 == 'ASSC' .OR. c4 == 'ASSY' .OR. &
+!               c4 == 'GSSU' .OR. c4 == 'GSSC' .OR. c4 == 'GSSY' .OR. &
+!               c4 == 'RSSU' .OR. c4 == 'RSSC' .OR. c4 == 'RSSY' .OR. &
+!               c4 == 'USSA' .OR. c4 == 'USSG' .OR. c4 == 'USSR' .OR. &
+!               c4 == 'CSSA' .OR. c4 == 'CSSG' .OR. c4 == 'CSSR' .OR. &
+!               c4 == 'YSSA' .OR. c4 == 'YSSG' .OR. c4 == 'YSSR' .OR. &
+!               c4 == 'USSU' .OR. c4 == 'USSC' .OR. c4 == 'USSY' .OR. &
+!               c4 == 'CSSU' .OR. c4 == 'CSSC' .OR. c4 == 'CSSY' .OR. &
+!               c4 == 'YSSU' .OR. c4 == 'YSSC' .OR. c4 == 'YSSY' ) then
+!         ! These are "stack dihedral" supported in previous version.
+!         str2dihtype = DIHTYPE%VOID
+!      else
+!         str2dihtype = DIHTYPE%VOID
+!         error_message = 'Error: in read_nativeinfo, unknown dihtype'//c4
+!         call util_error(ERROR%STOP_ALL, error_message)
+!      endif
+!   endfunction str2dihtype
 
    integer function str2gotype(c3)
       use const_index

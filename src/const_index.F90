@@ -303,14 +303,14 @@ module const_index
   type ba_type
      integer :: VOID     !< 0
      integer :: PRO      !< 1
-     integer :: RNA_BSP  !< 2
-     integer :: RNA_RSP  !< 3
-     integer :: RNA_YSP  !< 4
-     integer :: RNA_PSP  !< 5
-     integer :: RNA_SPS  !< 6
-     integer :: RNA_PSB  !< 7
-     integer :: RNA_PSR  !< 8
-     integer :: RNA_PSY  !< 9
+     integer :: TIS_BSP  !< 2
+     integer :: TIS_RSP  !< 3
+     integer :: TIS_YSP  !< 4
+     integer :: TIS_PSP  !< 5
+     integer :: TIS_SPS  !< 6
+     integer :: TIS_PSB  !< 7
+     integer :: TIS_PSR  !< 8
+     integer :: TIS_PSY  !< 9
   endtype ba_type
   type(ba_type), parameter :: BATYPE = ba_type(0,1,2,3,4,5,6,7,8,9)
 
