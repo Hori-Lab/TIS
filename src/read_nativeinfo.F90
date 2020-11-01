@@ -1206,13 +1206,13 @@ contains
       if (c2 == 'pp') then
          str2bondtype = BDTYPE%PRO
       else if (c2 == 'PS') then
-         str2bondtype = BDTYPE%RNA_PS
+         str2bondtype = BDTYPE%TIS_PS
       else if (c2 == 'SP') then
-         str2bondtype = BDTYPE%RNA_SP
+         str2bondtype = BDTYPE%TIS_SP
       else if (c2 == 'SA' .OR. c2 == 'SG' .OR. c2 == 'SR') then
-         str2bondtype = BDTYPE%RNA_SR
-      else if (c2 == 'SU' .OR. c2 == 'SC' .OR. c2 == 'SY') then
-         str2bondtype = BDTYPE%RNA_SY
+         str2bondtype = BDTYPE%TIS_SR
+      else if (c2 == 'SU' .OR. c2 == 'ST' .OR. c2 == 'SC' .OR. c2 == 'SY') then
+         str2bondtype = BDTYPE%TIS_SY
       else
          str2bondtype = BDTYPE%VOID
          error_message = 'Error: in read_nativeinfo, unknown bondtype'//c2

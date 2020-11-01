@@ -684,9 +684,9 @@ subroutine write_nativeinfo(lunout)
 contains
    
    character(3) function bondtype2str()
-      if (ibd2type(ibd) == BDTYPE%RNA_PS) then
+      if (ibd2type(ibd) == BDTYPE%TIS_PS) then
          bondtype2str = ' PS'
-      else if (ibd2type(ibd) == BDTYPE%RNA_SR .OR. ibd2type(ibd) == BDTYPE%RNA_SY) then
+      else if (ibd2type(ibd) == BDTYPE%TIS_SR .OR. ibd2type(ibd) == BDTYPE%TIS_SY) then
          if      (cmp2atom(imp2) == ' Ab ') then
             bondtype2str = ' SA'
          else if (cmp2atom(imp2) == ' Ub ') then
@@ -707,7 +707,7 @@ contains
             write(*,*) imp2
             call util_error(ERROR%STOP_ALL, error_message)
          endif
-      else if (ibd2type(ibd) == BDTYPE%RNA_SP) then
+      else if (ibd2type(ibd) == BDTYPE%TIS_SP) then
          bondtype2str = ' SP'
       else
          error_message = 'Error: logical defect in write_native_info (undefined BDTYPE)'

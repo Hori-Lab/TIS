@@ -292,11 +292,11 @@ module const_index
   type bd_type
      integer :: VOID     !< 0
      integer :: PRO      !< 1
-     integer :: RNA_PS   !< 2
-     integer :: RNA_SB   !< 3
-     integer :: RNA_SR   !< 4
-     integer :: RNA_SY   !< 5
-     integer :: RNA_SP   !< 6
+     integer :: TIS_PS   !< 2
+     integer :: TIS_SB   !< 3
+     integer :: TIS_SR   !< 4
+     integer :: TIS_SY   !< 5
+     integer :: TIS_SP   !< 6
   endtype bd_type
   type(bd_type), parameter :: BDTYPE = bd_type(0,1,2,3,4,5,6)
 

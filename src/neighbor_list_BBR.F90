@@ -66,7 +66,7 @@ subroutine neighbor_list_bbr(irep)
 
         ! Consider only P-S vs P-S, and P-S and S-P
         ! Excluded volume (DT15) works well for S-P vs S-P
-        if (ibd2type(ibd) == BDTYPE%RNA_SP .and. ibd2type(jbd) == BDTYPE%RNA_SP) then
+        if (ibd2type(ibd) == BDTYPE%TIS_SP .and. ibd2type(jbd) == BDTYPE%TIS_SP) then
            cycle
         endif
 

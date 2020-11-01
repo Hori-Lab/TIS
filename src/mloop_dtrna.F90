@@ -166,7 +166,7 @@ subroutine mloop_dtrna()
 
      nbbr_bd = 0
      do ibd = 1, nbd
-        if (ibd2type(ibd) == BDTYPE%RNA_PS .or. ibd2type(ibd) == BDTYPE%RNA_SP) then 
+        if (ibd2type(ibd) == BDTYPE%TIS_PS .or. ibd2type(ibd) == BDTYPE%TIS_SP) then 
            nbbr_bd = nbbr_bd + 1
            lbbr_bd(nbbr_bd) = ibd
         endif
