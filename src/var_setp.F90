@@ -166,18 +166,18 @@ module var_setp
   !==========================================
   !> structure for parameters reading from "para_cafemol_DT_rna" field in "rna.para" file
   type input_dtrna_parameter
-     real(PREC) :: energy_unit
-     integer :: i_use_atom_base
-     integer :: i_use_atom_sugar
+     !real(PREC) :: energy_unit
+     !integer :: i_use_atom_base
+     !integer :: i_use_atom_sugar
 
-     real(PREC) :: bd_PS
-     real(PREC) :: bd_SB
-     real(PREC) :: bd_SP
+     !real(PREC) :: bd_PS
+     !real(PREC) :: bd_SB
+     !real(PREC) :: bd_SP
 
-     real(PREC) :: ba_PSB
-     real(PREC) :: ba_PSP
-     real(PREC) :: ba_BSP
-     real(PREC) :: ba_SPS
+     !real(PREC) :: ba_PSB
+     !real(PREC) :: ba_PSP
+     !real(PREC) :: ba_BSP
+     !real(PREC) :: ba_SPS
 
      real(PREC) :: exv_dist
      real(PREC) :: exv_dist_PS
@@ -190,8 +190,8 @@ module var_setp
      integer :: n_sep_nlocal_S
      integer :: n_sep_nlocal_B
 
-     real(PREC) :: st_dist
-     real(PREC) :: st_dih
+     !real(PREC) :: st_dist
+     !real(PREC) :: st_dih
      real(PREC) :: st_h(16)    ! 1-16 = nucleotide types of stack pair 
      real(PREC) :: st_s(16)    !      (NN in const_index.F90)
      real(PREC) :: st_Tm(16)   ! U0 = - h + kB (T - Tm) * s
@@ -202,10 +202,10 @@ module var_setp
      real(PREC) :: st_nlocal_dih
      !real(PREC) :: st_nlocal_u0
 
-     real(PREC) :: hb_dist
-     real(PREC) :: hb_angl
-     real(PREC) :: hb_dih_hbond
-     real(PREC) :: hb_dih_chain
+     !real(PREC) :: hb_dist
+     !real(PREC) :: hb_angl
+     !real(PREC) :: hb_dih_hbond
+     !real(PREC) :: hb_dih_chain
      !real(PREC) :: hb_u0
      real(PREC) :: hb_cutoff_dist
 
@@ -220,43 +220,43 @@ module var_setp
   type(input_dtrna_parameter), save :: indtrna
 
 
-  !==========================================
-  !> structure for parameters reading from "A-form_RNA" in "rna.para" file
-  type input_aform_rna
-     real(PREC) :: bond_SP
-     real(PREC) :: bond_PS
-     real(PREC) :: bond_SA
-     real(PREC) :: bond_SU
-     real(PREC) :: bond_SG
-     real(PREC) :: bond_SC
-     real(PREC) :: angl_PSP
-     real(PREC) :: angl_SPS
-     real(PREC) :: angl_PSA
-     real(PREC) :: angl_PSU
-     real(PREC) :: angl_PSG
-     real(PREC) :: angl_PSC
-     real(PREC) :: angl_ASP
-     real(PREC) :: angl_USP
-     real(PREC) :: angl_GSP
-     real(PREC) :: angl_CSP
-     real(PREC) :: dihd_PSPS
-     real(PREC) :: dihd_SPSP
-     real(PREC) :: stack_dist(16)
-     real(PREC) :: hbond_dist_AU
-     real(PREC) :: hbond_dist_GC
-     real(PREC) :: hbond_angl_SAU
-     real(PREC) :: hbond_angl_SUA
-     real(PREC) :: hbond_angl_SGC
-     real(PREC) :: hbond_angl_SCG
-     real(PREC) :: hbond_dihd_SAUS
-     real(PREC) :: hbond_dihd_SGCS
-     real(PREC) :: hbond_dihd_PSAU
-     real(PREC) :: hbond_dihd_PSUA
-     real(PREC) :: hbond_dihd_PSGC
-     real(PREC) :: hbond_dihd_PSCG
-     integer :: sz
-  endtype input_aform_rna
-  type(input_aform_RNA), save :: inarna
+!  !==========================================
+!  !> structure for parameters reading from "A-form_RNA" in "rna.para" file
+!  type input_aform_rna
+!     real(PREC) :: bond_SP
+!     real(PREC) :: bond_PS
+!     real(PREC) :: bond_SA
+!     real(PREC) :: bond_SU
+!     real(PREC) :: bond_SG
+!     real(PREC) :: bond_SC
+!     real(PREC) :: angl_PSP
+!     real(PREC) :: angl_SPS
+!     real(PREC) :: angl_PSA
+!     real(PREC) :: angl_PSU
+!     real(PREC) :: angl_PSG
+!     real(PREC) :: angl_PSC
+!     real(PREC) :: angl_ASP
+!     real(PREC) :: angl_USP
+!     real(PREC) :: angl_GSP
+!     real(PREC) :: angl_CSP
+!     real(PREC) :: dihd_PSPS
+!     real(PREC) :: dihd_SPSP
+!     real(PREC) :: stack_dist(16)
+!     real(PREC) :: hbond_dist_AU
+!     real(PREC) :: hbond_dist_GC
+!     real(PREC) :: hbond_angl_SAU
+!     real(PREC) :: hbond_angl_SUA
+!     real(PREC) :: hbond_angl_SGC
+!     real(PREC) :: hbond_angl_SCG
+!     real(PREC) :: hbond_dihd_SAUS
+!     real(PREC) :: hbond_dihd_SGCS
+!     real(PREC) :: hbond_dihd_PSAU
+!     real(PREC) :: hbond_dihd_PSUA
+!     real(PREC) :: hbond_dihd_PSGC
+!     real(PREC) :: hbond_dihd_PSCG
+!     integer :: sz
+!  endtype input_aform_rna
+!  type(input_aform_RNA), save :: inarna
 
   !==========================================
   !> structure for parameters reading from "ligand.para" file
