@@ -53,7 +53,6 @@ subroutine inp_energy_func()
   inmisc%i_residuenergy_radii = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
-  inmisc%flg_coef_from_ninfo = .true.  ! default
   inmisc%i_temp_independent = 0   ! default
   inmisc%i_dtrna_model = 0  ! default
   inmisc%i_exv_all = 0 !default
@@ -379,21 +378,6 @@ subroutine inp_energy_func()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_triple_angle_term, cvalue)
 
-        cvalue = 'i_coef_from_ninfo'
-        if(csides(1, iequa) == cvalue) then
-           call ukoto_ivalue2(lunout, csides(1, iequa), &
-                i_ninfo, cvalue)
-           !if (i_ninfo == 0) then
-           !   inmisc%flg_coef_from_ninfo = .false.
-           !else if (i_ninfo == 1) then
-           if (i_ninfo == 1) then
-              inmisc%flg_coef_from_ninfo = .true.
-           else
-              error_message = 'Error: i_coef_from_ninfo must be 1'
-              call util_error(ERROR%STOP_ALL, error_message)
-           end if
-        end if
-
         cvalue = 'i_temp_independent'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_temp_independent, cvalue)
@@ -416,7 +400,6 @@ subroutine inp_energy_func()
 #ifdef MPI_PAR
   end if
 
-  call MPI_Bcast(inmisc%flg_coef_from_ninfo,   1,MPI_LOGICAL,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_residuenergy_radii,  1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
@@ -532,11 +515,6 @@ subroutine inp_energy_func()
   else
      error_message = 'Error: invalid value for inmisc%i_triple_angle_term'
      call util_error(ERROR%STOP_ALL, error_message)
-  endif
-
-  ! -----------------------------------------------------------------
-  if (inmisc%flg_coef_from_ninfo) then
-     write (lunout, *) 'i_coef_from_ninfo = 1; "coef" values in ninfo file will be used'    
   endif
 
   ! -----------------------------------------------------------------

@@ -311,11 +311,6 @@ i_residue_exv_radii = 0
 i_output_energy_style = 0
 
 
-** Use coef values in .ninfo file as parameters.
-**       = 0 : not use parameters in ninfo (default)
-**       = 1 :     use parameters in ninfo
-**i_coef_from_ninfo = 0
-
 ** Calculate temperature-independent energy (for reweighting)
 **       = 0 : disabled (default)
 **       = 1 : enabled  (tempk_ref should be specified in <<<< md_information)

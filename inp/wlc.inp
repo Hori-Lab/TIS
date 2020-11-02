@@ -52,8 +52,6 @@ NINFO(all/all) wlc.ninfo
 <<<< energy_function        
 LOCAL(1)     L_FENE  L_ANGL
 NLOCAL(1/1)    NOTHING
-
-i_coef_from_ninfo = 1
 >>>>
 
 

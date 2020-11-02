@@ -396,7 +396,6 @@ module var_setp
      integer    :: i_triple_angle_term
      integer    :: i_reset_struct
      integer    :: i_temp_independent
-     logical    :: flg_coef_from_ninfo
      integer    :: i_exv_all
      integer    :: i_exv_from_file
 

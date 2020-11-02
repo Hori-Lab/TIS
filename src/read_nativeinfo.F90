@@ -141,9 +141,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         end if
         bd_nat(ibd) = bl 
         factor_bd(ibd) = factor
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_bd(ibd) = coef
-        endif
+        coef_bd(ibd) = coef
 
         if (ctype2 /= '  ') then
            ibd2type(ibd) = str2bondtype(ctype2)
@@ -174,10 +172,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            kunit1 = iunit
         end if
         fene_nat(ifene) = bl 
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_fene(ifene) = coef
-           dist2_fene(ifene) = factor
-        endif
+        coef_fene(ifene) = coef
+        dist2_fene(ifene) = factor
 
         !if (ctype2 /= '  ') then
         !   ibd2type(ibd) = str2bondtype(ctype2)
@@ -205,9 +201,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            irouse2mp(2, irouse) = imp2un + ii
            kunit1 = iunit
         end if
-        !if (inmisc%flg_coef_from_ninfo) then
-           coef_rouse(1,irouse,:) = coef
-        !endif
+        coef_rouse(1,irouse,:) = coef
 
      end if
 
@@ -236,9 +230,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         end if
         ba_nat(iba) = (ba / 180.0e0_PREC) * F_PI
         factor_ba(iba) = factor
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_ba(iba) = coef
-        endif
+        coef_ba(iba) = coef
 
         if (ctype3 /= '   ') then
            iba2type(iba) = str2angletype(ctype3)
@@ -274,9 +266,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         go_nat2(icon) = go**2
         factor_go(icon) = factor
         icon_dummy_mgo(icon) = idummy
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_go(icon) = coef
-        endif
+        coef_go(icon) = coef
 
         if (ctype3 /= '   ') then
            icon2type(icon) = str2gotype(ctype3)
@@ -309,9 +299,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         iLJ2mp(2, iLJ) = imp2
         LJ_nat(iLJ) = go
         LJ_nat2(iLJ) = go**2
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_LJ(iLJ) = coef
-        endif
+        coef_LJ(iLJ) = coef
      end if
 
      ! ------------------------------------------------------------------
@@ -340,10 +328,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         iwca2mp(2, iwca) = imp2
         wca_nat(iwca) = go
         wca_nat2(iwca) = go**2
-        !if (inmisc%flg_coef_from_ninfo) then
-           coef_wca(iwca,1) = coef
-           coef_wca(iwca,2) = factor
-        !endif
+        coef_wca(iwca,1) = coef
+        coef_wca(iwca,2) = factor
      end if
 
      ! ------------------------------------------------------------------
@@ -369,9 +355,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         icon_gauss2unit(2, icon_gauss) = imp2unit(imp2)
         icon_gauss2mp(1, icon_gauss) = imp1
         icon_gauss2mp(2, icon_gauss) = imp2
-        !if (inmisc%flg_coef_from_ninfo) then
-           !coef_con_gauss(icon_gauss) = coef
-        !endif
+        !coef_con_gauss(icon_gauss) = coef
      end if
 
 !     ! ------------------------------------------------------------------
@@ -404,9 +388,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !        rna_bp_nat2(ibp) = dist**2
 !        factor_rna_bp(ibp) = factor
 !        irna_bp_dummy_mgo(ibp) = idummy
-!        if (inmisc%flg_coef_from_ninfo) then
-!           coef_rna_bp(ibp) = coef
-!        endif
+!        coef_rna_bp(ibp) = coef
 !
 !        if (ctype3 /= '   ') then
 !           if (nHB < 2) then
@@ -448,9 +430,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !        rna_st_nat2(ist) = dist**2
 !        factor_rna_st(ist) = factor
 !        irna_st_dummy_mgo(ist) = idummy
-!        if (inmisc%flg_coef_from_ninfo) then
-!           coef_rna_st(ist) = coef
-!        endif
+!        coef_rna_st(ist) = coef
 !     end if
 
      ! ------------------------------------------------------------------
@@ -506,10 +486,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         idtrna_st2mp(7, ist_read) = imp1 + 4  ! P3
 
         dtrna_st_nat(1,ist_read) = dist
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_dtrna_st(1, ist_read, :) = coef
-           coef_dtrna_st(0, ist_read, :) = energy0
-        endif
+        coef_dtrna_st(1, ist_read, :) = coef
+        coef_dtrna_st(0, ist_read, :) = energy0  ! will be re-calculated
 
         ctype2(1:1) = ctype3(1:1)
         ctype2(2:2) = ctype3(3:3)
@@ -590,10 +568,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            idtrna_hb2mp(2, ihb_read) = imp1
         endif
         dtrna_hb_nat(1,ihb_read) = dist
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_dtrna_hb(1, ihb_read) = coef
-           coef_dtrna_hb(0, ihb_read) = energy0
-        endif
+        coef_dtrna_hb(1, ihb_read) = coef
+        coef_dtrna_hb(0, ihb_read) = energy0
 
         if (inmisc%i_dtrna_model == 2015 .or.&
             inmisc%i_dtrna_model == 2019 ) then
@@ -687,10 +663,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         idtrna_tst2mp(6, ist_read) = imp2 + 1  ! P2(next)
 
         dtrna_tst_nat(1,ist_read) = dist
-        if (inmisc%flg_coef_from_ninfo) then
-           coef_dtrna_tst(1, ist_read) = coef
-           coef_dtrna_tst(0, ist_read) = energy0
-        endif
+        coef_dtrna_tst(1, ist_read) = coef
+        coef_dtrna_tst(0, ist_read) = energy0
 
         if (ist_type1 < 0) then
            idtrna_tst2side(1,ist_read) = 1
@@ -811,9 +785,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            endif
               
            dtrna_st_nat(2, ist_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_st(2, ist_read, :) = coef
-           endif
+           coef_dtrna_st(2, ist_read, :) = coef
 
            datacheck_dtrna_st_dihd(1,ist_read) = .True.
 
@@ -838,9 +810,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            endif
 
            dtrna_st_nat(3, ist_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_st(3, ist_read, :) = coef
-           endif
+           coef_dtrna_st(3, ist_read, :) = coef
 
            datacheck_dtrna_st_dihd(2,ist_read) = .True.
 
@@ -890,9 +860,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               call util_error(ERROR%STOP_ALL, error_message)
            endif
            dtrna_hb_nat(2,ihb_read) = ba
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_hb(2,ihb_read) = coef
-           endif
+           coef_dtrna_hb(2,ihb_read) = coef
            
            datacheck_dtrna_hb_angl(1, ihb_read) = .True.
 
@@ -906,9 +874,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               call util_error(ERROR%STOP_ALL, error_message)
            endif
            dtrna_hb_nat(3,ihb_read) = ba
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_hb(3,ihb_read) = coef
-           endif
+           coef_dtrna_hb(3,ihb_read) = coef
 
            datacheck_dtrna_hb_angl(2, ihb_read) = .True.
 
@@ -971,9 +937,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
               call util_error(ERROR%STOP_ALL, error_message)
            endif
            dtrna_hb_nat(4, ihb_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_hb(4, ihb_read) = coef
-           endif
+           coef_dtrna_hb(4, ihb_read) = coef
 
            datacheck_dtrna_hb_dihd(1, ihb_read) = .True.
 
@@ -988,9 +952,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            endif
            idtrna_hb2mp(5,ihb_read) = imp1
            dtrna_hb_nat(5, ihb_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_hb(5, ihb_read) = coef
-           endif
+           coef_dtrna_hb(5, ihb_read) = coef
 
            datacheck_dtrna_hb_dihd(2, ihb_read) = .True.
 
@@ -1005,9 +967,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            endif
            idtrna_hb2mp(6,ihb_read) = imp4
            dtrna_hb_nat(6, ihb_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_hb(6, ihb_read) = coef
-           endif
+           coef_dtrna_hb(6, ihb_read) = coef
 
            datacheck_dtrna_hb_dihd(3, ihb_read) = .True.
 
@@ -1051,9 +1011,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
             imp2 == idtrna_tst2mp(1,ist_read) .and.&
             imp3 == idtrna_tst2mp(2,ist_read) ) then
            dtrna_tst_nat(2,ist_read) = ba
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_tst(2,ist_read) = coef
-           endif
+           coef_dtrna_tst(2,ist_read) = coef
 
            datacheck_dtrna_tst_angl(1, ist_read) = .True.
 
@@ -1061,9 +1019,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
                  imp2 == idtrna_tst2mp(2,ist_read) .and.&
                  imp3 == idtrna_tst2mp(4,ist_read) ) then
            dtrna_tst_nat(3,ist_read) = ba
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_tst(3,ist_read) = coef
-           endif
+           coef_dtrna_tst(3,ist_read) = coef
 
            datacheck_dtrna_tst_angl(2, ist_read) = .True.
 
@@ -1113,9 +1069,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
             imp3 == idtrna_tst2mp(2,ist_read) .and.&
             imp4 == idtrna_tst2mp(4,ist_read) ) then
            dtrna_tst_nat(4, ist_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_tst(4, ist_read) = coef
-           endif
+           coef_dtrna_tst(4, ist_read) = coef
 
            datacheck_dtrna_tst_dihd(1, ist_read) = .True.
 
@@ -1124,9 +1078,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
                 imp3 == idtrna_tst2mp(1,ist_read) .and.&
                 imp4 == idtrna_tst2mp(2,ist_read) ) then
            dtrna_tst_nat(5,ist_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_tst(5, ist_read) = coef
-           endif
+           coef_dtrna_tst(5, ist_read) = coef
 
            datacheck_dtrna_tst_dihd(2, ist_read) = .True.
 
@@ -1135,9 +1087,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
                 imp3 == idtrna_tst2mp(4,ist_read) .and.&
                 imp4 == idtrna_tst2mp(6,ist_read) ) then
            dtrna_tst_nat(6,ist_read) = dih
-           if (inmisc%flg_coef_from_ninfo) then
-              coef_dtrna_tst(6, ist_read) = coef
-           endif
+           coef_dtrna_tst(6, ist_read) = coef
 
            datacheck_dtrna_tst_dihd(3, ist_read) = .True.
 
