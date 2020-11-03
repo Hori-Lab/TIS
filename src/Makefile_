@@ -92,7 +92,7 @@ LIB =
 ##CPP = -cpp -DTIME -DPREC_INTEL16 -D_DEBUG_REP
 #INC =
 ##OPT = -fast
-##OPT = -openmp -fast
+##OPT = -qopenmp -fast
 #OPT = -O3 -qopenmp -ipo
 ##OPT = -O2 -i-static -traceback -fpe0 -check all
 ##OPT = -O3 -i-static -xHost -ipo -vec-threshold=70
@@ -107,7 +107,7 @@ LIB =
 ##CPP = -cpp -DTIME -DMPI_PAR -DMPI_PAR2 -DMPI_PAR3 -DMPI_REP -D_DEBUG_REP -DPREC_INTEL16
 #INC =
 #LIB =
-#OPT = -O3 -i-static -openmp
+#OPT = -O3 -ipo -qopenmp
 ##OPT = -O2 -i-static -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -openmp
 ##OPT = -O2 -openmp -openmp-report1 -traceback -fpe0 -check all -gen-interfaces nosource -warn interfaces -fp-model strict -fp-speculation=off -prec-div -prec-sqrt
 ##OPT = -O3 -i-static -openmp -xHost
@@ -179,9 +179,10 @@ FMOD4 = if_write.o if_mloop.o if_energy.o if_neighbor.o if_util.o
 
 # sub programs
 
-FSUB1 = ifunc_seq2id.o  ifunc_char2int.o ifunc_seq2hanum.o ifunc_nn2id.o\
+FSUB1 = ifunc_seq2id.o  ifunc_char2int.o ifunc_seq2hanum.o\
 	cfunc_name2one.o cfunc_id2seq.o rfunc_boxmuller.o var_emin.o
 	#rfunc_propensity.o cfunc_int2char.o rfunc_cubiceq.o\
+	# ifunc_nn2id.o\
 
 FSUB2 = \
 	read_xyz_cg.o read_pdb_cg.o\

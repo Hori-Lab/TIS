@@ -32,7 +32,7 @@ subroutine mloop_nativeinfo(istep_sim)
 !                         irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
                          idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                          ndtrna_tst, idtrna_tst2mp, idtrna_tst2side, dtrna_tst_nat, &
-                         idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, idtrna_st2nn,&
+                         idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, &
                          !irna_bp_dummy_mgo, &
                          coef_dtrna_tst, flg_tst_exclusive,&
                          ibd2type, iba2type, idih2type, icon2type, &
@@ -251,8 +251,9 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(ndtrna_st, 1, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   if (ndtrna_st > 0) then
      call MPI_Bcast(idtrna_st2mp, 7*MXDTRNAST,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-     call MPI_Bcast(idtrna_st2nn,   MXDTRNAST,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+     !call MPI_Bcast(idtrna_st2nn,   MXDTRNAST,MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
      call MPI_Bcast(dtrna_st_nat, 3*MXDTRNAST,PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+     call MPI_Bcast(dtrna_st_hsTm,3*MXDTRNAST,PREC_MPI,   0,MPI_COMM_WORLD,ierr)
      call MPI_Bcast(coef_dtrna_st,4*MXDTRNAST*n_replica_all,PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   endif
 

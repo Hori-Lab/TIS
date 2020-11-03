@@ -1177,42 +1177,42 @@ subroutine setp_mapara_rna(lunpara, lunout)
 !  end if
 
   ! -----------------------------------------------------------------
-  rewind(lunpara)
-     
-  call ukoto_uiread2(lunpara, lunout, 'DT13_stack_param', kfind, &
-       CARRAY_MXLINE, nlines, cwkinp)
-
-  if(kfind /= 'FIND') then
-     error_message = 'Error: cannot find "DT13_stack_param" in the rna.para file'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  do iline = 1, nlines
-     ctmp = cwkinp(iline)
-     read (ctmp, *) ctype, param1, param2, param3
-
-     itype = ifunc_nn2id(ctype(1:2))
-     indtrna13%st_h(itype) = param1   ! h
-     indtrna13%st_s(itype) = param2   ! s
-     indtrna13%st_Tm(itype) = param3  ! Tm
-
-     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
-  enddo
-
-  do inn = 1, 16
-     if(indtrna13%st_h(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna13%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna13%st_s(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna13%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna13%st_Tm(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna13%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-  enddo
+!  rewind(lunpara)
+!     
+!  call ukoto_uiread2(lunpara, lunout, 'DT13_stack_param', kfind, &
+!       CARRAY_MXLINE, nlines, cwkinp)
+!
+!  if(kfind /= 'FIND') then
+!     error_message = 'Error: cannot find "DT13_stack_param" in the rna.para file'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
+!
+!  do iline = 1, nlines
+!     ctmp = cwkinp(iline)
+!     read (ctmp, *) ctype, param1, param2, param3
+!
+!     itype = ifunc_nn2id(ctype(1:2))
+!     indtrna13%st_h(itype) = param1   ! h
+!     indtrna13%st_s(itype) = param2   ! s
+!     indtrna13%st_Tm(itype) = param3  ! Tm
+!
+!     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
+!  enddo
+!
+!  do inn = 1, 16
+!     if(indtrna13%st_h(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna13%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna13%st_s(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna13%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna13%st_Tm(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna13%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!  enddo
 
 
   ! -------------------------------------------------------------------
@@ -1511,42 +1511,42 @@ subroutine setp_mapara_rna(lunpara, lunout)
 !  end if
 
   ! -----------------------------------------------------------------
-  rewind(lunpara)
-     
-  call ukoto_uiread2(lunpara, lunout, 'DT15_stack_param', kfind, &
-       CARRAY_MXLINE, nlines, cwkinp)
-
-  if(kfind /= 'FIND') then
-     error_message = 'Error: cannot find "DT15_stack_param" in the rna.para file'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  do iline = 1, nlines
-     ctmp = cwkinp(iline)
-     read (ctmp, *) ctype, param1, param2, param3
-
-     itype = ifunc_nn2id(ctype(1:2))
-     indtrna15%st_h(itype) = param1   ! h
-     indtrna15%st_s(itype) = param2   ! s
-     indtrna15%st_Tm(itype) = param3  ! Tm
-
-     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
-  enddo
-
-  do inn = 1, 16
-     if(indtrna15%st_h(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna15%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna15%st_s(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna15%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna15%st_Tm(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna15%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-  enddo
+!  rewind(lunpara)
+!     
+!  call ukoto_uiread2(lunpara, lunout, 'DT15_stack_param', kfind, &
+!       CARRAY_MXLINE, nlines, cwkinp)
+!
+!  if(kfind /= 'FIND') then
+!     error_message = 'Error: cannot find "DT15_stack_param" in the rna.para file'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
+!
+!  do iline = 1, nlines
+!     ctmp = cwkinp(iline)
+!     read (ctmp, *) ctype, param1, param2, param3
+!
+!     itype = ifunc_nn2id(ctype(1:2))
+!     indtrna15%st_h(itype) = param1   ! h
+!     indtrna15%st_s(itype) = param2   ! s
+!     indtrna15%st_Tm(itype) = param3  ! Tm
+!
+!     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
+!  enddo
+!
+!  do inn = 1, 16
+!     if(indtrna15%st_h(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna15%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna15%st_s(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna15%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna15%st_Tm(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna15%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!  enddo
 
   ! -----------------------------------------------------------------
   rewind(lunpara)
@@ -1911,42 +1911,42 @@ subroutine setp_mapara_rna(lunpara, lunout)
 !  end if
 
   ! -----------------------------------------------------------------
-  rewind(lunpara)
-     
-  call ukoto_uiread2(lunpara, lunout, 'NHT19_stack_param', kfind, &
-       CARRAY_MXLINE, nlines, cwkinp)
-
-  if(kfind /= 'FIND') then
-     error_message = 'Error: cannot find "NHT19_stack_param" in the rna.para file'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
-
-  do iline = 1, nlines
-     ctmp = cwkinp(iline)
-     read (ctmp, *) ctype, param1, param2, param3
-
-     itype = ifunc_nn2id(ctype(1:2))
-     indtrna19%st_h(itype) = param1   ! h
-     indtrna19%st_s(itype) = param2   ! s
-     indtrna19%st_Tm(itype) = param3  ! Tm
-
-     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
-  enddo
-
-  do inn = 1, 16
-     if(indtrna19%st_h(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna19%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna19%st_s(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna19%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-
-     else if(indtrna19%st_Tm(inn) > INVALID_JUDGE) then
-        error_message = 'Error: invalid value for indtrna19%cst_h'
-        call util_error(ERROR%STOP_ALL, error_message)
-     endif
-  enddo
+!  rewind(lunpara)
+!     
+!  call ukoto_uiread2(lunpara, lunout, 'NHT19_stack_param', kfind, &
+!       CARRAY_MXLINE, nlines, cwkinp)
+!
+!  if(kfind /= 'FIND') then
+!     error_message = 'Error: cannot find "NHT19_stack_param" in the rna.para file'
+!     call util_error(ERROR%STOP_ALL, error_message)
+!  end if
+!
+!  do iline = 1, nlines
+!     ctmp = cwkinp(iline)
+!     read (ctmp, *) ctype, param1, param2, param3
+!
+!     itype = ifunc_nn2id(ctype(1:2))
+!     indtrna19%st_h(itype) = param1   ! h
+!     indtrna19%st_s(itype) = param2   ! s
+!     indtrna19%st_Tm(itype) = param3  ! Tm
+!
+!     write(lunout,'(a,a2,3(x1g10.3))') '---reading stack parameter: ',ctype, param1, param2, param3
+!  enddo
+!
+!  do inn = 1, 16
+!     if(indtrna19%st_h(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna19%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna19%st_s(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna19%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!
+!     else if(indtrna19%st_Tm(inn) > INVALID_JUDGE) then
+!        error_message = 'Error: invalid value for indtrna19%cst_h'
+!        call util_error(ERROR%STOP_ALL, error_message)
+!     endif
+!  enddo
 
   ! -----------------------------------------------------------------
   rewind(lunpara)

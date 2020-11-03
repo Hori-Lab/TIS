@@ -31,6 +31,12 @@
 !     Kphi1 = coef_dtrna_st(2,ist,grep)
 !     Kphi2 = coef_dtrna_st(3,ist,grep)   Replica ID shoud be global, not local.
 !
+!     U0 is calculated in advance based on parameters h, s, Tm and temperature T
+!     as U0 = -h + kB * (T - Tm) * s   (see simu_set_dtrna.F90)
+!         h = dtrna_st_hsTm(1,ist)
+!         s = dtrna_st_hsTm(2,ist)
+!        Tm = dtrna_st_hsTm(3,ist)
+!
 ! Reference values (A-type RNA):
 !     r0     = dtrna_st_nat(1,ist)
 !     phi10  = dtrna_st_nat(2,ist)

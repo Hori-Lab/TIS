@@ -215,9 +215,10 @@ module var_struct
   !> parameters for base-stack potential of DT-RNA model
   integer,    save :: ndtrna_st = 0
   integer,    allocatable, save :: idtrna_st2mp(:,:)     !(7,MXDTRNAST)
-  integer,    allocatable, save :: idtrna_st2nn(:)       !(MXDTRNAST)
+  !integer,    allocatable, save :: idtrna_st2nn(:)       !(MXDTRNAST)
   real(PREC), allocatable, save :: dtrna_st_nat(:,:)     !(3, MXDTRNAST)
-  real(PREC), allocatable, save :: coef_dtrna_st(:,:,:)  !(0:3, MXDTRNAST,n_replica_all)
+  real(PREC), allocatable, save :: dtrna_st_hsTm(:,:)    !(3, MXDTRNAST)    h, s, Tm for calculating U0_st
+  real(PREC), allocatable, save :: coef_dtrna_st(:,:,:)  !(0:3, MXDTRNAST,n_replica_all)  U0, Kr, Kphi1, Kphi2
 
   !> parameters for hydrogen-bond potential of DT-RNA model
   integer,    save :: ndtrna_hb = 0

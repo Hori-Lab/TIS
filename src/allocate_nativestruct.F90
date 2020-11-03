@@ -30,7 +30,7 @@ subroutine allocate_nativestruct()
 !                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
 !                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
 !                           para_sasa, rad_sasa, surf, connect,& ! sasa
-                           idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
+                           idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite, &
                            flg_hb_tertiary, &
                            idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, idtrna_tst2side,&
@@ -454,13 +454,17 @@ subroutine allocate_nativestruct()
          if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
          idtrna_st2mp(:,:) = 0
 
-         allocate( idtrna_st2nn(MXDTRNAST), stat=ier)
-         if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-         idtrna_st2nn(:) = 0
+         !allocate( idtrna_st2nn(MXDTRNAST), stat=ier)
+         !if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+         !idtrna_st2nn(:) = 0
 
          allocate( dtrna_st_nat(3, MXDTRNAST), stat=ier)
          if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
          dtrna_st_nat(:,:) = 0.0e0_PREC
+
+         allocate( dtrna_st_hsTm(3, MXDTRNAST), stat=ier)
+         if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+         dtrna_st_hsTm(:,:) = 0.0e0_PREC
 
          allocate( coef_dtrna_st(0:3, MXDTRNAST, n_replica_all), stat=ier)
          if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
@@ -623,8 +627,9 @@ contains
 
       ! DT-RNA stack
       if (allocated( idtrna_st2mp))     flg_error = .true.
-      if (allocated( idtrna_st2nn))     flg_error = .true.
+      !if (allocated( idtrna_st2nn))     flg_error = .true.
       if (allocated( dtrna_st_nat))     flg_error = .true.
+      if (allocated( dtrna_st_hsTm))     flg_error = .true.
       if (allocated( coef_dtrna_st))    flg_error = .true.
 
       ! DT-RNA hydrogen bond
@@ -679,7 +684,7 @@ subroutine deallocate_nativestruct
 !                           coef_rna_st, coef_rna_st_a, coef_rna_st_fD, factor_rna_st,         &
 !                           istangle2mp, stangle_nat, factor_stangle, coef_stangle, &
 !                           para_sasa, rad_sasa, surf, connect, & !sasa
-                           idtrna_st2mp, idtrna_st2nn, dtrna_st_nat, coef_dtrna_st, &
+                           idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, &
                            idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, idtrna_hb2hbsite,&
                            flg_hb_tertiary, &
                            idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
@@ -792,8 +797,9 @@ subroutine deallocate_nativestruct
 
    ! DT-RNA stack
    if (allocated(idtrna_st2mp))       deallocate(idtrna_st2mp)
-   if (allocated(idtrna_st2nn))       deallocate(idtrna_st2nn)
+   !if (allocated(idtrna_st2nn))       deallocate(idtrna_st2nn)
    if (allocated(dtrna_st_nat))       deallocate(dtrna_st_nat)
+   if (allocated(dtrna_st_hsTm))      deallocate(dtrna_st_hsTm)
    if (allocated(coef_dtrna_st))      deallocate(coef_dtrna_st)
 
    ! DT-RNA hydrogen-bond

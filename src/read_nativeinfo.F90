@@ -26,7 +26,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !       nrna_st, irna_st2mp, irna_st2unit, rna_st_nat, rna_st_nat2, &
 !       factor_rna_st, irna_st_dummy_mgo, coef_rna_st, &
        ibd2type, iba2type, icon2type, &
-       idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, ndtrna_st, idtrna_st2nn, &
+       idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, ndtrna_st, &
        idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, ndtrna_hb, &
        idtrna_hb2hbsite, imp2hbsite, flg_hb_tertiary,&
        ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst,&
@@ -59,7 +59,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: offset1, offset2
   integer :: ist_type1, ist_type2, ist_type_tmp
   real(PREC) :: bl, ba, dih, go, factor, correct, coef !, coef3
-  real(PREC) :: dist, energy0
+  real(PREC) :: dist, energy0, h, s, Tm
   character(256) :: cline, cline_head
   character(CARRAY_MSG_ERROR) :: error_message
   character(1) :: ctype1
@@ -75,7 +75,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   logical :: datacheck_dtrna_tst_angl(2,MXDTRNATST)
   logical :: datacheck_dtrna_tst_dihd(3,MXDTRNATST)
 
-  integer ::ifunc_nn2id
+  !integer ::ifunc_nn2id
   ! ---------------------------------------------------------------------
 
   ibd = nbd 
@@ -437,10 +437,12 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
      ! read basestack of DT model
      if(cline(1:7) == 'bs-dist') then
         ctype3 = '   '
+
         read (cline, *, iostat = input_status) &
              cline_head, ist_read, iunit1, iunit2,  &
              imp1, imp2, imp1un, imp2un,             &
-             energy0, dist, coef, ctype3
+             h, s, Tm, dist, coef, ctype3
+
         if(input_status > 0) then
            error_message = 'read error =>' // cline
            call util_error(ERROR%STOP_ALL, error_message)
@@ -487,23 +489,28 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 
         dtrna_st_nat(1,ist_read) = dist
         coef_dtrna_st(1, ist_read, :) = coef
-        coef_dtrna_st(0, ist_read, :) = energy0  ! will be re-calculated
+        coef_dtrna_st(0, ist_read, :) = 0.0  ! will be re-calculated
+
+        dtrna_st_hsTm(1, ist_read) = h
+        dtrna_st_hsTm(2, ist_read) = s
+        dtrna_st_hsTm(3, ist_read) = Tm
 
         ctype2(1:1) = ctype3(1:1)
         ctype2(2:2) = ctype3(3:3)
-        idtrna_st2nn(ist_read) = ifunc_nn2id(ctype2)
+        !idtrna_st2nn(ist_read) = ifunc_nn2id(ctype2)
      end if
 
 
      ! ------------------------------------------------------------------
      ! read hydrogen bond of DT model
      if(cline(1:7) == 'hb-dist') then
-        if (inmisc%i_dtrna_model == 2015 .or.&
-            inmisc%i_dtrna_model == 2019 ) then
+        if (inmisc%i_dtrna_model == 2015 .or. inmisc%i_dtrna_model == 2019 ) then
+
            read (cline, *, iostat = input_status) &
                 cline_head, ihb_read, iunit1, iunit2,  &
                 imp1, imp2, imp1un, imp2un,             &
                 energy0, dist, coef, ctype1, nHB
+
            select case (nHB)
            case (1)
               read (cline, *, iostat = input_status) &
@@ -532,6 +539,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
            end if
 
         else
+
            read (cline, *, iostat = input_status) &
                 cline_head, ihb_read, iunit1, iunit2,  &
                 imp1, imp2, imp1un, imp2un,             &

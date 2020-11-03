@@ -96,7 +96,7 @@ module const_maxsize
 !  integer, parameter :: MXSOLV_MPC =MX_AV_SOLV_GRID_MPC * MXGRID_N_MPC ! the max number of solovent particle
 
   ! Replica exchange method
-  integer, parameter :: MXREPLICA = 8    !< maximum # of replicas
+  integer, parameter :: MXREPLICA = 28    !< maximum # of replicas
   integer, parameter :: MXREPDIM = 1       !< maximum # of dimensions in REM
 
   ! Optional interaction

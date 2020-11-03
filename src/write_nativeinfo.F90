@@ -23,7 +23,7 @@ subroutine write_nativeinfo(lunout)
 !                         nrna_bp,nrna_bp_unit, nrna_st, rna_bp_nat, &
 !                         irna_bp2mp, coef_rna_bp, factor_rna_bp, nhb_bp, &
 !                         irna_st2mp, coef_rna_st, factor_rna_st, rna_st_nat, &
-                         ndtrna_st, idtrna_st2mp, dtrna_st_nat, coef_dtrna_st, &
+                         ndtrna_st, idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, &
                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                          ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
                          flg_tst_exclusive, idtrna_tst2side
@@ -425,9 +425,9 @@ subroutine write_nativeinfo(lunout)
            call util_error(ERROR%STOP_ALL, error_message)
         endif
    
-        write (lunout, "(a7, 7(1xi6), 3(1xf12.4))")&
+        write (lunout, "(a7, 7(1xi6), 5(1xf12.4))")&
               'bs-dist', icon, iunit1, iunit2, imp1, imp2, imp1un, imp2un, &
-              coef_dtrna_st(0,icon,IREP), dtrna_st_nat(1,icon), coef_dtrna_st(1,icon,IREP)
+              dtrna_st_hsTm(1,icon), dtrna_st_hsTm(2,icon), dtrna_st_hsTm(3,icon), dtrna_st_nat(1,icon), coef_dtrna_st(1,icon,IREP)
         !write(lunout, '(a4)') bstype2str()
 
         imp1 = idtrna_st2mp(3,icon)
