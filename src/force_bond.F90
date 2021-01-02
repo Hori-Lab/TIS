@@ -15,7 +15,7 @@ subroutine force_bond(irep, force_mp)
 
   integer :: ibd, imp1, imp2
   integer :: ksta, kend
-  real(PREC) :: dist, ddist, ddist2, for
+  real(PREC) :: dist, ddist, for
   real(PREC) :: force(3), v21(3)
 #ifdef MPI_PAR
   integer :: klen
@@ -37,7 +37,7 @@ subroutine force_bond(irep, force_mp)
   ksta = 1
   kend = nbd
 #endif
-!$omp do private(imp1,imp2,v21,dist,ddist,ddist2,for,force)
+!$omp do private(imp1,imp2,v21,dist,ddist,for,force)
   do ibd = ksta, kend
 
      imp1 = ibd2mp(1, ibd)
@@ -47,9 +47,8 @@ subroutine force_bond(irep, force_mp)
 
      dist = sqrt(v21(1)**2 + v21(2)**2 + v21(3)**2)
      ddist = dist - bd_nat(ibd)
-     ddist2 = ddist**2
 
-     for = coef_bd(ibd) * ddist2 * (-2.0e0_PREC * ddist / dist)
+     for = coef_bd(ibd) * (-2.0e0_PREC * ddist / dist)
      force(1:3) = for * v21(1:3)
 
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - force(1:3)
