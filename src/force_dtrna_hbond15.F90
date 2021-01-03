@@ -8,7 +8,7 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   use if_util
   use mt_stream
   use const_maxsize, only : PREC
-  use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI, MAX_ABSCOS_HBOND15_DIH, MAX_ABSCOS_HBOND15_ANG
+  use const_physical,only : BOLTZ_KCAL_MOL, F_PI, F_2PI, MAX_ABSCOS_HBOND15, MAX_ABSCOS_HBOND15
   use var_setp,    only : mts, indtrna, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, nmp_all, &
                           ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
@@ -25,7 +25,8 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   integer :: ihb, ineigh
   integer :: i, ihbsite
   integer :: ksta, kend
-  real(PREC) :: d, cos_theta124, cos_theta312, dih
+  real(PREC) :: d, dih
+  real(PREC) :: cos_theta124, cos_theta312, cos_theta531, cos_theta246
   real(PREC) :: v12(3), v13(3), v53(3), v42(3), v46(3)
   real(PREC) :: a42, a13, a12
   real(PREC) :: d1212, d1313, d4242
@@ -34,10 +35,9 @@ subroutine force_dtrna_hbond15(irep, force_mp)
   real(PREC) :: d1242over1212, d1242over4242
   real(PREC) :: d4246over4242
   real(PREC) :: d1353over1313
-  real(PREC) :: m(3), n(3)
-  real(PREC) :: c4212(3), c1213(3)
-  real(PREC) :: c4212_abs2, c1213_abs2
-  real(PREC) :: dnn, dmm
+  real(PREC) :: n(3)
+  real(PREC) :: c4212(3), c1213(3), c5313(3), c4246(3)
+  real(PREC) :: c4212_abs2, c1213_abs2, c5313_abs2, c4246_abs2
   real(PREC) :: pre
   real(PREC) :: f_i(3), f_k(3), f_l(3), ex, ene
   !integer    :: hbsite_excess_l(1:nhbsite)
@@ -82,11 +82,12 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 ! Wait until the master initializes the arrays
 !$omp barrier
 
-!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,m,n,dmm,dnn,ene,&
-!$omp&           d,cos_theta124,cos_theta312,dih,&
+!$omp do private(ihb,i,ihbsite,f_i,f_k,f_l,pre,ex,n,ene,&
+!$omp&           d,dih,cos_theta124,cos_theta312,cos_theta531,cos_theta246,&
 !$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,d4246,d1353,&
 !$omp&           d1213over1212,d1213over1313,d1242over1212,d1242over4242,&
-!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2)
+!$omp&           d4246over4242,d1353over1313,c4212,c1213,c4212_abs2,c1213_abs2,&
+!$omp&           c5313, c5313_abs2, c4246, c4246_abs2)
   do ineigh=ksta,kend
     
      ihb = ineigh2hb(ineigh, irep)
@@ -180,29 +181,31 @@ subroutine force_dtrna_hbond15(irep, force_mp)
 
      !===== Angle of 3-1=2  =====
      cos_theta312 = d1213 / (a13 * a12)
-     if (abs(cos_theta312) < MAX_ABSCOS_HBOND15_ANG) then
-        d = acos(cos_theta312) - dtrna_hb_nat(2,ihb)
-        pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
-        f_i(:) = pre * (v12(:) - (d1213over1313 * v13(:)))
-        f_k(:) = pre * (v13(:) - (d1213over1212 * v12(:)))
-        for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_i(:)
-        for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_k(:)
-        for_hb(:,1,ihb) = for_hb(:,1,ihb) - f_i(:) - f_k(:)
-        ex = ex - coef_dtrna_hb(2, ihb) * d**2
+     if (abs(cos_theta312) > MAX_ABSCOS_HBOND15) then
+        d1213 = sign(a12 * a13 * MAX_ABSCOS_HBOND15, cos_theta312)
      endif
+     d = acos(cos_theta312) - dtrna_hb_nat(2,ihb)
+     pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
+     f_i(:) = pre * (v12(:) - (d1213over1313 * v13(:)))
+     f_k(:) = pre * (v13(:) - (d1213over1212 * v12(:)))
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_k(:)
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) - f_i(:) - f_k(:)
+     ex = ex - coef_dtrna_hb(2, ihb) * d**2
 
      !===== Angle of 1=2-4  =====
      cos_theta124 = d1242 / (a12 * a42)
-     if (abs(cos_theta124) < MAX_ABSCOS_HBOND15_ANG) then
-        d = acos(cos_theta124) - dtrna_hb_nat(3,ihb)
-        pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
-        f_i(:) = - pre * (v42(:) - (d1242over1212 * v12(:)))
-        f_k(:) = - pre * (v12(:) - (d1242over4242 * v42(:)))
-        for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
-        for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_k(:)
-        for_hb(:,2,ihb) = for_hb(:,2,ihb) - f_i(:) - f_k(:)
-        ex = ex - coef_dtrna_hb(3, ihb) * d**2
+     if (abs(cos_theta124) > MAX_ABSCOS_HBOND15) then
+        d1242 = sign(a12 * a42 * MAX_ABSCOS_HBOND15, cos_theta124)
      endif
+     d = acos(cos_theta124) - dtrna_hb_nat(3,ihb)
+     pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
+     f_i(:) = - pre * (v42(:) - (d1242over1212 * v12(:)))
+     f_k(:) = - pre * (v12(:) - (d1242over4242 * v42(:)))
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_k(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) - f_i(:) - f_k(:)
+     ex = ex - coef_dtrna_hb(3, ihb) * d**2
 
     
      !===== Dihedral angle among 4-2=1=3 =====
@@ -215,89 +218,98 @@ subroutine force_dtrna_hbond15(irep, force_mp)
      c4212_abs2 = dot_product(c4212,c4212)
      c1213_abs2 = dot_product(c1213,c1213)
 
-     if (abs(cos_theta124) < MAX_ABSCOS_HBOND15_DIH .and. abs(cos_theta312) < MAX_ABSCOS_HBOND15_DIH) then
-        dih = atan2(dot_product(v42,c1213)*sqrt(d1212) , dot_product(c4212,c1213))
-        d = dih - dtrna_hb_nat(4,ihb)
-        if (d > F_PI) then
-           d = d - F_2PI
-        else if (d < -F_PI) then
-           d = d + F_2PI
-        endif
-        ex = ex - coef_dtrna_hb(4,ihb) * d**2
-   
-        pre = 2.0e0_PREC * coef_dtrna_hb(4,ihb) * d * a12
-        f_i(:) = + pre / c4212_abs2 * c4212(:)
-        f_l(:) = - pre / c1213_abs2 * c1213(:)
-   
-        for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_i(:)
-        for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over1212) * f_i(:) &
-                                          - (              d1213over1212) * f_l(:)
-        for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1212) * f_l(:) &
-                                          - (              d1242over1212) * f_i(:)
-        for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_l(:)
+     if (abs(cos_theta124) > MAX_ABSCOS_HBOND15) then
+        ! |c4212|^2 = |v42|^2 * |v12|^2 * sin(theta)^2
+        c4212_abs2 = d4242 * d1212 * (1.0 - MAX_ABSCOS_HBOND15**2)
      endif
+     if (abs(cos_theta312) > MAX_ABSCOS_HBOND15) then
+        c1213_abs2 = d1212 * d1313 * (1.0 - MAX_ABSCOS_HBOND15**2)
+     endif
+     dih = atan2(dot_product(v42,c1213)*sqrt(d1212) , dot_product(c4212,c1213))
+     d = dih - dtrna_hb_nat(4,ihb)
+     if (d > F_PI) then
+        d = d - F_2PI
+     else if (d < -F_PI) then
+        d = d + F_2PI
+     endif
+     ex = ex - coef_dtrna_hb(4,ihb) * d**2
+   
+     pre = 2.0e0_PREC * coef_dtrna_hb(4,ihb) * d * a12
+     f_i(:) = + pre / c4212_abs2 * c4212(:)
+     f_l(:) = - pre / c1213_abs2 * c1213(:)
+   
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over1212) * f_i(:) &
+                                       - (              d1213over1212) * f_l(:)
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1212) * f_l(:) &
+                                       - (              d1242over1212) * f_i(:)
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + f_l(:)
 
 
      !===== Dihedral angle among 5-3-1=2 =====
-     m(1) = v53(2) * v13(3) - v53(3) * v13(2)
-     m(2) = v53(3) * v13(1) - v53(1) * v13(3)
-     m(3) = v53(1) * v13(2) - v53(2) * v13(1)
+     c5313(1) = v53(2) * v13(3) - v53(3) * v13(2)
+     c5313(2) = v53(3) * v13(1) - v53(1) * v13(3)
+     c5313(3) = v53(1) * v13(2) - v53(2) * v13(1)
      n(:) = -c1213(:)
-     dmm = dot_product(m,m)
-     dnn = c1213_abs2
+     c5313_abs2 = dot_product(c5313, c5313)
 
-     if (abs(cos_theta312) < MAX_ABSCOS_HBOND15_DIH) then
-        dih = atan2(dot_product(v53,n)*a13 , dot_product(m,n))
-        d = dih - dtrna_hb_nat(5, ihb)
-        if (d > F_PI) then
-           d = d - F_2PI
-        else if (d < -F_PI) then
-           d = d + F_2PI
-        endif
-        ex = ex - coef_dtrna_hb(5,ihb) * d**2
-   
-        pre = 2.0e0_PREC * coef_dtrna_hb(5,ihb) * d * a13
-        f_i(:) = + pre / dmm * m(:)
-        f_l(:) = - pre / dnn * n(:)
-   
-        for_hb(:,5,ihb) = for_hb(:,5,ihb) + f_i(:)
-        for_hb(:,3,ihb) = for_hb(:,3,ihb) + (-1.0e0_PREC + d1353over1313) * f_i(:) &
-                                          - (              d1213over1313) * f_l(:)
-        for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1313) * f_l(:) &
-                                          - (              d1353over1313) * f_i(:)
-        for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_l(:)
+     cos_theta531 = d1353 / (a13 * sqrt(dot_product(v53,v53)))
+     if (abs(cos_theta531) > MAX_ABSCOS_HBOND15) then
+        c5313_abs2 = dot_product(v53,v53) * d1313 * (1.0 - MAX_ABSCOS_HBOND15**2)
      endif
+     
+     dih = atan2(dot_product(v53,n)*a13 , dot_product(c5313,n))
+     d = dih - dtrna_hb_nat(5, ihb)
+     if (d > F_PI) then
+        d = d - F_2PI
+     else if (d < -F_PI) then
+        d = d + F_2PI
+     endif
+     ex = ex - coef_dtrna_hb(5,ihb) * d**2
+   
+     pre = 2.0e0_PREC * coef_dtrna_hb(5,ihb) * d * a13
+     f_i(:) = + pre / c5313_abs2 * c5313(:)
+     f_l(:) = - pre / c1213_abs2 * n(:)
+   
+     for_hb(:,5,ihb) = for_hb(:,5,ihb) + f_i(:)
+     for_hb(:,3,ihb) = for_hb(:,3,ihb) + (-1.0e0_PREC + d1353over1313) * f_i(:) &
+                                       - (              d1213over1313) * f_l(:)
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + (-1.0e0_PREC + d1213over1313) * f_l(:) &
+                                       - (              d1353over1313) * f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + f_l(:)
 
 
      !===== Dihedral angle among 1=2-4-6 =====
-     m(:) = -c4212(:)
-     n(1) = v42(2) * v46(3) - v42(3) * v46(2)
-     n(2) = v42(3) * v46(1) - v42(1) * v46(3)
-     n(3) = v42(1) * v46(2) - v42(2) * v46(1)
-     dmm = c4212_abs2
-     dnn = dot_product(n,n)
+     n(:) = -c4212(:)
+     c4246(1) = v42(2) * v46(3) - v42(3) * v46(2)
+     c4246(2) = v42(3) * v46(1) - v42(1) * v46(3)
+     c4246(3) = v42(1) * v46(2) - v42(2) * v46(1)
+     c4246_abs2 = dot_product(c4246, c4246)
 
-     if (abs(cos_theta124) < MAX_ABSCOS_HBOND15_DIH) then
-        dih = atan2(dot_product(v12,n)*a42 , dot_product(m,n))
-        d = dih - dtrna_hb_nat(6, ihb)
-        if (d > F_PI) then
-           d = d - F_2PI
-        else if (d < -F_PI) then
-           d = d + F_2PI
-        endif
-        ex = ex - coef_dtrna_hb(6,ihb) * d**2
-   
-        pre = 2.0e0_PREC * coef_dtrna_hb(6,ihb) * d * a42
-        f_i(:) = + pre / dmm * m(:)
-        f_l(:) = - pre / dnn * n(:)
-   
-        for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
-        for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over4242) * f_i(:) &
-                                    - (              d4246over4242) * f_l(:)
-        for_hb(:,4,ihb) = for_hb(:,4,ihb) + (-1.0e0_PREC + d4246over4242) * f_l(:) &
-                                    - (              d1242over4242) * f_i(:)
-        for_hb(:,6,ihb) = for_hb(:,6,ihb) + f_l(:)
+     cos_theta246 = d4246 / (a42 * sqrt(dot_product(v46,v46)))
+     if (abs(cos_theta246) > MAX_ABSCOS_HBOND15) then
+        c4246_abs2 = dot_product(v46,v46) * d4242 * (1.0 - MAX_ABSCOS_HBOND15**2)
      endif
+
+     dih = atan2(dot_product(v12,c4246)*a42 , dot_product(n,c4246))
+     d = dih - dtrna_hb_nat(6, ihb)
+     if (d > F_PI) then
+        d = d - F_2PI
+     else if (d < -F_PI) then
+        d = d + F_2PI
+     endif
+     ex = ex - coef_dtrna_hb(6,ihb) * d**2
+   
+     pre = 2.0e0_PREC * coef_dtrna_hb(6,ihb) * d * a42
+     f_i(:) = + pre / c4212_abs2 * n(:)
+     f_l(:) = - pre / c4246_abs2 * c4246(:)
+   
+     for_hb(:,1,ihb) = for_hb(:,1,ihb) + f_i(:)
+     for_hb(:,2,ihb) = for_hb(:,2,ihb) + (-1.0e0_PREC + d1242over4242) * f_i(:) &
+                                       - (              d4246over4242) * f_l(:)
+     for_hb(:,4,ihb) = for_hb(:,4,ihb) + (-1.0e0_PREC + d4246over4242) * f_l(:) &
+                                       - (              d1242over4242) * f_i(:)
+     for_hb(:,6,ihb) = for_hb(:,6,ihb) + f_l(:)
 
      !===== Total =====
      !hb_energy_l(ihb) = coef_dtrna_hb(0,ihb) * exp(ex)
