@@ -6,9 +6,11 @@ subroutine simu_xyz_adjst()
   use const_maxsize
   use const_index
   use const_physical
+  use var_io,      only : i_simulate_type
   use var_setp,    only : insimu, inperi
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, iclass_mp
   use var_replica, only : n_replica_mpi
+  use var_simu,    only : accel_mp
   use mpiconst
 
   implicit none
@@ -71,11 +73,21 @@ subroutine simu_xyz_adjst()
         do imp = 1, nmp_real
            xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) - xyzg(1:3)
            pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) - pxyzg(1:3)
+
+           ! In ND_LANGEVIN, accel_mp stores the previous coordinates (xyz_mp_rep).
+           if(i_simulate_type == SIM%ND_LANGEVIN) then
+              accel_mp(1:3, imp, irep) = accel_mp(1:3, imp, irep) - xyzg(1:3)
+           endif
         end do
-      
+        
         if(insimu%i_com_zeroing_ini == 2 .or. insimu%i_com_zeroing == 2) then
            xyz_mp_rep(1:3, 1:nmp_real, irep) = xyz_mp_rep(1:3, 1:nmp_real, irep) + 4500.0
            pxyz_mp_rep(1:3, 1:nmp_real, irep) = pxyz_mp_rep(1:3, 1:nmp_real, irep) + 4500.0
+
+           ! In ND_LANGEVIN, accel_mp stores the previous coordinates (xyz_mp_rep).
+           if(i_simulate_type == SIM%ND_LANGEVIN) then
+              accel_mp(1:3, 1:nmp_real, irep) = accel_mp(1:3, 1:nmp_real, irep) + 4500.0
+           endif
         end if
       
      enddo
