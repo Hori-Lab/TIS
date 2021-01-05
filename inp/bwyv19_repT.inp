@@ -1,0 +1,155 @@
+<<<< filenames
+path = ./
+filename = md
+OUTPUT dcd psf rst
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para = ./para
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 6
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 0
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    rna    1l2x.cg.pdb
+>>>>
+
+<<<< initial_struct
+1       1l2x.cg.pdb
+>>>>
+
+<<<< initial_ion
+num_k_ion = 0
+num_cl_ion = 0
+num_mg_ion = 0
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all) bwyv19.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) =  2500000000
+tstep_size = 0.05
+n_step_save = 20000
+n_step_neighbor = 100
+n_step_progress = 10000000
+n_step_rst = 10000000
+i_com_zeroing = 1
+i_no_trans_rot = 0
+tempk = 310.15
+n_seed = 5
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+i_neigh_dynamic = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_DTRNA
+NLOCAL(1/1)   DTRNA ELE EXV_DT15
+
+i_dtrna_model = 2019
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< electrostatic
+path_pmf_Mg_P = ../para/PMF_RISM/pmf_Mg_P_1264
+pmf_merge = 5.0
+
+i_DH_cutoff_type = 1
+# For only Debye-Huckel
+# 0: cutoff_ele x Debye length (default)
+#    cutoff_ele works as a scaling factor
+# 1: cutoff_ele
+#    cutoff_ele works as the cutoff distance
+
+cutoff_ele = 50.0
+
+ionic_strength = 0.5
+diele_water = 99999.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 1
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+i_function_form = 0
+
+** calculation method for electrostatic interaction in K computer (optional)
+**            = 0 neighboring list (default)
+**            = 1 neighboring list for K computer
+**            = 2 direct caluculation for K computer
+i_calc_method = 0
+
+CHARGE_CHANGE 85  0.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000015
+>>>>
+
+<<<< replica
+n_replica_temp = 28
+
+n_step_exchange = 250
+n_step_save_rep = 20000 
+n_period_prob = 5
+**npar_rep = 1
+>>>>
+
+<<<< replica_temp
+i_style = 100
+
+REPLICA(1)  = 273.15
+REPLICA(2)  = 283.15
+REPLICA(3)  = 293.15
+REPLICA(4)  = 303.15
+REPLICA(5)  = 310.15
+REPLICA(6)  = 316.15
+REPLICA(7)  = 321.15
+REPLICA(8)  = 325.15
+REPLICA(9)  = 329.15
+REPLICA(10) = 331.15
+REPLICA(11) = 333.15
+REPLICA(12) = 335.15
+REPLICA(13) = 337.15
+REPLICA(14) = 341.15
+REPLICA(15) = 345.15
+REPLICA(16) = 349.15
+REPLICA(17) = 353.15
+REPLICA(18) = 357.15
+REPLICA(19) = 361.15
+REPLICA(20) = 363.15
+REPLICA(21) = 365.15
+REPLICA(22) = 367.15
+REPLICA(23) = 369.15
+REPLICA(24) = 373.15
+REPLICA(25) = 378.15
+REPLICA(26) = 383.15
+REPLICA(27) = 393.15
+REPLICA(28) = 403.15
+>>>>
