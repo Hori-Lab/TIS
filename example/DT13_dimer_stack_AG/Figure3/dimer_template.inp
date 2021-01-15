@@ -1,0 +1,63 @@
+<<<< filenames
+path = ##DIR##
+filename = md
+OUTPUT pdb dcd psf stall
+path_pdb = ../
+path_ini = ../
+path_natinfo = ../
+path_para = ../../../para
+>>>> 
+
+<<<< job_cntl  
+i_run_mode = 2
+i_simulate_type = 1
+i_initial_state = 6
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    rna   TIS_dimer.pdb
+>>>>
+
+<<<< initial_struct
+1          TIS_dimer.pdb
+>>>>
+
+<<<< native_info_sim1
+NINFO(all/all) DT13_dimer_AG_h5.98_s5.30.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 2000000000
+n_step_save = 20000
+tstep_size = 0.05
+n_step_neighbor = 1
+n_step_rst = 1000000000
+i_com_zeroing = 0
+i_no_trans_rot = 0
+i_neigh_dynamic = 1
+
+tempk = ##TEMP##
+
+n_seed = 3
+i_fric = 1
+i_mass = 1
+i_redef_para = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_DTRNA
+NLOCAL(1/1)   DTRNA EXV_WCA
+i_dtrna_model = 2013
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000010
+>>>>

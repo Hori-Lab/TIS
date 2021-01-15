@@ -1,0 +1,29 @@
+<<<< native bond length
+**      ibd iunit1-iunit2   imp1 - imp2 imp1un-imp2un      bd_nat    factor_bd  correct_mgo      coef_bd
+bond      1      1      1      1      2      1      2       4.6010       1.0000       1.0000      23.0000 PS
+bond      2      1      1      2      3      2      3       4.8515       1.0000       1.0000      10.0000 SA
+bond      3      1      1      2      4      2      4       3.8157       1.0000       1.0000      64.0000 SP
+bond      4      1      1      4      5      4      5       4.6010       1.0000       1.0000      23.0000 PS
+bond      5      1      1      5      6      5      6       4.9659       1.0000       1.0000      10.0000 SG
+bond      6      1      1      5      7      5      7       3.8157       1.0000       1.0000      64.0000 SP
+>>>>
+
+<<<< native bond angles
+**      iba iunit1-iunit2   imp1 - imp2 - imp3 imp1un-imp2un-imp3un      ba_nat    factor_ba  correct_mgo      coef_ba
+angl      1      1      1      1      2      3      1      2      3      97.5690       1.0000       1.0000       5.0000 PSA
+angl      2      1      1      1      2      4      1      2      4      82.7350       1.0000       1.0000      20.0000 PSP
+angl      3      1      1      3      2      4      3      2      4     110.3460       1.0000       1.0000       5.0000 ASP
+angl      4      1      1      2      4      5      2      4      5      87.4100       1.0000       1.0000      20.0000 SPS
+angl      5      1      1      4      5      6      4      5      6     101.3560       1.0000       1.0000       5.0000 PSG
+angl      6      1      1      4      5      7      4      5      7      82.7350       1.0000       1.0000      20.0000 PSP
+angl      7      1      1      6      5      7      6      5      7     109.7210       1.0000       1.0000       5.0000 GSP
+>>>>
+
+<<<< native basestack
+** total_contact = 1
+**        icon iunit1-iunit2   imp1 - imp2 imp1un-imp2un      go_nat   factor_go     coef_go
+bs-dist      1      1      1      3      6      3      6    5.980   5.30 341.20      4.4255      1.4000 A-G
+bs-dihd      1      1      1      1      1      2      4      5      1      2      4      5   -148.2150      4.0000 PSPS
+bs-dihd      1      2      1      1      2      4      5      7      2      4      5      7    175.9750      4.0000 SPSP
+>>>>
+
