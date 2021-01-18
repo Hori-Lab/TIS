@@ -215,6 +215,23 @@ subroutine time_integral_pre(flg_step_each_replica)
         enddo
 #endif
 
+     else if(i_simulate_type == SIM%LANGEVIN_GJF) then
+        do imp = 1, nmp_real
+           rlan_const(1, imp, irep) = tstep / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+           rlan_const(2, imp, irep)  = sqrt(0.5_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp)
+           rlan_const(3, imp, irep) =  (1.0_PREC - fric_mp(imp) * tsteph * rcmass_mp(imp)) &
+                                     / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+           rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+        end do
+        
+        if (flg_rst) then
+           call read_rst(RSTBLK%ACCEL)
+        else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
+           do imp = 1, nmp_real
+              accel_mp(1:3, imp, irep) = tsteph * rcmass_mp(imp) * force_mp(1:3, imp, irep)
+           end do
+        endif
+        
      ! Berendsen or Constant Energy
      else if(i_simulate_type == SIM%BERENDSEN .OR. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
         if (flg_rst) then

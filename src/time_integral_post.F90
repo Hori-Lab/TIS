@@ -39,10 +39,10 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                           n_replica_mpi, irep2grep, exchange_step
   use var_simu,    only : istep, ntstep, nstep_opt_temp, ibefore_time, &
                           n_exchange, iopt_stage, &
-                          tstep, tempk, velo_mp, rlan_const, &
+                          tstep, tsteph, tempk, velo_mp, rlan_const, &
                           energy, energy_unit, rg, rg_unit, rmsd, rmsd_unit, &
                           ene_st, ene_tst, ene_hb,&
-                          replica_energy, dxyz_mp
+                          replica_energy, dxyz_mp, rcmass_mp
   use time, only : tm_energy, tm_radiusg_rmsd, &
                    tm_output, tm_replica, & 
                    time_s, time_e, tm_others !, tm_step_adj, &
@@ -314,7 +314,18 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                  enddo
               enddo
 
-           endif ! LANGEVIN or ND_LANGEVIN
+           else if(i_simulate_type == SIM%LANGEVIN_GJF) then
+
+              do irep = 1, n_replica_mpi
+                 grep  = irep2grep(irep)
+                 tempk = rep2val(grep, REPTYPE%TEMP)
+                 do imp = 1, nmp_real
+                    rlan_const(2, imp, irep)  = sqrt(0.5_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp)
+                    rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+                 enddo
+              enddo
+
+           endif ! LANGEVIN, ND_LANGEVIN, or LANGEVIN_GJF
         endif
         
         if (flg_rep(REPTYPE%TEMP) .OR. flg_rep(REPTYPE%ION) .OR. &

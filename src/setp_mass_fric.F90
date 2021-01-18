@@ -57,11 +57,12 @@ subroutine setp_mass_fric()
   ! Friction coefficients by Stokes' law
   if (inmisc%i_fric == 1) then
 
-     if (i_simulate_type == SIM%LANGEVIN .OR. &
-         i_simulate_type == SIM%BROWNIAN .OR. &
+     if (i_simulate_type == SIM%LANGEVIN     .OR. &
+         i_simulate_type == SIM%LANGEVIN_GJF .OR. &
+         i_simulate_type == SIM%BROWNIAN     .OR. &
          i_simulate_type == SIM%BROWNIAN_HI) then
 
-        ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)   (tau: cafemol time unit)
+        ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)
         visc = inpara%viscosity * sqrt(1.0e3_PREC * JOUL2KCAL) * N_AVO * 1.0e-20_PREC
 
      else if(i_simulate_type == SIM%PS_BROWNIAN) then
@@ -90,6 +91,7 @@ subroutine setp_mass_fric()
         mass = inpara%cmass(ichemical)
 
         if (i_simulate_type == SIM%LANGEVIN) then
+
            fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp) / mass
            !! Notice: 
            !! This friction coefficient is divided by mass for a technical reason.
@@ -98,18 +100,19 @@ subroutine setp_mass_fric()
            !! Thus this mass-divided friction (gamma) will be multiplied back by mass 
            !! in the velocity-Verlet procedure.
 
-        else if (i_simulate_type == SIM%ND_LANGEVIN) then
-           fric_mp(imp) = 0.555 * radius(imp)
+        else if (i_simulate_type == SIM%LANGEVIN_GJF .OR. &
+                 i_simulate_type == SIM%BROWNIAN     .OR. &
+                 i_simulate_type == SIM%PS_BROWNIAN) then
 
-        else if(i_simulate_type == SIM%BROWNIAN) then
            fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
+
+        else if (i_simulate_type == SIM%ND_LANGEVIN) then
+
+           fric_mp(imp) = 0.555 * radius(imp)
 
         else if(i_simulate_type == SIM%BROWNIAN_HI) then
            !fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius
            !radius(imp) = radius
-
-        else if(i_simulate_type == SIM%PS_BROWNIAN) then
-           fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)
 
         else if(i_simulate_type == SIM%CONST_ENERGY) then
 

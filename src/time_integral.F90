@@ -120,6 +120,7 @@ subroutine time_integral(flg_step_each_replica)
   ! ------------------------------------------------
   r_boxmuller(:,:,:) = 0.0
   if (i_simulate_type == SIM%LANGEVIN .OR. i_simulate_type == SIM%ND_LANGEVIN .OR.&
+      i_simulate_type == SIM%LANGEVIN_GJF .OR. &
       i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
       i_simulate_type == SIM%PS_BROWNIAN ) then
      call get_random_number()
@@ -230,6 +231,57 @@ subroutine time_integral(flg_step_each_replica)
            !if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
            !   call simu_velo_adjst(velo_mp,irep)
            !end if
+
+        ! Langevin algorithm by Gronbech-Jensen and Farago (GJF)
+        !     Mol. Phys. (2013) 111: 983  DOI:10.1080/00268976.2012.760055
+        else if (i_simulate_type == SIM%LANGEVIN_GJF) then
+           
+           TIME_S( tm_update )
+           do imp = 1, nmp_real
+              if(fix_mp(imp)) cycle
+              
+              ! rlan_const(1) = b * h = h / (1 + gamma * h / 2m)
+              ! rlan_const(2) = sqrt(gamma * kT / 2h) / m
+              dxyz(1:3) = rlan_const(1, imp, irep) * (velo_mp(1:3, imp, irep) + accel_mp(1:3, imp, irep) &
+                                                    + rlan_const(2, imp, irep) * r_boxmuller(1:3, imp, irep))
+              
+              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
+           enddo
+           TIME_E( tm_update )
+           
+           TIME_S( tm_force )
+           call force_sumup(force_mp(:,:,irep), irep)
+           TIME_E( tm_force )
+           
+           TIME_S( tm_update ) 
+           do imp = 1, nmp_real
+              if(fix_mp(imp)) cycle
+              
+              ! a(t+h):  this is actually a half velocity, but not acceleration!
+              !  = 0.5 * h * acceleration = 0.5 * h * force / m
+              ! tsteph = 0.5 * h,  rcmass_mp = 1 / m
+              accelaf(1:3) = tsteph * rcmass_mp(imp) * force_mp(1:3, imp, irep)
+              
+              ! v(t+h) update velocity
+              ! Eq.(20) needs memory of dxyz(3, nmp) instead of dxyz(3)
+              ! Thus, use Eq.(22).
+              velo_mp(1:3, imp, irep) = rlan_const(3, imp, irep) * (velo_mp(1:3, imp, irep) + accel_mp(1:3, imp, irep)) + accelaf(1:3) &
+                                      + rlan_const(4, imp, irep) * r_boxmuller(1:3, imp, irep)
+              ! rlan_const(3) = (1 - gamma h / 2m) / (1 + gamma h / 2m)
+              ! rlan_const(4) = b * sqrt(2 * gamma * kT / h) / m = sqrt(2 * gamma * kT / h) / m / (1 + gamma * h / 2m)
+              
+              ! a(t+h) => a(t), update acceleration
+              accel_mp(1:3, imp, irep) = accelaf(1:3)
+           end do
+           TIME_E( tm_update )
+           
+           ! correcting velocity for removing translation and rotation motion
+           if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
+              call simu_velo_adjst(velo_mp,irep)
+           end if
+           
            
         ! Berendsen
         else if(i_simulate_type == SIM%BERENDSEN .or. i_simulate_type == SIM%CONST_ENERGY) then

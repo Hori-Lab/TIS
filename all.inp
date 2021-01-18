@@ -60,6 +60,7 @@ i_run_mode = 2
 **           = 6 : Brownian dynamics with hydrodynamic interaction
 **           = 7 : Brownian dynamics without hydrodynamic interaction (ps time scale)
 **           = 8 : ND implementation of Langevin dynamics
+**           = 9 : Langevin dynamics, GJF
 i_simulate_type = 1
 
 ** i_initial_state: define initial configuration 
