@@ -218,10 +218,10 @@ subroutine time_integral_pre(flg_step_each_replica)
      else if(i_simulate_type == SIM%LANGEVIN_GJF) then
         do imp = 1, nmp_real
            rlan_const(1, imp, irep) = tstep / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
-           rlan_const(2, imp, irep)  = sqrt(0.5_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp)
+           rlan_const(2, imp, irep)  = sqrt(fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tsteph) * rcmass_mp(imp)
            rlan_const(3, imp, irep) =  (1.0_PREC - fric_mp(imp) * tsteph * rcmass_mp(imp)) &
                                      / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
-           rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+           rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tstep) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
         end do
         
         if (flg_rst) then

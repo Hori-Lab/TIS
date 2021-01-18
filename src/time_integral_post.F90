@@ -320,8 +320,9 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                  grep  = irep2grep(irep)
                  tempk = rep2val(grep, REPTYPE%TEMP)
                  do imp = 1, nmp_real
-                    rlan_const(2, imp, irep)  = sqrt(0.5_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp)
-                    rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
+                    ! Note: tsteph = 0.5 * tstep
+                    rlan_const(2, imp, irep)  = sqrt(fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tsteph) * rcmass_mp(imp)
+                    rlan_const(4, imp, irep)  = sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tstep) * rcmass_mp(imp) / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
                  enddo
               enddo
 
