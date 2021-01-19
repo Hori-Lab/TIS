@@ -57,9 +57,10 @@ subroutine setp_mass_fric()
   ! Friction coefficients by Stokes' law
   if (inmisc%i_fric == 1) then
 
-     if (i_simulate_type == SIM%LANGEVIN     .OR. &
-         i_simulate_type == SIM%LANGEVIN_GJF .OR. &
-         i_simulate_type == SIM%BROWNIAN     .OR. &
+     if (i_simulate_type == SIM%LANGEVIN         .OR. &
+         i_simulate_type == SIM%LANGEVIN_GJF     .OR. &
+         i_simulate_type == SIM%LANGEVIN_GJF_2GJ .OR. &
+         i_simulate_type == SIM%BROWNIAN         .OR. &
          i_simulate_type == SIM%BROWNIAN_HI) then
 
         ! (Pa)(s) ---> (Da)(A^-1)(tau^-1)
@@ -100,8 +101,9 @@ subroutine setp_mass_fric()
            !! Thus this mass-divided friction (gamma) will be multiplied back by mass 
            !! in the velocity-Verlet procedure.
 
-        else if (i_simulate_type == SIM%LANGEVIN_GJF .OR. &
-                 i_simulate_type == SIM%BROWNIAN     .OR. &
+        else if (i_simulate_type == SIM%LANGEVIN_GJF     .OR. &
+                 i_simulate_type == SIM%LANGEVIN_GJF_2GJ .OR. &
+                 i_simulate_type == SIM%BROWNIAN         .OR. &
                  i_simulate_type == SIM%PS_BROWNIAN) then
 
            fric_mp(imp) = 6.0e0_PREC * F_PI * visc * radius(imp)

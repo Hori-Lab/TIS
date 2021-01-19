@@ -119,9 +119,9 @@ subroutine time_integral(flg_step_each_replica)
   ! prepare random numbers for Langevin and Brownian
   ! ------------------------------------------------
   r_boxmuller(:,:,:) = 0.0
-  if (i_simulate_type == SIM%LANGEVIN .OR. i_simulate_type == SIM%ND_LANGEVIN .OR.&
-      i_simulate_type == SIM%LANGEVIN_GJF .OR. &
-      i_simulate_type == SIM%BROWNIAN .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
+  if (i_simulate_type == SIM%LANGEVIN     .OR. i_simulate_type == SIM%ND_LANGEVIN .OR.&
+      i_simulate_type == SIM%LANGEVIN_GJF .OR. i_simulate_type == SIM%LANGEVIN_GJF_2GJ .OR.&
+      i_simulate_type == SIM%BROWNIAN     .OR. i_simulate_type == SIM%BROWNIAN_HI .OR.&
       i_simulate_type == SIM%PS_BROWNIAN ) then
      call get_random_number()
   end if
@@ -226,11 +226,6 @@ subroutine time_integral(flg_step_each_replica)
               accel_mp(1:3, imp, irep) = xyz_tmp(1:3)
            end do
            TIME_E( tm_update )
-           
-           !! correcting velocity for removing translation and rotation motion
-           !if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
-           !   call simu_velo_adjst(velo_mp,irep)
-           !end if
 
         ! Langevin algorithm by Gronbech-Jensen and Farago (GJF)
         !     Mol. Phys. (2013) 111: 983  DOI:10.1080/00268976.2012.760055
@@ -277,11 +272,43 @@ subroutine time_integral(flg_step_each_replica)
            end do
            TIME_E( tm_update )
            
-           ! correcting velocity for removing translation and rotation motion
-           if((insimu%i_no_trans_rot == 1) .and. (mod(istep, 200) == 1)) then
-              call simu_velo_adjst(velo_mp,irep)
-           end if
+        ! Langevin algorithm GJF-2GJ
+        !    Jensen, L. F. G. & Grønbech-Jensen, N., Mol Phys (2019) 117: 1 DOI:10.1080/00268976.2019.1570369
+        else if (i_simulate_type == SIM%LANGEVIN_GJF_2GJ) then
+
+           TIME_S( tm_force )
+           call force_sumup(force_mp(:,:,irep), irep)
+           TIME_E( tm_force )
+
+           TIME_S( tm_update )
+           do imp = 1, nmp_real
+              if(fix_mp(imp)) cycle
            
+              !! a = (1 - gamma h / 2m) / (1 + gamma h / 2m)
+              !! b = 1 / (1 + gamma h / 2m)
+
+              ! beta(t + h) with the associated coefficient
+              accelaf(1:3) = rlan_const(1, imp, irep) * r_boxmuller(1:3, imp, irep)
+              ! rlan_const(1) = sqrt(b) / 2m * sqrt(2 gamma kT h)
+
+              ! v(t + 1/2h) update the half-step velocity
+              velo_mp(1:3, imp, irep) =  rlan_const(2, imp, irep) * velo_mp(1:3, imp, irep)  &
+                                       + rlan_const(3, imp, irep) * force_mp(1:3, imp, irep) &
+                                       + (accel_mp(1:3, imp, irep) + accelaf(1:3))
+              ! rlan_const(2) = a
+              ! rlan_const(3) = sqrt(b) h / m
+
+              ! beta(t) <= beta(t+h) (incluing the coefficient) save for the next iteration
+              accel_mp(1:3, imp, irep) = accelaf(1:3)
+              
+              dxyz(1:3) =  rlan_const(4, imp, irep) * velo_mp(1:3, imp, irep)
+              ! rlan_const(4) = sqrt(b) h
+              
+              xyz_mp_rep(1:3, imp, irep) = xyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              pxyz_mp_rep(1:3, imp, irep) = pxyz_mp_rep(1:3, imp, irep) + dxyz(1:3)
+              dxyz_mp(1:3,imp,irep) = dxyz_mp(1:3,imp,irep) + dxyz(1:3)
+           end do
+           TIME_E( tm_update )
            
         ! Berendsen
         else if(i_simulate_type == SIM%BERENDSEN .or. i_simulate_type == SIM%CONST_ENERGY) then

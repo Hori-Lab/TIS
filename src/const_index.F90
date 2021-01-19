@@ -21,18 +21,19 @@ module const_index
 
   ! i_simulate_type: define dynamics 
   type simu_type
-     integer :: CONST_ENERGY !< 0: Newtonian dynamics (velocity Verlet) with the constant energy
-     integer :: LANGEVIN     !< 1: Langevin dynamics (recommended)
-     integer :: BERENDSEN    !< 2: Newtonian dynamics (velocity Verlet) with Berendsen thermostat
-     integer :: NOSEHOOVER   !< 3: Newtonian dynamics (velocity Verlet) with Nose-Hoover thermostat
-     integer :: MPC          !< 4: MPC dynamics
-     integer :: BROWNIAN     !< 5: Brownian dynamics without hydrodynamic interaction
-     integer :: BROWNIAN_HI  !< 6: Brownian dynamics with hydrodynamic interaction
-     integer :: PS_BROWNIAN  !< 7: Brownian dynamics without hydrodynamic interaction
-     integer :: ND_LANGEVIN  !< 8
-     integer :: LANGEVIN_GJF !< 9: Langevin dynamics (Gronbech-Jensen and Farago)
+     integer :: CONST_ENERGY     !<  0: Newtonian dynamics (velocity Verlet) with the constant energy
+     integer :: LANGEVIN         !<  1: Langevin dynamics (recommended)
+     integer :: BERENDSEN        !<  2: Newtonian dynamics (velocity Verlet) with Berendsen thermostat
+     integer :: NOSEHOOVER       !<  3: Newtonian dynamics (velocity Verlet) with Nose-Hoover thermostat
+     integer :: MPC              !<  4: MPC dynamics
+     integer :: BROWNIAN         !<  5: Brownian dynamics without hydrodynamic interaction
+     integer :: BROWNIAN_HI      !<  6: Brownian dynamics with hydrodynamic interaction
+     integer :: PS_BROWNIAN      !<  7: Brownian dynamics without hydrodynamic interaction
+     integer :: ND_LANGEVIN      !<  8
+     integer :: LANGEVIN_GJF     !<  9: Langevin dynamics (Gronbech-Jensen and Farago)
+     integer :: LANGEVIN_GJF_2GJ !< 10: Langevin dynamics (GJF-2GJ)
   endtype simu_type
-  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6,7,8,9)
+  type(simu_type), parameter :: SIM = simu_type(0,1,2,3,4,5,6,7,8,9,10)
 
   ! i_hydro_tensor: define tensor type of hydrodynamic interaction (only when SIM%BROWNIAN_HI)
   type tensor_type

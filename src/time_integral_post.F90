@@ -326,7 +326,19 @@ subroutine time_integral_post(flg_step_each_replica, flg_exit_loop_mstep)
                  enddo
               enddo
 
-           endif ! LANGEVIN, ND_LANGEVIN, or LANGEVIN_GJF
+           else if(i_simulate_type == SIM%LANGEVIN_GJF_2GJ) then
+
+              do irep = 1, n_replica_mpi
+                 grep  = irep2grep(irep)
+                 tempk = rep2val(grep, REPTYPE%TEMP)
+                 do imp = 1, nmp_real
+                    ! Note: tsteph = 0.5 * tstep
+                    rlan_const(1, imp, irep) = 0.5_PREC * sqrt(1.0e0_PREC / (1.0_PREC + tsteph * fric_mp(imp) * rcmass_mp(imp))) &
+                                              * rcmass_mp(imp) * sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tstep)
+                 enddo
+              enddo
+
+           endif ! LANGEVIN, ND_LANGEVIN, LANGEVIN_GJF, or LANGEVIN_GJF_2GJ
         endif
         
         if (flg_rep(REPTYPE%TEMP) .OR. flg_rep(REPTYPE%ION) .OR. &

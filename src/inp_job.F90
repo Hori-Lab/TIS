@@ -141,6 +141,8 @@ subroutine inp_job()
      write (lunout, *) 'Langevin dynamics implemented by ND'
   else if(i_simulate_type == SIM%LANGEVIN_GJF) then
      write (lunout, *) 'Langevin dynamics by GJF algorithm'
+  else if(i_simulate_type == SIM%LANGEVIN_GJF_2GJ) then
+     write (lunout, *) 'Langevin dynamics by GJF-2GJ algorithm'
   else
      error_message = 'Error: invalid value about i_simulate_type'
      call util_error(ERROR%STOP_ALL, error_message)

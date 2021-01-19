@@ -48,19 +48,20 @@ path_natinfo = ./ninfo
 i_run_mode = 2
 
 ** i_simulate_type: define dynamics 
-**           = 0 : Newtonian dynamics  (velocity Verlet)
-**                 with the constant energy
-**           = 1 : Langevin dynamics (recommended)
-**           = 2 : Newtonian dynamics (velocity Verlet)
-**                 with Berendsen thermostat
-**           = 3 : Newtonian dynamics (RESPA)
-**                 with Nose-Hoover thermostat
-**           = 4 : MPC dynamics 
-**           = 5 : Brownian dynamics without hydrodynamic interaction
-**           = 6 : Brownian dynamics with hydrodynamic interaction
-**           = 7 : Brownian dynamics without hydrodynamic interaction (ps time scale)
-**           = 8 : ND implementation of Langevin dynamics
-**           = 9 : Langevin dynamics, GJF
+**           =  0 : Newtonian dynamics  (velocity Verlet)
+**                  with the constant energy
+**           =  1 : Langevin dynamics (recommended)
+**           =  2 : Newtonian dynamics (velocity Verlet)
+**                  with Berendsen thermostat
+**           =  3 : Newtonian dynamics (RESPA)
+**                  with Nose-Hoover thermostat
+**           =  4 : MPC dynamics 
+**           =  5 : Brownian dynamics without hydrodynamic interaction
+**           =  6 : Brownian dynamics with hydrodynamic interaction
+**           =  7 : Brownian dynamics without hydrodynamic interaction (ps time scale)
+**           =  8 : ND implementation of Langevin dynamics
+**           =  9 : Langevin dynamics, GJF
+**           = 10 : Langevin dynamics, GJF-2GJ
 i_simulate_type = 1
 
 ** i_initial_state: define initial configuration 

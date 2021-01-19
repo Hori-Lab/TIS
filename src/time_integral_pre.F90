@@ -82,7 +82,7 @@ subroutine time_integral_pre(flg_step_each_replica)
   ! -------------------------------------
   ! prepare random numbers for Langevin
   ! -------------------------------------
-  if (i_simulate_type == SIM%LANGEVIN .AND.  &
+  if ((i_simulate_type == SIM%LANGEVIN .OR. i_simulate_type == SIM%LANGEVIN_GJF_2GJ) .AND.  &
        (istep_sim == 1 .OR. inmisc%i_reset_struct == 1)) then
      TIME_S( tm_random)
      do irep = 1, n_replica_mpi
@@ -215,6 +215,7 @@ subroutine time_integral_pre(flg_step_each_replica)
         enddo
 #endif
 
+     ! Langevin GJF
      else if(i_simulate_type == SIM%LANGEVIN_GJF) then
         do imp = 1, nmp_real
            rlan_const(1, imp, irep) = tstep / (1.0_PREC + fric_mp(imp) * tsteph * rcmass_mp(imp))
@@ -231,6 +232,40 @@ subroutine time_integral_pre(flg_step_each_replica)
               accel_mp(1:3, imp, irep) = tsteph * rcmass_mp(imp) * force_mp(1:3, imp, irep)
            end do
         endif
+
+     ! Langevin GJF-2GJ
+     else if(i_simulate_type == SIM%LANGEVIN_GJF_2GJ) then
+        do imp = 1, nmp_real
+
+           tstep_fric_h = tsteph * fric_mp(imp) * rcmass_mp(imp)
+           
+           !! sqrt(b) = sqrt(1 / (1 + gamma h / 2m))
+           ulconst1 = sqrt(1.0e0_PREC / (1.0_PREC + tstep_fric_h))
+
+           ! rlan_const(1) = sqrt(b) / 2m * sqrt(2 gamma kT h)
+           rlan_const(1, imp, irep) = 0.5_PREC * ulconst1 * rcmass_mp(imp) * sqrt(2.0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk * tstep)
+           ! rlan_const(2) = a
+           rlan_const(2, imp, irep) = (1.0_PREC - tstep_fric_h) / (1.0_PREC + tstep_fric_h)
+           ! rlan_const(3) = sqrt(b) h / m
+           rlan_const(3, imp, irep) = ulconst1 * tstep * rcmass_mp(imp)
+           ! rlan_const(4) = sqrt(b) h
+           rlan_const(4, imp, irep) = ulconst1 * tstep
+        end do
+        
+        if (flg_rst) then
+           call read_rst(RSTBLK%ACCEL)
+        else if (istep_sim == 1 .OR. inmisc%i_reset_struct == 1) then
+           do imp = 1, nmp_real
+              accel_mp(1:3, imp, irep) = rlan_const(1, imp, irep) * r_boxmuller(1:3, imp, irep)
+           end do
+        endif
+        
+#ifdef _DEBUG
+        write(*,*) 'time_integral_pre: accel_mp'
+        do imp=1, nmp_real
+           write(6,'(2i5,1pd15.7)'),irep,imp,accel_mp(1,imp,irep)
+        enddo
+#endif
         
      ! Berendsen or Constant Energy
      else if(i_simulate_type == SIM%BERENDSEN .OR. i_simulate_type == SIM%CONST_ENERGY .or. i_simulate_type == SIM%MPC) then
