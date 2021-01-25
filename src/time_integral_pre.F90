@@ -190,11 +190,14 @@ subroutine time_integral_pre(flg_step_each_replica)
      else if(i_simulate_type == SIM%ND_LANGEVIN) then
         do imp = 1, nmp_real
            ! fric_mp(imp) = 0.555 * radius(imp)   in setp_mass_fric.F90
+           ! topol_struct.K1   [i] = exp (-topol_struct.VISC [i] / topol_struct.MASS [i] * simu_struct.dt);
+           ! topol_struct.K2   [i] = (1 - topol_struct.K1 [i]) / topol_struct.VISC [i];
            rlan_const(1, imp, irep) = exp(- fric_mp(imp) / cmass_mp(imp) * tstep)
            rlan_const(2, imp, irep) = (1.0_PREC - rlan_const(1, imp, irep)) / fric_mp(imp)
+
+           !topol_struct.SIGMA_FORCE [i] = sqrt (2* topol_struct.VISC [i] * simu_struct.temp / simu_struct.dt);
            rlan_const(3, imp, irep) = sqrt(2.0e0_PREC * fric_mp(imp) * BOLTZ_KCAL_MOL * tempk / tstep)
            rlan_const(4, imp, irep) = cmass_mp(imp) / (300.0 * BOLTZ_KCAL_MOL)
-           !write(*,*) 'pre: ',imp,fric_mp(imp),rlan_const(1:4,imp,irep)
         end do
         
         !! In ND_LANGEVIN, "accel_mp" is used to store x_old, coordinates of 1 step before
