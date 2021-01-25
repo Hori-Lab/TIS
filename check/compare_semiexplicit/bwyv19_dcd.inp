@@ -2,10 +2,10 @@
 path = ./
 filename = md
 OUTPUT dcd psf
-path_pdb = ../pdb
-path_ini = ../pdb
-path_natinfo = ../ninfo
-path_para = ../para
+path_pdb = ../../pdb
+path_ini = ../../pdb
+path_natinfo = ../../ninfo
+path_para = ../../para
 >>>> 
 
 <<<< energy_dcd
@@ -73,7 +73,7 @@ i_output_energy_style = 1
 >>>>
 
 <<<< electrostatic
-path_pmf_Mg_P = ../para/PMF_RISM/pmf_Mg_P_1264
+path_pmf_Mg_P = ../../para/PMF_RISM/pmf_Mg_P_1264
 pmf_merge = 5.0
 
 i_DH_cutoff_type = 1
