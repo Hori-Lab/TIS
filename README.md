@@ -30,3 +30,8 @@
 | BSP         | N-1  | N-1  | N    |
 | SPS         | N-1  | N-1  | N    |
 | Total       | 4N-5 | 4N-3 | 4N   |
+
+## Tertiary stacks
+`tst-dist`
+ 1. share with secondary stack (`exclusive = False`)
+ 2. exclusively tertiary stack alone (`exclusive = True`)
