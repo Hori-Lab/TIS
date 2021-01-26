@@ -415,3 +415,94 @@ K    2.6580  0.000328
 Na   1.8680  0.002770
 X1   2.1     0.2
 >>>>
+
+<<<< para_NHT19_rna       
+energy_unit_rna = 1.0 
+
+i_use_atom_base = 0
+i_use_atom_sugar = 0
+
+** U_BL
+bd_PS = 23.0
+bd_SB = 10.0
+bd_SP = 64.0
+
+** U_BA
+ba_PSB =  5.0
+ba_PSP = 20.0
+ba_BSP =  5.0
+ba_SPS = 20.0
+
+** U_EV
+exv_dist = 3.2
+exv_dist_PS = 3.2
+** Other distances are defined in another place. See <<<< DT15_exv_param 
+exv_coef = 1.0
+exv_adjust = 1.5852
+n_sep_nlocal_P = 4
+n_sep_nlocal_S = 4
+n_sep_nlocal_B = 2
+exv_inf = 0.0
+
+** U_ST (consecutive)
+st_dist = 1.4
+st_dih = 4.0
+*** st_u0 is defined in another place. See <<<< DT15_stack_param
+
+** U_ST (non-consecutive)
+st_nlocal_dist =  5.00
+st_nlocal_angl =  1.50
+st_nlocal_dih  =  0.15
+*st_nlocal_u0   = -6.50
+
+** U_HB
+hb_dist = 5.0
+hb_angl = 1.5
+hb_dih_hbond = 0.15
+hb_dih_chain = 0.15
+*hb_u0 = 2.93168175
+hb_cutoff_dist = 2.0
+
+** BBR
+** This bbr_cutoff is the actual distance (not a prefactor).
+bbr_cutoff = 2.2
+bbr_dist = 1.0
+bbr_eps = 1.0
+>>>>
+
+<<<< NHT19_stack_param 
+**** 
+**** U0 = - h + kB ( T - Tm ) * s
+**** 
+**    h        s       Tm
+AA  3.92529  -0.319  298.912
+AC  3.89356  -0.319  298.912
+AG  4.68538   5.301  341.183
+AU  3.89356  -0.319  298.912
+CA  3.84872  -0.319  298.912
+CC  3.58574  -1.567  285.828
+CG  4.16163   0.774  315.518
+CU  3.55578  -1.567  285.828
+GA  4.64425   5.301  341.183
+GC  4.64896   4.370  343.195
+GG  5.12502   7.346  366.344
+GU  4.54742   2.924  338.163
+UA  3.84872  -0.319  298.912
+UC  3.54836  -1.567  285.828
+UG  4.60496   2.924  338.163
+UU  2.92091  -3.563  251.610
+>>>>
+
+<<<< NHT19_exv_param
+**      R      epsilon
+P     1.8900   0.200000
+S     2.6100   0.200000
+A     2.5200   0.200000
+G     2.7000   0.200000
+C     2.4300   0.200000
+U     2.4300   0.200000
+Mg2   2.0000   0.894700
+Ca2   2.8000   1.000000
+CHX   5.0000   1.000000
+X1    2.1     0.2
+>>>>
