@@ -114,47 +114,47 @@ subroutine setp_dtrna15()
      else if (iclass_mp(imp) == CLASS%RNA) then
 
         if (cmp2atom(imp) == ' S  ') then
-           nvalence_hbsite(ihbsite+1) = 2  ! O2'
-           nvalence_hbsite(ihbsite+2) = 1  ! O4'
-           nvalence_hbsite(ihbsite+3) = 1  ! O3'
-           nvalence_hbsite(ihbsite+4) = 1  ! O5'
+           nvalence_hbsite(ihbsite+1) = 2   ! O2'
+           nvalence_hbsite(ihbsite+2) = 1   ! O4'
+           nvalence_hbsite(ihbsite+3) = 1   ! O3'
+           nvalence_hbsite(ihbsite+4) = 1   ! O5'
            ihbsite = ihbsite + 4
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%S))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%S)
         else if (cmp2atom(imp) == ' P  ') then
-           nvalence_hbsite(ihbsite+1) = 1
-           nvalence_hbsite(ihbsite+2) = 1
+           nvalence_hbsite(ihbsite+1) = 1   ! OP1
+           nvalence_hbsite(ihbsite+2) = 1   ! OP2
            ihbsite = ihbsite + 2
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%P))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%P)
         else if (cmp2atom(imp) == ' Ab ') then
-           nvalence_hbsite(ihbsite+1) = 1
-           nvalence_hbsite(ihbsite+2) = 1
-           nvalence_hbsite(ihbsite+3) = 2
-           nvalence_hbsite(ihbsite+4) = 1
+           nvalence_hbsite(ihbsite+1) = 1   ! N1
+           nvalence_hbsite(ihbsite+2) = 1   ! N3
+           nvalence_hbsite(ihbsite+3) = 2   ! N6
+           nvalence_hbsite(ihbsite+4) = 1   ! N7
            ihbsite = ihbsite + 4
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%A))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%A)
         else if (cmp2atom(imp) == ' Cb ') then
-           nvalence_hbsite(ihbsite+1) = 2
-           nvalence_hbsite(ihbsite+2) = 1
-           nvalence_hbsite(ihbsite+3) = 2
+           nvalence_hbsite(ihbsite+1) = 2   ! O2
+           nvalence_hbsite(ihbsite+2) = 1   ! N3
+           nvalence_hbsite(ihbsite+3) = 2   ! N4
            ihbsite = ihbsite + 3
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%C))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%C)
         else if (cmp2atom(imp) == ' Gb ') then
-           nvalence_hbsite(ihbsite+1) = 1
-           nvalence_hbsite(ihbsite+2) = 2
-           nvalence_hbsite(ihbsite+3) = 1
-           nvalence_hbsite(ihbsite+4) = 2
-           nvalence_hbsite(ihbsite+5) = 1
+           nvalence_hbsite(ihbsite+1) = 1   ! N1
+           nvalence_hbsite(ihbsite+2) = 2   ! N2
+           nvalence_hbsite(ihbsite+3) = 1   ! N3
+           nvalence_hbsite(ihbsite+4) = 2   ! O6
+           nvalence_hbsite(ihbsite+5) = 1   ! N7
            ihbsite = ihbsite + 5
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%G))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%G)
         else if (cmp2atom(imp) == ' Ub ') then
-           nvalence_hbsite(ihbsite+1) = 1
-           nvalence_hbsite(ihbsite+2) = 1
-           nvalence_hbsite(ihbsite+3) = 1
+           nvalence_hbsite(ihbsite+1) = 2   ! O2
+           nvalence_hbsite(ihbsite+2) = 1   ! N3
+           nvalence_hbsite(ihbsite+3) = 1   ! O4
            ihbsite = ihbsite + 3
            exv_epsilon_mp(imp) = sqrt(indtrna%exv_eps(DT15EXV%U))
            exv_radius_mp(imp)  = indtrna%exv_rad(DT15EXV%U)

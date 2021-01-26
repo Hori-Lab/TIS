@@ -212,7 +212,8 @@ subroutine time_integral(flg_step_each_replica)
               vsq = rlan_const(4,imp,irep) * dot_product(velo_mp(1:3,imp,irep), velo_mp(1:3,imp,irep)) / tempk
               if (vsq > 1.0) then
                  write(*,*) 'vsq>1: ', istep, irep, imp, velo_mp(1:3,imp,irep)
-                 velo_mp(1:3,imp,irep) = velo_mp(1:3,imp,irep) / sqrt(vsq)
+                 vsq = 1.0_PREC / sqrt(vsq)
+                 velo_mp(1:3,imp,irep) = vsq * velo_mp(1:3,imp,irep)
               endif
 
               ! x = 2 * x_tmp - x_old + (vx - vx_tmp) * h

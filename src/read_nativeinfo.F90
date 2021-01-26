@@ -495,8 +495,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         dtrna_st_hsTm(2, ist_read) = s
         dtrna_st_hsTm(3, ist_read) = Tm
 
-        ctype2(1:1) = ctype3(1:1)
-        ctype2(2:2) = ctype3(3:3)
+        !ctype2(1:1) = ctype3(1:1)
+        !ctype2(2:2) = ctype3(3:3)
         !idtrna_st2nn(ist_read) = ifunc_nn2id(ctype2)
      end if
 
@@ -622,7 +622,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
      ! ------------------------------------------------------------------
      ! read basestack of DT model (2015)
      if(cline(1:8) == 'tbs-dist') then
-        ctype3 = '   '
+
         read (cline, *, iostat = input_status) &
              cline_head, ist_read, iunit1, iunit2,  &
              imp1, imp2, imp1un, imp2un,             &
