@@ -21,14 +21,22 @@ module const_physical
   real(PREC), parameter :: BOLTZ_KCAL_MOL = BOLTZ_J * JOUL2KCAL_MOL   !< Boltzmann constant [kcal/mol/K]
                                         ! = 0.00198720359
   real(PREC), parameter :: BOLTZ_KCAL_MOL_ND = 0.0019858775  !< BOLTZ used in Denesyuk
+#ifdef _HTN_CONSISTENT
+  real(PREC), parameter :: KELVIN_TO_KT = 1.9872057946353295439632e-3  !< used in HTN
+#endif
 
+#ifdef _HTN_CONSISTENT
+  real(PREC), parameter :: DE_MAX  = 10.0e10_PREC !< limit value of force
+                           ! Assume velocity scaling by "vsq" is used
+  real(PREC), parameter :: MAX_ABSCOS_HBOND13 = 1.0
+  real(PREC), parameter :: MAX_ANG_ABSCOS_HBOND15 = 0.99995
+  real(PREC), parameter :: MAX_DIH_ABSCOS_HBOND15 = 1.0
+#else
   real(PREC), parameter :: DE_MAX  = 50.0e0_PREC !< limit value of force
-  real(PREC), parameter :: MAX_ABSCOS_HBOND13 = cos(0.57/180.0 * F_PI)  ! cos(0.57/180.0*pi) ~ 0.99995
-  real(PREC), parameter :: MAX_ABSCOS_HBOND15 = cos(0.57/180.0 * F_PI)  ! cos(0.57/180.0*pi) ~ 0.99995
-
-  !real(PREC), parameter :: DE_MAX  = 10.0e10_PREC !< limit value of force
-  !real(PREC), parameter :: MAX_ABSCOS_HBOND13 = 1.0
-  !real(PREC), parameter :: MAX_ABSCOS_HBOND15 = 1.0
+  real(PREC), parameter :: MAX_ABSCOS_HBOND13 = 1.0  
+  real(PREC), parameter :: MAX_ANG_ABSCOS_HBOND15 = cos(0.57/180.0 * F_PI)  ! cos(0.57/180.0*pi) ~ 0.99995
+  real(PREC), parameter :: MAX_DIH_ABSCOS_HBOND15 = cos(0.57/180.0 * F_PI)  ! cos(0.57/180.0*pi) ~ 0.99995
+#endif
 
   ! judgment for numerical error
   real(PREC), parameter :: INVALID_JUDGE = 1.0e30_PREC

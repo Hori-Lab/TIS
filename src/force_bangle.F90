@@ -54,6 +54,12 @@ subroutine force_bangle(irep, force_mp)
      
      co_theta = - c21 / sqrt(c11 * c22)
 
+#ifdef _HTN_CONSISTENT
+     if (co_theta < -0.99995) then
+        cycle
+     endif
+#endif
+
      if(co_theta > 1.0e0_PREC) then
         co_theta = 1.0e0_PREC
      else if(co_theta < -1.0e0_PREC) then

@@ -13,6 +13,7 @@ UTIL8 = ../utility/a2rst
 # --------------------------------------------------------------------
 # options
 # --------------------------------------------------------------------
+# -D_HTN_CONSISTENT
 # MPI
 # -DMPI_PAR       : enable parallelization for force calculation
 # -DMPI_PAR2      : enable parallelization for neighborlist construction
@@ -66,7 +67,8 @@ VERSION += -DVERDATE="\"$(DATESEQ)\""
 #------ gfortran
 FC = gfortran
 FC_UTIL = gfortran
-CPP = -cpp -DTIME -DSUB_COPY
+#CPP = -cpp -DTIME -DSUB_COPY
+CPP = -cpp -DTIME -DSUB_COPY -D_HTN_CONSISTENT
 #CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
 #CPP = -cpp -DTIME -D_DEBUG
 INC =

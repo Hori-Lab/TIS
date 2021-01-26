@@ -34,6 +34,10 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   integer :: ifunc_seq2id
   logical, save :: flg_first = .True.
 
+#ifdef _HTN_CONSISTENT
+  real(PREC) :: temp_kT, t2, lb_kT, lambdaD, kappaD, rho
+#endif
+
   Zp = 1.0 ! To suppress compiler warning
   b = inele%length_per_unit( ifunc_seq2id('P  '))
 
@@ -47,8 +51,17 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   else if (inele%i_diele == 1) then
 
      if (inmisc%i_temp_independent <= 1) then
+
+#ifdef _HTN_CONSISTENT
+        !To be consistent with Hung's code
+        temp_kT = tempk * KELVIN_TO_KT
+        t2 = temp_kT * temp_kT
+        ek = 296.0736276 - 619.2813716 * temp_kT + 531.2826741 * t2 - 180.0369914 * temp_kT * t2
+#else
+        ! Default
         Tc = tempk - 273.15e0_PREC
         ek =  MM_A + MM_B*Tc + MM_C*Tc*Tc + MM_D*Tc*Tc*Tc
+#endif
 
      elseif (inmisc%i_temp_independent == 2) then
         Tc = insimu%tempk_ref - 273.15e0_PREC
@@ -95,7 +108,15 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
 
      ! Bjerrum length
      if (inmisc%i_temp_independent <= 1) then
+
+#ifdef _HTN_CONSISTENT
+        lb_kT = 332.0637090 / ek
+        lb = lb_kT / temp_kT
+#else
+        ! Default
         lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * tempk) * 1.0e10_PREC
+#endif
+
      elseif (inmisc%i_temp_independent == 2) then
         lb = ELE * ELE / (4.0e0_PREC * F_PI * EPSI_0 * ek * BOLTZ_J * insimu%tempk_ref) * 1.0e10_PREC
      else
@@ -170,18 +191,31 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   ! ----------------------------------------------------------------------
   ! coef: j_kcal * eq**2 / (4.0e0_PREC * F_PI * e0 * ek * rij)
   !   =  332.063713019 / ek
+#ifdef _HTN_CONSITENT
+  inele%coef(grep) = 332.0637090 / ek
+#else
+  ! Default
   inele%coef(grep) = JOUL2KCAL_MOL * 1.0e10_PREC * ELE**2 &
                     / (4.0e0_PREC * F_PI * EPSI_0 * ek)
-  !! Only for consistency to Denesyuk
-  !inele%coef(grep) = 332.0637090 / ek
+#endif
 
   ! Kd: sqrt(e0 * ek * RT / 2 * NA**2 * eq**2 * I)
   !   = sqrt(1.0e-3 * e0 * ek * kb / 2 * NA * eq**2) * sqrt(T(K) / I(M))
   if (inmisc%i_temp_independent == 0) then
+
+#ifdef _HTN_CONSISTENT
+     rho = 2 * ionic_strength * 6.022e-4_PREC
+     kappaD = sqrt(4 * F_PI * lb_kT * rho / temp_kT)
+     lambdaD = 1.0_PREC / kappaD
+     inele%cdist(grep) = lambdaD
+#else
+     ! Default
      inele%cdist(grep) = 1.0e10_PREC                               &
                      * sqrt( (1.0e-3_PREC * EPSI_0 * ek * BOLTZ_J) &
                             / (2.0_PREC * N_AVO * ELE**2)  )       &
                      * sqrt(tempk / ionic_strength)
+#endif
+
   else if (inmisc%i_temp_independent >= 1) then
      inele%cdist(grep) = 1.0e10_PREC                               &
                      * sqrt( (1.0e-3_PREC * EPSI_0 * ek * BOLTZ_J) &
@@ -248,6 +282,14 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         write(outfile%data,'(a,1x,g12.5)') 'lb:', lb
         write(outfile%data,'(a,1x,g12.5)') 'theta:', theta
         write(outfile%data,'(a,1x,g12.5)') 'Zp:', Zp
+   
+#ifdef _HTN_CONSISTENT
+        write(outfile%data,'(a)') '// To be consistent'
+        write(outfile%data,'(a,1x,g12.5)') 'lb_kT:', lb_kT
+        write(outfile%data,'(a,1x,g12.5)') 'rho:', rho
+        write(outfile%data,'(a,1x,g12.5)') 'kappaD:', kappaD
+        write(outfile%data,'(a,1x,g12.5)') 'lambdaD:', lambdaD
+#endif
    
         if (num_ion(IONTYPE%MG) > 0) then
            write(outfile%data,'(a)') ''

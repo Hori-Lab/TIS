@@ -129,14 +129,15 @@ subroutine setp_mass_fric()
      write(lunout,*) "Friction coefficients by Stokes' law (i_fric = 1)"
      write(lunout,*) '   viscosity: ', inpara%viscosity,' [(Pa)(s)]'
      write(lunout,*) '            = ', visc, ' [(Da)(A^-1)(tau^-1)]'
+     write(lunout,*) 'Individual beads radius, friction, and mass'
      do imp = 1, nmp_all
         ichemical = imp2chemicaltype(imp)
         radius(imp) = inpara%radius(ichemical)
-        mass = inpara%cmass(ichemical)
         if (i_simulate_type == SIM%LANGEVIN) then
-           write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp) * mass
+           mass = inpara%cmass(ichemical)
+           write(lunout,*) imp, radius(imp), fric_mp(imp) * mass, cmass_mp(imp)
         else
-           write(lunout,*) '   friction coefficient of (',imp,'): ', fric_mp(imp)
+           write(lunout,*) imp, radius(imp), fric_mp(imp), cmass_mp(imp)
         endif
      enddo
 #ifdef MPI_PAR
