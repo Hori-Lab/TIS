@@ -1,0 +1,106 @@
+* General parameters for simulation
+<<<< para_cafemol_gen
+* the coupling parameter of Berendsen thermostat
+velo_adjst = 1.0 
+
+* Nose-Hoover parameter
+* mass of thermal particle per bead
+csmass_per = 1.0
+* mass of thermal particle per solvent (MPC)
+csmass_mpc_per = 1.0
+
+* the cutoff distance to define a neighbor
+rneighbor_dist = 24.0
+
+neigh_margin = 8.0
+
+* default value of particle mass
+rmass = 10.0
+
+* friction constant for Langevin dynamics simulation
+fric_const = 0.25
+
+* Viscosity to calculate friction coefficient using Stokes' law.
+*    This parameter is effective only if i_fric = 1 in the input.
+*    The value should be given in units of (Pa)(s) = (kg)(m^-1)(s^-1).
+*    To use this, mass and radius of each particle-type must be specified in
+*    "chemical_property" field below. 
+viscosity = 0.001
+>>>>
+
+<<<< chemical_property
+MASS  ALA   71.09
+MASS  ARG   156.19
+MASS  ASN   114.11
+MASS  ASP   115.09
+MASS  CYS   103.15
+MASS  GLN   128.14
+MASS  GLU   129.12
+MASS  GLY   57.05
+MASS  HIS   137.14
+MASS  ILE   113.16
+MASS  LEU   113.16
+MASS  LYS   128.17
+MASS  MET   131.19
+MASS  PHE   147.18
+MASS  PRO   97.12
+MASS  SER   87.08
+MASS  THR   101.11
+MASS  TRP   186.21
+MASS  TYR   163.18
+MASS  VAL   99.14
+
+MASS  P   62.974
+MASS  S  131.106
+MASS  A  134.132
+MASS  G  150.132
+MASS  C  110.102
+MASS  U  111.084
+
+MASS MG  24.3050
+MASS CA2 40.0780
+
+MASS CL  35.4500
+MASS K   39.1000
+MASS NA  22.9900
+
+MASS X1 100.0000
+
+RADIUS  ALA   6.0
+RADIUS  ARG   6.0
+RADIUS  ASN   6.0
+RADIUS  ASP   6.0
+RADIUS  CYS   6.0
+RADIUS  GLN   6.0
+RADIUS  GLU   6.0
+RADIUS  GLY   6.0
+RADIUS  HIS   6.0
+RADIUS  ILE   6.0
+RADIUS  LEU   6.0
+RADIUS  LYS   6.0
+RADIUS  MET   6.0
+RADIUS  PHE   6.0
+RADIUS  PRO   6.0
+RADIUS  SER   6.0
+RADIUS  THR   6.0
+RADIUS  TRP   6.0
+RADIUS  TYR   6.0
+RADIUS  VAL   6.0
+
+RADIUS  P   1.89
+RADIUS  S   2.61
+RADIUS  A   2.52
+RADIUS  G   2.70
+RADIUS  C   2.43
+RADIUS  U   2.43
+
+RADIUS MG   2.00
+RADIUS CA2  2.80
+
+RADIUS CL  1.9480
+RADIUS K   2.6580
+RADIUS NA  1.8680
+
+RADIUS X1  2.1
+>>>>
+
