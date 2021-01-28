@@ -8,6 +8,7 @@ subroutine force_exv_wca(irep, force_mp)
   use const_index
   use var_setp,   only : indtrna13, inperi
   use var_struct, only : nmp_all, pxyz_mp_rep, lexv, iexv2mp
+  use var_simu,   only : istep
   use mpiconst
 
   implicit none
@@ -24,6 +25,7 @@ subroutine force_exv_wca(irep, force_mp)
 #ifdef SHARE_NEIGH_PNL
   integer :: klen
 #endif
+  character(CARRAY_MSG_ERROR) :: error_message
 
   ! --------------------------------------------------------------------
   !! Currently this potential is available noly for RNA.
@@ -106,10 +108,10 @@ subroutine force_exv_wca(irep, force_mp)
      roverdist14 = roverdist2 * roverdist4 * roverdist8
      dvdw_dr = coef * (roverdist14 - roverdist8)
      if(dvdw_dr > DE_MAX) then
-        !write (*, *) "exvol protein", imp1, imp2, dvdw_dr
+        write(error_message,*) 'exv_wca > DE_MAX', istep, imp1, imp2, sqrt(dist2), dvdw_dr
+        call util_error(ERROR%WARN_ALL, error_message)
         dvdw_dr = DE_MAX
      end if
-!     if(dvdw_dr > 4.0e0_PREC) dvdw_dr = 4.0e0_PREC
 
      for(1:3) = dvdw_dr * v21(1:3)
      force_mp(1:3, imp2) = force_mp(1:3, imp2) + for(1:3)

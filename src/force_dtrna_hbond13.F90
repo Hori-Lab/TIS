@@ -12,6 +12,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
   use var_setp,  only : inperi
   use var_struct,only : xyz_mp_rep, pxyz_mp_rep, &
                         ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, nmp_all
+  use var_simu,  only : istep
   use mpiconst
 
   implicit none
@@ -121,6 +122,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       cos_theta312 = d1213 / (a13 * a12)
       if (abs(cos_theta312) > MAX_ABSCOS_HBOND13) then
          d1213 = sign(a12 * a13 * MAX_ABSCOS_HBOND13, cos_theta312)
+         write(*,*) 'ANG(3-1=2): ', irep, istep, ihb, cos_theta312
       endif
       d = acos(cos_theta312) - dtrna_hb_nat(2,ihb)
       pre = 2.0e0_PREC * coef_dtrna_hb(2,ihb) * d / sqrt(d1313*d1212 - d1213**2)
@@ -136,6 +138,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       cos_theta124 = d1242 / (a12 * a42)
       if (abs(cos_theta124) > MAX_ABSCOS_HBOND13) then
          d1242 = sign(a12 * a42 * MAX_ABSCOS_HBOND13, cos_theta124)
+         write(*,*) 'ANG(1=2-4): ', irep, istep, ihb, cos_theta124
       endif
       d = acos(cos_theta124) - dtrna_hb_nat(3,ihb)
       pre = 2.0e0_PREC * coef_dtrna_hb(3,ihb) * d / sqrt(d1212*d4242 - d1242**2)
@@ -195,6 +198,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       cos_theta531 = d1353 / (a13 * sqrt(dot_product(v53,v53)))
       if (abs(cos_theta531) > MAX_ABSCOS_HBOND13) then
          c5313_abs2 = dot_product(v53,v53) * d1313 * (1.0 - MAX_ABSCOS_HBOND13**2)
+         write(*,*) 'ANG(5-3-1): ', irep, istep, ihb, cos_theta531
       endif
    
       dih = atan2(dot_product(v53,n)*a13 , dot_product(c5313,n))
@@ -228,6 +232,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       cos_theta246 = d4246 / (a42 * sqrt(dot_product(v46,v46)))
       if (abs(cos_theta246) > MAX_ABSCOS_HBOND13) then
          c4246_abs2 = dot_product(v46,v46) * d4242 * (1.0 - MAX_ABSCOS_HBOND13**2)
+         write(*,*) 'ANG(2-4-6): ', irep, istep, ihb, cos_theta246
       endif
    
       dih = atan2(dot_product(v12,c4246)*a42 , dot_product(n,c4246))
