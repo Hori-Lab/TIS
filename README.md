@@ -1,6 +1,16 @@
 # MDcode
 
-###
+## TIS Models
+|     | Name  |  M+/M-  |   M++   | Exv. | #sep-P | #sep-S | #sep-B |
+|-----|-------|---------|---------|------|--------|--------|--------|
+| RNA | DT13  | DH      | N/A     | WCA  |    3   |    3   |    2   |
+| RNA | DT15  | Coulomb | Coulomb | mWCA |    3   |    3   |    2   |
+| RNA | DHT18 |         | N/A     |      |        |        |        |
+| RNA | NHT19 | DH      | PMF     | mWCA |    4   |    4   |    2   |
+| DNA | CHT18 | DH      | N/A     | WCA  |    3   |    3   |    2   |
+| DNA | TBA   | DH      | PMF     |      |        |        |        |
+
+## Molecular topology
  + Linear S: linear nucleic acid whose 5'-end starts from sugar
  + Linear P: linear nucleic acid whose 5'-end starts from phosphate
  + Circular: circular nucleic acid
