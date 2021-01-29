@@ -1,14 +1,14 @@
 # MDcode
 
 ## TIS Models
-|     | Name  | M+, Cl-   | M++      | Exv. | #sep-P | #sep-S | #sep-B |
-|-----|-------|-----------|----------|------|--------|--------|--------|
-| RNA | DT13  | Implicit  | N/A      | WCA  |    3   |    3   |    2   |
-| RNA | DT15  | Explicit  | Explicit | mWCA |    3   |    3   |    2   |
-| RNA | DHT18 | Implicit  | N/A      |      |        |        |        |
-| RNA | NHT19 | Implicit  | Explicit | mWCA |    4   |    4   |    2   |
-| DNA | CHT18 | Implicit  | N/A      | WCA  |    3   |    3   |    2   |
-| DNA | TBA   | Implicit  | Explicit |      |        |        |        |
+|     | Name  |  M+/M-  |   M++   | Exv. | #sep-P | #sep-S | #sep-B |
+|-----|-------|---------|---------|------|--------|--------|--------|
+| RNA | DT13  | DH      | N/A     | WCA  |    3   |    3   |    2   |
+| RNA | DT15  | Coulomb | Coulomb | mWCA |    3   |    3   |    2   |
+| RNA | DHT18 |         | N/A     |      |        |        |        |
+| RNA | NHT19 | DH      | PMF     | mWCA |    4   |    4   |    2   |
+| DNA | CHT18 | DH      | N/A     | WCA  |    3   |    3   |    2   |
+| DNA | TBA   | DH      | PMF     |      |        |        |        |
 
 ## Molecular topology
  + Linear S: linear nucleic acid whose 5'-end starts from sugar
