@@ -15,7 +15,7 @@ subroutine simu_minimize(flg_converge)
    use const_maxsize
 
    use if_mloop
-   use var_setp, only : insimu, inmisc, inpara
+   use var_setp, only : insimu, inmisc
    use var_simu, only : istep,istep_sim, dxyz_mp
    use var_struct,only: nmp_real
    use var_emin, only : inemin
@@ -50,7 +50,7 @@ subroutine simu_minimize(flg_converge)
          endif
       enddo
 
-      if (sqrt(d2max) + sqrt(d2max_2nd) > inpara%neigh_margin) then
+      if (sqrt(d2max) + sqrt(d2max_2nd) > insimu%neigh_margin) then
          if (flg_file_out%neigh) then
             write(outfile%neigh(IREP), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
                                  istep, irep, d2max, d2max_2nd, d2max+d2max_2nd

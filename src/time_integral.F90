@@ -19,7 +19,7 @@ subroutine time_integral(flg_step_each_replica)
   use if_write
   use if_energy
   use var_io,      only : i_run_mode, i_simulate_type, outfile, flg_file_out
-  use var_setp,    only : insimu, fix_mp, inmisc, inpara
+  use var_setp,    only : insimu, fix_mp, inmisc
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep
   use var_replica, only : inrep, rep2val, rep2step, flg_rep, n_replica_mpi, exchange_step, irep2grep
   use var_simu,    only : istep, tstep, tstep2, tsteph, tempk, accelaf, &
@@ -72,7 +72,7 @@ subroutine time_integral(flg_step_each_replica)
            endif
         enddo
 
-        if (sqrt(d2max) + sqrt(d2max_2nd) > inpara%neigh_margin) then
+        if (sqrt(d2max) + sqrt(d2max_2nd) > insimu%neigh_margin) then
            if (flg_file_out%neigh) then
 #ifdef MPI_PAR
            if (local_rank_mpi == 0)then

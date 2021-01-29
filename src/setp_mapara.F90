@@ -7,7 +7,7 @@ subroutine setp_mapara(lunpara, lunout)
   
   use const_maxsize
   use const_index
-  use var_setp, only : inpara
+  use var_setp, only : inpara, insimu
 #ifdef MPI_PAR
   use mpiconst
 #endif
@@ -34,7 +34,7 @@ subroutine setp_mapara(lunpara, lunout)
   inpara%velo_adjst     = -1.0
   inpara%csmass_per     = -1.0
   inpara%rneighbor_dist = -1.0
-  inpara%neigh_margin   = -1.0
+  insimu%neigh_margin   = -1.0
   inpara%fric_const     = -1.0
   inpara%cmass(0:CHEMICALTYPE%MAX)  = -1.0
   inpara%radius(0:CHEMICALTYPE%MAX) = -1.0
@@ -73,7 +73,7 @@ subroutine setp_mapara(lunpara, lunout)
         
         cvalue = 'neigh_margin'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
-             inpara%neigh_margin, cvalue)
+             insimu%neigh_margin, cvalue)
         
         cvalue = 'rmass'
         call ukoto_rvalue2(lunout, csides(1, iequa), &
@@ -103,7 +103,7 @@ subroutine setp_mapara(lunpara, lunout)
      error_message = 'Error: invalid value for rneighbor_dist'
      call util_error(ERROR%STOP_ALL, error_message)
 
-  else if(inpara%neigh_margin < 0.0) then
+  else if(insimu%neigh_margin < 0.0) then
      error_message = 'Error: invalid value for neigh_margin'
      call util_error(ERROR%STOP_ALL, error_message)
 
@@ -153,6 +153,7 @@ subroutine setp_mapara(lunpara, lunout)
   end if
 
   call MPI_Bcast (inpara, inpara%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast (insimu, inpara%sz, MPI_BYTE,0,MPI_COMM_WORLD,ierr)
 #endif
 
 !===========================================================================

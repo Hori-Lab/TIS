@@ -7,7 +7,7 @@ subroutine mloop_neigh_dist()
   use const_maxsize
   use const_index
   use var_io,     only : outfile
-  use var_setp,   only : inpara, inmisc, indtrna13, indtrna15, &! inrna, &
+  use var_setp,   only : insimu, inmisc, indtrna13, indtrna15, &! inrna, &
                          inpro, inligand, inexv
   use var_struct, only : nunit_all, iclass_unit, exv_radius_mp, lunit2mp
                           
@@ -110,7 +110,7 @@ subroutine mloop_neigh_dist()
            endif
         endif
 
-        inmisc%rneighbordist2_unit(iunit, junit) = (max_cut + inpara%neigh_margin) ** 2
+        inmisc%rneighbordist2_unit(iunit, junit) = (max_cut + insimu%neigh_margin) ** 2
      enddo
   enddo
 

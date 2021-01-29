@@ -52,7 +52,7 @@ subroutine setp_md_info()
   insimu%tstep_size       = -1.0
   insimu%n_step_save      = -1
   insimu%n_step_rst       = -1
-  insimu%n_step_neighbor  = -1
+  insimu%n_step_neighbor  =  0   ! No longer used
   insimu%n_step_progress  = 1000000
   insimu%i_com_zeroing_ini = 0
   insimu%i_com_zeroing    = -1
@@ -69,7 +69,7 @@ subroutine setp_md_info()
   inmisc%i_del_int        = 0
   inmisc%i_energy_para    = 0
   inmisc%i_neigh_dist     = 0
-  inmisc%i_neigh_dynamic  = 0
+  inmisc%i_neigh_dynamic  = 1   ! Now dynamic is only the option
   inmisc%i_fric           = 0
   inmisc%i_mass           = 0
   inmisc%i_redef_mass_fric= 0
@@ -220,6 +220,11 @@ subroutine setp_md_info()
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_neigh_dynamic, cvalue)
 
+        ! Over-write insimu%neigh_margin from para/general.para
+        cvalue = 'neigh_margin'
+        call ukoto_rvalue2(lunout, csides(1, iequa), &
+             insimu%neigh_margin, cvalue)
+
         cvalue = 'i_fric'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
              inmisc%i_fric, cvalue)
@@ -369,7 +374,7 @@ subroutine setp_md_info()
      call util_error(ERROR%STOP_ALL, error_message)
   else if(insimu%n_step_rst <= 0) then
      insimu%n_step_rst = insimu%n_step_save
-  else if(insimu%n_step_neighbor <= 0) then
+  else if(insimu%n_step_neighbor < 0) then
      error_message = 'Error: invalid value for n_step_neighbor'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
@@ -467,12 +472,17 @@ subroutine setp_md_info()
 
   ! -----------------------------------------------------------------
   if(inmisc%i_neigh_dynamic == 0) then
+     error_message = 'Error: i_neigh_dynamic = 0 is no longer acceptable'
+     call util_error(ERROR%STOP_ALL, error_message)
   else if(inmisc%i_neigh_dynamic == 1) then
      write(lunout, *) 'dynamic neihghbor list: i_neigh_dynamic = 1'
   else
      error_message = 'Error: invalid value for i_neigh_dynamic'
      call util_error(ERROR%STOP_ALL, error_message)
   end if
+
+  ! -----------------------------------------------------------------
+  write(lunout, *) 'neigh_margin: ', insimu%neigh_margin
 
   ! -----------------------------------------------------------------
   ! Friction

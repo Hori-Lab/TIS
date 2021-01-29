@@ -38,7 +38,7 @@ subroutine neighbor_list_hb(irep)
 
   ! --------------------------------------------------------------------
 !  if (inmisc%i_neigh_dynamic == 1) then
-!     dist_cut_sq = (dtrna_hb_longest + indtrna%hb_cutoff_dist + inpara%neigh_margin) ** 2
+!     dist_cut_sq = (dtrna_hb_longest + indtrna%hb_cutoff_dist + insimu%neigh_margin) ** 2
 !  else
 !     dist_cut_sq = 20.0e0_PREC ** 2
 !  endif

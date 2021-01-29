@@ -14,7 +14,7 @@ subroutine neighbor_list_ele(jrep)
 
   use const_maxsize
   use const_index
-  use var_setp,    only : inmisc, inele, inperi, inpara
+  use var_setp,    only : inmisc, inele, inperi, insimu
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
                           imp2unit, ncharge, icharge2mp, coef_charge, &
                           lele, iele2mp, coef_ele, ncharge, imp2type
@@ -71,14 +71,14 @@ subroutine neighbor_list_ele(jrep)
   if (inmisc%i_neigh_dynamic == 1) then 
      if (inele%i_function_form == 0) then       ! Debye-Huckel
         if (inele%i_DH_cutoff_type == 0) then
-           rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele * inele%cdist(grep))**2
+           rneighbor2_ele = (insimu%neigh_margin + inele%cutoff_ele * inele%cdist(grep))**2
         else
-           rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele)**2
+           rneighbor2_ele = (insimu%neigh_margin + inele%cutoff_ele)**2
         endif
      else if (inele%i_function_form == 1) then  ! Coulomb 
-        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
+        rneighbor2_ele = (insimu%neigh_margin + inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 2) then  ! Coulomb (Ewld)
-        rneighbor2_ele = (inpara%neigh_margin + inele%cutoff_ele) ** 2
+        rneighbor2_ele = (insimu%neigh_margin + inele%cutoff_ele) ** 2
      else if (inele%i_function_form == 3) then  ! Brute-force direct (only energy)
         lele(:) = 0
         return
