@@ -12,6 +12,7 @@
 ! *********************************************************************
 subroutine neighbor_list_ele(jrep)
 
+  use const_physical, only : ZERO_JUDGE
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele, inperi, insimu
@@ -121,6 +122,8 @@ subroutine neighbor_list_ele(jrep)
   do icharge = 1, ncharge - 1
 #endif
 
+     if (abs(coef_charge(icharge, grep)) < ZERO_JUDGE) cycle
+
      imp = icharge2mp(icharge)
      imptype = imp2type(imp) 
      iunit = imp2unit(imp)
@@ -130,6 +133,12 @@ subroutine neighbor_list_ele(jrep)
      if (jcharge > ncharge) cycle
 
      do while (jcharge <= ncharge)
+
+        if (abs(coef_charge(jcharge, grep)) < ZERO_JUDGE) then
+            jcharge = jcharge + 1
+            cycle
+        endif
+
         jmp = icharge2mp(jcharge)
         junit = imp2unit(jmp)
 
