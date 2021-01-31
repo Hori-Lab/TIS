@@ -24,7 +24,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   integer :: icharge, icharge_change, imp, i
   integer :: itype, ibin
   real(PREC) :: ek, Tc, lb, xi, Zp, theta, b, b3
-  real(PREC) :: r, DH, e_add, Rbininv
+  real(PREC) :: r, DH, e_add
   real(PREC) :: v1, v2, c1v1, c2v2
   real(PREC) :: conc_Mg
   character(CARRAY_MSG_ERROR) :: error_message
@@ -255,9 +255,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         !write(*,*) ibin, r, inpmf%pmf(ibin,itype), DH, e_add, pmfdh_energy(ibin,grep,itype)
      enddo
    
-     Rbininv = 1.0 / inpmf%Rbin(itype)
      do ibin = 1, inpmf%Nbin(itype) - 1
-        pmfdh_force(ibin,grep,itype) = - Rbininv * &
+        pmfdh_force(ibin,grep,itype) = - inpmf%Rbininv(itype) * &
                    (pmfdh_energy(ibin+1, grep, itype) - pmfdh_energy(ibin, grep, itype))
      enddo
 
@@ -273,30 +272,38 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
      write(outfile%data,'(a,i4)') 'i_dtrna_model: ', inmisc%i_dtrna_model
 
      if (inmisc%i_dtrna_model == 2019) then
-        write(outfile%data,'(a,1x,i10)') '#Mg:', num_ion(IONTYPE%MG)
-        write(outfile%data,'(a,1x,3(g12.5))') 'Box:', (inperi%psize(i), i=1,3)
-        write(outfile%data,'(a,1x,f9.6)') '[M+]:', ionic_strength
-        write(outfile%data,'(a,1x,f9.6)') '[Mg++]:', conc_Mg
-        write(outfile%data,'(a,1x,g12.5)') 'ek:', ek
-        write(outfile%data,'(a,1x,g12.5)') 'b:', b 
-        write(outfile%data,'(a,1x,g12.5)') 'lb:', lb
-        write(outfile%data,'(a,1x,g12.5)') 'theta:', theta
-        write(outfile%data,'(a,1x,g12.5)') 'Zp:', Zp
+        write(outfile%data,'(a,1x,i10)')    '  #Mg:', num_ion(IONTYPE%MG)
+        write(outfile%data,'(a,1x,3(es12.5))') '  Box:', (inperi%psize(i), i=1,3)
+        write(outfile%data,'(a,1x,es12.5)') '  [M+]:', ionic_strength
+        write(outfile%data,'(a,1x,es12.5)') '  [Mg++]:', conc_Mg
+        write(outfile%data,'(a,1x,es12.5)') '  ek:', ek
+        write(outfile%data,'(a,1x,es12.5)') '  b:', b
+        write(outfile%data,'(a,1x,es12.5)') '  lb:', lb
+        write(outfile%data,'(a,1x,es12.5)') '  theta:', theta
+        write(outfile%data,'(a,1x,es12.5)') '  Zp:', Zp
    
 #ifdef _HTN_CONSISTENT
-        write(outfile%data,'(a)') '// To be consistent'
-        write(outfile%data,'(a,1x,g12.5)') 'lb_kT:', lb_kT
-        write(outfile%data,'(a,1x,g12.5)') 'rho:', rho
-        write(outfile%data,'(a,1x,g12.5)') 'kappaD:', kappaD
-        write(outfile%data,'(a,1x,g12.5)') 'lambdaD:', lambdaD
+        write(outfile%data,'(a)') '// To be consistent with HTN'
+        write(outfile%data,'(a,1x,es12.5)') '  lb_kT:', lb_kT
+        write(outfile%data,'(a,1x,es12.5)') '  rho:', rho
+        write(outfile%data,'(a,1x,es12.5)') '  kappaD:', kappaD
+        write(outfile%data,'(a,1x,es12.5)') '  lambdaD:', lambdaD
 #endif
    
         if (num_ion(IONTYPE%MG) > 0) then
            write(outfile%data,'(a)') ''
            write(outfile%data,'(a)') '<<<<<< Effective potential for Mg-P'
-           write(outfile%data,'(a)') '<<    r     W(r)     PMF       DH      W-PMF'
-   
+
            itype = PMFTYPE%MG_P
+
+           write(outfile%data,'(a,1x,i8)')   '#  Nbin:', inpmf%Nbin(itype)
+           write(outfile%data,'(a,1x,es12.5)') '#  Rmin:', inpmf%Rmin(itype)
+           write(outfile%data,'(a,1x,es12.5)') '#  Rmax:', inpmf%Rmax(itype)
+           write(outfile%data,'(a,1x,es12.5)') '#  Rbin:', inpmf%Rbin(itype)
+           write(outfile%data,'(a,1x,es12.5)') '#  Rbininv:', inpmf%Rbininv(itype)
+           write(outfile%data,'(a,1x,es12.5)') '#  Rmerge:', inpmf%Rmerge(itype)
+           write(outfile%data,'(a)') '#     r     V(r)     PMF       DH      W-PMF    Force'
+   
          
            do ibin = 1, inpmf%Nbin(itype)
               r = inpmf%Rmin(itype) + inpmf%Rbin(itype) * real(ibin-1, kind=PREC)
@@ -309,7 +316,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
               
               pmfdh_energy(ibin, grep, itype) = inpmf%pmf(ibin, itype) + e_add
    
-              write(outfile%data, '(6(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add , pmfdh_force(ibin,grep,itype)
+              !write(outfile%data, '(6(1x,f8.3))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add , pmfdh_force(ibin,grep,itype)
+              write(outfile%data, '(6(1x,es12.5))') r, pmfdh_energy(ibin,grep,itype), inpmf%pmf(ibin,itype), DH, e_add , pmfdh_force(ibin,grep,itype)
            enddo
    
            write(outfile%data,*) '>>>>>>'

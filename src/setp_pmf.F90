@@ -69,7 +69,7 @@ subroutine setp_pmf()
      Nbin = Nbin + 1
 
      ! Check the bin width
-     if (abs(r - r_pre - Rbin) > 0.001) then
+     if (abs(r - r_pre - Rbin) > 0.0001) then
         error_message = 'Error: bin width is not uniform in PMF file: '// inpmf%path(itype)
         call util_error(ERROR%STOP_ALL, error_message)
      endif
@@ -85,6 +85,7 @@ subroutine setp_pmf()
   inpmf%Nbin(itype) = Nbin
   inpmf%Rmin(itype) = Rmin
   inpmf%Rbin(itype) = Rbin
+  inpmf%Rbininv(itype) = 1.0_PREC / Rbin
   inpmf%Rmax(itype) = r
 
   rewind(iopen_lunnum)

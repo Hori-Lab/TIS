@@ -669,6 +669,7 @@ module var_setp
      real(PREC) :: Rmin(PMFTYPE%MAX)
      real(PREC) :: Rmax(0:PMFTYPE%MAX)
      real(PREC) :: Rbin(PMFTYPE%MAX)
+     real(PREC) :: Rbininv(PMFTYPE%MAX)
      real(PREC) :: Rmerge(PMFTYPE%MAX)
      integer :: sz
   endtype input_pmf
