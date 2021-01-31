@@ -1,4 +1,4 @@
-cfml
+md
 data/
 inp2/
 *.lyx~
@@ -7,3 +7,4 @@ check/Makefile*
 check/make*
 check/md.*
 md*
+.DS_Store

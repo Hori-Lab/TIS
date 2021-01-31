@@ -1,0 +1,125 @@
+<<<< filenames
+path = ./
+filename = bwyv19_force_check
+OUTPUT 
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para = ./para_HTN
+>>>> 
+
+<<<< periodic_bound
+psizex = 700.0
+psizey = 700.0
+psizez = 700.0
+>>>>
+
+<<<< job_cntl  
+i_run_mode = 1
+i_simulate_type = 1
+i_initial_state = 6
+i_periodic = 1
+>>>>
+
+<<<< unit_and_state
+i_seq_read_style = 4
+i_go_native_read_style = 2
+1    rna    bwyv19_force_check.rna.pdb
+2    ion    bwyv19_force_check.ion.pdb
+>>>>
+
+<<<< initial_struct
+1       bwyv19_force_check.rna.pdb
+2       bwyv19_force_check.ion.pdb
+>>>>
+
+<<<< initial_ion
+num_k_ion = 0
+num_cl_ion = 0
+num_mg_ion = 206
+>>>>
+
+<<<< native_info_sim1
+** all-in-one-file style
+NINFO(all/all) bwyv19.ninfo
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 1
+tstep_size = 0.05
+n_step_save = 1
+n_step_neighbor = 100
+n_step_progress = 10000000
+n_step_rst = 100000000
+i_com_zeroing = 1
+i_no_trans_rot = 0
+tempk = 310.15
+n_seed = 5
+i_mass = 1
+i_fric = 1
+i_redef_para = 1
+i_neigh_dynamic = 1
+>>>>
+
+
+<<<< energy_function       
+LOCAL(1)      L_DTRNA
+LOCAL(2)      NOTHING
+NLOCAL(1/1)   DTRNA ELE EXV_DT15
+NLOCAL(1/2)   ELE EXV_DT15
+NLOCAL(2/2)   ELE EXV_DT15
+
+i_dtrna_model = 2019
+
+i_triple_angle_term = 0
+i_use_atom_protein = 0
+i_use_atom_dna = 0
+i_coef_from_ninfo = 1
+i_output_energy_style = 1
+>>>>
+
+<<<< electrostatic
+path_pmf_Mg_P = ./para/PMF_RISM/pmf_Mg_P_1264
+pmf_merge = 5.0
+
+i_DH_cutoff_type = 1
+# For only Debye-Huckel
+# 0: cutoff_ele x Debye length (default)
+#    cutoff_ele works as a scaling factor
+# 1: cutoff_ele
+#    cutoff_ele works as the cutoff distance
+
+cutoff_ele = 50.0
+
+ionic_strength = 0.057
+diele_water = 99999.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature (Malmberg and Maryott, 1956)
+i_diele = 1
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 1
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+i_function_form = 0
+
+** calculation method for electrostatic interaction in K computer (optional)
+**            = 0 neighboring list (default)
+**            = 1 neighboring list for K computer
+**            = 2 direct caluculation for K computer
+i_calc_method = 0
+
+CHARGE_CHANGE 85  0.0
+>>>>
+
+<<<< redefine_para
+viscosity = 0.000015
+>>>>
