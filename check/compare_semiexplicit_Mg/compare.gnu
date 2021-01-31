@@ -14,11 +14,13 @@ set title 'Total energy'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:10 w lp title 'Hung'\
-, 'md.ts' u ($1+2):4 w l title 'mine'
+, 'md.ts' u ($1+2):4 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):4 w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:10 w lp title 'Hung'\
-, 'md.ts' u ($1+2):4 w l title 'mine'
+, 'md.ts' u ($1+2):4 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):4 w l title 'mine HTN'
 
 
 # bond & angle
@@ -26,11 +28,13 @@ set title 'Bond and angles'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:($2+$3) w lp title 'Hung'\
-, 'md.ts' u ($1+2):8 w l title 'mine'
+, 'md.ts' u ($1+2):8 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):8 w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:($2+$3) w lp title 'Hung'\
-, 'md.ts' u ($1+2):8 w l title 'mine'
+, 'md.ts' u ($1+2):8 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):8 w l title 'mine HTN'
 
 
 # H-bonds
@@ -38,11 +42,13 @@ set title 'H-bonds'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:($5+$6) w lp title 'Hung'\
-, 'md.ts' u ($1+2):($13+$14) w l title 'mine'
+, 'md.ts' u ($1+2):($13+$14) w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):($13+$14) w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:($5+$6) w lp title 'Hung'\
-, 'md.ts' u ($1+2):($13+$14) w l title 'mine'
+, 'md.ts' u ($1+2):($13+$14) w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):($13+$14) w l title 'mine HTN'
 
 
 # Stack
@@ -50,11 +56,13 @@ set title 'Stack'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:($7+$8) w lp title 'Hung'\
-, 'md.ts' u ($1+2):($11+$12) w l title 'mine'
+, 'md.ts' u ($1+2):($11+$12) w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):($11+$12) w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:($7+$8) w lp title 'Hung'\
-, 'md.ts' u ($1+2):($11+$12) w l title 'mine'
+, 'md.ts' u ($1+2):($11+$12) w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):($11+$12) w l title 'mine HTN'
 
 
 # Excluded volume
@@ -62,11 +70,13 @@ set title 'Excluded volume'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:4 w lp title 'Hung'\
-, 'md.ts' u ($1+2):10 w l title 'mine'
+, 'md.ts' u ($1+2):10 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):10 w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:4 w lp title 'Hung'\
-, 'md.ts' u ($1+2):10 w l title 'mine'
+, 'md.ts' u ($1+2):10 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):10 w l title 'mine HTN'
 
 
 # Electrostaic
@@ -74,8 +84,50 @@ set title 'Electrostatic'
 
 set xr [5:*]
 p 'semiexplicit.out' u 1:9 w lp title 'Hung'\
-, 'md.ts' u ($1+2):15 w l title 'mine'
+, 'md.ts' u ($1+2):15 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):15 w l title 'mine HTN'
 
 set xr [4000:4500]
 p 'semiexplicit.out' u 1:9 w lp title 'Hung'\
-, 'md.ts' u ($1+2):15 w l title 'mine'
+, 'md.ts' u ($1+2):15 w l title 'mine'\
+, 'md_HTN.ts' u ($1+2):15 w l title 'mine HTN'
+
+
+# Electrostaic (P-P)
+set title 'Electrostatic (P-P)'
+
+set xr [5:*]
+p 'semiexplicit.out' u 1:13 w lp title 'Hung'\
+, 'PP.ts' u ($1+2):15 w l title 'mine'\
+, 'PP_HTN.ts' u ($1+2):15 w l title 'mine'
+
+set xr [4000:4500]
+p 'semiexplicit.out' u 1:13 w lp title 'Hung'\
+, 'PP.ts' u ($1+2):15 w l title 'mine'\
+, 'PP_HTN.ts' u ($1+2):15 w l title 'mine'
+
+# Electrostaic (P-M)
+set title 'Electrostatic (P-M)'
+
+set xr [5:*]
+p 'semiexplicit.out' u 1:14 w lp title 'Hung'\
+, 'PM.ts' u ($1+2):15 w l title 'mine'\
+, 'PM_HTN.ts' u ($1+2):15 w l title 'mine'
+
+set xr [4000:4500]
+p 'semiexplicit.out' u 1:14 w lp title 'Hung'\
+, 'PM.ts' u ($1+2):15 w l title 'mine'\
+, 'PM_HTN.ts' u ($1+2):15 w l title 'mine'
+
+# Electrostaic (M-M)
+set title 'Electrostatic (M-M)'
+
+set xr [5:*]
+p 'semiexplicit.out' u 1:15 w lp title 'Hung'\
+, 'MM.ts' u ($1+2):15 w l title 'mine'\
+, 'MM_HTN.ts' u ($1+2):15 w l title 'mine'
+
+set xr [4000:4500]
+p 'semiexplicit.out' u 1:15 w lp title 'Hung'\
+, 'MM.ts' u ($1+2):15 w l title 'mine'\
+, 'MM_HTN.ts' u ($1+2):15 w l title 'mine'

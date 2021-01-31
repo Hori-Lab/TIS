@@ -1,7 +1,7 @@
 <<<< filenames
 path = ./
 filename = md
-OUTPUT dcd psf 
+OUTPUT dcd pdb psf
 path_pdb = ../../pdb
 path_ini = ../../pdb
 path_natinfo = ../../ninfo
