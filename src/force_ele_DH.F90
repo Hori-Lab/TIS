@@ -6,10 +6,10 @@ subroutine force_ele_DH(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inele, inperi, inpmf, inmisc
+  use var_setp,   only : inele, inperi, inpmf
   use var_struct, only : pxyz_mp_rep, lele, iele2mp, coef_ele, nmp_all
   use var_replica,only : irep2grep
-  use var_simu, only : istep
+  use var_simu,   only : istep, pmfdh_force
   use mpiconst
 
   implicit none
@@ -20,12 +20,11 @@ subroutine force_ele_DH(irep, force_mp)
   integer :: imp1, imp2
   integer :: ksta, kend
   integer :: grep, iele1
-  integer :: imir, ipmf
+  integer :: imir, ipmf, ibin
   real(PREC) :: dist1, dist2, rdist1
   real(PREC) :: dvdw_dr, rcdist, cutoff2
   real(PREC) :: ek, ek_simu
   real(PREC) :: v21(3), for(3)
-  real(PREC) :: Rmin, Rbininv
 #ifdef MPI_PAR
   integer :: klen
 #endif
@@ -48,11 +47,6 @@ subroutine force_ele_DH(irep, force_mp)
   ek_simu = inele%diele
   ek = inele%diele_water
 
-  if (inmisc%i_dtrna_model == 2019) then
-     Rmin = inpmf%Rmin(PMFTYPE%MG_P)
-     Rbininv = 1.0 / inpmf%Rbin(PMFTYPE%MG_P)
-  endif
-
 #ifdef _DEBUG
   write(*,*) 'lele(irep), ',lele(irep)
 #endif
@@ -74,7 +68,7 @@ subroutine force_ele_DH(irep, force_mp)
   kend = lele(irep)
 #endif
 
-!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,dvdw_dr,for,imir, ipmf)
+!$omp do private(imp1,imp2,v21,dist2,dist1,rdist1,dvdw_dr,for,imir, ipmf, ibin)
   do iele1=ksta, kend
      imp1 = iele2mp(1, iele1, irep)
      imp2 = iele2mp(2, iele1, irep)
@@ -92,7 +86,17 @@ subroutine force_ele_DH(irep, force_mp)
 
      ! PMF + DH (semiexplicit model)
      if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf)) then 
-        dvdw_dr = rdist1 * force_pmfdh(dist1, grep)
+
+        if (dist1 < inpmf%Rmin(PMFTYPE%MG_P)) then
+           write(error_message,*) 'force_ele_DH(r < Rmin)', istep, irep, imp1, imp2, dist1
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+
+        !dvdw_dr = rdist1 * force_pmfdh(dist1, grep)
+
+        ibin = floor( (dist1 - inpmf%Rmin(PMFTYPE%MG_P)) * inpmf%Rbininv(PMFTYPE%MG_P)) + 1
+
+        dvdw_dr = rdist1 * pmfdh_force(ibin, grep, PMFTYPE%MG_P)
 
      ! DH
      else
@@ -102,7 +106,7 @@ subroutine force_ele_DH(irep, force_mp)
      endif
      
      if(dvdw_dr > DE_MAX) then
-        write(error_message,*) 'force_ele_DH > DE_MAX', istep, imp1, imp2, dist1, dvdw_dr, DE_MAX
+        write(error_message,*) 'force_ele_DH > DE_MAX', istep, irep, imp1, imp2, dist1, dvdw_dr, DE_MAX
         call util_error(ERROR%WARN_ALL, error_message)
         dvdw_dr = DE_MAX
      end if
@@ -122,51 +126,51 @@ subroutine force_ele_DH(irep, force_mp)
 
 contains
    
-   real(PREC) function force_pmfdh(r, grep)
-      use var_simu, only : pmfdh_force
-      implicit none
-      real(PREC),intent(in) :: r
-      integer, intent(in) :: grep
-      integer :: ibin
-
-      ! Rmin = 2.6
-      ! Rbin = 0.025
-      !
-      ! r = 2.624 ==> bin 1
-      ! r = 2.625 ==> bin 2
-      ! r = 2.626 ==> bin 2
-      ! r = 2.649 ==> bin 2
-      ! r = 2.650 ==> bin 3
-
-      ! If r = 2.624
-      ! (r - Rmin) = 0.024
-      ! (r - Rmin) * Rbininv = 0.96  ==floor==>  0
-      ! floor((r - Rmin) * Rbininv) + 1 = 1
-
-      ! If r = 2.625
-      ! (r - Rmin) = 0.025
-      ! (r - Rmin) * Rbininv = 1.0  ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.626
-      ! (r - Rmin) = 0.026
-      ! (r - Rmin) * Rbininv = 1.04  ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.649
-      ! (r - Rmin) = 0.049
-      ! (r - Rmin) * Rbininv = 1.96 ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.650
-      ! (r - Rmin) = 0.050
-      ! (r - Rmin) * Rbininv = 2.0 ==floor==>  2
-      ! floor((r - Rmin) * Rbininv) + 1 = 3
-
-      ibin = floor( (r - Rmin) * Rbininv) + 1
-
-      force_pmfdh = pmfdh_force(ibin, grep, PMFTYPE%MG_P)
-
-   endfunction force_pmfdh
+!   real(PREC) function force_pmfdh(r, grep)
+!      use var_simu, only : pmfdh_force
+!      implicit none
+!      real(PREC),intent(in) :: r
+!      integer, intent(in) :: grep
+!      integer :: ibin
+!
+!      ! Rmin = 2.6
+!      ! Rbin = 0.025
+!      !
+!      ! r = 2.624 ==> bin 1
+!      ! r = 2.625 ==> bin 2
+!      ! r = 2.626 ==> bin 2
+!      ! r = 2.649 ==> bin 2
+!      ! r = 2.650 ==> bin 3
+!
+!      ! If r = 2.624
+!      ! (r - Rmin) = 0.024
+!      ! (r - Rmin) * Rbininv = 0.96  ==floor==>  0
+!      ! floor((r - Rmin) * Rbininv) + 1 = 1
+!
+!      ! If r = 2.625
+!      ! (r - Rmin) = 0.025
+!      ! (r - Rmin) * Rbininv = 1.0  ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.626
+!      ! (r - Rmin) = 0.026
+!      ! (r - Rmin) * Rbininv = 1.04  ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.649
+!      ! (r - Rmin) = 0.049
+!      ! (r - Rmin) * Rbininv = 1.96 ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.650
+!      ! (r - Rmin) = 0.050
+!      ! (r - Rmin) * Rbininv = 2.0 ==floor==>  2
+!      ! floor((r - Rmin) * Rbininv) + 1 = 3
+!
+!      ibin = floor( (r - Rmin) * Rbininv) + 1
+!
+!      force_pmfdh = pmfdh_force(ibin, grep, PMFTYPE%MG_P)
+!
+!   endfunction force_pmfdh
 
 end subroutine force_ele_DH

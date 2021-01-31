@@ -6,6 +6,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
   use const_maxsize
   use const_physical
   use const_index
+  use var_simu, only : pmfdh_energy, pmfdh_force, istep
   use var_setp,    only : inmisc, inele, inperi, inpmf
   use var_struct,  only : imp2unit, pxyz_mp_rep, lele, iele2mp, coef_ele
   use var_replica, only : irep2grep
@@ -18,14 +19,15 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
   real(PREC), intent(out)   :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
+  integer :: ibin
   integer :: imp1, imp2, iunit, junit, grep, iele1, imir, ipmf
   real(PREC) :: dist1, dist2, ew, ek, rk
   real(PREC) :: ene, rcdist, cutoff2
   real(PREC) :: v21(SDIM)
-  real(PREC) :: Rmin, Rbininv
 #ifdef MPI_PAR3
   integer :: klen
 #endif
+  character(CARRAY_MSG_ERROR) :: error_message
 
   grep = irep2grep(irep)
   if (inele%i_DH_cutoff_type == 0) then
@@ -37,11 +39,6 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
 
   ew = inele%diele_water
   ek = inele%diele
-
-  if (inmisc%i_dtrna_model == 2019) then
-     Rmin = inpmf%Rmin(PMFTYPE%MG_P)
-     Rbininv = 1.0 / inpmf%Rbin(PMFTYPE%MG_P)
-  endif
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH
@@ -57,7 +54,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
   kend = lele(irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,dist1, &
-!$omp&           ene,iunit,junit,imir)
+!$omp&           ene,iunit,junit,imir, ipmf, ibin)
   do iele1=ksta, kend
 
      imp1 = iele2mp(1, iele1, irep)
@@ -74,9 +71,28 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
      dist1 = sqrt(dist2)
      
      ! PMF + DH (semiexplicit model)
+#ifdef _HTN_CONSISTENT
+     if (ipmf > 0 .and. dist1 < 40.0) then
+#else
      if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf)) then 
+#endif
 
-        ene = energy_pmfdh(dist1, grep)
+        if (dist1 < inpmf%Rmin(PMFTYPE%MG_P)) then
+           write(error_message,*) 'energy_ele_DH(r < Rmin)', istep, irep, imp1, imp2, dist1
+           call util_error(ERROR%STOP_ALL, error_message)
+        endif
+
+        !ene = energy_pmfdh(dist1, grep)
+        ibin = floor( (dist1 - inpmf%Rmin(PMFTYPE%MG_P)) * inpmf%Rbininv(PMFTYPE%MG_P)) + 1
+#ifdef _HTN_CONSISTENT
+        ene =  pmfdh_energy(ibin, grep, PMFTYPE%MG_P) &
+              - pmfdh_force(ibin, grep, PMFTYPE%MG_P) * (dist1 - (inpmf%Rmin(PMFTYPE%MG_P) + real(ibin,kind=PREC) * inpmf%Rbin(PMFTYPE%MG_P)))
+              !+ inpmf%Rbininv(PMFTYPE%MG_P) * (pmfdh_energy(ibin+1, grep, PMFTYPE%MG_P) - pmfdh_energy(ibin, grep, PMFTYPE%MG_P)) &
+              ! * (dist1 - (Rmin + real(ibin, kind=PREC)*Rbin))
+#else
+        ene = pmfdh_energy(ibin, grep, PMFTYPE%MG_P) &
+              - pmfdh_force(ibin, grep, PMFTYPE%MG_P) * (dist1 - (inpmf%Rmin(PMFTYPE%MG_P) + real(ibin-1,kind=PREC) * inpmf%Rbin(PMFTYPE%MG_P)))
+#endif
 
      ! DH
      else
@@ -89,7 +105,7 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
    
         else if (inmisc%i_temp_independent == 2) then
            rk = dist1 * rcdist
-           ene = coef_ele(iele1,irep) / dist1 * exp(-rk)    &
+           ene = coef_ele(iele1,irep) / dist1 * exp(-rk) &
                 * ( - (1.0e0_PREC + 0.5e0_PREC*rk) * inele%diele_dTcoef  )
    
         else
@@ -110,52 +126,52 @@ subroutine energy_ele_DH(irep, energy, energy_unit)
 
 contains
    
-   real(PREC) function energy_pmfdh(r, grep)
-      use var_simu, only : pmfdh_energy, pmfdh_force
-      implicit none
-      real(PREC),intent(in) :: r
-      integer, intent(in) :: grep
-      integer :: ibin
-
-      ! Rmin = 2.6
-      ! Rbin = 0.025
-      !
-      ! r = 2.624 ==> bin 1
-      ! r = 2.625 ==> bin 2
-      ! r = 2.626 ==> bin 2
-      ! r = 2.649 ==> bin 2
-      ! r = 2.650 ==> bin 3
-
-      ! If r = 2.624
-      ! (r - Rmin) = 0.024
-      ! (r - Rmin) * Rbininv = 0.96  ==floor==>  0
-      ! floor((r - Rmin) * Rbininv) + 1 = 1
-
-      ! If r = 2.625
-      ! (r - Rmin) = 0.025
-      ! (r - Rmin) * Rbininv = 1.0  ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.626
-      ! (r - Rmin) = 0.026
-      ! (r - Rmin) * Rbininv = 1.04  ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.649
-      ! (r - Rmin) = 0.049
-      ! (r - Rmin) * Rbininv = 1.96 ==floor==>  1
-      ! floor((r - Rmin) * Rbininv) + 1 = 2
-
-      ! If r = 2.650
-      ! (r - Rmin) = 0.050
-      ! (r - Rmin) * Rbininv = 2.0 ==floor==>  2
-      ! floor((r - Rmin) * Rbininv) + 1 = 3
-
-      ibin = floor( (r - Rmin) * Rbininv) + 1
-
-      energy_pmfdh = pmfdh_energy(ibin, grep, PMFTYPE%MG_P) &
-                   - pmfdh_force(ibin,grep,PMFTYPE%MG_P) * (r - (Rmin + real(ibin-1,kind=PREC)/Rbininv))
-
-   endfunction energy_pmfdh
+!   real(PREC) function energy_pmfdh(r, grep)
+!      use var_simu, only : pmfdh_energy, pmfdh_force
+!      implicit none
+!      real(PREC),intent(in) :: r
+!      integer, intent(in) :: grep
+!      integer :: ibin
+!
+!      ! Rmin = 2.6
+!      ! Rbin = 0.025
+!      !
+!      ! r = 2.624 ==> bin 1
+!      ! r = 2.625 ==> bin 2
+!      ! r = 2.626 ==> bin 2
+!      ! r = 2.649 ==> bin 2
+!      ! r = 2.650 ==> bin 3
+!
+!      ! If r = 2.624
+!      ! (r - Rmin) = 0.024
+!      ! (r - Rmin) * Rbininv = 0.96  ==floor==>  0
+!      ! floor((r - Rmin) * Rbininv) + 1 = 1
+!
+!      ! If r = 2.625
+!      ! (r - Rmin) = 0.025
+!      ! (r - Rmin) * Rbininv = 1.0  ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.626
+!      ! (r - Rmin) = 0.026
+!      ! (r - Rmin) * Rbininv = 1.04  ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.649
+!      ! (r - Rmin) = 0.049
+!      ! (r - Rmin) * Rbininv = 1.96 ==floor==>  1
+!      ! floor((r - Rmin) * Rbininv) + 1 = 2
+!
+!      ! If r = 2.650
+!      ! (r - Rmin) = 0.050
+!      ! (r - Rmin) * Rbininv = 2.0 ==floor==>  2
+!      ! floor((r - Rmin) * Rbininv) + 1 = 3
+!
+!      ibin = floor( (r - Rmin) * Rbininv) + 1
+!
+!      energy_pmfdh = pmfdh_energy(ibin, grep, PMFTYPE%MG_P) &
+!                   - pmfdh_force(ibin,grep,PMFTYPE%MG_P) * (r - (Rmin + real(ibin-1,kind=PREC)/Rbininv))
+!
+!   endfunction energy_pmfdh
 
 end subroutine energy_ele_DH
