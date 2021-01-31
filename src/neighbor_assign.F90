@@ -497,15 +497,15 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
               ! Semi explicit model
               ! Excluded volume is not computed for phosphate-Mg interactions,
-              ! excepting in case phosphate do not have charge (terminal).
+              ! excepting in case phosphate do not have charge (often terminal).
               if (inmisc%i_dtrna_model == 2019) then
                  ! Phosphate - Mg
                  if (imp2type(imp) == MPTYPE%RNA_PHOS) then  !!! imp is phosphate
-                    if (coef_charge(lmp2charge(imp),grep) < ZERO_JUDGE) then !  Phosphate charge is negative
+                    if (abs(coef_charge(lmp2charge(imp),grep)) > ZERO_JUDGE) then !  Phosphate charge is negative
                        i_exv_dt15 = 0
                     endif
                  else if (imp2type(jmp) == MPTYPE%RNA_PHOS) then  !!! jmp is phosphate
-                    if (coef_charge(lmp2charge(jmp),grep) < ZERO_JUDGE) then !  Phosphate charge is negative
+                    if (abs(coef_charge(lmp2charge(jmp),grep)) > ZERO_JUDGE) then !  Phosphate charge is negative
                        i_exv_dt15 = 0
                     endif
                  endif
