@@ -33,8 +33,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   integer :: imp1, imp2, iunit, junit
   integer :: iexv, imirror
   real(PREC) :: dist, dij, a, d_inf
-  real(PREC) :: coef
-  real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
+  real(PREC) :: roverdist
   real(PREC) :: ene 
   real(PREC) :: v21(SDIM)
 #ifdef SHARE_NEIGH_PNL
@@ -59,9 +58,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
   ksta = lexv(1, E_TYPE%EXV_DT15, irep)
   kend = lexv(2, E_TYPE%EXV_DT15, irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist,dij,coef,&
-!$omp&           roverdist,roverdist2,roverdist4,roverdist6,roverdist12, &
-!$omp&           ene,iunit,junit,imirror)
+!$omp do private(imp1, imp2, v21, dist, dij, roverdist, ene, iunit, junit, imirror)
   do iexv=ksta, kend
 
      imp1 = iexv2mp(1, iexv, irep)
@@ -100,13 +97,8 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
 
      if (dist > d_inf) then  ! normal
         roverdist  = a / dist
-        roverdist2 = roverdist * roverdist
-        roverdist4 = roverdist2 * roverdist2
-        roverdist6 = roverdist2 * roverdist4
-        roverdist12 = roverdist6 * roverdist6
 
-        coef = exv_epsilon_mp(imp1) * exv_epsilon_mp(imp2)
-        ene = coef * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+        ene = exv_epsilon_mp(imp1) * exv_epsilon_mp(imp2) * (roverdist**12 - 2*roverdist**6 + 1.0e0_PREC)
 
      else   ! Exception
         ene = HIGH_ENERGY
@@ -146,7 +138,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
 
   integer :: itp1, itp2, imp2
   real(PREC) :: dist, dij, a, d_inf, ene
-  real(PREC) :: roverdist,roverdist2, roverdist4, roverdist6, roverdist12
+  real(PREC) :: roverdist
   real(PREC) :: v21(SDIM) !, vx(SDIM)
 
   ! ------------------------------------------------------------------------
@@ -157,7 +149,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
   do itp1 = 1, ntp
      ene = 0.0e0_PREC
 !$omp parallel do  &
-!$omp& private(imp2, dij, v21, dist, roverdist, roverdist2, roverdist4, roverdist6, roverdist12) &
+!$omp& private(imp2, dij, v21, dist, roverdist) &
 !$omp& reduction(+:ene) 
      do imp2=1, nmp_real
         
@@ -191,11 +183,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
 
         ! --------------------------------------------------------------------
         roverdist  = a / dist
-        roverdist2 = roverdist * roverdist
-        roverdist4 = roverdist2 * roverdist2
-        roverdist6 = roverdist2 * roverdist4
-        roverdist12 = roverdist6 * roverdist6
-        ene = ene + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+        ene = ene + tp_exv_dt15_eps(itp1) * exv_epsilon_mp(imp2) * (roverdist**12 - 2*roverdist**6 + 1.0e0_PREC)
    
      end do
 !$omp end parallel do
@@ -232,13 +220,9 @@ subroutine energy_exv_dt15_tp(irep, energy)
 
         ! --------------------------------------------------------------------
         roverdist  = a / dist
-        roverdist2 = roverdist * roverdist
-        roverdist4 = roverdist2 * roverdist2
-        roverdist6 = roverdist2 * roverdist4
-        roverdist12 = roverdist6 * roverdist6
       
         energy(E_TYPE%EXV_DT15) = energy(E_TYPE%EXV_DT15) &
-                + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+                + tp_exv_dt15_eps(itp1) * tp_exv_dt15_eps(itp2) * (roverdist**12 - 2*roverdist**6 + 1.0e0_PREC)
      enddo
   enddo
 

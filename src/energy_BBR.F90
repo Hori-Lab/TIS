@@ -21,7 +21,7 @@ subroutine  energy_BBR(irep, energy_unit, energy)
   integer :: ibbr
   real(PREC) :: dist2, ene
   real(PREC) :: coef, cdist2, cutoff2
-  real(PREC) :: roverdist2, roverdist4, roverdist8, roverdist12
+  real(PREC) :: roverdist2
   real(PREC) :: vij(SDIM), vi(SDIM), vj(SDIM)
 #ifdef MPI_PAR3
   integer :: klen
@@ -49,7 +49,7 @@ subroutine  energy_BBR(irep, energy_unit, energy)
   ksta = 1
   kend = nbbr(irep)
 #endif
-!$omp do private(imp1,imp2,jmp1,jmp2,vij,vi,vj,dist2,roverdist2,roverdist4,roverdist8,roverdist12,ene,iunit,junit)
+!$omp do private(imp1, imp2, jmp1, jmp2, vij, vi, vj, dist2, roverdist2, ene, iunit, junit)
   do ibbr=ksta, kend
 
      imp1 = ibbr2mp(1, ibbr, irep)
@@ -86,11 +86,9 @@ subroutine  energy_BBR(irep, energy_unit, energy)
 
      ! --------------------------------------------------------------------
      roverdist2 = cdist2 / dist2
+
      !! ene = coef * roverdist2 ** 3   !! rep6
-     roverdist4 = roverdist2 * roverdist2
-     roverdist8 = roverdist4 * roverdist4
-     roverdist12 = roverdist4 * roverdist8
-     ene = coef * roverdist12
+     ene = coef * roverdist2**6
 
      ! --------------------------------------------------------------------
      ! sum of the energy

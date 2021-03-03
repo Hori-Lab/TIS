@@ -27,7 +27,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
   integer :: iLJ
   real(PREC) :: rcut_off2 !, rcut_off2_pro, rcut_off2_rna
   real(PREC) :: rjudge_contact, rjudge
-  real(PREC) :: roverdist2, roverdist6, roverdist12
+  real(PREC) :: roverdist2
   real(PREC) :: dist2, efull
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
@@ -59,8 +59,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
    ksta = 1
    kend = nLJ
 #endif
-!$omp do private(imp1,imp2,iunit,junit,v21,dist2,roverdist2,roverdist6, &
-!$omp&           roverdist12,rjudge,efull)
+!$omp do private(imp1, imp2, iunit, junit, v21, dist2, roverdist2, rjudge, efull)
    do iLJ=ksta,kend
    
      imp1 = iLJ2mp(1, iLJ)
@@ -101,10 +100,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
      end if
 
      ! calc energy
-     roverdist6 = roverdist2 ** 3
-     roverdist12 = roverdist6 ** 2
-
-     efull = coef_LJ(iLJ) * (roverdist12 - 2.0e0_PREC * roverdist6)
+     efull = coef_LJ(iLJ) * (roverdist2**6 - 2.0e0_PREC * roverdist2**3)
 
      ! --------------------------------------------------------------------
      ! sum of the energy

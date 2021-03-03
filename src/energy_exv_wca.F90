@@ -39,7 +39,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
   integer :: iexv, imirror
   real(PREC) :: dist2
   real(PREC) :: coef, cdist2
-  real(PREC) :: roverdist2, roverdist4, roverdist6, roverdist12
+  real(PREC) :: roverdist2
   real(PREC) :: ene 
   real(PREC) :: v21(SDIM)
 #ifdef SHARE_NEIGH_PNL
@@ -65,9 +65,8 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
   ksta = lexv(1, E_TYPE%EXV_WCA, irep)
   kend = lexv(2, E_TYPE%EXV_WCA, irep)
 #endif
-!$omp do private(imp1,imp2,v21,dist2, &
-!$omp&           roverdist2,roverdist4,roverdist6,roverdist12, &
-!$omp&           ene,iunit,junit,imirror)
+!$omp do private(imp1, imp2, v21, dist2, roverdist2, &
+!$omp&           ene, iunit, junit, imirror)
   do iexv=ksta, kend
 
      imp1 = iexv2mp(1, iexv, irep)
@@ -90,10 +89,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
 
      ! --------------------------------------------------------------------
      roverdist2 = cdist2 / dist2
-     roverdist4 = roverdist2 * roverdist2
-     roverdist6 = roverdist2 * roverdist4
-     roverdist12 = roverdist6 * roverdist6
-     ene = coef * (roverdist12 - 2*roverdist6 + 1.0e0_PREC)
+     ene = coef * (roverdist2**6 - 2*roverdist2**3 + 1.0e0_PREC)
 
      ! --------------------------------------------------------------------
      ! sum of the energy

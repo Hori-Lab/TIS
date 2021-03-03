@@ -30,8 +30,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 !  real(PREC) :: cdist2_rna, cdist2_rna_pro
   real(PREC) :: cutoff2, cutoff2_pro, cutoff2_llig, cutoff2_lpro 
 !  real(PREC) :: cutoff2_rna, cutoff2_rna_pro
-  real(PREC) :: roverdist2, roverdist4
-  real(PREC) :: roverdist8, roverdist12
+  real(PREC) :: roverdist2
   real(PREC) :: ene
   real(PREC) :: v21(SDIM)
 #ifdef MPI_PAR3
@@ -77,8 +76,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   kend = lexv(2, E_TYPE%EXV12, irep)
 #endif
 !$omp do private(imp1,imp2,v21,dist2,cutoff2,cdist2,coef, &
-!$omp&           roverdist2,roverdist4, &
-!$omp&           roverdist8,roverdist12,ene,iunit,junit,imirror)
+!$omp&           roverdist2,ene,iunit,junit,imirror)
   do iexv=ksta, kend
 
      imp1 = iexv2mp(1, iexv, irep)
@@ -123,10 +121,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 
      ! --------------------------------------------------------------------
      roverdist2 = cdist2 / dist2
-     roverdist4 = roverdist2 * roverdist2
-     roverdist8 = roverdist4 * roverdist4
-     roverdist12 = roverdist4 * roverdist8
-     ene = coef * roverdist12
+     ene = coef * roverdist2**6
 
      ! --------------------------------------------------------------------
      ! sum of the energy
