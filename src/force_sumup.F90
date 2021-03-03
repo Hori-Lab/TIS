@@ -379,212 +379,212 @@ subroutine force_sumup(force_mp, &  ! [ o]
 #endif
 
 !---------------------------------------------------------------------------
-#ifdef MPI_PAR
-contains
-
-subroutine allreduce( force_mp_l, force_mp )
-  use const_maxsize
-  use var_struct, only : nmp_real
-  use mpiconst
-
-  implicit none
-
-  real(PREC),intent(in)  :: force_mp_l(SDIM,nmp_all)
-  real(PREC),intent(out) :: force_mp  (SDIM,nmp_all)
-
-  ! communication type
-  integer,parameter :: comm_pack_sendrecv    = 1
-  integer,parameter :: comm_pack_gather      = 2
-  integer,parameter :: comm_reduce_bcast     = 3
-  integer,parameter :: comm_allreduce        = 4
-#ifdef RIKEN_TUNE2
-  integer,parameter :: comm_reduce_scatter   = 5
-  integer,parameter :: comm = 5
-#elif  RIKEN_TUNE3
-  integer,parameter :: comm = 3
-#elif  RIKEN_TUNE4
-  integer,parameter :: comm_div_reduce_bcast = 6
-  integer,parameter :: comm = 6
-#else
-  integer,parameter :: comm = 4
-#endif
-
-  ! pack
-  real(PREC) :: force_mp_p(4,nmp_all)
-  real(PREC) :: force_mp_pall(4,5*nmp_all)
-  integer :: nmp_p, nmp_pall(0:npar_mpi-1)
-  integer :: disp(0:npar_mpi-1), count(0:npar_mpi-1)
-  integer,parameter :: send_tag = 1, recv_tag = 1
-  integer :: status(MPI_STATUS_SIZE), n, imp_p
-  real(8) :: st
-  integer :: imp
-
-#if RIKEN_TUNE2 || RIKEN_TUNE4
-  integer :: irank, klen, ksta, kend, iidummy, ircnt, nnprocs
-#endif
-
-  select case( comm )
-!--------------------------------------------------
-  case ( comm_pack_sendrecv )
-!--------------------------------------------------
-    st = mpi_wtime()
-
-    nmp_p = 0
-    if( myrank == 0 ) then
-      do imp = 1, nmp_real
-        force_mp(1:SDIM,imp) = force_mp_l(1:SDIM,imp) 
-      end do
-    else
-      do imp = 1, nmp_real
-        if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
-          nmp_p = nmp_p + 1
-          force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
-          force_mp_p(4  ,nmp_p) = real(imp,PREC)
-        end if
-      end do  
-    end if
-
-    print *,"[time1] ", mpi_wtime()-st
-    st = mpi_wtime()
-
-    call mpi_gather(nmp_p   ,1,MPI_INTEGER, &
-                    nmp_pall,1,MPI_INTEGER, &
-                    0,mpi_comm_local,ierr)
-
-    print *,"[time2] ", mpi_wtime()-st
-    st = mpi_wtime()
-
-    if( myrank == 0 ) then
-      print *,"[debug] nmp_p = ", minval(nmp_pall(1:npar_mpi-1)), &
-                                  maxval(nmp_pall(1:npar_mpi-1))
-      do n = 1, npar_mpi-1
-        call mpi_recv(force_mp_p,4*nmp_pall(n),PREC_MPI,n,recv_tag,mpi_comm_local,status,ierr)
-        do imp_p = 1, nmp_pall(n)
-          imp = int( force_mp_p(4,imp_p) )
-          force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_p(1:SDIM,imp_p)
-        end do
-      end do
-    else
-      call mpi_send(force_mp_p,4*nmp_p,PREC_MPI,0,send_tag,mpi_comm_local,status,ierr) 
-    end if
-
-    print *,"[time3] ", mpi_wtime()-st
-    st = mpi_wtime()
-
-    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
-
-    print *,"[time4] ", mpi_wtime()-st
-
-!--------------------------------------------------
-  case ( comm_pack_gather )
-!--------------------------------------------------
-    st = mpi_wtime()
-
-    nmp_p = 0
-    do imp = 1, nmp_real
-      force_mp(1:SDIM,imp) = 0.0_PREC
-      if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
-        nmp_p = nmp_p + 1
-        force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
-        force_mp_p(4  ,nmp_p) = real(imp,PREC)
-      end if
-    end do  
-
-    print *,"[packing] ", mpi_wtime()-st
-    st = mpi_wtime()
-
-    call mpi_allgather(nmp_p   ,1,MPI_INTEGER, &
-                       nmp_pall,1,MPI_INTEGER, &
-                       mpi_comm_local,ierr)
-
-    print *,"[gather ] ", mpi_wtime()-st
-
-    if( sum( nmp_pall(0:npar_mpi-1) ) > 5*nmp_all ) then
-      print *,"[error] sum( nmp_pall(0:npar_mpi-1) ) > 5*nmp_all"
-    end if
-
-    st = mpi_wtime()
-
-    disp (0) = 0
-    count(0) = 4*nmp_pall(0)
-    do n = 1, npar_mpi-1
-      disp (n) = disp(n-1) + 4*nmp_pall(n-1)
-      count(n) = 4*nmp_pall(n)
-    end do
-
-    call mpi_allgatherv( force_mp_p   ,4*nmp_p   ,PREC_MPI, &
-                         force_mp_pall,count,disp,PREC_MPI, &
-                         mpi_comm_local,ierr )
-
-    print *,"[allgath] ", mpi_wtime()-st
-    st = mpi_wtime()
-
-    do imp_p = 1, sum( nmp_pall(0:npar_mpi-1) )
-      imp = int( force_mp_pall(4,imp_p) )
-      force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_pall(1:SDIM,imp_p)
-    end do
-
-    print *,"[unpack ] ", mpi_wtime()-st
+!#ifdef MPI_PAR
+!contains
+!
+!subroutine allreduce( force_mp_l, force_mp )
+!  use const_maxsize
+!  use var_struct, only : nmp_real
+!  use mpiconst
+!
+!  implicit none
+!
+!  real(PREC),intent(in)  :: force_mp_l(SDIM,nmp_all)
+!  real(PREC),intent(out) :: force_mp  (SDIM,nmp_all)
+!
+!  ! communication type
+!  integer,parameter :: comm_pack_sendrecv    = 1
+!  integer,parameter :: comm_pack_gather      = 2
+!  integer,parameter :: comm_reduce_bcast     = 3
+!  integer,parameter :: comm_allreduce        = 4
+!#ifdef RIKEN_TUNE2
+!  integer,parameter :: comm_reduce_scatter   = 5
+!  integer,parameter :: comm = 5
+!#elif  RIKEN_TUNE3
+!  integer,parameter :: comm = 3
+!#elif  RIKEN_TUNE4
+!  integer,parameter :: comm_div_reduce_bcast = 6
+!  integer,parameter :: comm = 6
+!#else
+!  integer,parameter :: comm = 4
+!#endif
+!
+!  ! pack
+!  real(PREC) :: force_mp_p(4,nmp_all)
+!  real(PREC) :: force_mp_pall(4,5*nmp_all)
+!  integer :: nmp_p, nmp_pall(0:npar_mpi-1)
+!  integer :: disp(0:npar_mpi-1), count(0:npar_mpi-1)
+!  integer,parameter :: send_tag = 1, recv_tag = 1
+!  integer :: status(MPI_STATUS_SIZE), n, imp_p
+!  real(8) :: st
+!  integer :: imp
+!
+!#if RIKEN_TUNE2 || RIKEN_TUNE4
+!  integer :: irank, klen, ksta, kend, iidummy, ircnt, nnprocs
+!#endif
+!
+!  select case( comm )
+!!--------------------------------------------------
+!  case ( comm_pack_sendrecv )
+!!--------------------------------------------------
+!    st = mpi_wtime()
+!
+!    nmp_p = 0
+!    if( myrank == 0 ) then
+!      do imp = 1, nmp_real
+!        force_mp(1:SDIM,imp) = force_mp_l(1:SDIM,imp) 
+!      end do
+!    else
+!      do imp = 1, nmp_real
+!        if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
+!          nmp_p = nmp_p + 1
+!          force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
+!          force_mp_p(4  ,nmp_p) = real(imp,PREC)
+!        end if
+!      end do  
+!    end if
+!
+!    print *,"[time1] ", mpi_wtime()-st
+!    st = mpi_wtime()
+!
+!    call mpi_gather(nmp_p   ,1,MPI_INTEGER, &
+!                    nmp_pall,1,MPI_INTEGER, &
+!                    0,mpi_comm_local,ierr)
+!
+!    print *,"[time2] ", mpi_wtime()-st
+!    st = mpi_wtime()
+!
+!    if( myrank == 0 ) then
+!      print *,"[debug] nmp_p = ", minval(nmp_pall(1:npar_mpi-1)), &
+!                                  maxval(nmp_pall(1:npar_mpi-1))
+!      do n = 1, npar_mpi-1
+!        call mpi_recv(force_mp_p,4*nmp_pall(n),PREC_MPI,n,recv_tag,mpi_comm_local,status,ierr)
+!        do imp_p = 1, nmp_pall(n)
+!          imp = int( force_mp_p(4,imp_p) )
+!          force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_p(1:SDIM,imp_p)
+!        end do
+!      end do
+!    else
+!      call mpi_send(force_mp_p,4*nmp_p,PREC_MPI,0,send_tag,mpi_comm_local,status,ierr) 
+!    end if
+!
+!    print *,"[time3] ", mpi_wtime()-st
 !    st = mpi_wtime()
 !
 !    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
 !
-!    print *,"[time5] ", mpi_wtime()-st
-
-!--------------------------------------------------
-  case ( comm_reduce_bcast )
-!--------------------------------------------------
-    call mpi_reduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
-                    MPI_SUM, 0, mpi_comm_local, ierr)
-
-    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
-
-#ifdef RIKEN_TUNE2
-!--------------------------------------------------
-  case ( comm_reduce_scatter )
-!--------------------------------------------------
-    do irank=0, npar_mpi-1
-      klen = (nmp_real-1+npar_mpi) / npar_mpi
-      ksta = 1+klen*irank
-      kend = min(ksta+klen-1, nmp_real)
-      count(irank) = (kend-ksta+1)*SDIM
-      disp(irank)  = (ksta-1)*SDIM
-    enddo
-    klen = (nmp_real-1+npar_mpi) / npar_mpi
-    ksta = 1+klen*local_rank_mpi
-    kend = min(ksta+klen-1, nmp_real)
+!    print *,"[time4] ", mpi_wtime()-st
 !
-    call mpi_reduce_scatter(force_mp_l, force_mp(1,ksta), count, PREC_MPI, &
-                            MPI_SUM, mpi_comm_local, ierr)
-    call mpi_allgatherv(mpi_in_place,iidummy,iidummy,  &
-                        force_mp(1,1), count, disp, PREC_MPI, &
-                        mpi_comm_local, ierr)
-#elif RIKEN_TUNE4
-!--------------------------------------------------
-  case ( comm_div_reduce_bcast )
-!--------------------------------------------------
-  nnprocs = 27
-  do irank=0, nnprocs-1
-    klen = (nmp_real-1+nnprocs) / nnprocs
-    ksta = 1+klen*irank
-    kend = min(ksta+klen-1, nmp_real)
-    ircnt = (kend-ksta+1)*SDIM
-    call mpi_reduce(force_mp_l(1,ksta,0), force_mp(1,ksta), ircnt, PREC_MPI, &
-                    MPI_SUM, 0, mpi_comm_local, ierr)
-  enddo
+!!--------------------------------------------------
+!  case ( comm_pack_gather )
+!!--------------------------------------------------
+!    st = mpi_wtime()
 !
-  call mpi_bcast(force_mp, SDIM*nmp_real, PREC_MPI, &
-                 0, mpi_comm_local, ierr)
-#endif
-
-!--------------------------------------------------
-  case default
-!--------------------------------------------------
-    call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
-                       MPI_SUM, mpi_comm_local, ierr)
-  end select
-
-end subroutine allreduce
-#endif
+!    nmp_p = 0
+!    do imp = 1, nmp_real
+!      force_mp(1:SDIM,imp) = 0.0_PREC
+!      if( any( force_mp_l(1:SDIM,imp) /= 0.0_PREC ) ) then
+!        nmp_p = nmp_p + 1
+!        force_mp_p(1:SDIM,nmp_p) = force_mp_l(1:SDIM,imp) 
+!        force_mp_p(4  ,nmp_p) = real(imp,PREC)
+!      end if
+!    end do  
+!
+!    print *,"[packing] ", mpi_wtime()-st
+!    st = mpi_wtime()
+!
+!    call mpi_allgather(nmp_p   ,1,MPI_INTEGER, &
+!                       nmp_pall,1,MPI_INTEGER, &
+!                       mpi_comm_local,ierr)
+!
+!    print *,"[gather ] ", mpi_wtime()-st
+!
+!    if( sum( nmp_pall(0:npar_mpi-1) ) > 5*nmp_all ) then
+!      print *,"[error] sum( nmp_pall(0:npar_mpi-1) ) > 5*nmp_all"
+!    end if
+!
+!    st = mpi_wtime()
+!
+!    disp (0) = 0
+!    count(0) = 4*nmp_pall(0)
+!    do n = 1, npar_mpi-1
+!      disp (n) = disp(n-1) + 4*nmp_pall(n-1)
+!      count(n) = 4*nmp_pall(n)
+!    end do
+!
+!    call mpi_allgatherv( force_mp_p   ,4*nmp_p   ,PREC_MPI, &
+!                         force_mp_pall,count,disp,PREC_MPI, &
+!                         mpi_comm_local,ierr )
+!
+!    print *,"[allgath] ", mpi_wtime()-st
+!    st = mpi_wtime()
+!
+!    do imp_p = 1, sum( nmp_pall(0:npar_mpi-1) )
+!      imp = int( force_mp_pall(4,imp_p) )
+!      force_mp(1:SDIM,imp) = force_mp(1:SDIM,imp) + force_mp_pall(1:SDIM,imp_p)
+!    end do
+!
+!    print *,"[unpack ] ", mpi_wtime()-st
+!!    st = mpi_wtime()
+!!
+!!    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
+!!
+!!    print *,"[time5] ", mpi_wtime()-st
+!
+!!--------------------------------------------------
+!  case ( comm_reduce_bcast )
+!!--------------------------------------------------
+!    call mpi_reduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
+!                    MPI_SUM, 0, mpi_comm_local, ierr)
+!
+!    call mpi_bcast(force_mp,SDIM*nmp_real,PREC_MPI,0,mpi_comm_local,ierr)
+!
+!#ifdef RIKEN_TUNE2
+!!--------------------------------------------------
+!  case ( comm_reduce_scatter )
+!!--------------------------------------------------
+!    do irank=0, npar_mpi-1
+!      klen = (nmp_real-1+npar_mpi) / npar_mpi
+!      ksta = 1+klen*irank
+!      kend = min(ksta+klen-1, nmp_real)
+!      count(irank) = (kend-ksta+1)*SDIM
+!      disp(irank)  = (ksta-1)*SDIM
+!    enddo
+!    klen = (nmp_real-1+npar_mpi) / npar_mpi
+!    ksta = 1+klen*local_rank_mpi
+!    kend = min(ksta+klen-1, nmp_real)
+!!
+!    call mpi_reduce_scatter(force_mp_l, force_mp(1,ksta), count, PREC_MPI, &
+!                            MPI_SUM, mpi_comm_local, ierr)
+!    call mpi_allgatherv(mpi_in_place,iidummy,iidummy,  &
+!                        force_mp(1,1), count, disp, PREC_MPI, &
+!                        mpi_comm_local, ierr)
+!#elif RIKEN_TUNE4
+!!--------------------------------------------------
+!  case ( comm_div_reduce_bcast )
+!!--------------------------------------------------
+!  nnprocs = 27
+!  do irank=0, nnprocs-1
+!    klen = (nmp_real-1+nnprocs) / nnprocs
+!    ksta = 1+klen*irank
+!    kend = min(ksta+klen-1, nmp_real)
+!    ircnt = (kend-ksta+1)*SDIM
+!    call mpi_reduce(force_mp_l(1,ksta,0), force_mp(1,ksta), ircnt, PREC_MPI, &
+!                    MPI_SUM, 0, mpi_comm_local, ierr)
+!  enddo
+!!
+!  call mpi_bcast(force_mp, SDIM*nmp_real, PREC_MPI, &
+!                 0, mpi_comm_local, ierr)
+!#endif
+!
+!!--------------------------------------------------
+!  case default
+!!--------------------------------------------------
+!    call mpi_allreduce(force_mp_l, force_mp, SDIM*nmp_real, PREC_MPI, &
+!                       MPI_SUM, mpi_comm_local, ierr)
+!  end select
+!
+!end subroutine allreduce
+!#endif
 
 end subroutine force_sumup

@@ -6,14 +6,17 @@
 module mpiconst
 
   use const_maxsize
+#ifdef MPI_PAR
+  use mpi
+#endif
 
 !$ use omp_lib
 
   implicit none
 
-#ifdef MPI_PAR
-  include 'mpif.h'
-#endif
+!#ifdef MPI_PAR
+  !include 'mpif.h'
+!#endif
 
   integer :: PREC_MPI
   integer :: ierr, myrank, nprocs, nthreads, ncores
