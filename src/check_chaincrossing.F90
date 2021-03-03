@@ -145,7 +145,7 @@ subroutine check_chaincrossing(flg_cross)
             bt2 = b2t2 - b1t2
    
             call cross_product(bt2, bt1, cross_b)
-            cross_b = cross_b / sqrt(dot_product(cross_b, cross_b))
+            cross_b = cross_b / norm2(cross_b)
             angle_b = acos( dot_product(bt2,bt1) / sqrt(dot_product(bt1,bt1) * dot_product(bt2,bt2)) )
    
             call rotate(mtx, cross_b, angle_b)

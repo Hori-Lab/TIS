@@ -18,17 +18,15 @@ subroutine energy_anchor(irep, energy_unit, energy)
   ! ----------------------------------------------------------------------
   ! local variables
   integer :: ianc, imp, iunit, junit, igrp, ilist
-  real(PREC) :: dx, dy, dz, dist, cbd2, efull
+  real(PREC) :: dist, cbd2, efull
   real(PREC) :: ixyz(3)
   ! ----------------------------------------------------------------------
   do ianc = 1, inmisc%nanc
    
      imp = inmisc%ianc2mp(ianc)
-     dx = xyz_mp_rep(1, imp, irep) - inmisc%anc_xyz(1, ianc)
-     dy = xyz_mp_rep(2, imp, irep) - inmisc%anc_xyz(2, ianc)
-     dz = xyz_mp_rep(3, imp, irep) - inmisc%anc_xyz(3, ianc)
 
-     dist = sqrt(dx**2 + dy**2 + dz**2)
+     dist = norm2(xyz_mp_rep(:, imp, irep) - inmisc%anc_xyz(:, ianc))
+
      if(dist > inmisc%anc_dist(ianc)) then
         cbd2 = inmisc%coef_anc(ianc)
         efull = cbd2 * (dist - inmisc%anc_dist(ianc))**2
@@ -54,11 +52,7 @@ subroutine energy_anchor(irep, energy_unit, energy)
              grp%mass_fract(ilist, igrp)
      end do
 
-     dx = ixyz(1) - inmisc%anc_com_ini_xyz(1, ianc, irep)
-     dy = ixyz(2) - inmisc%anc_com_ini_xyz(2, ianc, irep)
-     dz = ixyz(3) - inmisc%anc_com_ini_xyz(3, ianc, irep)
-
-     dist = sqrt(dx**2 + dy**2 + dz**2)
+     dist = norm2(ixyz(:) - inmisc%anc_com_ini_xyz(:, ianc, irep))
 
      if(dist > inmisc%anc_com_ini_dist(ianc)) then
         cbd2 = inmisc%coef_anc_com_ini(ianc)

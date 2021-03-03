@@ -102,9 +102,7 @@ subroutine neighbor_pre(xyz_mp, ineigh_unit)
               call util_pbneighbor(v21, imirror)
            end if
 
-           dist2 = v21(1)**2 + v21(2)**2 + v21(3)**2
-
-           if(sqrt(dist2) < maxdist(iunit) + maxdist(junit) + sqrt(inmisc%rneighbordist2_unit(iunit, junit))) then
+           if(norm2(v21) < maxdist(iunit) + maxdist(junit) + sqrt(inmisc%rneighbordist2_unit(iunit, junit))) then
               ineigh_unit(iunit, junit) = 1
            end if
         end if

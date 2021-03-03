@@ -21,7 +21,7 @@ subroutine energy_window(irep, energy_unit, energy)
   ! local variables
   integer :: grep, iwind
   integer :: imp, jmp, iunit, junit
-  real(PREC) :: dx, dy, dz, dist, efull
+  real(PREC) :: dist, efull
   real(PREC) :: coef, length
   
   ! ----------------------------------------------------------------------
@@ -37,11 +37,7 @@ subroutine energy_window(irep, energy_unit, energy)
   jmp = inrep%window_mp_id(iwind, WINDTYPE%JMP)
 
   ! Calculate distance between imp and jmp
-  dx = xyz_mp_rep(1, imp, irep) - xyz_mp_rep(1, jmp, irep)
-  dy = xyz_mp_rep(2, imp, irep) - xyz_mp_rep(2, jmp, irep)
-  dz = xyz_mp_rep(3, imp, irep) - xyz_mp_rep(3, jmp, irep)
-   
-  dist = sqrt(dx**2 + dy**2 + dz**2)
+  dist = norm2(xyz_mp_rep(:, imp, irep) - xyz_mp_rep(:, jmp, irep))
 
   ! Calculate energy
   efull = coef * (dist - length)**2

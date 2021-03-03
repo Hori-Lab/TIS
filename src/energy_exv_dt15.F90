@@ -89,7 +89,7 @@ subroutine energy_exv_dt15(irep, energy_unit, energy)
      imirror = iexv2mp(3, iexv, irep)
      v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      
-     dist = sqrt(dot_product(v21,v21))
+     dist = norm2(v21)
 
      if (dist > dij) cycle
 
@@ -171,7 +171,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
            call util_pbneighbor(v21)
         !end if
         
-        dist = sqrt(dot_product(v21,v21))
+        dist = norm2(v21)
    
         if(dist > dij) cycle
    
@@ -209,7 +209,7 @@ subroutine energy_exv_dt15_tp(irep, energy)
            call util_pbneighbor(v21)
         !end if
         
-        dist = sqrt(dot_product(v21,v21))
+        dist = norm2(v21)
       
         if(dist > dij) cycle
       

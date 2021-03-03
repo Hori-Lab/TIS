@@ -73,7 +73,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
   real(PREC) :: d, efull, ediv
   real(PREC) :: v12(SDIM), v13(SDIM), v53(SDIM)
   real(PREC) :: v42(SDIM), v46(SDIM)
-  real(PREC) :: d1212
+  real(PREC) :: a12
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
   integer :: ksta, kend
@@ -97,7 +97,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
 
 !$omp do private(iunit1,iunit2,&
 !$omp&           d, dih, cos_theta, efull, ediv, &
-!$omp&           v12,v13,v53,v42,v46,d1212,&
+!$omp&           v12,v13,v53,v42,v46,a12,&
 !$omp&           m,n,&
 !$omp&           c4212,c1213)
    do ihb=ksta,kend
@@ -137,19 +137,19 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
          call util_pbneighbor(v46)
       end if
 
-      d1212 = dot_product(v12,v12)
+      a12 = norm2(v12)
 
       !===== Distance =====
-      d = sqrt(d1212) - dtrna_hb_nat(1,ihb)
+      d = a12 - dtrna_hb_nat(1,ihb)
       ediv = ediv + coef_dtrna_hb(1, ihb) * d**2
 
       !===== Angle of 3-1=2  =====
-      cos_theta = dot_product(v13,v12) / sqrt(dot_product(v13,v13) * d1212)
+      cos_theta = dot_product(v13,v12) / (norm2(v13)*a12)
       d = acos(cos_theta) - dtrna_hb_nat(2,ihb)
       ediv = ediv + coef_dtrna_hb(2, ihb) * d**2
 
       !===== Angle of 1=2-4  =====
-      cos_theta = dot_product(v12,v42) / sqrt(d1212 * dot_product(v42,v42))
+      cos_theta = dot_product(v12,v42) / (a12*norm2(v42))
       d = acos(cos_theta) - dtrna_hb_nat(3,ihb)
       ediv = ediv + coef_dtrna_hb(3, ihb) * d**2
 
@@ -161,7 +161,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
       c1213(2) = v12(3) * v13(1) - v12(1) * v13(3)
       c1213(3) = v12(1) * v13(2) - v12(2) * v13(1)
       
-      dih = atan2(dot_product(v42,c1213)*sqrt(dot_product(v12,v12)) , dot_product(c4212,c1213))
+      dih = atan2(dot_product(v42,c1213)*norm2(v12), dot_product(c4212,c1213))
       d = dih - dtrna_hb_nat(4, ihb)
       if (d > F_PI) then
          d = d - F_2PI
@@ -177,7 +177,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
       m(3) = v53(1) * v13(2) - v53(2) * v13(1)
       n(:) = -c1213(:)
 
-      dih = atan2(dot_product(v53,n)*sqrt(dot_product(v13,v13)) , dot_product(m,n))
+      dih = atan2(dot_product(v53,n)*norm2(v13), dot_product(m,n))
       d = dih - dtrna_hb_nat(5, ihb)
       if (d > F_PI) then
          d = d - F_2PI
@@ -192,7 +192,7 @@ subroutine energy_dtrna_hbond13(irep, energy_unit, energy, ene_hb)
       n(2) = v42(3) * v46(1) - v42(1) * v46(3)
       n(3) = v42(1) * v46(2) - v42(2) * v46(1)
 
-      dih = atan2(dot_product(v12,n)*sqrt(dot_product(v42,v42)) , dot_product(m,n))
+      dih = atan2(dot_product(v12,n)*norm2(v42), dot_product(m,n))
       d = dih - dtrna_hb_nat(6, ihb)
       if (d > F_PI) then
          d = d - F_2PI

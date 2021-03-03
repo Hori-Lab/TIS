@@ -76,7 +76,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
   real(PREC) :: d, ex
   real(PREC) :: v12(SDIM), v13(SDIM), v53(SDIM)
   real(PREC) :: v42(SDIM), v46(SDIM)
-  real(PREC) :: d1212, d1313, d4242, a12, a13, a42, d1213, d1242
+  real(PREC) :: a12, a13, a42, d1213, d1242
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
 
@@ -159,7 +159,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
 
 !$omp do private(ihb,i,ihbsite,ex,m,n,&
 !$omp&           d,cos_theta,dih,&
-!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1212,d1313,d4242,d1213,d1242,&
+!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,d1213,d1242,&
 !$omp&           c4212,c1213)
      do ineigh=ksta,kend
        
@@ -174,8 +174,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
            call util_pbneighbor(v12)
         endif
 
-        d1212 = dot_product(v12,v12)
-        a12 = sqrt(d1212)
+        a12 = norm2(v12)
 
         !===== Distance =====
         d = a12 - dtrna_hb_nat(1,ihb)
@@ -225,10 +224,8 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
            call util_pbneighbor(v46)
         endif
 
-        d1313 = dot_product(v13,v13)
-        d4242 = dot_product(v42,v42)
-        a13 = sqrt(d1313)
-        a42 = sqrt(d4242)
+        a13 = norm2(v13)
+        a42 = norm2(v42)
         d1213 = dot_product(v13,v12)
         d1242 = dot_product(v12,v42)
 
@@ -250,7 +247,7 @@ subroutine energy_dtrna_hbond15(irep, energy_unit, energy)
         c1213(2) = v12(3)*v13(1) - v12(1)*v13(3)
         c1213(3) = v12(1)*v13(2) - v12(2)*v13(1)
 
-        dih = atan2(dot_product(v42,c1213)*sqrt(d1212) , dot_product(c4212,c1213))
+        dih = atan2(dot_product(v42,c1213)*a12, dot_product(c4212,c1213))
         d = dih - dtrna_hb_nat(4,ihb)
         if (d > F_PI) then
            d = d - F_2PI

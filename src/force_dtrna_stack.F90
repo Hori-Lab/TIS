@@ -73,7 +73,7 @@
                 - xyz_mp_rep(1:3, idtrna_st2mp(6,ist), irep)
 
       !===== 1. Distance between 1 and 2 =====
-      dist = sqrt(dot_product(v21,v21))
+      dist = norm2(v21)
       ddist = dist - dtrna_st_nat(1,ist)
       ediv = ediv + coef_dtrna_st(1, ist, grep) * ddist**2
 

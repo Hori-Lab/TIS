@@ -85,7 +85,7 @@ subroutine force_exv_dt15(irep, force_mp)
         v21(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep) + inperi%d_mirror(1:3, imirror)
      !end if
 
-     dist = sqrt(dot_product(v21,v21))
+     dist = norm2(v21)
 
      if (dist > dij) cycle
 

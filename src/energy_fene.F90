@@ -44,9 +44,7 @@ subroutine energy_fene(irep, energy_unit, energy)
      imp2 = ifene2mp(2, ifene)
 
      v21(1:3) = xyz_mp_rep(1:3, imp2, irep) - xyz_mp_rep(1:3, imp1, irep)
-     !dist = sqrt(dot_product(v21,v21))
-     !ddist2 = (dist - fene_nat(ifene))**2
-     ddist2 = (sqrt(dot_product(v21,v21)) - fene_nat(ifene)) ** 2
+     ddist2 = (norm2(v21) - fene_nat(ifene)) ** 2
 
      efull = - 0.5 * coef_fene(ifene) * dist2_fene(ifene) * log(1.0 - ddist2 / dist2_fene(ifene))
 

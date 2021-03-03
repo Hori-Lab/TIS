@@ -39,13 +39,13 @@ subroutine energy_ele_coulomb_brute(irep, energy, energy_unit)
 !        ene = 0.0e0_PREC
 !        ! Self
 !        if (jmp > imp) then
-!           ene = ene + coef / sqrt(dot_product(v21,v21))
+!           ene = ene + coef / norm2(v21)
 !        endif
 !
 !        ! Periodic
 !        do ih = 1, ewld_f_n
 !           pv21(1:SDIM) = v21(:) + inperi%psize(:) * ewld_h(:,ih)
-!           ene = ene + 0.5 * coef / sqrt(dot_product(pv21,pv21))
+!           ene = ene + 0.5 * coef / norm2(pv21)
 !        enddo
 !
 !        energy(E_TYPE%ELE) = energy(E_TYPE%ELE) + ene
@@ -70,12 +70,12 @@ subroutine energy_ele_coulomb_brute(irep, energy, energy_unit)
 !
 !           ! Self
 !           if (ih == 1 .and. jmp /= imp) then
-!              ene = ene + coef / sqrt(dot_product(v21,v21))
+!              ene = ene + coef / norm2(v21)
 !           endif
 !
 !           ! Periodic
 !           pv21(1:SDIM) = v21(:) + inperi%psize(:) * ewld_h(:,ih)
-!           ene = ene + coef / sqrt(dot_product(pv21,pv21))
+!           ene = ene + coef / norm2(pv21)
 !        enddo
 !     enddo
 !  end do
@@ -101,17 +101,17 @@ subroutine energy_ele_coulomb_brute(irep, energy, energy_unit)
         ! Self
         ene = 0.0
         if (jcharge > icharge) then
-           ene = coef / sqrt(dot_product(v21,v21))
+           ene = coef / norm2(v21)
         endif
 
         ! Periodic
         do ih = 1, ewld_f_n
            pv21(1:SDIM) = v21(:) + inperi%psize(:) * ewld_h(:,ih)
-           ene = ene + 0.5 * coef / sqrt(dot_product(pv21,pv21))
+           ene = ene + 0.5 * coef / norm2(pv21)
 
            if (jcharge > icharge) then
               pv21(1:SDIM) = -v21(:) + inperi%psize(:) * ewld_h(:,ih)
-              ene = ene + 0.5 * coef / sqrt(dot_product(pv21,pv21))
+              ene = ene + 0.5 * coef / norm2(pv21)
            endif
         enddo
 

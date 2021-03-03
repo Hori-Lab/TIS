@@ -43,7 +43,7 @@ subroutine force_fene(irep, force_mp)
 
      v21(1:3) = xyz_mp_rep(1:3, imp2,irep) - xyz_mp_rep(1:3, imp1,irep)
 
-     dist = sqrt(dot_product(v21,v21))
+     dist = norm2(v21)
      ddist = dist - fene_nat(ifene)
      ddist2 = ddist**2
 

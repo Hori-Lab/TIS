@@ -69,7 +69,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
   real(PREC) :: d, efull, ediv
   real(PREC) :: v12(SDIM), v13(SDIM), v53(SDIM)
   real(PREC) :: v42(SDIM), v46(SDIM)
-  real(PREC) :: d1212
+  real(PREC) :: a12, a13, a42
   real(PREC) :: m(SDIM), n(SDIM)
   real(PREC) :: c4212(SDIM), c1213(SDIM)
   integer :: ksta, kend
@@ -101,7 +101,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
 
 !$omp do private(imp1,imp2,iunit1,iunit2,ist_2nd,&
 !$omp&           d, dih, cos_theta, efull, ediv, &
-!$omp&           v12,v13,v53,v42,v46,d1212,&
+!$omp&           v12,v13,v53,v42,v46,a12,a13,a42,&
 !$omp&           m,n,c4212,c1213)
   do ist=ksta,kend
 
@@ -115,8 +115,8 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      endif
 
      !===== Distance =====
-     d1212 = dot_product(v12,v12)
-     d = sqrt(d1212) - dtrna_tst_nat(1,ist)
+     a12 = norm2(v12)
+     d = a12 - dtrna_tst_nat(1,ist)
 
      if (d < 10.0) then
         if (flg_tst_exclusive(1,ist)) then
@@ -160,12 +160,14 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      ediv = ediv + coef_dtrna_tst(1, ist) * d**2
 
      !===== Angle of 3-1=2  =====
-     cos_theta = dot_product(v13,v12) / sqrt(dot_product(v13,v13) * d1212)
+     a13 = norm2(v13)
+     cos_theta = dot_product(v13,v12) / (a13*a12)
      d = acos(cos_theta) - dtrna_tst_nat(2,ist)
      ediv = ediv + coef_dtrna_tst(2, ist) * d**2
 
      !===== Angle of 1=2-4  =====
-     cos_theta = dot_product(v12,v42) / sqrt(d1212 * dot_product(v42,v42))
+     a42 = norm2(v42)
+     cos_theta = dot_product(v12,v42) / (a12*a42)
      d = acos(cos_theta) - dtrna_tst_nat(3,ist)
      ediv = ediv + coef_dtrna_tst(3, ist) * d**2
 
@@ -177,7 +179,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      c1213(2) = v12(3) * v13(1) - v12(1) * v13(3)
      c1213(3) = v12(1) * v13(2) - v12(2) * v13(1)
      
-     dih = atan2(dot_product(v42,c1213)*sqrt(dot_product(v12,v12)) , dot_product(c4212,c1213))
+     dih = atan2(dot_product(v42,c1213)*a12, dot_product(c4212,c1213))
      d = dih - dtrna_tst_nat(4, ist)
      if (d > F_PI) then
         d = d - F_2PI
@@ -193,7 +195,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      m(3) = v53(1) * v13(2) - v53(2) * v13(1)
      n(:) = -c1213(:)
 
-     dih = atan2(dot_product(v53,n)*sqrt(dot_product(v13,v13)) , dot_product(m,n))
+     dih = atan2(dot_product(v53,n)*a13, dot_product(m,n))
      d = dih - dtrna_tst_nat(5, ist)
      if (d > F_PI) then
         d = d - F_2PI
@@ -208,7 +210,7 @@ subroutine energy_dtrna_stack_nlocal(irep, energy_unit, energy, ene_tst, st_stat
      n(2) = v42(3) * v46(1) - v42(1) * v46(3)
      n(3) = v42(1) * v46(2) - v42(2) * v46(1)
 
-     dih = atan2(dot_product(v12,n)*sqrt(dot_product(v42,v42)) , dot_product(m,n))
+     dih = atan2(dot_product(v12,n)*a42, dot_product(m,n))
      d = dih - dtrna_tst_nat(6, ist)
      if (d > F_PI) then
         d = d - F_2PI

@@ -111,7 +111,7 @@
                 - xyz_mp_rep(1:3, idtrna_st2mp(6,ist), irep)
 
       !===== Distance between 1 and 2 =====
-      ddist = sqrt(dot_product(v21,v21)) - dtrna_st_nat(1,ist)
+      ddist = norm2(v21) - dtrna_st_nat(1,ist)
       ediv = ediv + coef_dtrna_st(1, ist, grep) * ddist**2
 
       !===== Dihedral angle among 3,4,5,6 =====
@@ -121,7 +121,7 @@
       n(1) = v54(2)*v56(3) - v54(3)*v56(2)
       n(2) = v54(3)*v56(1) - v54(1)*v56(3)
       n(3) = v54(1)*v56(2) - v54(2)*v56(1)
-      dih = atan2(dot_product(v34,n)*sqrt(dot_product(v54,v54)) , dot_product(m,n))
+      dih = atan2(dot_product(v34,n)*norm2(v54), dot_product(m,n))
 
       d = dih - dtrna_st_nat(2,ist)
       if (d > F_PI) then
@@ -139,7 +139,7 @@
       !n(2) = v56(3)*v54(1) - v56(1)*v54(3)
       !n(3) = v56(1)*v54(2) - v56(2)*v54(1)
       n(:) = -n(:)
-      dih = atan2(dot_product(v76,n)*sqrt(dot_product(v56,v56)) , dot_product(m,n))
+      dih = atan2(dot_product(v76,n)*norm2(v56), dot_product(m,n))
 
       d = dih - dtrna_st_nat(3,ist)
       if (d > F_PI) then

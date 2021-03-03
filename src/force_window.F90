@@ -20,8 +20,7 @@ subroutine force_window(irep, force_mp)
   integer :: grep
   integer :: imp, jmp
   integer :: iwind
-  real(PREC) :: dx, dy, dz, dist, cbd2, for
-  real(PREC) :: force_x, force_y, force_z
+  real(PREC) :: v(3), dist, for(3)
   real(PREC) :: coef, length
   
   ! ----------------------------------------------------------------------
@@ -34,25 +33,14 @@ subroutine force_window(irep, force_mp)
   imp = inrep%window_mp_id(iwind, WINDTYPE%IMP)
   jmp = inrep%window_mp_id(iwind, WINDTYPE%JMP)
 
-  dx = xyz_mp_rep(1, imp, irep) - xyz_mp_rep(1, jmp, irep)
-  dy = xyz_mp_rep(2, imp, irep) - xyz_mp_rep(2, jmp, irep)
-  dz = xyz_mp_rep(3, imp, irep) - xyz_mp_rep(3, jmp, irep)
+  v(:) = xyz_mp_rep(:, imp, irep) - xyz_mp_rep(:, jmp, irep)
   
-  dist = sqrt(dx**2 + dy**2 + dz**2)
+  dist = norm2(v)
   
-  cbd2 = -2.0e0_PREC * coef
-  for = cbd2 * (dist - length) / dist
-  
-  force_x = for * dx
-  force_y = for * dy
-  force_z = for * dz 
+  for(:) = -2.0e0_PREC * coef * (dist - length) / dist * v(:)
     
-  force_mp(1, imp) = force_mp(1, imp) + force_x
-  force_mp(2, imp) = force_mp(2, imp) + force_y 
-  force_mp(3, imp) = force_mp(3, imp) + force_z
-  force_mp(1, jmp) = force_mp(1, jmp) - force_x
-  force_mp(2, jmp) = force_mp(2, jmp) - force_y 
-  force_mp(3, jmp) = force_mp(3, jmp) - force_z
+  force_mp(:, imp) = force_mp(:, imp) + for(:)
+  force_mp(:, jmp) = force_mp(:, jmp) - for(:)
 
 end subroutine force_window
 

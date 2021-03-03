@@ -20,8 +20,8 @@ subroutine energy_bridge(irep, energy_unit, energy)
   ! local variables
   integer :: i, ibrid, imp, jmp, iunit, junit
   integer :: igrp, jgrp
-  real(PREC) :: dx, dy, dz, dist, cbd2, efull
-  real(PREC) :: ixyz(3), jxyz(3), d(3)
+  real(PREC) :: dist, cbd2, efull
+  real(PREC) :: ixyz(3), jxyz(3)
   
   ! ----------------------------------------------------------------------
   ! BRIDGE
@@ -29,11 +29,8 @@ subroutine energy_bridge(irep, energy_unit, energy)
 
      imp = inmisc%ibrid2mp(1, ibrid)
      jmp = inmisc%ibrid2mp(2, ibrid)
-     dx = xyz_mp_rep(1, imp, irep) - xyz_mp_rep(1, jmp, irep)
-     dy = xyz_mp_rep(2, imp, irep) - xyz_mp_rep(2, jmp, irep)
-     dz = xyz_mp_rep(3, imp, irep) - xyz_mp_rep(3, jmp, irep)
    
-     dist = sqrt(dx**2 + dy**2 + dz**2)
+     dist = norm2( xyz_mp_rep(:,imp,irep) - xyz_mp_rep(:, jmp, irep) )
 
      if(     (inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_dist(ibrid)) &
          .or. inmisc%i_lower_bound == 1 &
@@ -70,8 +67,7 @@ subroutine energy_bridge(irep, energy_unit, energy)
         jxyz(:) = jxyz(:) + xyz_mp_rep(:, grp%implist(i,jgrp), irep) * grp%mass_fract(i,jgrp)
      enddo
 
-     d(:) = ixyz(:) - jxyz(:)
-     dist = sqrt(dot_product(d,d))
+     dist = norm2(ixyz(:) - jxyz(:) )
 
      if((inmisc%i_lower_bound == 0 .and. dist > inmisc%brid_com_dist(ibrid)) &
           .or. inmisc%i_lower_bound /= 0) then

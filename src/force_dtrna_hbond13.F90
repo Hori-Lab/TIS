@@ -167,7 +167,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       if (abs(cos_theta312) > MAX_ABSCOS_HBOND13) then
          c1213_abs2 = d1212 * d1313 * (1.0 - MAX_ABSCOS_HBOND13**2)
       endif
-      dih = atan2(dot_product(v42,c1213)*sqrt(d1212) , dot_product(c4212,c1213))
+      dih = atan2(dot_product(v42,c1213)*a12, dot_product(c4212,c1213))
       d = dih - dtrna_hb_nat(4,ihb)
       if (d > F_PI) then
          d = d - F_2PI
@@ -195,7 +195,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       n(:) = -c1213(:)
       c5313_abs2 = dot_product(c5313, c5313)
 
-      cos_theta531 = d1353 / (a13 * sqrt(dot_product(v53,v53)))
+      cos_theta531 = d1353 / (a13 * norm2(v53))
       if (abs(cos_theta531) > MAX_ABSCOS_HBOND13) then
          c5313_abs2 = dot_product(v53,v53) * d1313 * (1.0 - MAX_ABSCOS_HBOND13**2)
          write(*,*) 'ANG(5-3-1): ', irep, istep, ihb, cos_theta531
@@ -229,7 +229,7 @@ subroutine force_dtrna_hbond13(irep, force_mp)
       c4246(3) = v42(1) * v46(2) - v42(2) * v46(1)
       c4246_abs2 = dot_product(c4246,c4246)
 
-      cos_theta246 = d4246 / (a42 * sqrt(dot_product(v46,v46)))
+      cos_theta246 = d4246 / (a42 * norm2(v46))
       if (abs(cos_theta246) > MAX_ABSCOS_HBOND13) then
          c4246_abs2 = dot_product(v46,v46) * d4242 * (1.0 - MAX_ABSCOS_HBOND13**2)
          write(*,*) 'ANG(2-4-6): ', irep, istep, ihb, cos_theta246
