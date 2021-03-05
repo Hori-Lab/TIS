@@ -8,7 +8,7 @@ subroutine simu_initial_xyz()
   use const_index
 !  use if_readpdb
   use var_setp, only : inperi
-  use var_io,    only : ifile_ini, num_file, i_initial_state, pdbatom
+  use var_io,    only : ifile_ini, num_file, i_initial_state, pdbatom, flg_unit_generate_ion
   use var_struct, only : nmp_all, nunit_real, nmp_real, lunit2mp, xyz_mp_rep, cmp2seq, imp2type
   use mpiconst
 
@@ -24,6 +24,7 @@ subroutine simu_initial_xyz()
   character(3) :: cini2seq(MXMP)
   character(4) :: cini2atom(MXMP)
   character(CARRAY_MSG_ERROR) :: error_message
+  logical :: flg_generate 
 !  character(4) :: cname_ha(MXATOM_MP, MXMP)  ! aicg
 !  type(pdbatom),allocatable :: pdb_atom(:)
 
@@ -98,34 +99,45 @@ subroutine simu_initial_xyz()
 !  deallocate(pdb_atom)
 
   ! ----------------------------------------------------------------------
-  ! check the consitent between ini and pdb
+  ! check the consitency between ini and pdb
+  flg_generate = .False.
+  do iunit = 1, nunit_real
+     if (flg_unit_generate_ion(iunit)) then
+        nunitini = nunitini + 1
+        flg_generate = .True.
+     endif
+  enddo
   if(nunit_real /= nunitini) then
      write (error_message, *) 'Error: invalid value for nunitini in simu_initial_xyz', &
                               ' nunit_real = ', nunit_real, ' nunitini = ', nunitini
      call util_error(ERROR%STOP_ALL, error_message)
 
-  else if(nmp_real /= nmpini) then
-     write (error_message, *) 'Error: invalid value for nmpini in simu_initial_xyz', &
-                              ' nmp_real = ', nmp_real, ' nmpini = ', nmpini
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
+  endif
 
-  do iunit = 1, nunit_real
-     if(lunit2mp(2, iunit) /= lunit2mpini(2, iunit)) then
-        write (error_message, *) 'Error: invalid value for lunit2mpini in simu_initial_xyz', &
-                                 ' iunit = ', iunit, ' lunit2mp = ', lunit2mp(2, iunit),     &
-                                 ' lunit2mpini = ', lunit2mpini(2, iunit)
+  if (.not. flg_generate) then
+     if(nmp_real /= nmpini) then
+        write (error_message, *) 'Error: invalid value for nmpini in simu_initial_xyz', &
+                                 ' nmp_real = ', nmp_real, ' nmpini = ', nmpini
         call util_error(ERROR%STOP_ALL, error_message)
      end if
-  end do
-
-  do imp = 1, nmp_real
-     if(cmp2seq(imp) /= cini2seq(imp)) then
-        write (error_message, *) 'Error: invalid value for cini2seq in simu_initial_xyz', &
-                                 ' imp = ', imp, ' cmp2seq = ', cmp2seq(imp), ' cini2seq = ', cini2seq(imp)
-        call util_error(ERROR%STOP_ALL, error_message)
-     end if
-  end do
+   
+     do iunit = 1, nunit_real
+        if(lunit2mp(2, iunit) /= lunit2mpini(2, iunit)) then
+           write (error_message, *) 'Error: invalid value for lunit2mpini in simu_initial_xyz', &
+                                    ' iunit = ', iunit, ' lunit2mp = ', lunit2mp(2, iunit),     &
+                                    ' lunit2mpini = ', lunit2mpini(2, iunit)
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+     end do
+   
+     do imp = 1, nmp_real
+        if(cmp2seq(imp) /= cini2seq(imp)) then
+           write (error_message, *) 'Error: invalid value for cini2seq in simu_initial_xyz', &
+                                    ' imp = ', imp, ' cmp2seq = ', cmp2seq(imp), ' cini2seq = ', cini2seq(imp)
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+     end do
+  endif
 
 #ifdef MPI_PAR
   endif

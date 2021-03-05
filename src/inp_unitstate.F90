@@ -140,7 +140,27 @@ subroutine inp_unitstate()
            num_class(iclass) = num_class(iclass) + inunit(2) - inunit(1) + 1
 
            if(name == 'sequence' .or. name == '') then
+              continue
 !              ifile_pdb(5, ipdb) = 3
+
+           else if(name == 'generate') then
+
+              if (iclass /= CLASS%ION) then
+                 error_message = 'Error: generate is only available for ions in unit_and_state'
+                 call util_error(ERROR%STOP_ALL, error_message)
+              endif
+
+              ipdb = ipdb + 1
+              ifile_pdb(2, ipdb) = iclass
+              ifile_pdb(3, ipdb) = imunit + 1
+              ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
+              ifile_pdb(5, ipdb) = 2
+
+              if (ifile_pdb(3, ipdb) /= ifile_pdb(4, ipdb)) then
+                 error_message = 'Error: ion has to be one unit in unit_and_state'
+                 call util_error(ERROR%STOP_ALL, error_message)
+              endif
+
            else
               ipdb = ipdb + 1
               if (ipdb > MXPDB) then
@@ -152,12 +172,7 @@ subroutine inp_unitstate()
               ifile_pdb(2, ipdb) = iclass
               ifile_pdb(3, ipdb) = imunit + 1
               ifile_pdb(4, ipdb) = imunit + 1 + inunit(2) - inunit(1)
-
-              if(name == 'generate') then
-                 ifile_pdb(5, ipdb) = 2
-              else
-                 ifile_pdb(5, ipdb) = 1
-              end if
+              ifile_pdb(5, ipdb) = 1
            end if
 
            do iunit = inunit(1), inunit(2)
@@ -309,15 +324,16 @@ subroutine inp_unitstate()
   end if
 
   call MPI_Bcast(ifile_pdb,      5*MXPDB,            MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-  call MPI_Bcast(num_file,         num_file%sz,     MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(num_file,       num_file%sz,        MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(i_seq_read_style,       1,          MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(i_go_native_read_style, 1,          MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iunit2us,       2*MXUNIT,           MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(nunit_real,     1,                  MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(nunit_all,      1,                  MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iclass_unit,    MXUNIT,             MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
-!  call MPI_Bcast(inmgo,          inmgo%sz,           MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc,         inmisc%sz,          MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(flg_unit_generate_ion, MXUNIT,      MPI_LOGICAL, 0, MPI_COMM_WORLD,ierr)
+! call MPI_Bcast(inmgo,          inmgo%sz,           MPI_BYTE,   0,MPI_COMM_WORLD,ierr)
 #endif
 
 #ifdef _DEBUG

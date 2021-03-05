@@ -26,7 +26,7 @@ subroutine read_xyz_cg(xyz_mp_init)
   ! ---------------------------------------------------------------------
   ! local variables
   logical :: flg_rna
-  integer :: i, iunit, imp, iclass, itype
+  integer :: i, i_ion, iunit, imp, ires, iclass, itype
   integer :: nunitpdb, nunitpdb_old, nmppdb, nrespdb
   integer :: lunpdb
   character(CARRAY_MSG_ERROR) :: error_message
@@ -60,11 +60,75 @@ subroutine read_xyz_cg(xyz_mp_init)
      write(*,*) 'read_xyz: lunpdb, ',lunpdb
 #endif
 
-     call read_pdb_cg(lunpdb, nunitpdb, nmppdb, nrespdb, lunit2mp, ires_mp, &
-                        xyz_mp_init, cmp2seq, cmp2atom, imp2type)
+     ! Read CG PDB
+     if (ifile_pdb(5,i) == 1) then
 
-     if(nunitpdb_old /= ifile_pdb(3, i) .or. nunitpdb /= ifile_pdb(4, i)) then
-        write (error_message, *) 'Error: invalid unit number in reading pdb file', ' ipdb = ', i
+        call read_pdb_cg(lunpdb, nunitpdb, nmppdb, nrespdb, lunit2mp, ires_mp, &
+                         xyz_mp_init, cmp2seq, cmp2atom, imp2type)
+
+     ! Generate ions (but not coordinates)
+     else if (ifile_pdb(5,i) == 2) then
+        
+        imp = nmppdb 
+        ires = nrespdb
+
+        do i_ion = 1, inion%num_mg_ion
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp)  = ires
+           imp2type(imp) = MPTYPE%ION_MG
+           cmp2seq(imp)  = 'Mg '
+           cmp2atom(imp) = 'MG  '
+        enddo
+
+        do i_ion = 1, inion%num_ca_ion
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp)  = ires
+           imp2type(imp) = MPTYPE%ION_CA2
+           cmp2seq(imp)  = 'Ca2'
+           cmp2atom(imp) = 'CA2 '
+        enddo
+
+        do i_ion = 1, inion%num_k_ion
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp)  = ires
+           imp2type(imp) = MPTYPE%ION_K
+           cmp2seq(imp)  = 'K  '
+           cmp2atom(imp) = 'K   '
+        enddo
+
+        do i_ion = 1, inion%num_na_ion
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp)  = ires
+           imp2type(imp) = MPTYPE%ION_NA
+           cmp2seq(imp)  = 'Na '
+           cmp2atom(imp) = 'NA  '
+        enddo
+
+        do i_ion = 1, inion%num_cl_ion
+           imp = imp + 1
+           ires = ires + 1
+           ires_mp(imp)  = ires
+           imp2type(imp) = MPTYPE%ION_CL
+           cmp2seq(imp)  = 'Cl '
+           cmp2atom(imp) = 'CL  '
+        enddo
+
+        nmppdb = imp
+        nrespdb = ires
+        lunit2mp(2, nunitpdb) = nmppdb
+
+     else
+        write (error_message, *) 'Error: invalid option in ifile_pdb(5,i),', ifile_pdb(5,i), ', i = ', i
+        call util_error(ERROR%STOP_ALL, error_message)
+
+     endif
+
+     if (nunitpdb_old /= ifile_pdb(3, i) .or. nunitpdb /= ifile_pdb(4, i)) then
+        write (error_message, *) 'Error: invalid unit number in read_xyz_cg', ' ipdb = ', i
         call util_error(ERROR%STOP_ALL, error_message)
      end if
 
@@ -72,7 +136,7 @@ subroutine read_xyz_cg(xyz_mp_init)
 
   ! ---------------------------------------------------------------------
   if(nunitpdb /= nunit_all) then
-     write (error_message, *) 'Error: invalid unit number in reading pdb file', &
+     write (error_message, *) 'Error: number of units does not match,', &
                               ' nunit_all = ', nunit_all, ' nunitpdb = ', nunitpdb
      call util_error(ERROR%STOP_ALL, error_message)
   end if
@@ -115,6 +179,7 @@ subroutine read_xyz_cg(xyz_mp_init)
            num_ion( itype ) = num_ion( itype ) + 1
 
         enddo
+
      endif
   end do
 
