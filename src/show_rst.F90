@@ -124,6 +124,15 @@ program show_rst
             write(*,*) 'st_status(',i,'):', flg
          enddo
 
+      case(RSTBLK%WIDOM)
+         write(*,*) '# Widom'
+         read (luninp) i
+         write(*,*) 'grep:', i
+         read (luninp) i_ll
+         write(*,*) 'widom_iw:', i_ll
+         read (luninp) r1
+         write(*,*) 'widom_chp:', r1
+
       case default
          write(*,*) '#######################'
          write(*,*) 'unknown type of block'
