@@ -6,8 +6,8 @@ subroutine simu_initial()
   use const_index
   use var_io, only : i_initial_state, i_initial_velo, i_seq_read_style, flg_rst
   use var_setp, only : insimu, inmisc
-  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp
-  use var_replica, only : n_replica_mpi
+  use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, xyz_ref_mp, nmp_all
+  use var_replica, only : n_replica_mpi, irep2grep
   use var_simu, only : istep_sim, tempk
   use mt_stream
   use mpiconst
@@ -15,6 +15,9 @@ subroutine simu_initial()
   implicit none
 
   integer :: irep
+#ifdef _DEBUG
+  integer :: imp, grep
+#endif
 
   ! -----------------------------------------------------------------
 #ifdef _DEBUG
@@ -44,6 +47,15 @@ subroutine simu_initial()
         
      else if(i_initial_state == INISTAT%RST) then
         call read_rst(RSTBLK%XYZ)
+#ifdef _DEBUG
+        write(*,*) '#####simu_initial: xyz_mp_rep after read_rst'
+        do irep = 1, n_replica_mpi
+           grep = irep2grep(irep)
+           do imp = 1, nmp_all
+              write(6,'(2i5,3g14.7)') grep, imp, xyz_mp_rep(1:3,imp,irep)
+           enddo
+        enddo
+#endif
         
      end if
 
@@ -58,10 +70,17 @@ subroutine simu_initial()
      end if
   end if
   
+
   if (inmisc%class_flag(CLASS%ION)) then
-     do irep = 1, n_replica_mpi
-        call simu_initial_ion(irep)
-     end do
+     if (i_initial_state == INISTAT%RST) then
+        ! Do not generate if restarted
+        continue
+
+     else
+        do irep = 1, n_replica_mpi
+           call simu_initial_ion(irep)
+        end do
+     endif
   end if
 
   if (inmisc%i_reset_struct == 1 .and. .not. flg_rst) then
