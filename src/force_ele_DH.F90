@@ -88,7 +88,7 @@ subroutine force_ele_DH(irep, force_mp)
      if (ipmf > 0 .and. dist1 <= inpmf%Rmax(ipmf)) then 
 
         if (dist1 < inpmf%Rmin(PMFTYPE%MG_P)) then
-           write(error_message,*) 'force_ele_DH(r < Rmin)', istep, irep, imp1, imp2, dist1
+           write(error_message,*) 'force_ele_DH(r < Rmin)', istep, grep, imp1, imp2, dist1
            call util_error(ERROR%STOP_ALL, error_message)
         endif
 
@@ -106,7 +106,7 @@ subroutine force_ele_DH(irep, force_mp)
      endif
      
      if(dvdw_dr > DE_MAX) then
-        write(error_message,*) 'force_ele_DH > DE_MAX', istep, irep, imp1, imp2, dist1, dvdw_dr, DE_MAX
+        write(error_message,*) 'force_ele_DH > DE_MAX', istep, grep, imp1, imp2, dist1, dvdw_dr, DE_MAX
         call util_error(ERROR%WARN_ALL, error_message)
         dvdw_dr = DE_MAX
      end if

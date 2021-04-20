@@ -6,9 +6,7 @@ subroutine util_error(ierror_out, error_message)
 
   use const_maxsize
   use var_io, only : outfile
-#ifdef MPI_PAR
   use mpiconst
-#endif
 
   implicit none
 
@@ -26,32 +24,35 @@ subroutine util_error(ierror_out, error_message)
   ierror1 = mod(ierror_out, 10)
   ierror2 = ierror_out/10
 
-#ifdef MPI_PAR
-  if (myrank == 0) then
-#endif
-
      if(ierror1 == 0) then
         write (6,*) ''
         write (6, '(a)') trim(error_message)
         write (6,*) ''
+
      else if(ierror1 == 1) then
-        write (lunout, *) ''
-        write (lunout, '(a)') trim(error_message)
-        write (lunout, *) ''
+        if (myrank == 0) then
+           write (lunout, *) ''
+           write (lunout, '(a)') trim(error_message)
+           write (lunout, *) ''
+        end if
+
      else if(ierror1 == 2) then
         write (6,*) ''
         write (6, '(a)') trim(error_message)
         write (6,*) ''
-        write (lunout, *) ''
-        write (lunout, '(a)') trim(error_message)
-        write (lunout, *) ''
-     end if
-     call flush(6)
-     call flush(lunout)
 
-#ifdef MPI_PAR
-  end if
-#endif
+        if (myrank == 0) then
+           write (lunout, *) ''
+           write (lunout, '(a)') trim(error_message)
+           write (lunout, *) ''
+        end if
+
+     end if
+
+     call flush(6)
+     if (myrank == 0) then
+        call flush(lunout)
+     end if
 
 #ifdef MPI_PAR
   if(ierror2 == 0) then
@@ -61,9 +62,20 @@ subroutine util_error(ierror_out, error_message)
 !     call deallocate_fmat()
 !     call deallocate_mgo()
      call deallocate_simu()
-!     call MPI_Abort(MPI_COMM_WORLD,99,ierr)
-     call MPI_Finalize(ierr)
+
+     write (6,*) 'calling MPI_abort...'
+     call flush(6)
+
+     if (myrank == 0) then
+        write (lunout,*) 'calling MPI_abort...'
+        call flush(lunout)
+     endif
+
+     !call MPI_Finalize(ierr)
+     call MPI_Abort(MPI_COMM_WORLD,99,ierr)
+
      stop
+
   end if
 #else
   if(ierror2 == 0) then
