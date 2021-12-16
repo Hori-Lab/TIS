@@ -372,6 +372,17 @@ subroutine energy_sumup(irep,          &
 
 
   if (inmisc%i_dtrna_model /= 0) then
+
+     do n = 1, nthreads-1
+        ene_st_l(:,0) = ene_st_l(:,0) + ene_st_l(:,n)
+        ene_tst_l(:,0) = ene_tst_l(:,0) + ene_tst_l(:,n)
+     end do
+     if (inmisc%i_dtrna_model == 2013 .or. inmisc%i_dtrna_model == 2018) then
+        do n = 1, nthreads-1
+           ene_hb_l(:,0) = ene_hb_l(:,0) + ene_hb_l(:,n)
+        enddo
+     endif
+
 #ifdef MPI_PAR3
      if (ndtrna_st > 0 ) then
         call mpi_allreduce(ene_st_l, ene_st(1,irep), &
