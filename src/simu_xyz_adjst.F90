@@ -6,16 +6,16 @@ subroutine simu_xyz_adjst()
   use const_maxsize
   use const_index
   use const_physical
-  use var_io,      only : i_simulate_type
+  use var_io,      only : i_simulate_type, flg_file_out, outfile
   use var_setp,    only : insimu, inperi
   use var_struct,  only : nmp_real, xyz_mp_rep, pxyz_mp_rep, iclass_mp
-  use var_replica, only : n_replica_mpi
-  use var_simu,    only : accel_mp
+  use var_replica, only : n_replica_mpi, irep2grep
+  use var_simu,    only : accel_mp, dxyz_mp, istep, dxyz_mp
   use mpiconst
 
   implicit none
 
-  integer :: i, imp, irep, n_mp
+  integer :: i, imp, irep, n_mp, grep
   real(PREC) :: xyzg(SDIM), sumxyz(SDIM)
   real(PREC) :: pxyzg(SDIM), psumxyz(SDIM)
   real(PREC) :: theta
@@ -54,6 +54,19 @@ subroutine simu_xyz_adjst()
    
         !### Wrap
         call util_periodic(irep)
+
+        if (flg_file_out%neigh) then
+#ifdef MPI_PAR
+        if (local_rank_mpi == 0)then
+#endif
+           grep = irep2grep(irep)
+           write(outfile%neigh(grep), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') istep, grep, 0.0, 0.0, 0.0
+#ifdef MPI_PAR
+        endif
+#endif
+        endif
+        call neighbor(irep)
+        dxyz_mp(:,:,irep) = 0.0e0_PREC
      enddo
 
   else
