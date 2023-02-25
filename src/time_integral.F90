@@ -79,7 +79,7 @@ subroutine time_integral(flg_step_each_replica)
 #endif
               grep = irep2grep(irep)
               write(outfile%neigh(grep), '(i10,1x,i5,1x,f4.1,1x,f4.1,1x,f4.1)',advance='no') &
-                                   istep, grep, d2max, d2max_2nd, d2max+d2max_2nd
+                                   istep, grep, sqrt(d2max), sqrt(d2max_2nd), sqrt(d2max)+sqrt(d2max_2nd)
               flush(outfile%neigh(grep))
 #ifdef MPI_PAR
            endif
