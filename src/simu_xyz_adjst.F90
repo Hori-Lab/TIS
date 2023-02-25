@@ -51,10 +51,8 @@ subroutine simu_xyz_adjst()
         do imp = 1, nmp_real
            pxyz_mp_rep(:, imp, irep) = pxyz_mp_rep(:, imp, irep) - pxyzg(:)
         end do
-   
-        !### Wrap
-        call util_periodic(irep)
 
+        !### Wrap
         if (flg_file_out%neigh) then
 #ifdef MPI_PAR
         if (local_rank_mpi == 0)then
@@ -65,7 +63,7 @@ subroutine simu_xyz_adjst()
         endif
 #endif
         endif
-        call neighbor(irep)
+        call neighbor(irep)   ! util_periodic will be called in neighbor for PBC wrapping.
         dxyz_mp(:,:,irep) = 0.0e0_PREC
      enddo
 
