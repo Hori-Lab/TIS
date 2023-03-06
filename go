@@ -1,6 +1,6 @@
 #!/bin/bash
 
-host=`uname -n`
+hostname=`uname -n`
 
 if [[ ${hostname:8:9} == 'sulis.hpc' ]]; then
     rank=$PMI_RANK
