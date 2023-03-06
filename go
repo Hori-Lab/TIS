@@ -2,7 +2,12 @@
 
 host=`uname -n`
 
-rank=$OMPI_COMM_WORLD_RANK
+if [[ ${hostname:8:9} == 'sulis.hpc' ]]; then
+    rank=$PMI_RANK
+else
+    rank=$OMPI_COMM_WORLD_RANK
+fi
+
 suffix=`printf "%3.3d" $rank`
 
 export OMP_NUM_THREADS=1
