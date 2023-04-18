@@ -1,4 +1,3 @@
-# MDcode
 
 ## TIS Models
 |     | Name  |  M+/M-  |   M++   | Exv. | #sep-P | #sep-S | #sep-B |

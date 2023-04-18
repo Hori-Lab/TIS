@@ -1,6 +1,0 @@
-#DataThief /Users/nh9632/MDcode/master_master/exp_data/BWYVPK_Denesyuk/BWYVPK_Fig2a.png Sunday 28-Oct-2018 10:05:09 PM
-EXP 64.7515, 2.0324
-ND  65.9308, 2.2504
-EXP 90.9351, 3.3758
-EXP(ref) 91.2
-ND  89.9916, 3.1457
