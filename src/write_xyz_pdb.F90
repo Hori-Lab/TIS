@@ -60,6 +60,7 @@ subroutine write_xyz_pdb(istep)
      end do
    
      write (outfile%pdb(grep), '(a)') 'ENDMDL'
+     flush (outfile%pdb(grep))
   enddo
 
   imodel = imodel + 1 
