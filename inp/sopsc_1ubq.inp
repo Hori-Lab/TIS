@@ -1,0 +1,186 @@
+<<<< filenames
+path = ./data
+filename = md
+OUTPUT pdb dcd psf rst neigh
+path_pdb = ./pdb
+path_ini = ./pdb
+path_natinfo = ./ninfo
+path_para=./para
+>>>> 
+
+
+<<<< job_cntl
+**           = 2 : Constant temperature simulation 
+i_run_mode = 2
+**           = 1 : Langevin dynamics (recommended)
+i_simulate_type = 1
+**           = 6 : Configuration given in the input with the CafeMol(CG) style
+i_initial_state = 6
+i_initial_velo = 0
+i_periodic   = 0
+>>>>
+
+
+<<<< unit_and_state
+**         = 4 : from coarse-grained PDB file
+i_seq_read_style = 4
+
+**         = 2 : from "native_info" files
+i_go_native_read_style = 2
+
+1    sopsc    1UBQ_PRO_WH.cg.pdb
+>>>>
+
+
+<<<< native_info_sim1
+NINFO(all/all)     1UBQ_PRO_WH.ninfo
+>>>>
+
+
+<<<< initial_struct
+1   1UBQ_PRO_WH.cg.pdb
+>>>>
+
+
+<<<< energy_function        
+LOCAL(1)     L_FENE
+NLOCAL(1/1)    LJ  EXV6 ELE
+
+i_flp = 0
+
+** define which of atoms to be used as the representative for the CG particle
+**       = 0 : for using CA atom (default)
+**       = 1 : for using CB atom
+**       = 2 : for using the center of mass of side chain
+
+
+** for excluded volume interactions
+**       = 0 : using same sigmas for all amino-acids (now default, but will be obsolete next version)
+**       = 1 : using type dependent sigmas for different residues (recommended for protein and DNA2)
+i_residue_exv_radii = 0
+
+i_output_energy_style = 1
+i_coef_from_ninfo = 1
+i_temp_independent = 0
+i_dtrna_model = 2013
+
+**       = 0 : EXV is not applied to native-contact pairs (default)
+**       = 1 : EXV is applied to any pairs including native-contact pairs
+** (This flag will not be applied to excluded volume in DTRNA model)
+i_exv_all = 0
+>>>>
+
+
+<<<< electrostatic
+***cutoff_ele = 20.0
+cutoff_ele = 9999.9
+** cutoff_ele is scaled by Debye length.
+
+ionic_strength = 0.01
+diele_water = 10.0
+
+** dielectric constant
+**            = 0 constant value (default)
+**            = 1 function of temperature and concentration of cation
+i_diele = 0
+
+** charge value
+**            = 0 constant value (default)
+**            = 1 Temperature dependent, based on Manning's theory
+i_charge = 0
+
+** function form
+**           = 0 Debye-Huckel (default)
+**           = 1 Coulomb
+**           = 2 Coulomb (Ewald)
+**           = 3 Coulomb (Brute-force to check Ewald results)
+i_function_form = 0 
+
+** calculation method for electrostatic interaction in K computer (optional)
+**            = 0 neighboring list (default)
+**            = 1 neighboring list for K computer
+**            = 2 direct caluculation for K computer
+i_calc_method = 0
+
+** for SOP-SC 
+**            = 1 no special treatment (default)
+**            = 0 ignore electrostatic between two consecutive residues for SOP-SC
+i_sopsc_consec_res = 0
+
+** define the charges of each type
+**          type charge
+CHARGE_TYPE  LYS  1.0
+CHARGE_TYPE  ARG  1.0
+CHARGE_TYPE  HIE  1.0
+CHARGE_TYPE  ASP -1.0
+CHARGE_TYPE  GLU -1.0
+>>>>
+
+
+<<<< md_information
+n_step_sim = 1
+n_tstep(1) = 30000000
+tstep_size = 0.05
+n_step_save = 1000
+n_step_rst = 1000
+n_step_neighbor = 1
+
+##tempk = 354.15
+tempk = 340.00
+
+i_rand_type = 0
+n_seed = 2
+
+i_com_zeroing_ini = 1
+i_com_zeroing = 1
+i_no_trans_rot = 0
+
+** i_redef_para = 0 : noperation (default)
+**              = 1 : re-define some default parameters
+**                   (requires the input block "<<<< redefine_para")
+*i_redef_para = 0
+
+i_implig = 0
+i_energy_para = 0
+
+** i_neigh_dist = 0 : no operation (default)
+**              = 1 : re-define radius threshold for making the neighbor list
+**                   (requires the input block "<<<< neighbor_dist")
+i_neigh_dist = 0
+
+** i_mass = 0 : All particles have mass of "rmass" value in para/general.para. (default)
+**        = 1 : Each particle has residue-type dependent mass
+**              specified in "chemical_property" field in para/general.para.
+i_mass = 0
+
+** i_fric = 0 : All particles are subject to a friction of "fric_const"
+**              in para/gerneral.para (default)
+**        = 1 : Each particle is subject to a friction derived by Stokes' law
+** NOTE: This flag is relevant only in Langevin dynamics (i_simulate_type = 1)
+i_fric = 0
+
+** i_mass_fric = 0 : no operation (default)
+**             = 1 : re-define mass and/or friction coefficient of some portions
+**                  (requires the input block "<<<< mass_friction")
+i_mass_fric = 0
+
+i_del_int = 0
+i_anchor = 0
+i_rest1d = 0
+i_bridge = 0
+i_pulling = 0
+i_fix = 0
+i_in_box = 0
+i_in_cap = 0
+
+** i_neigh_diynamic = 0 : step based
+**                  = 1 : dynamic
+i_neigh_dynamic = 1
+>>>>
+
+<<<< sopsc
+n_sep_nlocal_SOPSC_B_B = 2
+n_sep_nlocal_SOPSC_B_S = 1
+n_sep_nlocal_SOPSC_S_S = 2
+exv_scale_B_S_ang = 0.8
+>>>>

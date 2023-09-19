@@ -34,9 +34,10 @@ subroutine setp_mapara_exv()
   ! -------------------------------------------------------------------
   ! Initialize parameters
 
-  inexv%exv_sigma(0:CHEMICALTYPE%MAX) = 4.5
-  inexv%exv_cutoff = 2.0
-  inexv%exv_coef = 0.6
+  inexv%exv_rad(0:CHEMICALTYPE%MAX) = 0.0
+  inexv%exv12_cutoff = 0.0
+  inexv%exv6_cutoff = 0.0
+  inexv%exv_coef = 0.0
 
   ! -------------------------------------------------------------------
   ! Initialize file handle
@@ -47,7 +48,7 @@ subroutine setp_mapara_exv()
   if (myrank == 0) then
 #endif
 
-     ! Reading input for exv_sigma(i)
+     ! Reading input for exv_rad(i)
      rewind(lunpara)
 
      call ukoto_uiread2(lunpara, lunout, 'exv_para        ', kfind, &
@@ -61,17 +62,28 @@ subroutine setp_mapara_exv()
      do iline = 1, nlines
         cline = cwkinp(iline)
 
-        if(cline(1:9) == 'EXV_SIGMA') then
+        if(cline(1:7) == 'EXV_RAD') then
            write(ctype, '(20a)') (' ', i=1,20)
            read (cline, *) cdummy, ctype, x
-           write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading excluded volume sigma: ', trim(cdummy),trim(ctype), x
-           inexv%exv_sigma( char2ichem(ctype) ) = x
+           write (lunout, '(2a,1x,1a,2x,f6.2)') '---reading radii for excluded volume: ', trim(cdummy),trim(ctype), x
+
+           if (ctype == 'SOPSC_BB_BB') then
+              inexv%exv_rad_sopsc_BB_BB = x
+           else if (ctype == 'SOPSC_BB_SC') then
+              inexv%exv_rad_sopsc_BB_SC = x
+           else
+              inexv%exv_rad_sopsc( char2ichem(ctype) ) = x
+           endif 
+
         else
            call ukoto_uiequa2(lunout, cline, nequat, csides)
            do iequa = 1, nequat
 
-              cvalue = 'exv_cutoff'
-              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv_cutoff, cvalue)
+              cvalue = 'exv12_cutoff'
+              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv12_cutoff, cvalue)
+
+              cvalue = 'exv6_cutoff'
+              call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv6_cutoff, cvalue)
 
               cvalue = 'exv_coef'
               call ukoto_rvalue2(lunout, csides(1, iequa), inexv%exv_coef, cvalue)
@@ -101,49 +113,103 @@ contains
        char2ichem = CHEMICALTYPE%U
     else if (c(1:2) == 'C ') then
        char2ichem = CHEMICALTYPE%C
-    else if (c(1:3) =='ALA') then
-       char2ichem = CHEMICALTYPE%ALA
-    else if (c(1:3) =='ARG') then
-       char2ichem = CHEMICALTYPE%ARG
-    else if (c(1:3) =='ASN') then
-       char2ichem = CHEMICALTYPE%ASN
-    else if (c(1:3) =='ASP') then
-       char2ichem = CHEMICALTYPE%ASP
-    else if (c(1:3) =='CYS') then
-       char2ichem = CHEMICALTYPE%CYS
-    else if (c(1:3) =='GLN') then
-       char2ichem = CHEMICALTYPE%GLN
-    else if (c(1:3) =='GLU') then
-       char2ichem = CHEMICALTYPE%GLU
-    else if (c(1:3) =='GLY') then
-       char2ichem = CHEMICALTYPE%GLY
-    else if (c(1:3) =='HIS') then
-       char2ichem = CHEMICALTYPE%HIS
-    else if (c(1:3) =='ILE') then
-       char2ichem = CHEMICALTYPE%ILE
-    else if (c(1:3) =='LEU') then
-       char2ichem = CHEMICALTYPE%LEU
-    else if (c(1:3) =='LYS') then
-       char2ichem = CHEMICALTYPE%LYS
-    else if (c(1:3) =='MET') then
-       char2ichem = CHEMICALTYPE%MET
-    else if (c(1:3) =='PHE') then
-       char2ichem = CHEMICALTYPE%PHE
-    else if (c(1:3) =='PRO') then
-       char2ichem = CHEMICALTYPE%PRO
-    else if (c(1:3) =='SER') then
-       char2ichem = CHEMICALTYPE%SER
-    else if (c(1:3) =='THR') then
-       char2ichem = CHEMICALTYPE%THR
-    else if (c(1:3) =='TRP') then
-       char2ichem = CHEMICALTYPE%TRP
-    else if (c(1:3) =='TYR') then
-       char2ichem = CHEMICALTYPE%TYR
-    else if (c(1:3) =='VAL') then
-       char2ichem = CHEMICALTYPE%VAL
+    else if (c(1:3) == 'AA_') then
+       if (c(4:6) =='ALA') then
+          char2ichem = CHEMICALTYPE%AA_ALA
+       else if (c(4:6) =='ARG') then
+          char2ichem = CHEMICALTYPE%AA_ARG
+       else if (c(4:6) =='ASN') then
+          char2ichem = CHEMICALTYPE%AA_ASN
+       else if (c(4:6) =='ASP') then
+          char2ichem = CHEMICALTYPE%AA_ASP
+       else if (c(4:6) =='CYS') then
+          char2ichem = CHEMICALTYPE%AA_CYS
+       else if (c(4:6) =='GLN') then
+          char2ichem = CHEMICALTYPE%AA_GLN
+       else if (c(4:6) =='GLU') then
+          char2ichem = CHEMICALTYPE%AA_GLU
+       else if (c(4:6) =='GLY') then
+          char2ichem = CHEMICALTYPE%AA_GLY
+       else if (c(4:6) =='HIS') then
+          char2ichem = CHEMICALTYPE%AA_HIS
+       else if (c(4:6) =='ILE') then
+          char2ichem = CHEMICALTYPE%AA_ILE
+       else if (c(4:6) =='LEU') then
+          char2ichem = CHEMICALTYPE%AA_LEU
+       else if (c(4:6) =='LYS') then
+          char2ichem = CHEMICALTYPE%AA_LYS
+       else if (c(4:6) =='MET') then
+          char2ichem = CHEMICALTYPE%AA_MET
+       else if (c(4:6) =='PHE') then
+          char2ichem = CHEMICALTYPE%AA_PHE
+       else if (c(4:6) =='PRO') then
+          char2ichem = CHEMICALTYPE%AA_PRO
+       else if (c(4:6) =='SER') then
+          char2ichem = CHEMICALTYPE%AA_SER
+       else if (c(4:6) =='THR') then
+          char2ichem = CHEMICALTYPE%AA_THR
+       else if (c(4:6) =='TRP') then
+          char2ichem = CHEMICALTYPE%AA_TRP
+       else if (c(4:6) =='TYR') then
+          char2ichem = CHEMICALTYPE%AA_TYR
+       else if (c(4:6) =='VAL') then
+          char2ichem = CHEMICALTYPE%AA_VAL
+       else
+          char2ichem = CHEMICALTYPE%UNKNOWN
+          write(error_message,*) 'Error: unknown chemical type in "exv_rad"',&
+               'field in para/exv.para;', c
+          call util_error(ERROR%STOP_ALL, error_message)
+       endif
+    else if (c(1:3) == 'SC_') then
+       if (c(4:6) =='ALA') then
+          char2ichem = CHEMICALTYPE%SC_ALA
+       else if (c(4:6) =='ARG') then
+          char2ichem = CHEMICALTYPE%SC_ARG
+       else if (c(4:6) =='ASN') then
+          char2ichem = CHEMICALTYPE%SC_ASN
+       else if (c(4:6) =='ASP') then
+          char2ichem = CHEMICALTYPE%SC_ASP
+       else if (c(4:6) =='CYS') then
+          char2ichem = CHEMICALTYPE%SC_CYS
+       else if (c(4:6) =='GLN') then
+          char2ichem = CHEMICALTYPE%SC_GLN
+       else if (c(4:6) =='GLU') then
+          char2ichem = CHEMICALTYPE%SC_GLU
+       else if (c(4:6) =='GLY') then
+          char2ichem = CHEMICALTYPE%SC_GLY
+       else if (c(4:6) =='HIS') then
+          char2ichem = CHEMICALTYPE%SC_HIS
+       else if (c(4:6) =='ILE') then
+          char2ichem = CHEMICALTYPE%SC_ILE
+       else if (c(4:6) =='LEU') then
+          char2ichem = CHEMICALTYPE%SC_LEU
+       else if (c(4:6) =='LYS') then
+          char2ichem = CHEMICALTYPE%SC_LYS
+       else if (c(4:6) =='MET') then
+          char2ichem = CHEMICALTYPE%SC_MET
+       else if (c(4:6) =='PHE') then
+          char2ichem = CHEMICALTYPE%SC_PHE
+       else if (c(4:6) =='PRO') then
+          char2ichem = CHEMICALTYPE%SC_PRO
+       else if (c(4:6) =='SER') then
+          char2ichem = CHEMICALTYPE%SC_SER
+       else if (c(4:6) =='THR') then
+          char2ichem = CHEMICALTYPE%SC_THR
+       else if (c(4:6) =='TRP') then
+          char2ichem = CHEMICALTYPE%SC_TRP
+       else if (c(4:6) =='TYR') then
+          char2ichem = CHEMICALTYPE%SC_TYR
+       else if (c(4:6) =='VAL') then
+          char2ichem = CHEMICALTYPE%SC_VAL
+       else
+          char2ichem = CHEMICALTYPE%UNKNOWN
+          write(error_message,*) 'Error: unknown chemical type in "exv_rad"',&
+               'field in para/exv.para;', c
+          call util_error(ERROR%STOP_ALL, error_message)
+       endif
     else
        char2ichem = CHEMICALTYPE%UNKNOWN
-       write(error_message,*) 'Error: unknown chemical type in "exv_sigma"',&
+       write(error_message,*) 'Error: unknown chemical type in "exv_rad"',&
             'field in para/exv.para;', c
        call util_error(ERROR%STOP_ALL, error_message)
     end if

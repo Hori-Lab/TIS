@@ -212,13 +212,13 @@ subroutine write_nativeinfo(lunout)
      write (lunout, '(a)') '<<<< LJ'
      write (lunout, '(a, i6)') '** total_contact = ', nLJ
      
+     write (lunout, '(a)', ADVANCE='NO') '**    iLJ iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+     write (lunout, '(a)') '    distance        coef'
      do iunit = 1, nunit_all
         do junit = iunit, nunit_all
-           write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
+           !write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
            !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
-           write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) 
-           write (lunout, '(a)', ADVANCE='NO') '**         iLJ iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
-           write (lunout, '(a)') '    distance        coef'
+           !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) 
            do icon = 1, nLJ
               imp1 = iLJ2mp(1, icon)
               imp2 = iLJ2mp(2, icon)
@@ -233,8 +233,8 @@ subroutine write_nativeinfo(lunout)
                        cycle
                     endif
                  endif
-                 write (lunout, "(a7, 7(1xi6), 2(f12.4))") &
-                      'contact', icon, iunit1, iunit2, imp1, imp2, &
+                 write (lunout, "(a2, 7(1xi6), 2(f12.4))") &
+                      'LJ', icon, iunit1, iunit2, imp1, imp2, &
                       imp1un, imp2un, &
                       LJ_nat(icon), coef_LJ(icon)
               end if

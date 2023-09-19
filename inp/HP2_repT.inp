@@ -73,7 +73,6 @@ NLOCAL(2/2)   ELE EXV_DT15
 i_dtrna_model = 2015
 
 i_triple_angle_term = 0
-i_use_atom_protein = 0
 i_use_atom_dna = 0
 i_output_energy_style = 1
 >>>>

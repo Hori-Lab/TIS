@@ -133,6 +133,9 @@ subroutine inp_unitstate()
            else if(char7(1:3) == 'ion') then
               iclass = CLASS%ION
               inmisc%class_flag(CLASS%ION) = .true.
+           else if(char7(1:5) == 'sopsc') then
+              iclass = CLASS%SOPSC
+              inmisc%class_flag(CLASS%SOPSC) = .true.
            else
               error_message = 'Error: invalid name of biological molecule in "unit_and_state"'
               call util_error(ERROR%STOP_ALL, error_message)

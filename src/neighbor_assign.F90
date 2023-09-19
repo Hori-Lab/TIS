@@ -18,13 +18,14 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_index
   use const_physical
   use var_replica,only : irep2grep
-  use var_setp,   only : inpro, inmisc, indtrna13, indtrna, inperi !, inrna
+  use var_setp,   only : inexv, inpro, inmisc, indtrna13, indtrna, inperi, insopsc !, inrna
   use var_struct, only : nunit_real, pxyz_mp_rep, &
-                         imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, imp2type, &
+                         imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, exv2para, imp2type, &
                          lmp2LJ, iLJ2mp, coef_LJ, &
                          lmp2wca,iwca2mp,coef_wca, &
                          iclass_unit, ires_mp, nmp_all, &
-                         lmp2charge, coef_charge
+                         lmp2charge, coef_charge, &
+                         exv_radius_mp, exv_epsilon_mp
 !                         lmp2morse, &!lmp2rna_bp, lmp2rna_st, &
 !                         imorse2mp, &!irna_bp2mp, irna_st2mp, &
 !                         coef_morse_a, coef_morse_fD
@@ -43,15 +44,15 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! local variables
-  integer :: n, grep
+  integer :: n, grep, d_res
   integer :: klen, ksta, kend
   integer :: inum, imp, jmp, kmp
-  integer :: imp1, imp2, imirror
+  integer :: imirror
   integer :: iunit, junit
   integer :: isep_nlocal
   integer :: isep_nlocal_rna
   integer :: icon, iLJ, iwca, iexv, nexv
-  integer :: istart, isearch, isearch_LJ, isearch_wca
+  integer :: istart, isearch_con, isearch_LJ, isearch_wca
 !  integer :: isearch_rna_bp, isearch_rna_st, isearch_morse
   integer :: i_exvol
 !  integer :: i_sasa
@@ -61,6 +62,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: nexv_lall(0:npar_mpi-1)
   !integer :: ii, iz
   real(PREC) :: vx(3)
+  real(PREC) :: sigma
 
   type calc_type
      integer :: GO
@@ -103,7 +105,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   grep = irep2grep(irep)
 
   iexv     = 0
-  isearch  = 1
+  isearch_con = 1
   isearch_LJ  = 1
   isearch_wca = 1
 !  isearch_morse  = 1
@@ -165,7 +167,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   ! --------------------------------------------------------------------
   if( imp_l2g(1) /= 1 ) then
-    isearch  = lmp2con  (imp_l2g(1)-1) + 1
+    isearch_con = lmp2con (imp_l2g(1)-1) + 1
     isearch_LJ  = lmp2LJ  (imp_l2g(1)-1) + 1
     isearch_wca = lmp2wca (imp_l2g(1)-1) + 1
 !    isearch_morse  = lmp2morse(imp_l2g(1)-1) + 1
@@ -175,8 +177,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !    endif
   end if
 
+
 !!$omp parallel
-!!$omp do private(klen,ksta,kend,imp,iunit,jmp,junit,kmp,isearch, &
+!!$omp do private(klen,ksta,kend,imp,iunit,jmp,junit,kmp,isearch_con, &
 !!$omp&           
   do n = 0, nthreads-1
   klen=(nmp_l-1+nthreads)/nthreads
@@ -203,13 +206,13 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !           icalc(CALC%AICG1, iunit, junit) == 1 .OR. &
 !           icalc(CALC%AICG2, iunit, junit) == 1) then ! AICG
 
-           do icon = isearch, lmp2con(imp)
+           do icon = isearch_con, lmp2con(imp)
               kmp = icon2mp(2, icon)
 
               if(jmp < kmp) exit
 
               if(jmp == kmp) then
-                 isearch = icon + 1
+                 isearch_con = icon + 1
 !                 cycle loop_lneigh
                  if(coef_go(icon) > ZERO_JUDGE) then
                     i_exvol = 0
@@ -383,7 +386,31 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !                 end if
 !
 !              else if (iclass_unit(iunit) == CLASS%LIG) then !explig
-              if (iclass_unit(iunit) == CLASS%LIG) then !explig
+              if (iclass_unit(iunit) == CLASS%SOPSC) then !explig
+
+                 d_res = abs(ires_mp(imp) - ires_mp(jmp))
+
+                 ! BB and BB
+                 if (imp2type(imp) == MPTYPE%SOPBB .and. imp2type(jmp) == MPTYPE%SOPBB) then
+                    if (d_res < insopsc%n_sep_nlocal_B_B) then
+                       i_exvol = 0
+                    endif
+
+                 ! SC and SC
+                 else if (imp2type(imp) == MPTYPE%SOPSC .and. imp2type(jmp) == MPTYPE%SOPSC) then
+                    if (d_res < insopsc%n_sep_nlocal_S_S) then
+                       i_exvol = 0
+                    endif
+
+                 ! BS and SC
+                 else
+                    if (d_res < insopsc%n_sep_nlocal_B_S) then
+                       i_exvol = 0
+                    endif
+
+                 endif
+
+              else if (iclass_unit(iunit) == CLASS%LIG) then !explig
                  if(ires_mp(imp) == ires_mp(jmp)) then
 !                    cycle loop_lneigh
                     i_exvol = 0
@@ -403,6 +430,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               iexv2mp_l(1, iexv) = imp 
               iexv2mp_l(2, iexv) = jmp
               iexv2mp_l(3, iexv) = E_TYPE%EXV6
+
 !             cycle loop_lneigh
            end if
         end if
@@ -568,8 +596,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      end do loop_lneigh
 
      istart   = lmp2neigh(imp_l-ksta+1,n) + 1 
-     isearch  = lmp2con  (imp_l2g(min(imp_l+1,nmp_l))-1) + 1
-     isearch_LJ  = lmp2LJ(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
+     isearch_con = lmp2con(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
+     isearch_LJ  = lmp2LJ (imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_wca = lmp2wca(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
 !     isearch_morse = lmp2morse(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
 !     if (inmisc%class_flag(CLASS%RNA)) then
@@ -630,13 +658,94 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 #endif
 
 
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !!!! for exv2para(1:3, iexv, irep)
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  do iexv = 1, nexv
+
+     if (iexv2mp(3, iexv, irep) == E_TYPE%EXV6) then
+        
+        imp = iexv2mp(1, iexv, irep)
+        jmp = iexv2mp(2, iexv, irep)
+ 
+        iunit = imp2unit(imp)
+        junit = imp2unit(jmp)
+
+        if (iclass_unit(iunit) == CLASS%SOPSC .and. iclass_unit(junit) == CLASS%SOPSC) then
+
+           ! Sidechain - Sidechain
+           if (imp2type(imp) == MPTYPE%SOPSC .and. imp2type(jmp) == MPTYPE%SOPSC) then
+              sigma = exv_radius_mp(imp) + exv_radius_mp(jmp)
+
+           ! Backbone - Sidechain
+           else if (imp2type(imp) == MPTYPE%SOPBB .and. imp2type(jmp) == MPTYPE%SOPSC) then
+
+              d_res = abs(ires_mp(imp) - ires_mp(jmp))
+
+              if (d_res > 1) then
+                 sigma = inexv%exv_rad_sopsc_BB_SC + exv_radius_mp(jmp)
+              else
+                 sigma = insopsc%exv_scale_B_S_ang * (inexv%exv_rad_sopsc_BB_SC + exv_radius_mp(jmp))
+              endif
+
+           ! Sidechain - Backbone
+           else if (imp2type(imp) == MPTYPE%SOPSC .and. imp2type(jmp) == MPTYPE%SOPBB) then
+
+              d_res = abs(ires_mp(imp) - ires_mp(jmp))
+
+              if (d_res > 1) then
+                 sigma = exv_radius_mp(imp) + inexv%exv_rad_sopsc_BB_SC
+              else
+                 sigma = insopsc%exv_scale_B_S_ang * (exv_radius_mp(imp) + inexv%exv_rad_sopsc_BB_SC)
+              endif
+
+           ! Backbone - Backbone
+           else if (imp2type(imp) == MPTYPE%SOPBB .and. imp2type(jmp) == MPTYPE%SOPBB) then
+              sigma = inexv%exv_rad_sopsc_BB_BB * 2
+
+           else 
+              error_message = 'Error: logical defect in neighbor_assign, imp2type of SOPSC'
+              call util_error(ERROR%STOP_ALL, error_message)
+           endif
+
+           exv2para(1, iexv, irep) = (inexv%exv6_cutoff * sigma) ** 2
+           exv2para(2, iexv, irep) = sigma ** 2
+           exv2para(3, iexv, irep) = 1.0
+            !exv2para(3, iexv, irep) = sqrt( exv_epsilon_mp(imp) * exv_epsilon_mp(jmp))
+
+        else
+           exv2para(1, iexv, irep) = (inpro%cutoff_exvol * inpro%cdist_rep6) ** 2
+           exv2para(2, iexv, irep) = inpro%cdist_rep6 ** 2
+           exv2para(3, iexv, irep) = inpro%crep6
+        endif
+
+#ifdef _DEBUG
+        write(*,'(a,1x,i5,1x,i5,3(x1f9.4))') 'neighbor_assign exv2para:', imp,jmp, &
+                      exv2para(1,iexv,irep), exv2para(2,iexv,irep), exv2para(3,iexv,irep)
+#endif
+
+     endif
+
+  end do
+
+
+  !&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+  !&&&
+  !&&&       CAUTION:  iexv2mp(3,iexv,irep) will be replaced by imirror (0 or 1)
+  !&&&
+  !&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  !!!! for iexv2mp(3, iexv, irep)
+  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
   if(inperi%i_periodic == 1) then
 !     call util_pbindex(iexv2mp, nexv, irep)
      do iexv = 1, nexv
-        imp1 = iexv2mp(1, iexv, irep)
-        imp2 = iexv2mp(2, iexv, irep)
+        imp = iexv2mp(1, iexv, irep)
+        jmp = iexv2mp(2, iexv, irep)
  
-        vx(1:3) = pxyz_mp_rep(1:3, imp2, irep) - pxyz_mp_rep(1:3, imp1, irep)
+        vx(1:3) = pxyz_mp_rep(1:3, jmp, irep) - pxyz_mp_rep(1:3, imp, irep)
         
 !        do ix = 1, 3
 !           if(vx(ix) > inperi%psizeh(ix)) then

@@ -8,3 +8,6 @@ check/make*
 check/md.*
 md*
 .DS_Store
+bs
+diff.out
+go

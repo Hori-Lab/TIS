@@ -18,7 +18,8 @@ subroutine neighbor_list_ele(jrep)
   use var_setp,    only : inmisc, inele, inperi, insimu
   use var_struct,  only : nunit_real, xyz_mp_rep, pxyz_mp_rep, &
                           imp2unit, ncharge, icharge2mp, coef_charge, &
-                          lele, iele2mp, coef_ele, ncharge, imp2type
+                          lele, iele2mp, coef_ele, ncharge, &
+                          imp2type, iclass_unit, ires_mp
   use var_replica, only : irep2grep
   use time
   use mpiconst
@@ -143,6 +144,14 @@ subroutine neighbor_list_ele(jrep)
         junit = imp2unit(jmp)
 
         if(icalc(iunit, junit) == 1) then
+
+           if (inele%i_sopsc_consec_res == 0 .and. &
+               iclass_unit(iunit) == CLASS%SOPSC .and. junit == iunit .and. &
+               abs(ires_mp(imp) - ires_mp(jmp)) == 1 .and. &
+               imp2type(imp) == MPTYPE%SOPSC .and. imp2type(jmp) == MPTYPE%SOPSC) then
+              jcharge = jcharge + 1
+              cycle
+           endif
 
            if(inperi%i_periodic == 0) then
               v21(1:3) = xyz_mp_rep(1:3, jmp, irep) - xyz_mp_rep(1:3, imp, irep)

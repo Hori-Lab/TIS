@@ -8,7 +8,7 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
   use const_physical
   use const_index
   use var_setp, only : inele, inmisc, insimu, inperi, inpmf
-  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, num_ion, nmp_all, lmp2charge
+  use var_struct, only : ncharge, coef_charge, icharge2mp, imp2type, cmp2seq, num_ion, nmp_all, lmp2charge
   use var_simu, only : ewld_d_coef, pmfdh_energy, pmfdh_force
   use var_io, only : outfile
 #ifdef MPI_PAR
@@ -183,6 +183,8 @@ subroutine simu_ele_set(grep, tempk, ionic_strength)
         enddo
         if (imp2type(imp) == MPTYPE%RNA_PHOS) then
            coef_charge(icharge,grep) = - Zp
+        else if (imp2type(imp) == MPTYPE%SOPSC) then
+           coef_charge(icharge,grep) = inele%coef_charge_type( ifunc_seq2id( cmp2seq(imp) ) )
         endif
      enddo loop_charge
 

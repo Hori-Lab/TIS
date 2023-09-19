@@ -161,9 +161,28 @@ contains
       i_type  = MPTYPE%VOID
 
       ! Protein
-      if (c_atom == ' CA ') then
-         i_class = CLASS%PRO
-         i_type  = MPTYPE%PRO
+      !if (c_atom == ' CA ') then
+      if (c_res == 'ALA' .OR. c_res == 'ARG' .OR. c_res == 'ASN' .OR. c_res == 'ASP' .OR. &
+          c_res == 'CYS' .OR. c_res == 'GLN' .OR. c_res == 'GLU' .OR. c_res == 'GLY' .OR. &
+          c_res == 'HIS' .OR. c_res == 'ILE' .OR. c_res == 'LEU' .OR. c_res == 'LYS' .OR. &
+          c_res == 'MET' .OR. c_res == 'PHE' .OR. c_res == 'PRO' .OR. c_res == 'SER' .OR. &
+          c_res == 'THR' .OR. c_res == 'TRP' .OR. c_res == 'TYR' .OR. c_res == 'VAL' ) then
+
+         if (c_atom == ' CA ') then
+            ! Conventional Go model
+            i_class = CLASS%PRO
+            i_type  = MPTYPE%PRO
+         
+         else if (c_atom == ' B  ') then
+            ! Backbone of SOP-SC
+            i_class = CLASS%SOPSC
+            i_type  = MPTYPE%SOPBB
+
+         else if (c_atom == ' S  ') then
+            ! Side chain of SOP-SC
+            i_class = CLASS%SOPSC
+            i_type  = MPTYPE%SOPSC
+         endif
 
       ! RNA
       elseif (c_res == 'RA ' .OR. c_res == 'RU ' .OR. c_res == 'RG ' .OR.&

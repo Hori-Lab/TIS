@@ -49,7 +49,6 @@ subroutine inp_energy_func()
 
 !  inflp%i_flp = 0 ! flexible_local_potential
 
-  inmisc%i_use_atom_protein = 0
   inmisc%i_residuenergy_radii = 0
   inmisc%i_output_energy_style = 0
   inmisc%i_triple_angle_term = 1   ! default
@@ -362,33 +361,25 @@ subroutine inp_energy_func()
 
      do iequa = 1, nequat
         
-        cvalue = 'i_use_atom_protein'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_use_atom_protein, cvalue)
-
         cvalue = 'i_residuenergy_radii'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_residuenergy_radii, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_residuenergy_radii, cvalue)
 
         cvalue = 'i_output_energy_style'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_output_energy_style, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_output_energy_style, cvalue)
 
         cvalue = 'i_triple_angle_term'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_triple_angle_term, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_triple_angle_term, cvalue)
 
         cvalue = 'i_temp_independent'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_temp_independent, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_temp_independent, cvalue)
 
-        cvalue = 'i_dtrna_model'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_dtrna_model, cvalue)
+        if (inmisc%force_flag(INTERACT%DTRNA)) then
+           cvalue = 'i_dtrna_model'
+           call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_dtrna_model, cvalue)
+        endif
 
         cvalue = 'i_exv_all'
-        call ukoto_ivalue2(lunout, csides(1, iequa), &
-             inmisc%i_exv_all, cvalue)
+        call ukoto_ivalue2(lunout, csides(1, iequa), inmisc%i_exv_all, cvalue)
 
         cvalue = 'i_exv_from_file'
         call ukoto_ivalue2(lunout, csides(1, iequa), &
@@ -469,20 +460,6 @@ subroutine inp_energy_func()
   write (lunout, '(i2, a)') INTERACT%EXV_GAUSS, ' : EXV_GAUSS'
   write (lunout, '(i2, a)') INTERACT%CON_GAUSS, ' : CON_GAUSS'
   write (lunout, '(a)') ''
-
-
-  ! -----------------------------------------------------------------
-  ! using atoms of protein, inmisc%i_use_atom_protein
-  if(inmisc%i_use_atom_protein == 0) then
-     write (lunout, *) 'using Ca'
-  else if(inmisc%i_use_atom_protein == 1) then
-     write (lunout, *) 'using Cb'
-  else if(inmisc%i_use_atom_protein == 2) then
-     write (lunout, *) 'using the center of mass '
-  else
-     error_message = 'Error: invalid value for inmisc%i_use_atom_protein'
-     call util_error(ERROR%STOP_ALL, error_message)
-  end if
 
 
   ! -----------------------------------------------------------------

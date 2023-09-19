@@ -280,6 +280,7 @@ module var_struct
   integer, allocatable, save :: iexv2mp(:,:,:)! (2(+1), MXMPNEIGHBOR*nmp_all, REPLICA)
   integer, allocatable, save :: iexv_pairs(:,:) ! (2,nmp_all*nmp_all) 
   integer, save :: nexv_pairs
+  real(PREC), allocatable, save :: exv2para(:,:,:) ! (3, MXMPNEIGHBOR*nmp_all, REPLICA)
 
   integer, allocatable, save :: nbbr_bd         ! Number of bonds that are subject of BBR
   integer, allocatable, save :: lbbr_bd(:)      ! (MXBD) list of bonds (see mloop_dtrna.F90)
