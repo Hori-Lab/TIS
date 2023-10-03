@@ -33,7 +33,7 @@ subroutine force_LJ_1210(irep, force_mp)
 #endif
 
   ! ---------------------------------------------------------------------
-  rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
+    ! rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2  ! if no cut off
   !rcut_off2_pro = 1.0e0_PREC / inpro%cutoff_LJ**2
   !if (inmisc%class_flag(CLASS%RNA)) then
   !   rcut_off2_rna = 1.0e0_PREC / inrna%cutoff_LJ**2
@@ -73,17 +73,15 @@ subroutine force_LJ_1210(irep, force_mp)
      dist2 = dot_product(v21,v21)
 
      roverdist2 = LJ_nat2(iLJ) / dist2
-     if(roverdist2 < rcut_off2) cycle
-     
-     ! change to correct equation for LJ1210 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+     ! remove cutoff distance
+     ! if(roverdist2 < rcut_off2) cycle
+     
      roverdist14 = roverdist2 ** 7
-     roverdist8 = roverdist2 ** 4
+     roverdist12 = roverdist2 ** 6
             
-     dLJ_dr = 12.0e0_PREC * coef_LJ(iLJ) / LJ_nat2(iLJ) * (roverdist14 - roverdist8)
+     dLJ_dr = 60.0e0_PREC * coef_LJ(iLJ) / LJ_nat2(iLJ) * (roverdist14 - roverdist12)
      
-     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
      if(dLJ_dr > DE_MAX) then
         dLJ_dr = DE_MAX
      end if
