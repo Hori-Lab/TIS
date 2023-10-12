@@ -25,7 +25,7 @@ subroutine force_LJ_1210(irep, force_mp)
   integer :: ksta, kend
   real(PREC) :: rcut_off2
   !!!!!!!!!real(PREC) :: rcut_off2_pro, rcut_off2_rna
-  real(PREC) :: dist2, roverdist2, roverdist8, roverdist14
+  real(PREC) :: dist2, roverdist2, roverdist12, roverdist14
   real(PREC) :: dLJ_dr
   real(PREC) :: v21(3), for(3)
 #ifdef MPI_PAR
