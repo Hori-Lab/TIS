@@ -66,7 +66,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   coef_lig = inligand%crep12
 
   ! protrna parameters introduced --------------------------------------------------
-  cutoff2_protrna = (inprotrna%exv_protrna_cutoff*inprotrna%exv_protrna_cutoff)**2 ! supposed to be a function of cdist?
+  cutoff2_protrna = inprotrna%exv_protrna_cutoff * inprotrna%exv_protrna_cutoff ! supposed to be a function of cdist?
   cdist2_protrna = inprotrna%exv_protrna_sigma * inprotrna%exv_protrna_sigma
   coef_protrna = inprotrna%exv_protrna_coef
   ! --------------------------------------------------------------------------------
