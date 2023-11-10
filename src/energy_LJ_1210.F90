@@ -12,7 +12,7 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
   use const_index
   use var_setp,    only : inpro, inperi
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
-                          nLJ, iLJ2mp, coef_LJ, LJ_nat2
+                          nLJ1210, iLJ1210_2mp, coef_LJ1210, LJ1210_nat2
   use mpiconst
 
   implicit none
@@ -52,18 +52,18 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
       
   ! --------------------------------------------------------------------
 #ifdef MPI_PAR3
-   klen=(nLJ-1+npar_mpi)/npar_mpi
+   klen=(nLJ1210-1+npar_mpi)/npar_mpi
    ksta=1+klen*local_rank_mpi
-   kend=min(ksta+klen-1,nLJ)
+   kend=min(ksta+klen-1,nLJ1210)
 #else
    ksta = 1
-   kend = nLJ
+   kend = nLJ1210
 #endif
 !$omp do private(imp1, imp2, iunit, junit, v21, dist2, roverdist2, rjudge, efull)
    do iLJ=ksta,kend
    
-     imp1 = iLJ2mp(1, iLJ)
-     imp2 = iLJ2mp(2, iLJ)
+     imp1 = iLJ1210_2mp(1, iLJ)
+     imp2 = iLJ1210_2mp(2, iLJ)
 
 #ifdef _DEBUG_NLOCAL
      write(*,*) 'LJ ', imp1, imp2
@@ -78,7 +78,7 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
      
      dist2 = dot_product(v21,v21)
 
-     roverdist2 = LJ_nat2(iLJ) / dist2
+     roverdist2 = LJ1210_nat2(iLJ) / dist2
 
      !if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
      !   rcut_off2 = rcut_off2_rna
@@ -86,7 +86,7 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
      !   rcut_off2 = rcut_off2_pro
      !endif
 
-     if(coef_LJ(iLJ) >= ZERO_JUDGE) then
+     if(coef_LJ1210(iLJ) >= ZERO_JUDGE) then
         now_LJ(2, iLJ) = 1
      else
         now_LJ(2, iLJ) = 0
@@ -95,7 +95,7 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
      if(roverdist2 < rcut_off2) cycle
 
      ! 1.44 = 1.2 *1.2
-     rjudge = LJ_nat2(iLJ) * rjudge_contact
+     rjudge = LJ1210_nat2(iLJ) * rjudge_contact
      !  judging contact 
      if(dist2 < rjudge) then
         now_LJ(1, iLJ) = 1
@@ -106,7 +106,7 @@ subroutine energy_LJ_1210(irep, now_LJ, energy_unit, energy)
 
      ! calc energy
      ! Protein - RNA coefficient change?
-     efull = coef_LJ(iLJ) * (5.0e0_PREC * (roverdist2**6) - 6.0e0_PREC * roverdist2**5)
+     efull = coef_LJ1210(iLJ) * (5.0e0_PREC * (roverdist2**6) - 6.0e0_PREC * roverdist2**5)
 
      ! --------------------------------------------------------------------
      ! sum of the energy

@@ -143,6 +143,16 @@ module var_struct
   !real(PREC), allocatable, save :: factor_LJ(:)     !(MXLJ)
   real(PREC), allocatable, save :: coef_LJ(:)       !(MXLJ)
 
+  !> parameters for LJ (12-10) potential
+  integer,    save :: nLJ1210 = 0
+  integer,    allocatable, save :: iLJ1210_2mp(:,:)      !(2, MXLJ1210)
+  integer,    allocatable, save :: lmp2LJ1210(:)        !(MXMP)
+  integer,    allocatable, save :: iLJ1210_2unit(:,:)    !(2, MXLJ1210)
+  real(PREC), allocatable, save :: LJ1210_nat(:)        !(MXLJ1210)
+  real(PREC), allocatable, save :: LJ1210_nat_2(:)       !(MXLJ1210)
+  real(PREC), allocatable, save :: coef_LJ1210(:)       !(MXLJ1210)
+
+
   !> parameters for WCA potential
   integer,    save :: nwca = 0
   integer,    allocatable, save :: iwca2mp(:,:)      !(2, MXwca)

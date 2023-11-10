@@ -79,6 +79,7 @@ subroutine setpara( xyz_mp_init )
 #endif
   call setp_mapara(infile%para_gen, outfile%data)
   call setp_mapara_pro(infile%para_pro, outfile%data)
+  call setp_mapara_protrna(infile%para_protrna, outfile%data)
   !if (inmisc%class_flag(CLASS%RNA)) then  ! Commented out for ion-only simulations
      call setp_mapara_rna(infile%para_rna, outfile%data)
   !endif

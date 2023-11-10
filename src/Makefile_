@@ -214,6 +214,7 @@ FOBJ1 = \
 	inp_filename.o inp_job.o inp_unitstate.o inp_energy_func.o inp_datafile.o\
 	setpara.o\
 	setp_mapara.o setp_mapara_pro.o\
+	setp_mapara_protrna.o\
 	setp_mapara_ligand.o setp_mapara_ele.o\
 	setp_redef_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_random.o setp_group.o setp_minimize_para.o\

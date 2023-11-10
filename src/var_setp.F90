@@ -57,6 +57,15 @@ module var_setp
   endtype input_sopsc_parameter
   type(input_sopsc_parameter), save :: insopsc
 
+   !==========================================
+   !> Parameters for defining the interactions between proteins and RNA in protrna.para file
+   type input_proteinrna_parameter
+     real(PREC) :: exv_protrna_coef !< coefficient of the (c/r)^12 exv for protrna
+     real(PREC) :: exv_protrna_cutoff !< cutoff distance for the (c/r)^12 exv for protrna
+     real(PREC) :: exv_protrna_sigma !< c in the (c/r)^12 exv for protrna
+     integer    :: sz !< size of the structure
+   endtype input_proteinrna_parameter
+   type(input_proteinrna_parameter), save :: inprotrna
 
   !==========================================
   !> structure for parameters reading from "para_cafemol_ion" field in "ion.para" file

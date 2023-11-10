@@ -276,6 +276,20 @@ subroutine inp_datafile()
      call util_error(ERROR%STOP_ALL, error_message)
   end if
 
+  if(path_para /= '') then
+     filename_para = path_para(1:l-1)//'/'//'protrna.para'
+  else
+     filename_para = './para/protrna.para'
+  end if
+  write (*, '(a28,i3,a3,a)') "open protrna parameter file(",infile%para_protrna,&
+                               "): ", trim(filename_para)
+  open(infile%para_protrna, file = filename_para, status = 'old', action = 'read', &
+  iostat = iopen_status)
+  if(iopen_status > 0) then  
+      error_message = 'Error: cannot open the file: ' // filename_para
+      call util_error(ERROR%STOP_ALL, error_message)
+  end if
+
   ! parameter for explicit ligand
   if(path_para /= '') then
      filename_para = path_para(1:l-1)//'/'//'ligand.para'

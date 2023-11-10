@@ -47,7 +47,7 @@ subroutine energy_exv_wca(irep, energy_unit, energy)
 #endif
 
   ! ------------------------------------------------------------------------
-  !! Currently this potential is available noly for RNA.
+  !! Currently this potential is available only for RNA.
   cdist2 = indtrna13%exv_dist**2
   coef = indtrna13%exv_coef
 

@@ -12,7 +12,7 @@ subroutine force_LJ_1210(irep, force_mp)
   use const_index
   use var_setp,   only : inpro, inperi
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         nLJ, iLJ2mp, coef_LJ, LJ_nat2, nmp_all
+                         nLJ1210, iLJ1210_2mp, coef_LJ1210, LJ1210_nat2, nmp_all
   use mpiconst
 
   implicit none
@@ -40,23 +40,23 @@ subroutine force_LJ_1210(irep, force_mp)
   !endif
 
 #ifdef MPI_PAR
-  klen=(nLJ-1+npar_mpi)/npar_mpi
+  klen=(nLJ1210-1+npar_mpi)/npar_mpi
   ksta=1+klen*local_rank_mpi
-  kend=min(ksta+klen-1,nLJ)
+  kend=min(ksta+klen-1,nLJ1210)
 #ifdef MPI_DEBUG
   print *,"LJ    = ", kend-ksta+1
 #endif
 
 #else
   ksta = 1
-  kend = nLJ
+  kend = nLJ1210
 #endif
 !$omp do private(imp1,imp2,v21,dist2,roverdist2, &
 !$omp&           roverdist8,roverdist14,dLJ_dr,for)
   do iLJ=ksta,kend
 
-     imp1 = iLJ2mp(1, iLJ)
-     imp2 = iLJ2mp(2, iLJ)
+     imp1 = iLJ1210_2mp(1, iLJ)
+     imp2 = iLJ1210_2mp(2, iLJ)
      !if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
      !   rcut_off2 = rcut_off2_rna
      !else
@@ -72,7 +72,7 @@ subroutine force_LJ_1210(irep, force_mp)
      
      dist2 = dot_product(v21,v21)
 
-     roverdist2 = LJ_nat2(iLJ) / dist2
+     roverdist2 = LJ1210_nat2(iLJ) / dist2
 
      ! remove cutoff distance
      ! if(roverdist2 < rcut_off2) cycle
@@ -80,7 +80,7 @@ subroutine force_LJ_1210(irep, force_mp)
      roverdist14 = roverdist2 ** 7
      roverdist12 = roverdist2 ** 6
             
-     dLJ_dr = 60.0e0_PREC * coef_LJ(iLJ) / LJ_nat2(iLJ) * (roverdist14 - roverdist12)
+     dLJ_dr = 60.0e0_PREC * coef_LJ1210(iLJ) / LJ1210_nat2(iLJ) * (roverdist14 - roverdist12)
      
      if(dLJ_dr > DE_MAX) then
         dLJ_dr = DE_MAX

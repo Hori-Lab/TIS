@@ -35,7 +35,10 @@ subroutine allocate_nativestruct()
                            flg_hb_tertiary, &
                            idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, idtrna_tst2side,&
                            flg_tst_exclusive, idtrna_tst2st, idtrna_tst2side,&
-                           icharge2mp, lmp2charge, coef_charge
+                           icharge2mp, lmp2charge, coef_charge,&
+                           iLJ1210_2mp, lmp2LJ1210, iLJ1210_2unit, LJ1210_nat,& ! LJ1210 potential additions
+                           LJ1210_nat_2, coef_LJ1210
+
 
 
    implicit none
@@ -236,6 +239,32 @@ subroutine allocate_nativestruct()
    allocate( coef_LJ(nmp_all*MXMPLJ), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ(:) = 0.0e0_PREC
+
+   ! LJ1210
+   allocate( iLJ1210_2mp(2, nmp_all*MXMPLJ1210), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iLJ2mp(:,:) = 0
+
+   allocate( lmp2LJ1210(nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   lmp2LJ(:) = 0
+
+   allocate( iLJ1210_2unit(2, nmp_all*MXMPLJ1210), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iLJ2unit(:,:) = 0
+
+   allocate( LJ1210_nat(nmp_all*MXMPLJ1210), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   LJ_nat(:) = 0.0e0_PREC
+
+   allocate( LJ1210_nat_2(nmp_all*MXMPLJ1210), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   LJ_nat2(:) = 0.0e0_PREC
+
+   allocate( coef_LJ1210(nmp_all*MXMPLJ1210), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_LJ(:) = 0.0e0_PREC
+
 
    ! wca
    allocate( iwca2mp(2, nmp_all*MXMPWCA), stat=ier)

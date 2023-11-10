@@ -6,7 +6,7 @@ subroutine force_exv_rep12(irep, force_mp)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,   only : inpro, inligand, inmisc, inperi !,inrna
+  use var_setp,   only : inpro, inligand, inmisc, inperi, inprotrna !,inrna
   use var_struct, only : nmp_all, xyz_mp_rep, pxyz_mp_rep, lexv, iexv2mp, iclass_mp
   use mpiconst
 
@@ -29,6 +29,8 @@ subroutine force_exv_rep12(irep, force_mp)
   real(PREC) :: roverdist14
   real(PREC) :: dvdw_dr
   real(PREC) :: v21(SDIM), for(SDIM)
+  !  protrna parameters introduced
+  real(PREC) :: cutoff2_protrna, cdist2_protrna, coef_protrna
 #ifdef MPI_PAR
   integer :: klen
 #endif
@@ -55,6 +57,12 @@ subroutine force_exv_rep12(irep, force_mp)
      cdist2_lpro = inligand%cdist_rep12_lpro**2
      coef_lpro = 12.0e0_PREC * inligand%crep12 / cdist2_lpro
   endif
+
+  ! protrna parameters introduced --------------------------------------------------
+  cutoff2_protrna = (inprotrna%exv_protrna_cutoff*inprotrna%exv_protrna_cutoff)**2 ! supposed to be a function of cdist?
+  cdist2_protrna = inprotrna%exv_protrna_sigma * inprotrna%exv_protrna_sigma
+  coef_protrna = inprotrna%exv_protrna_coef
+  ! --------------------------------------------------------------------------------
 
 #ifdef MPI_PAR
 #ifdef SHARE_NEIGH_PNL
@@ -101,11 +109,19 @@ subroutine force_exv_rep12(irep, force_mp)
 !        cdist2  = cdist2_rna_pro
 !        coef    = coef_rna_pro
 !     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
+
+     ! protrna parameters introduced --------------------------------------------------
+     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
+         iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA) then
+        cutoff2 = cutoff2_protrna
+        cdist2  = cdist2_protrna
+        coef    = coef_protrna
+     ! --------------------------------------------------------------------------------
      if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
         cutoff2 = cutoff2_llig
         cdist2  = cdist2_llig
         coef    = coef_llig
-        if(iclass_mp(imp1) == CLASS%PRO .OR. iclass_mp(imp2)==CLASS%PRO)then
+     else if(iclass_mp(imp1) == CLASS%PRO .OR. iclass_mp(imp2)==CLASS%PRO)then
            cutoff2 = cutoff2_lpro
            cdist2  = cdist2_lpro
            coef    = coef_lpro

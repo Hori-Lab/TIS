@@ -8,7 +8,7 @@ subroutine calc_size_structures()
   use var_setp, only : inpara, inpro, insopsc, inion, inperi,&
                        indtrna, indtrna13, indtrna15, indtrna19, & ! inarna, &
                        insimu, inwidom, inmisc, &
-                       inligand, inele, inexv, inpmf
+                       inligand, inele, inexv, inpmf, inprotrna
 !  use var_mgo,     only : inmgo
   use var_replica, only : inrep
 !  use var_implig,  only : inimplig, inimplig_bindsite
@@ -69,6 +69,7 @@ subroutine calc_size_structures()
 !  inenm%sz  = sizeof(inenm)
   inperi%sz = sizeof(inperi)
   inpmf%sz = sizeof(inpmf)
+  inprotrna%sz = sizeof(inprotrna)
 
 !  ! var_mgo
 !  inmgo%sz  = sizeof(inmgo)

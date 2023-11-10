@@ -8,7 +8,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inpro, inligand, inperi !, inrna
+  use var_setp,    only : inpro, inligand, inperi, inprotrna !, inrna
   use var_struct,  only : imp2unit, xyz_mp_rep, pxyz_mp_rep, &
                           lexv, iexv2mp, iclass_mp
   use mpiconst
@@ -30,9 +30,12 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 !  real(PREC) :: cdist2_rna, cdist2_rna_pro
   real(PREC) :: cutoff2, cutoff2_pro, cutoff2_llig, cutoff2_lpro 
 !  real(PREC) :: cutoff2_rna, cutoff2_rna_pro
+  real(PREC) :: protrna_cutoff
   real(PREC) :: roverdist2
   real(PREC) :: ene
   real(PREC) :: v21(SDIM)
+  !  protrna parameters introduced
+  real(PREC) :: cutoff2_protrna, cdist2_protrna, coef_protrna
 #ifdef MPI_PAR3
   integer :: klen
 #endif
@@ -61,6 +64,12 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 !  coef_rna = inrna%crep12
 !  coef_rna_pro = inrna%crep12
   coef_lig = inligand%crep12
+
+  ! protrna parameters introduced --------------------------------------------------
+  cutoff2_protrna = (inprotrna%exv_protrna_cutoff*inprotrna%exv_protrna_cutoff)**2 ! supposed to be a function of cdist?
+  cdist2_protrna = inprotrna%exv_protrna_sigma * inprotrna%exv_protrna_sigma
+  coef_protrna = inprotrna%exv_protrna_coef
+  ! --------------------------------------------------------------------------------
 
 #ifdef MPI_PAR3
 #ifdef SHARE_NEIGH_PNL
@@ -103,7 +112,15 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 !        cdist2  = cdist2_rna_pro
 !        coef    = coef_rna_pro
 !     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
-     if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
+
+     ! protrna parameters introduced --------------------------------------------------
+     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
+         iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA) then
+        cutoff2 = cutoff2_protrna
+        cdist2  = cdist2_protrna
+        coef    = coef_protrna
+     ! --------------------------------------------------------------------------------
+     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
         cutoff2 = cutoff2_llig
         cdist2  = cdist2_llig
         coef    = coef_lig

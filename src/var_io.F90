@@ -26,6 +26,7 @@ module var_io
      integer :: velo(MXREPLICA)
      integer :: exv(E_TYPE%MAX)
      integer :: sz
+     integer :: para_protrna  = 29 ! for protrna parameters
   end type inunit
   type(inunit), save :: infile
 

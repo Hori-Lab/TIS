@@ -86,6 +86,9 @@ module const_maxsize
 
   integer, parameter :: MXBBR = 10*MXMPBD*MXSOLUTE  ! Maximum number of BBR interaction per bond (nbd)
 
+  ! Protein-RNA interaction
+  integer, parameter :: MXMPLJ1210 = 20      ! Maximum number of 12-10 Aromatic interactions per residue
+
 !  ! MPC
 !  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis
 !  integer, parameter :: MXGRID_NY_MPC = MXGRID_NX_MPC ! the max grid number y-axis
