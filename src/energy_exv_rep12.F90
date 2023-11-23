@@ -114,8 +114,8 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
 !     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2) == CLASS%LIG) then
 
      ! protrna parameters introduced --------------------------------------------------
-     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-         iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA) then
+     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%SOPSC) .OR. &
+         iclass_mp(imp1) == CLASS%SOPSC .AND. iclass_mp(imp2) == CLASS%RNA) then
         cutoff2 = cutoff2_protrna
         cdist2  = cdist2_protrna
         coef    = coef_protrna
@@ -143,7 +143,7 @@ subroutine  energy_exv_rep12(irep, energy_unit, energy)
      ! --------------------------------------------------------------------
      ! sum of the energy
      energy(E_TYPE%EXV12) = energy(E_TYPE%EXV12) + ene
-   
+
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
      energy_unit(iunit, junit, E_TYPE%EXV12) = energy_unit(iunit, junit, E_TYPE%EXV12) + ene

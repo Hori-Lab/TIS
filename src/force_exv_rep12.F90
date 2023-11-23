@@ -61,7 +61,7 @@ subroutine force_exv_rep12(irep, force_mp)
   ! protrna parameters introduced --------------------------------------------------
   cutoff2_protrna = inprotrna%exv_protrna_cutoff*inprotrna%exv_protrna_cutoff ! supposed to be a function of cdist?
   cdist2_protrna = inprotrna%exv_protrna_sigma * inprotrna%exv_protrna_sigma
-  coef_protrna = inprotrna%exv_protrna_coef
+  coef_protrna = 12.0e0_PREC * inprotrna%exv_protrna_coef / cdist2_protrna
   ! --------------------------------------------------------------------------------
 
 #ifdef MPI_PAR
@@ -111,8 +111,8 @@ subroutine force_exv_rep12(irep, force_mp)
 !     else if(iclass_mp(imp1) == CLASS%LIG .OR. iclass_mp(imp2)==CLASS%LIG)then
 
      ! protrna parameters introduced --------------------------------------------------
-     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%PRO) .OR. &
-         iclass_mp(imp1) == CLASS%PRO .AND. iclass_mp(imp2) == CLASS%RNA) then
+     if((iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%SOPSC) .OR. &
+         iclass_mp(imp1) == CLASS%SOPSC .AND. iclass_mp(imp2) == CLASS%RNA) then
         cutoff2 = cutoff2_protrna
         cdist2  = cdist2_protrna
         coef    = coef_protrna
