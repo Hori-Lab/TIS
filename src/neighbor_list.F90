@@ -83,6 +83,7 @@ subroutine neighbor_list(irep, ineigh2mp, lmp2neigh)
 
         jmp = jmp + 1
      end do
+     ! imp_l-ksta+1 is essentially imp
      lmp2neigh(imp_l-ksta+1,n) = ineighbor(n)
   end do
   end do

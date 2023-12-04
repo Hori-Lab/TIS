@@ -201,7 +201,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
      ! Also used in ion-only simulations
      call force_exv_dt15 (irep, force_mp_l(1,1,tn))
   endif
-
   !if (inmisc%i_residuenergy_radii == 0) then
   !   call force_exv_rep12 (irep, force_mp_l(1,1,tn))
   !   call force_exv_rep6 (irep, force_mp_l(1,1,tn))
@@ -377,6 +376,10 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !  if(inmisc%i_implig == 1) then
 !     call force_implig(irep, force_mp)
 !  end if
+
+  if (inmisc%force_flag(INTERACT%LJ1210)) then
+    call force_LJ_1210(irep, force_mp)
+  endif
 
 
 #ifdef _DEBUG

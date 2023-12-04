@@ -72,7 +72,7 @@ CPP = -cpp -DTIME -DSUB_COPY
 #CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
 #CPP = -cpp -DTIME -D_DEBUG
 INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive -g
 #OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive
 #OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
@@ -253,7 +253,7 @@ FOBJ1 = \
 	neighbor_list_ele.o neighbor_list_hb.o neighbor_list_BBR.o\
 	energy_sumup.o\
 	energy_allrep.o energy_kinetic.o energy_bond.o energy_fene.o energy_rouse.o energy_bangle.o\
-	energy_LJ.o energy_wca.o energy_con_gauss.o energy_orderpara.o\
+	energy_LJ.o energy_LJ_1210.o energy_wca.o energy_con_gauss.o energy_orderpara.o\
 	energy_exv_rep12.o energy_exv_rep6.o energy_exv_restype.o\
 	energy_exv_wca.o energy_exv_dt15.o energy_exv_gauss.o energy_BBR.o\
 	energy_anchor.o energy_rest1d.o energy_bridge.o energy_pulling.o\
@@ -263,7 +263,7 @@ FOBJ1 = \
 	energy_dtrna_hbond13.o energy_dtrna_hbond15.o\
 	force_sumup.o\
 	force_bond.o force_fene.o force_rouse.o force_bangle.o force_LJ.o force_wca.o force_con_gauss.o\
-	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o\
+	force_exv_rep12.o force_exv_rep6.o force_exv_restype.o force_LJ_1210.o\
 	force_exv_wca.o force_exv_dt15.o force_exv_gauss.o force_BBR.o\
 	force_bridge.o force_pulling.o force_anchor.o force_rest1d.o\
 	force_ele_DH.o force_ele_coulomb.o force_ele_coulomb_ewld.o\

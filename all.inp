@@ -268,7 +268,7 @@ NLOCAL(1-2b/1-2b)     GO EXV
 
 **NOTHING[1]    : no interaction (default)
 **GO[2]         : 12-10 Go potential for native contact pairs
-**EXV[3]        : (c/r)**12 repulsive interaction
+**EXV12[3]      : (c/r)**12 repulsive interaction (Recommended for prot-RNA exv)
 **ELE[7]        : electrostatic interaction (Debye-Huckel form)
 **ENM[23]       : elastic network model (protein)
 **HP[29]        : hydorophobic interaction

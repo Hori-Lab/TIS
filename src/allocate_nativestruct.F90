@@ -243,27 +243,27 @@ subroutine allocate_nativestruct()
    ! LJ1210
    allocate( iLJ1210_2mp(2, nmp_all*MXMPLJ1210), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   iLJ2mp(:,:) = 0
+   iLJ1210_2mp(:,:) = 0
 
    allocate( lmp2LJ1210(nmp_all), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   lmp2LJ(:) = 0
+   lmp2LJ1210(:) = 0
 
    allocate( iLJ1210_2unit(2, nmp_all*MXMPLJ1210), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   iLJ2unit(:,:) = 0
+   iLJ1210_2unit(:,:) = 0
 
    allocate( LJ1210_nat(nmp_all*MXMPLJ1210), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   LJ_nat(:) = 0.0e0_PREC
+   LJ1210_nat(:) = 0.0e0_PREC
 
    allocate( LJ1210_nat_2(nmp_all*MXMPLJ1210), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   LJ_nat2(:) = 0.0e0_PREC
+   LJ1210_nat_2(:) = 0.0e0_PREC
 
    allocate( coef_LJ1210(nmp_all*MXMPLJ1210), stat=ier)
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
-   coef_LJ(:) = 0.0e0_PREC
+   coef_LJ1210(:) = 0.0e0_PREC
 
 
    ! wca

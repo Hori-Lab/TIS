@@ -126,6 +126,10 @@ subroutine write_tseries(ibefore_time, istep, &
         if (inmisc%force_flag(INTERACT%ELE)) then
            write (lunout, _FMT_TS_ELECT_T_,   ADVANCE = "NO") 'elect'
         end if
+
+        if (inmisc%force_flag(INTERACT%LJ1210)) then
+            write (lunout, _FMT_TS_AROMATIC_T_,  ADVANCE = "NO") 'aromatic'
+        end if
    
 !        if(inmisc%force_flag(INTERACT%HP)) then
 !           write (lunout, _FMT_TS_HPENE_T_, ADVANCE = "NO") 'hp'
@@ -281,6 +285,7 @@ contains
     real(PREC) :: eelect
     real(PREC) :: ehbond_rna, estack_rna
     real(PREC) :: ewindow, ebridge, epulling, eanchor, erest1d, ebbr
+    real(PREC) :: eAromatic
 !    real(PREC) :: emorse
 !    real(PREC) :: ehp, eimplig, ecap, ebox, ecylinder
 
@@ -351,7 +356,8 @@ contains
     if (ewindow > HIGH_ENERGY_JUDGE) ewindow = HIGH_ENERGY_OUT
 !    ecylinder = tenergy(E_TYPE%CYLINDER)
 !    if (ecylinder > HIGH_ENERGY_JUDGE) ecylinder = HIGH_ENERGY_OUT
-
+    eAromatic = tenergy(E_TYPE%LJ1210)
+    if (eAromatic > HIGH_ENERGY_JUDGE) eAromatic = HIGH_ENERGY_OUT
     if(inmisc%i_output_energy_style == 0) then
        write (lunout, "(a5)",         ADVANCE = "NO") chead
     else if(inmisc%i_output_energy_style == 1) then
@@ -397,6 +403,9 @@ contains
        write (lunout, _FMT_TS_ELECT_,   ADVANCE = "NO") eelect
     end if
 
+    if (inmisc%force_flag(INTERACT%LJ1210)) then
+        write (lunout, _FMT_TS_AROMATIC_,  ADVANCE = "NO") eAromatic
+    end if
 !    if(inmisc%force_flag(INTERACT%HP)) then
 !       write (lunout, _FMT_TS_HPENE_, ADVANCE = "NO") ehp
 !    end if

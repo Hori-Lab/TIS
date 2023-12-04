@@ -18,14 +18,18 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   use const_index
   use const_physical
   use var_replica,only : irep2grep
-  use var_setp,   only : inexv, inpro, inmisc, indtrna13, indtrna, inperi, insopsc !, inrna
+  use var_setp,   only : inexv, inpro, inmisc, indtrna13, indtrna, inperi, insopsc, inprotrna !, inrna
   use var_struct, only : nunit_real, pxyz_mp_rep, &
                          imp2unit, lmp2con, icon2mp, coef_go, iexv2mp, exv2para, imp2type, &
                          lmp2LJ, iLJ2mp, coef_LJ, &
                          lmp2wca,iwca2mp,coef_wca, &
                          iclass_unit, ires_mp, nmp_all, &
                          lmp2charge, coef_charge, &
-                         exv_radius_mp, exv_epsilon_mp
+                         exv_radius_mp, exv_epsilon_mp, &
+                         cmp2atom, cmp2seq, &
+                         lmp2LJ1210, iLJ1210_2mp, coef_LJ1210, &
+                         iLJ1210_2unit, nLJ1210, LJ1210_nat, LJ1210_nat_2, &
+                         iclass_mp
 !                         lmp2morse, &!lmp2rna_bp, lmp2rna_st, &
 !                         imorse2mp, &!irna_bp2mp, irna_st2mp, &
 !                         coef_morse_a, coef_morse_fD
@@ -44,6 +48,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 
   ! -------------------------------------------------------------------
   ! local variables
+  integer :: iLJ1210
   integer :: n, grep, d_res
   integer :: klen, ksta, kend
   integer :: inum, imp, jmp, kmp
@@ -67,6 +72,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   type calc_type
      integer :: GO
      integer :: LJ
+     integer :: LJ1210
      integer :: WCA
 !     integer :: MORSE
      integer :: EXV12
@@ -82,7 +88,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: MAX
   endtype calc_type
   !type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,12)
-  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,8)
+  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,9)
   integer :: icalc(CALC%MAX, nunit_real, nunit_real)
 
   character(CARRAY_MSG_ERROR) :: error_message
@@ -103,8 +109,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   isep_nlocal  = inpro%n_sep_nlocal
 
   grep = irep2grep(irep)
-
-  iexv     = 0
+  iLJ1210     = 0
+  iexv        = 0
   isearch_con = 1
   isearch_LJ  = 1
   isearch_wca = 1
@@ -153,13 +159,16 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !        endif
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_WCA)) then
            icalc(CALC%EXV_WCA, iunit, junit) = 1
-        endif
+        end if
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_DT15)) then
            icalc(CALC%EXV_DT15, iunit, junit) = 1
-        endif
+        end if
         if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%EXV_GAUSS)) then
            icalc(CALC%EXV_GAUSS, iunit, junit) = 1
-        endif
+        end if
+        if (inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LJ1210)) then
+           icalc(CALC%LJ1210, iunit, junit) = 1
+        end if
 
      end do
   end do
@@ -259,6 +268,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
            end do
         end if
 
+        
+
 !        ! -----------------------------------------------------------------
 !        ! morse
 !        if(icalc(CALC%MORSE, iunit, junit) == 1) then
@@ -313,6 +324,227 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
 !              end if
 !           end do
 !        end if
+
+        if(icalc(CALC%LJ1210, iunit, junit) == 1) then
+         ! Only consider Protein SC and RNA base
+            if ((imp2type(imp) == MPTYPE%SOPSC .and. imp2type(jmp) == MPTYPE%RNA_BASE) .OR. &
+               (imp2type(imp) == MPTYPE%RNA_BASE .and. imp2type(jmp) == MPTYPE%SOPSC)) then
+
+               if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
+                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'TRP')) then
+                  
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TRP_A
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+
+               else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
+                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'TRP')) then
+
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TRP_G
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+
+               else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
+                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'TRP')) then
+
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TRP_C
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+
+               else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
+                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'TRP')) then
+
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TRP_U
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+               
+               else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
+                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'TYR')) then
+               
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TYR_A
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+
+               else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
+                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'TYR')) then
+               
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TYR_G
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) == ' Cb ') .OR. &
+                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'TYR')) then
+               
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TYR_C
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
+                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'TYR')) then
+               
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_TYR_U
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
+                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'PHE')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_PHE_A
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
+                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'PHE')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_PHE_G
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
+                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'PHE')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_PHE_C
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
+                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'PHE')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_PHE_U
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
+                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'HIS')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_HIS_A
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
+                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'HIS')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_HIS_G
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
+                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'HIS')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_HIS_C
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+                     
+               else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
+                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'HIS')) then
+                              
+                     iLJ1210 = iLJ1210 + 1
+                     iLJ1210_2mp(1, iLJ1210) = imp
+                     iLJ1210_2mp(2, iLJ1210) = jmp
+                     coef_LJ1210(iLJ1210) = inprotrna%coef_HIS_U
+                     iLJ1210_2unit(1, iLJ1210) = iunit
+                     iLJ1210_2unit(2, iLJ1210) = junit
+                     LJ1210_nat(iLJ1210) = inprotrna%AromaticDist
+                     LJ1210_nat_2(iLJ1210) = inprotrna%AromaticDist**2 
+                     i_exvol = 0
+               ! else
+                  
+                  ! error_message = 'Error: LJ1210 is only for RNA-Protein aromatic interactions'
+                  ! call util_error(ERROR%STOP_ALL, error_message)
+               endif
+            endif
+         end if
+
 
         ! -----------------------------------------------------------------
         ! exvol
@@ -599,6 +831,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      isearch_con = lmp2con(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_LJ  = lmp2LJ (imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_wca = lmp2wca(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
+
+
 !     isearch_morse = lmp2morse(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
 !     if (inmisc%class_flag(CLASS%RNA)) then
 !        isearch_rna_bp= lmp2rna_bp(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
@@ -656,6 +890,10 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   call neighbor_sort(irep, nexv, iexv2mp_pre, nexv_lall=nexv_lall)
 
 #endif
+
+  ! count LJ1210 interactions
+  nLJ1210 = iLJ1210
+
 
 
   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

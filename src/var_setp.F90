@@ -57,6 +57,8 @@ module var_setp
   endtype input_sopsc_parameter
   type(input_sopsc_parameter), save :: insopsc
 
+
+  
    !==========================================
    !> Parameters for defining the interactions between proteins and RNA in protrna.para file
    type input_proteinrna_parameter
@@ -64,8 +66,29 @@ module var_setp
      real(PREC) :: exv_protrna_cutoff !< cutoff distance for the (c/r)^12 exv for protrna
      real(PREC) :: exv_protrna_sigma !< c in the (c/r)^12 exv for protrna
      integer    :: sz !< size of the structure
+     ! Aromatic Potentials
+     real(PREC) :: coef_TRP_A
+     real(PREC) :: coef_TRP_G
+     real(PREC) :: coef_TRP_C
+     real(PREC) :: coef_TRP_U
+     real(PREC) :: coef_TYR_A
+     real(PREC) :: coef_TYR_G
+     real(PREC) :: coef_TYR_C
+     real(PREC) :: coef_TYR_U
+     real(PREC) :: coef_PHE_A
+     real(PREC) :: coef_PHE_G
+     real(PREC) :: coef_PHE_C
+     real(PREC) :: coef_PHE_U
+     real(PREC) :: coef_HIS_A
+     real(PREC) :: coef_HIS_G
+     real(PREC) :: coef_HIS_C
+     real(PREC) :: coef_HIS_U
+     real(PREC) :: AromaticDist
+     real(PREC) :: AromaticCutoff
    endtype input_proteinrna_parameter
    type(input_proteinrna_parameter), save :: inprotrna
+
+
 
   !==========================================
   !> structure for parameters reading from "para_cafemol_ion" field in "ion.para" file

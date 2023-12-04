@@ -107,6 +107,9 @@ subroutine neighbor(irep)
      if (inmisc%force_flag(INTERACT%EXV12)) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV12,irep) - lexv(1,E_TYPE%EXV12,irep) + 1
      endif
+     if (inmisc%force_flag(INTERACT%LJ1210)) then
+      write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%LJ1210,irep) - lexv(1,E_TYPE%LJ1210,irep) + 1
+     endif
      if (inmisc%force_flag(INTERACT%EXV6)) then
         write(outfile%neigh(grep),'(1xi6)',advance='no') lexv(2,E_TYPE%EXV6,irep) - lexv(1,E_TYPE%EXV6,irep) + 1
      endif

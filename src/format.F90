@@ -98,3 +98,5 @@
 #define _FMT_TS_WINDOW_T_      '(1xa10)'
 #define _FMT_TS_CYLINDER_      '(1xf10.2)'
 #define _FMT_TS_CYLINDER_T_    '(1xa10)'
+#define _FMT_TS_AROMATIC_      '(1xf10.2)'
+#define _FMT_TS_AROMATIC_T_    '(1xa10)'

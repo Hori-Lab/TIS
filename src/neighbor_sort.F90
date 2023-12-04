@@ -55,6 +55,12 @@ subroutine neighbor_sort(irep, nexv, iexv2mp_in, iexv2mp_out, nexv_lall)
   end if
 
   ! ------------------------------------------------------------
+  ! Aromatic protein-RNA
+  if(inmisc%force_flag(INTERACT%LJ1210)) then
+     call sort( E_TYPE%LJ1210 )
+  end if
+
+  ! ------------------------------------------------------------
   ! exvol protein
   if(inmisc%force_flag(INTERACT%EXV6)) then
      call sort( E_TYPE%EXV6 )

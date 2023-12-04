@@ -459,6 +459,7 @@ subroutine inp_energy_func()
   write (lunout, '(i2, a)') INTERACT%ELE, ' : electrostatic interaction'
   write (lunout, '(i2, a)') INTERACT%EXV_GAUSS, ' : EXV_GAUSS'
   write (lunout, '(i2, a)') INTERACT%CON_GAUSS, ' : CON_GAUSS'
+  write (lunout, '(i2, a)') INTERACT%LJ1210, ' : LJ1210'
   write (lunout, '(a)') ''
 
 
@@ -597,6 +598,9 @@ contains
 
     else if(char00(i1:i2) == 'LJ') then
        itype = INTERACT%LJ
+
+    else if(char00(i1:i2) == 'LJ1210') then
+       itype = INTERACT%LJ1210
 
     else if(char00(i1:i2) == 'WCA') then
        itype = INTERACT%WCA

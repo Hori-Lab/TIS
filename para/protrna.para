@@ -1,8 +1,28 @@
 <<<< para_protrna_exv
 
 exv_protrna_coef = 1.0
-exv_protrna_cutoff = 999.0
-exv_protrna_sigma = 3.3
+exv_protrna_cutoff = 8.0
+exv_protrna_sigma = 3.6
+
+coef_TRP_A = 3.1
+coef_TRP_G = 3.9
+coef_TRP_C = 2.4
+coef_TRP_U = 3.9
+coef_TYR_A = 3.3
+coef_TYR_G = 2.9
+coef_TYR_C = 1.4
+coef_TYR_U = 2.1
+coef_PHE_A = 3.3
+coef_PHE_G = 3.0
+coef_PHE_C = 1.7
+coef_PHE_U = 2.6
+coef_HIS_A = 2.2
+coef_HIS_G = 2.2
+coef_HIS_C = 1.4
+coef_HIS_U = 2.3
+
+AromaticDist = 3.6
+AromaticCutoff = 8.0
 
 >>>>
 
