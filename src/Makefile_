@@ -72,7 +72,7 @@ CPP = -cpp -DTIME -DSUB_COPY
 #CPP = -cpp -DTIME -DSUB_COPY -D_DEBUG_EWLD
 #CPP = -cpp -DTIME -D_DEBUG
 INC =
-OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive -g
+OPT = -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive
 #OPT = -fopenmp -O3 -Wall -ffree-line-length-none -fbounds-check -fno-range-check -fallow-invalid-boz -frecursive
 #OPT = -fopenmp -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
 #OPT = -g -fbacktrace -ffpe-trap=zero,overflow,denormal,underflow -Wall -ffree-line-length-none -fbounds-check -fno-range-check
