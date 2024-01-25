@@ -10,11 +10,9 @@ csmass_per = 1.0
 csmass_mpc_per = 1.0
 
 * the cutoff distance to define a neighbor
-#rneighbor_dist = 24.0
-rneighbor_dist = 999.0
+rneighbor_dist = 24.0
 
-#neigh_margin = 8.0
-neigh_margin = 200.0
+neigh_margin = 8.0
 
 * default value of particle mass
 rmass = 10.0
