@@ -21,7 +21,7 @@ subroutine inp_energy_func()
   integer :: k
   integer :: i1 = 1
   integer :: i2 = 1
-  integer :: isw, itype, icol, jcol, i_ninfo
+  integer :: isw, itype, icol, jcol
   integer :: iu, ju, iunit, junit, i_local_type, iint
 !  integer :: isys, istat, iactnum, iact, isw2
   integer :: inunit(2), jnunit(2), instate, instate2
@@ -185,6 +185,11 @@ subroutine inp_energy_func()
                        junit = ius2unit(ju, instate2)
                        inmisc%flag_nlocal_unit(iunit, junit, INTERACT%NOTHING) = .FALSE.
                        inmisc%flag_nlocal_unit(iunit, junit, itype) = .TRUE.
+
+                       ! To make the matrix symmetric.
+                       ! (This is necessary for how a double loop works in neighbor_assign.)
+                       inmisc%flag_nlocal_unit(junit, iunit, INTERACT%NOTHING) = .FALSE.
+                       inmisc%flag_nlocal_unit(junit, iunit, itype) = .TRUE.
                     end do
                  end do
               end if
