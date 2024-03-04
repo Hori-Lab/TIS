@@ -331,7 +331,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                (imp2type(imp) == MPTYPE%RNA_BASE .and. imp2type(jmp) == MPTYPE%SOPSC)) then
 
                if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
-                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'TRP')) then
+                  (cmp2atom(imp) ==' Ab ' .AND. cmp2seq(jmp) == 'TRP')) then
                   
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -344,7 +344,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
 
                else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
-                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'TRP')) then
+                  (cmp2atom(imp) ==' Gb ' .AND. cmp2seq(jmp) == 'TRP')) then
 
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -357,7 +357,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
 
                else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
-                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'TRP')) then
+                  (cmp2atom(imp) ==' Cb ' .AND. cmp2seq(jmp) == 'TRP')) then
 
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -370,7 +370,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
 
                else if ((cmp2seq(imp) == 'TRP' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
-                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'TRP')) then
+                  (cmp2atom(imp) ==' Ub ' .AND. cmp2seq(jmp) == 'TRP')) then
 
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -383,7 +383,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                
                else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
-                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'TYR')) then
+                  (cmp2atom(imp) ==' Ab ' .AND. cmp2seq(jmp) == 'TYR')) then
                
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -396,7 +396,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
 
                else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
-                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'TYR')) then
+                  (cmp2atom(imp) ==' Gb ' .AND. cmp2seq(jmp) == 'TYR')) then
                
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -409,7 +409,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) == ' Cb ') .OR. &
-                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'TYR')) then
+                  (cmp2atom(imp) ==' Cb ' .AND. cmp2seq(jmp) == 'TYR')) then
                
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -422,7 +422,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'TYR' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
-                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'TYR')) then
+                  (cmp2atom(imp) ==' Ub ' .AND. cmp2seq(jmp) == 'TYR')) then
                
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -435,7 +435,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
-                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'PHE')) then
+                  (cmp2atom(imp) ==' Ab ' .AND. cmp2seq(jmp) == 'PHE')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -448,7 +448,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
-                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'PHE')) then
+                  (cmp2atom(imp) ==' Gb ' .AND. cmp2seq(jmp) == 'PHE')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -461,7 +461,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
-                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'PHE')) then
+                  (cmp2atom(imp) ==' Cb ' .AND. cmp2seq(jmp) == 'PHE')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -474,7 +474,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'PHE' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
-                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'PHE')) then
+                  (cmp2atom(imp) ==' Ub ' .AND. cmp2seq(jmp) == 'PHE')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -487,7 +487,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Ab ') .OR. &
-                  (cmp2seq(imp) ==' Ab ' .AND. cmp2atom(jmp) == 'HIS')) then
+                  (cmp2atom(imp) ==' Ab ' .AND. cmp2seq(jmp) == 'HIS')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -500,7 +500,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Gb ') .OR. &
-                  (cmp2seq(imp) ==' Gb ' .AND. cmp2atom(jmp) == 'HIS')) then
+                  (cmp2atom(imp) ==' Gb ' .AND. cmp2seq(jmp) == 'HIS')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -513,7 +513,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Cb ') .OR. &
-                  (cmp2seq(imp) ==' Cb ' .AND. cmp2atom(jmp) == 'HIS')) then
+                  (cmp2atom(imp) ==' Cb ' .AND. cmp2seq(jmp) == 'HIS')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
@@ -526,7 +526,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                      i_exvol = 0
                      
                else if ((cmp2seq(imp) == 'HIS' .AND. cmp2atom(jmp) ==' Ub ') .OR. &
-                  (cmp2seq(imp) ==' Ub ' .AND. cmp2atom(jmp) == 'HIS')) then
+                  (cmp2atom(imp) ==' Ub ' .AND. cmp2seq(jmp) == 'HIS')) then
                               
                      iLJ1210 = iLJ1210 + 1
                      iLJ1210_2mp(1, iLJ1210) = imp
