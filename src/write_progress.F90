@@ -21,7 +21,7 @@ subroutine write_progress(istep, ntstep )
    real(PREC) :: days_from_pre, days_from_ini, remain_hours
 
    if (flg_first) then
-      write(OUTPUT_UNIT,'(a,i10,a)') '# PROGRESS shwon every ', insimu%n_step_progress, ' steps'
+      write(OUTPUT_UNIT,'(a,i10,a)') '# PROGRESS shown every ', insimu%n_step_progress, ' steps'
       write(OUTPUT_UNIT,'(a)') '#1: step'
       write(OUTPUT_UNIT,'(a)') '#2: million steps / day (latest cycle)'
       write(OUTPUT_UNIT,'(a)') '#3: million steps / day (averaged)'

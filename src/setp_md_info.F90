@@ -341,7 +341,7 @@ subroutine setp_md_info()
 
   else
      irand = insimu%n_seed
-     write (*, *) 'set random seed form n_seed: irand = ', irand
+     write (*, *) 'set random seed from n_seed: irand = ', irand
      write (lunout, *) 'set random seed from n_seed: irand = ', irand
   endif
 
