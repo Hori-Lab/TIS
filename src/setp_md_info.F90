@@ -445,6 +445,8 @@ subroutine setp_md_info()
   if(inmisc%i_redef_para == 0) then
   else if(inmisc%i_redef_para == 1) then
      write(lunout, *) 'redefine parameters: i_redef_para = 1'
+  else if(inmisc%i_redef_para == 2) then
+     write(lunout, *) 'redefine parameters: i_redef_para = 2'
   else
      error_message = 'Error: invalid value for i_redef_para'
      call util_error(ERROR%STOP_ALL, error_message)

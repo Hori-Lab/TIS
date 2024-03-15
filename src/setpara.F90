@@ -123,6 +123,7 @@ subroutine setpara( xyz_mp_init )
 
   ! re-define parameters
   if (inmisc%i_redef_para == 1) call setp_redef_para()
+  if (inmisc%i_redef_para == 2) call setp_redef_multiply_para()
 
   ! -----------------------------------------------------------------------
   ! Next two substitutions must be after both setp_mapara() and setp_redef_para().

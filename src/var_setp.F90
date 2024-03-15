@@ -88,6 +88,26 @@ module var_setp
    endtype input_proteinrna_parameter
    type(input_proteinrna_parameter), save :: inprotrna
 
+   type multiply_para 
+    real(PREC) :: multiply_TRP_A
+    real(PREC) :: multiply_TRP_G
+    real(PREC) :: multiply_TRP_C
+    real(PREC) :: multiply_TRP_U
+    real(PREC) :: multiply_TYR_A
+    real(PREC) :: multiply_TYR_G
+    real(PREC) :: multiply_TYR_C
+    real(PREC) :: multiply_TYR_U
+    real(PREC) :: multiply_PHE_A
+    real(PREC) :: multiply_PHE_G
+    real(PREC) :: multiply_PHE_C
+    real(PREC) :: multiply_PHE_U
+    real(PREC) :: multiply_HIS_A
+    real(PREC) :: multiply_HIS_G
+    real(PREC) :: multiply_HIS_C
+    real(PREC) :: multiply_HIS_U
+   end type multiply_para
+   type(multiply_para), save :: m_redef_para
+
 
 
   !==========================================

@@ -216,7 +216,7 @@ FOBJ1 = \
 	setp_mapara.o setp_mapara_pro.o\
 	setp_mapara_protrna.o\
 	setp_mapara_ligand.o setp_mapara_ele.o\
-	setp_redef_para.o setp_mapara_rna.o\
+	setp_redef_para.o setp_redef_multiply_para.o setp_mapara_rna.o\
 	setp_md_info.o setp_random.o setp_group.o setp_minimize_para.o\
 	setp_energy_para.o setp_neigh_dist.o setp_mass_fric.o setp_widom_para.o\
 	setp_del_int.o setp_periodic.o\
