@@ -391,7 +391,7 @@ subroutine inp_energy_func()
 #ifdef MPI_PAR
   end if
 
-  call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
+!  call MPI_Bcast(inmisc%i_use_atom_protein,    1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_residuenergy_radii,  1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_output_energy_style, 1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(inmisc%i_triple_angle_term,   1,MPI_INTEGER,0 ,MPI_COMM_WORLD,ierr)
