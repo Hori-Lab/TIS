@@ -152,6 +152,19 @@ module var_struct
   real(PREC), allocatable, save :: LJ1210_nat_2(:)       !(MXLJ1210)
   real(PREC), allocatable, save :: coef_LJ1210(:)       !(MXLJ1210)
 
+  !> parameters for the HPS potential
+  integer,    save :: nHPS = 0
+  integer,    allocatable, save :: iHPS2mp(:,:)      !(2, MXHPS)
+  !integer,    allocatable, save :: iHPS2type(:)      !(MXHPS)
+  integer,    allocatable, save :: lmp2HPS(:)        !(MXMP)
+  integer,    allocatable, save :: iHPS2unit(:,:)    !(2, MXHPS)
+  real(PREC), allocatable, save :: HPS_nat(:)        !(MXHPS)
+  real(PREC), allocatable, save :: HPS_nat2(:)       !(MXHPS)
+  !real(PREC), allocatable, save :: factor_HPS(:)     !(MXHPS)
+  real(PREC), allocatable, save :: coef_HPS(:)       !(MXLJ)
+  real(PREC), allocatable, save :: lambda(:)     !(MXHPS)
+!   real(PREC), allocatable, save :: HPS_lambda(:)     !(MXHPS)
+!   real(PREC), allocatable, save :: HPS_lambda_half(:)       !(MXHPS)
 
   !> parameters for WCA potential
   integer,    save :: nwca = 0

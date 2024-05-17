@@ -46,6 +46,7 @@ subroutine setp_mapara_protrna(lunpara,lunout)
     inprotrna%coef_HIS_U                    = -1.0
     inprotrna%AromaticDist                  = -1.0
     inprotrna%AromaticCutoff                = -1.0
+    inprotrna%cutoff_HPS                    = -1.0
 
     ! ------------------------------------------------------------------
 
@@ -154,6 +155,10 @@ subroutine setp_mapara_protrna(lunpara,lunout)
             call ukoto_rvalue2(lunout, csides(1, iequa), &
                 inprotrna%AromaticCutoff, cvalue)
 
+            cvalue = 'cutoff_HPS'
+            call ukoto_rvalue2(lunout, csides(1, iequa), &
+                inprotrna%cutoff_HPS, cvalue)
+
         end do
     end do
 
@@ -242,6 +247,10 @@ subroutine setp_mapara_protrna(lunpara,lunout)
     
     else if(inprotrna%AromaticCutoff < 0.0) then 
         error_message = 'Error: invalid value for AromaticCutoff'
+        call util_error(ERROR%STOP_ALL, error_message)
+
+    else if(inprotrna%cutoff_HPS < 0.0) then
+        error_message = 'Error: invalid value for cutoff_HPS'
         call util_error(ERROR%STOP_ALL, error_message)
 
     end if

@@ -29,7 +29,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
                          cmp2atom, cmp2seq, &
                          lmp2LJ1210, iLJ1210_2mp, coef_LJ1210, &
                          iLJ1210_2unit, nLJ1210, LJ1210_nat, LJ1210_nat_2, &
-                         iclass_mp
+                         iclass_mp, &
+                         lmp2HPS, iHPS2mp, coef_HPS
 !                         lmp2morse, &!lmp2rna_bp, lmp2rna_st, &
 !                         imorse2mp, &!irna_bp2mp, irna_st2mp, &
 !                         coef_morse_a, coef_morse_fD
@@ -56,8 +57,8 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   integer :: iunit, junit
   integer :: isep_nlocal
   integer :: isep_nlocal_rna
-  integer :: icon, iLJ, iwca, iexv, nexv
-  integer :: istart, isearch_con, isearch_LJ, isearch_wca
+  integer :: icon, iLJ, iwca, iexv, nexv, iHPS
+  integer :: istart, isearch_con, isearch_LJ, isearch_wca, isearch_HPS
 !  integer :: isearch_rna_bp, isearch_rna_st, isearch_morse
   integer :: i_exvol
 !  integer :: i_sasa
@@ -73,6 +74,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: GO
      integer :: LJ
      integer :: LJ1210
+     integer :: HPS
      integer :: WCA
 !     integer :: MORSE
      integer :: EXV12
@@ -88,7 +90,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      integer :: MAX
   endtype calc_type
   !type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,11,12,12)
-  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,9)
+  type(calc_type), parameter :: CALC = calc_type(1,2,3,4,5,6,7,8,9,10,10)
   integer :: icalc(CALC%MAX, nunit_real, nunit_real)
 
   character(CARRAY_MSG_ERROR) :: error_message
@@ -113,6 +115,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
   iexv        = 0
   isearch_con = 1
   isearch_LJ  = 1
+  isearch_HPS = 1
   isearch_wca = 1
 !  isearch_morse  = 1
 !  isearch_rna_bp = 1
@@ -129,6 +132,9 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
         end if
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%LJ)) then
            icalc(CALC%LJ, iunit, junit) = 1
+        end if
+        if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%HPS)) then
+           icalc(CALC%HPS, iunit, junit) = 1
         end if
         if(inmisc%flag_nlocal_unit(iunit, junit, INTERACT%WCA)) then
            icalc(CALC%WCA, iunit, junit) = 1
@@ -179,6 +185,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
     isearch_con = lmp2con (imp_l2g(1)-1) + 1
     isearch_LJ  = lmp2LJ  (imp_l2g(1)-1) + 1
     isearch_wca = lmp2wca (imp_l2g(1)-1) + 1
+    isearch_HPS = lmp2HPS (imp_l2g(1)-1) + 1
 !    isearch_morse  = lmp2morse(imp_l2g(1)-1) + 1
 !    if (inmisc%class_flag(CLASS%RNA)) then
 !       isearch_rna_bp = lmp2rna_bp(imp_l2g(1)-1) + 1
@@ -248,6 +255,23 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
               end if
            end do
         end if
+
+        if(icalc(CALC%HPS, iunit, junit) == 1) then
+
+         do iHPS = isearch_HPS, lmp2HPS(imp)
+            kmp = iHPS2mp(2, iHPS)
+
+            if(jmp < kmp) exit
+
+            if(jmp == kmp) then
+               isearch_HPS = iHPS + 1
+!                 cycle loop_lneigh
+               if(coef_HPS(iHPS) > ZERO_JUDGE) then
+                  i_exvol = 0
+               end if
+            end if
+         end do
+      end if
 
         ! -----------------------------------------------------------------
         ! wca
@@ -831,7 +855,7 @@ subroutine neighbor_assign(irep, ineigh2mp, lmp2neigh)
      isearch_con = lmp2con(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_LJ  = lmp2LJ (imp_l2g(min(imp_l+1,nmp_l))-1) + 1
      isearch_wca = lmp2wca(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
-
+     isearch_HPS = lmp2HPS(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
 
 !     isearch_morse = lmp2morse(imp_l2g(min(imp_l+1,nmp_l))-1) + 1
 !     if (inmisc%class_flag(CLASS%RNA)) then

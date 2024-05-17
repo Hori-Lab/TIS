@@ -62,10 +62,10 @@ module var_setp
    !==========================================
    !> Parameters for defining the interactions between proteins and RNA in protrna.para file
    type input_proteinrna_parameter
+     ! Excluded Volume
      real(PREC) :: exv_protrna_coef !< coefficient of the (c/r)^12 exv for protrna
      real(PREC) :: exv_protrna_cutoff !< cutoff distance for the (c/r)^12 exv for protrna
      real(PREC) :: exv_protrna_sigma !< c in the (c/r)^12 exv for protrna
-     integer    :: sz !< size of the structure
      ! Aromatic Potentials
      real(PREC) :: coef_TRP_A
      real(PREC) :: coef_TRP_G
@@ -85,6 +85,10 @@ module var_setp
      real(PREC) :: coef_HIS_U
      real(PREC) :: AromaticDist
      real(PREC) :: AromaticCutoff
+     ! HPS
+     real(PREC) :: cutoff_HPS
+
+     integer    :: sz !< size of the structure
    endtype input_proteinrna_parameter
    type(input_proteinrna_parameter), save :: inprotrna
 

@@ -128,6 +128,10 @@ subroutine force_sumup(force_mp, &  ! [ o]
 !     call force_nlocal_morse(irep, force_mp_l(1,1,tn))
 !     call force_nlocal_rna_bp(irep, force_mp_l(1,1,tn))
      call force_con_gauss(irep, force_mp_l(1,1,tn))
+
+     if (inmisc%force_flag(INTERACT%HPS)) then
+       call force_HPS(irep, force_mp)
+     endif
 !  end if
 
 !$omp master
@@ -380,7 +384,6 @@ subroutine force_sumup(force_mp, &  ! [ o]
   if (inmisc%force_flag(INTERACT%LJ1210)) then
     call force_LJ_1210(irep, force_mp)
   endif
-
 
 #ifdef _DEBUG
   write(*,*) 'force_sumup: END'

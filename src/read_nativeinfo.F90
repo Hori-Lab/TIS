@@ -30,7 +30,8 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
        idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, ndtrna_hb, &
        idtrna_hb2hbsite, imp2hbsite, flg_hb_tertiary,&
        ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst,&
-       flg_tst_exclusive, idtrna_tst2side
+       flg_tst_exclusive, idtrna_tst2side,&
+       nHPS, iHPS2mp, iHPS2unit, HPS_nat, HPS_nat2, coef_HPS, lambda
 
   implicit none
 
@@ -46,7 +47,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
   integer :: input_status
   integer :: ii, jj, imp1, imp2, imp3, imp4, iunit1, iunit2, imp_tmp
   integer :: imp1un, imp2un, imp3un, imp4un, kunit1
-  integer :: ibd, ifene, irouse, iba, icon, iLJ, iwca, icon_gauss
+  integer :: ibd, ifene, irouse, iba, icon, iLJ, iwca, icon_gauss, iHPS
 !  integer :: idih
   integer :: ibd_read, iba_read, idih_read
   integer :: icon_read, idummy
@@ -58,7 +59,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !  integer :: itype
   integer :: offset1, offset2
   integer :: ist_type1, ist_type2, ist_type_tmp
-  real(PREC) :: bl, ba, dih, go, factor, correct, coef !, coef3
+  real(PREC) :: bl, ba, dih, go, factor, correct, coef, lamb !, coef3
   real(PREC) :: dist, energy0, h, s, Tm
   character(256) :: cline, cline_head
   character(CARRAY_MSG_ERROR) :: error_message
@@ -85,6 +86,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !  idih = ndih
   icon = ncon
   iLJ = nLJ
+  iHPS = nHPS
   iwca = nwca
   icon_gauss = ncon_gauss
 !  ibp = nrna_bp
@@ -300,6 +302,34 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         LJ_nat(iLJ) = go
         LJ_nat2(iLJ) = go**2
         coef_LJ(iLJ) = coef
+     end if
+
+     if(cline(1:3) == 'HPS') then
+        read (cline, *, iostat = input_status) &
+             cline_head, icon_read, iunit1, iunit2,  &
+             imp1, imp2, imp1un, imp2un,             &
+             go, coef, lamb
+        if(input_status > 0) then
+           error_message = 'read error =>' // cline
+           call util_error(ERROR%STOP_ALL, error_message)
+        end if
+
+        iHPS = iHPS + 1
+        if(i_ninfo_type == NATIVEINFO%ALL_IN_ONE) then
+           imp1 = imp1 + ii
+           imp2 = imp2 + jj
+        else ! NATIVEINFO%ONE_BY_ONE
+           imp1 = imp1un + ii
+           imp2 = imp2un + jj
+        end if
+        iHPS2unit(1, iHPS) = imp2unit(imp1)
+        iHPS2unit(2, iHPS) = imp2unit(imp2)
+        iHPS2mp(1, iHPS) = imp1
+        iHPS2mp(2, iHPS) = imp2
+        HPS_nat(iHPS) = go
+        HPS_nat2(iHPS) = go**2
+        coef_HPS(iHPS) = coef
+        lambda(iHPS) = lamb
      end if
 
      ! ------------------------------------------------------------------
@@ -714,6 +744,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
 !  ndih = idih
   ncon = icon
   nLJ  = iLJ
+  nHPS = iHPS
   nwca  = iwca
   ncon_gauss  = icon_gauss
 !  nrna_bp = ibp

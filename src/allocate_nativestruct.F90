@@ -37,7 +37,9 @@ subroutine allocate_nativestruct()
                            flg_tst_exclusive, idtrna_tst2st, idtrna_tst2side,&
                            icharge2mp, lmp2charge, coef_charge,&
                            iLJ1210_2mp, lmp2LJ1210, iLJ1210_2unit, LJ1210_nat,& ! LJ1210 potential additions
-                           LJ1210_nat_2, coef_LJ1210
+                           LJ1210_nat_2, coef_LJ1210,&
+                           iHPS2mp, lmp2HPS, iHPS2unit, HPS_nat, HPS_nat2, coef_HPS, lambda
+                           
 
 
 
@@ -265,6 +267,34 @@ subroutine allocate_nativestruct()
    if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
    coef_LJ1210(:) = 0.0e0_PREC
 
+   ! HPS
+   allocate( iHPS2mp(2, nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iHPS2mp(:,:) = 0
+
+   allocate( lmp2HPS(nmp_all), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   lmp2HPS(:) = 0
+
+   allocate( iHPS2unit(2, nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   iHPS2unit(:,:) = 0
+
+   allocate( HPS_nat(nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   HPS_nat(:) = 0.0e0_PREC
+
+   allocate( HPS_nat2(nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   HPS_nat2(:) = 0.0e0_PREC
+
+   allocate( coef_HPS(nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   coef_HPS(:) = 0.0e0_PREC
+
+   allocate( lambda(nmp_all*MXMPHPS), stat=ier)
+   if (ier/=0) call util_error(ERROR%STOP_ALL, error_message)
+   lambda(:) = 0.0e0_PREC
 
    ! wca
    allocate( iwca2mp(2, nmp_all*MXMPWCA), stat=ier)

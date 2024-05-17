@@ -23,7 +23,7 @@ subroutine energy_sumup(irep,          &
   use const_maxsize
   use const_index
   use var_setp,    only : inmisc, inele !,inflp
-  use var_struct,  only : nunit_all, ncon, nLJ, ndtrna_st, ndtrna_tst, ndtrna_hb, nLJ1210
+  use var_struct,  only : nunit_all, ncon, nLJ, ndtrna_st, ndtrna_tst, ndtrna_hb, nLJ1210, nHPS
   use var_simu,    only : st_status, ene_st, ene_tst, ene_hb
   use time
   use mpiconst
@@ -41,6 +41,7 @@ subroutine energy_sumup(irep,          &
 #ifdef MEM_ALLOC
   integer, allocatable :: now_con(:, :)  ! (ncon)
   integer, allocatable :: now_LJ(:, :)
+  integer, allocatable :: now_HPS(:, :)
 !   integer, allocatable :: now_LJ1210(:, :)
 !  integer, allocatable :: now_morse(:, :)
 !  integer, allocatable :: now_rna_bp(:, :)
@@ -48,11 +49,13 @@ subroutine energy_sumup(irep,          &
 #else
   integer :: now_con(2, ncon)
   integer :: now_LJ(2, nLJ)
+  integer :: now_HPS(2, nHPS)
 !   integer :: now_LJ1210(2, nLJ1210)
 !  integer :: now_morse(2, nmorse)
 !  integer :: now_rna_bp(2, nrna_bp)
   !integer :: now_allcon(2, ncon+nmorse+nrna_bp+nLJ)
   integer :: now_allcon(2, ncon+nLJ)
+
 #endif
   character(CARRAY_MSG_ERROR),parameter :: msg_er_allocate = &
      'failed in memory allocation at mloop_simulator, PROGRAM STOP'
@@ -91,6 +94,8 @@ subroutine energy_sumup(irep,          &
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
   allocate(now_LJ(2, nLJ), stat=ier)
   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
+   allocate(now_HPS(2, nHPS), stat=ier)
+  if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
 !   allocate(now_LJ1210(2, nLJ1210), stat=ier)
 !   if (ier/=0) call util_error(ERROR%STOP_ALL, msg_er_allocate)
 !  allocate(now_morse(2, nmorse), stat=ier)
@@ -104,6 +109,7 @@ subroutine energy_sumup(irep,          &
 
   now_con(:, :) = 0
   now_LJ(:, :) = 0
+  now_HPS(:, :) = 0
 !   now_LJ1210(:, :) = 0
 !  now_morse(:, :) = 0
 !  now_rna_bp(:, :) = 0
@@ -244,6 +250,9 @@ subroutine energy_sumup(irep,          &
      call energy_LJ(irep, now_LJ, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   if(inmisc%force_flag(INTERACT%LJ1210)) then
      call energy_LJ_1210(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
+  end if
+  if(inmisc%force_flag(INTERACT%HPS)) then
+     call energy_HPS(irep, now_HPS, energy_unit_l(:,:,:,tn), energy_l(:,tn))
   end if
      call energy_wca(irep, energy_unit_l(:,:,:,tn), energy_l(:,tn))
 !     call energy_nlocal_go(irep, now_con, energy_unit_l(:,:,:,tn), energy_l(:,tn))
@@ -545,6 +554,7 @@ subroutine energy_sumup(irep,          &
 #ifdef MEM_ALLOC
   deallocate( now_con )
   deallocate( now_LJ )
+  deallocate( now_HPS )
 !  deallocate( now_LJ1210 )
 !  deallocate( now_morse )
 !  deallocate( now_rna_bp )

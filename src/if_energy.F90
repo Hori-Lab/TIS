@@ -194,6 +194,15 @@ interface
       real(PREC), intent(inout) :: energy_unit(:,:,:)
    endsubroutine energy_LJ_1210
 
+   subroutine energy_HPS(irep, now_HPS, energy_unit, energy)
+      use const_maxsize
+      implicit none
+      integer,    intent(in)    :: irep
+      integer,    intent(out)   :: now_HPS(:,:)
+      real(PREC), intent(inout) :: energy(:)
+      real(PREC), intent(inout) :: energy_unit(:,:,:)
+   endsubroutine energy_HPS
+
    !subroutine energy_wca(irep, now_wca, energy_unit, energy)
    subroutine energy_wca(irep, energy_unit, energy)
       use const_maxsize

@@ -11,7 +11,8 @@ subroutine mloop_nativeinfo(istep_sim)
   use var_struct, only : nunit_all, &
                          nbd, nfene, nba, ndih, ncon, nLJ, nwca, nrouse, ncon_gauss,&
                          ncon_unit, iallcon2unit,&
-                         ndtrna_st, ndtrna_hb, icon2unit, iLJ2unit
+                         ndtrna_st, ndtrna_hb, icon2unit, iLJ2unit,&
+                         nHPS, iHPS2unit
   use mpiconst
 #ifdef MPI_PAR
   use var_replica,only : n_replica_all
@@ -39,7 +40,8 @@ subroutine mloop_nativeinfo(istep_sim)
 !                         imorse2type, &
                          idtrna_hb2hbsite, flg_hb_tertiary, &
                          !irna_st_dummy_mgo
-                         iwca2mp, iwca2unit, wca_nat, wca_nat2, coef_wca
+                         iwca2mp, iwca2unit, wca_nat, wca_nat2, coef_wca,&
+                         iHPS2mp, coef_HPS, HPS_nat, HPS_nat2, lambda
 #endif
 
   implicit none
@@ -84,6 +86,7 @@ subroutine mloop_nativeinfo(istep_sim)
   ndih = 0
   ncon = 0
   nLJ = 0
+  nHPS = 0
   nwca = 0
   nrouse = 0
   ncon_gauss = 0
@@ -201,6 +204,15 @@ subroutine mloop_nativeinfo(istep_sim)
   call MPI_Bcast(LJ_nat2,         MXMPLJ*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(coef_LJ,         MXMPLJ*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
 
+  ! HPS
+  call MPI_Bcast(nHPS,           1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(iHPS2mp,        2*MXMPHPS*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(iHPS2unit,      2*MXMPHPS*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(HPS_nat,          MXMPHPS*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(HPS_nat2,         MXMPHPS*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(coef_HPS,         MXMPHPS*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+  call MPI_Bcast(lambda,          MXMPHPS*nmp_all, PREC_MPI,   0,MPI_COMM_WORLD,ierr)
+
   ! wca
   call MPI_Bcast(nwca,           1,                 MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
   call MPI_Bcast(iwca2mp,        2*MXMPWCA*nmp_all, MPI_INTEGER,0,MPI_COMM_WORLD,ierr)
@@ -291,6 +303,9 @@ subroutine mloop_nativeinfo(istep_sim)
   endif
   if (inmisc%force_flag(INTERACT%LJ)) then
      call util_sort_LJ()
+  endif
+  if (inmisc%force_flag(INTERACT%HPS)) then
+     call util_sort_HPS()
   endif
 !  if (inmisc%class_flag(CLASS%RNA)) then
 !     call util_sort_rna_bp()

@@ -88,6 +88,7 @@ module const_maxsize
 
   ! Protein-RNA interaction
   integer, parameter :: MXMPLJ1210 = 20      ! Maximum number of 12-10 Aromatic interactions per residue
+  integer, parameter :: MXMPHPS = 20      ! Maximum number of HPS interactions per residue
 
 !  ! MPC
 !  integer, parameter :: MXGRID_NX_MPC = 50 ! the max grid number x-axis

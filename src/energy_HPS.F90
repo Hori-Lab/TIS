@@ -1,35 +1,38 @@
-! energy_LJ
+! energy_HPS
 
 ! ************************************************************************
 ! formula of LJ
 ! eLJ = coef * {(x0/x)**12 -2*(x0/x)**6}
 ! ************************************************************************
-subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
+subroutine energy_HPS(irep, now_HPS, energy_unit, energy)
 
   use if_util
   use const_maxsize
   use const_physical
   use const_index
-  use var_setp,    only : inpro, inperi
+  use var_setp,    only : inperi, inprotrna
   use var_struct,  only : xyz_mp_rep, pxyz_mp_rep, imp2unit, &
-                          nLJ, iLJ2mp, coef_LJ, LJ_nat2
+                          nHPS, iHPS2mp, coef_HPS, HPS_nat2, lambda
   use mpiconst
 
   implicit none
 
   integer,    intent(in)    :: irep
-  integer,    intent(out)   :: now_LJ(:,:)
+  integer,    intent(out)   :: now_HPS(:,:)
   real(PREC), intent(inout) :: energy(:)
   real(PREC), intent(inout) :: energy_unit(:,:,:)
 
   integer :: imp1, imp2, iunit, junit
   integer :: ksta, kend
-  integer :: iLJ
+  integer :: iHPS
   real(PREC) :: rcut_off2 !, rcut_off2_pro, rcut_off2_rna
   real(PREC) :: rjudge_contact, rjudge
-  real(PREC) :: roverdist2
+  real(PREC) :: roverdist2, roverdist6, roverdist12
+  real(PREC) :: inv_dist2, inv_dist6
   real(PREC) :: dist2, efull
   real(PREC) :: v21(SDIM)
+  real(PREC) :: sigma_6th, sig_over_dist_6th
+  real(PREC) :: ehps_tmp
 #ifdef MPI_PAR3
   integer :: klen
 #endif
@@ -39,11 +42,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
 
   ! --------------------------------------------------------------------
   ! set parameter 
-  rcut_off2 = 1.0e0_PREC / inpro%cutoff_LJ**2
-  !rcut_off2_pro = 1.0e0_PREC / inpro%cutoff_LJ**2
-  !if (inmisc%class_flag(CLASS%RNA)) then
-  !   rcut_off2_rna = 1.0e0_PREC / inrna%cutoff_LJ**2
-  !endif
+  rcut_off2 = 1.0e0_PREC / inprotrna%cutoff_HPS**2
   rjudge_contact = 1.2e0_PREC**2
 
   ! --------------------------------------------------------------------
@@ -52,21 +51,21 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
       
   ! --------------------------------------------------------------------
 #ifdef MPI_PAR3
-   klen=(nLJ-1+npar_mpi)/npar_mpi
+   klen=(nHPS-1+npar_mpi)/npar_mpi
    ksta=1+klen*local_rank_mpi
-   kend=min(ksta+klen-1,nLJ)
+   kend=min(ksta+klen-1,nHPS)
 #else
    ksta = 1
-   kend = nLJ
+   kend = nHPS
 #endif
 !$omp do private(imp1, imp2, iunit, junit, v21, dist2, roverdist2, rjudge, efull)
-   do iLJ=ksta,kend
+   do iHPS=ksta,kend
    
-     imp1 = iLJ2mp(1, iLJ)
-     imp2 = iLJ2mp(2, iLJ)
+     imp1 = iHPS2mp(1, iHPS)
+     imp2 = iHPS2mp(2, iHPS)
 
 #ifdef _DEBUG_NLOCAL
-     write(*,*) 'LJ ', imp1, imp2
+     write(*,*) 'HPS ', imp1, imp2
 #endif
         
      if(inperi%i_periodic == 0) then
@@ -76,45 +75,55 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
         call util_pbneighbor(v21)
      end if
      
+     sigma_6th = HPS_nat2(iHPS) * HPS_nat2(iHPS) * HPS_nat2(iHPS) 
+
      dist2 = dot_product(v21,v21)
 
-     roverdist2 = LJ_nat2(iLJ) / dist2
+     roverdist2 = HPS_nat2(iHPS) / dist2
+     roverdist6 = roverdist2 * roverdist2 * roverdist2
+     roverdist12 = roverdist6 * roverdist6
 
-     !if (iclass_mp(imp1) == CLASS%RNA .AND. iclass_mp(imp2) == CLASS%RNA) then
-     !   rcut_off2 = rcut_off2_rna
-     !else 
-     !   rcut_off2 = rcut_off2_pro
-     !endif
-
-     if(coef_LJ(iLJ) >= ZERO_JUDGE) then
-        now_LJ(2, iLJ) = 1
+     if(coef_HPS(iHPS) >= ZERO_JUDGE) then
+        now_HPS(2, iHPS) = 1
      else
-        now_LJ(2, iLJ) = 0
+        now_HPS(2, iHPS) = 0
      end if
 
      if(roverdist2 < rcut_off2) cycle
 
-     ! 1.44 = 1.2 *1.2
-     rjudge = LJ_nat2(iLJ) * rjudge_contact
+     rjudge = HPS_nat2(iHPS) * rjudge_contact
      !  judging contact 
      if(dist2 < rjudge) then
-        now_LJ(1, iLJ) = 1
+        now_HPS(1, iHPS) = 1
      else
-        now_LJ(1, iLJ) = 0
+        now_HPS(1, iHPS) = 0
      end if
 
-     ! calc energy
-     efull = coef_LJ(iLJ) * (roverdist2**6 - 2.0e0_PREC * roverdist2**3)
+     inv_dist2       = 1.0_PREC / dist2
+     inv_dist6       = inv_dist2 * inv_dist2 * inv_dist2
+
+     sig_over_dist_6th = sigma_6th * inv_dist6
+
+     ehps_tmp = 4.0_PREC * coef_HPS(iHPS) * (roverdist12 - roverdist6)
+
+   !   lambda = HPS_lambda_half(iHPS) + HPS_lambda_half(iHPS)
+
+     ! this judgement criteria is separating the repulsive and attractive part, r < 2^(1/6) * sigma
+     if (sig_over_dist_6th >= 0.5_PREC) then
+        efull = ehps_tmp + (1.0_PREC - lambda(iHPS)) * coef_HPS(iHPS)
+     else
+        efull = ehps_tmp + lambda(iHPS) * coef_HPS(iHPS)
+     end if
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     energy(E_TYPE%HPS) = energy(E_TYPE%GO) + efull
+     energy(E_TYPE%HPS) = energy(E_TYPE%HPS) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
-     energy_unit(iunit, junit, E_TYPE%GO) = energy_unit(iunit, junit, E_TYPE%GO) + efull
+     energy_unit(iunit, junit, E_TYPE%HPS) = energy_unit(iunit, junit, E_TYPE%HPS) + efull
   end do
 !$omp end do nowait
 !!$omp end master
 
-end subroutine energy_LJ
+end subroutine energy_HPS

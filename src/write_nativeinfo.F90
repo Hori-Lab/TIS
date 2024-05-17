@@ -26,7 +26,8 @@ subroutine write_nativeinfo(lunout)
                          ndtrna_st, idtrna_st2mp, dtrna_st_nat, dtrna_st_hsTm, coef_dtrna_st, &
                          ndtrna_hb, idtrna_hb2mp, dtrna_hb_nat, coef_dtrna_hb, &
                          ndtrna_tst, idtrna_tst2mp, dtrna_tst_nat, coef_dtrna_tst, &
-                         flg_tst_exclusive, idtrna_tst2side
+                         flg_tst_exclusive, idtrna_tst2side, &
+                         nHPS, iHPS2mp, coef_HPS, HPS_nat, lambda
   use mpiconst
 
   implicit none
@@ -245,6 +246,46 @@ subroutine write_nativeinfo(lunout)
    
      write (lunout, '(a4)') '>>>>'
      write (lunout, '(a)') ''
+  endif  ! nLJ > 0
+
+    ! HPS
+  if (nHPS > 0) then
+   write (lunout, '(a)') '<<<< HPS'
+   write (lunout, '(a, i6)') '** total_contact = ', nHPS
+   
+   write (lunout, '(a)', ADVANCE='NO') '**    iHPS iunit1-iunit2   imp1 - imp2 imp1un-imp2un'
+   write (lunout, '(a)') '    distance        coef     lambda'
+   do iunit = 1, nunit_all
+      do junit = iunit, nunit_all
+         !write (lunout, '(a, i6, a, i6)') '** contact between unit ', iunit, ' and ', junit
+         !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) - nrna_bp_unit(iunit,junit)
+         !write (lunout, '(a, i6)') '** total_contact_unit = ', ncon_unit(iunit, junit) 
+         do icon = 1, nHPS
+            imp1 = iHPS2mp(1, icon)
+            imp2 = iHPS2mp(2, icon)
+            iunit1 = imp2unit(imp1)
+            iunit2 = imp2unit(imp2)
+            imp1un = imp1 - lunit2mp(1, iunit1) + 1
+            imp2un = imp2 - lunit2mp(1, iunit2) + 1
+               
+            if(iunit == iunit1 .and. junit == iunit2) then
+               if (iclass_unit(iunit) == CLASS%RNA .OR. iclass_unit(junit) == CLASS%RNA) then
+                  if (icon2type(icon) == CONTYPE%RNA_BP)then
+                     cycle
+                  endif
+               endif
+               write (lunout, "(a3, 7(1xi6), 3(f12.4))") &
+                    'HPS', icon, iunit1, iunit2, imp1, imp2, &
+                    imp1un, imp2un, &
+                    HPS_nat(icon), coef_HPS(icon), lambda(icon)
+            end if
+         end do
+         !write (lunout, '(a)') ''
+      end do
+   end do
+ 
+   write (lunout, '(a4)') '>>>>'
+   write (lunout, '(a)') ''
   endif  ! nLJ > 0
 
 

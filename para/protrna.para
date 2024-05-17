@@ -24,5 +24,7 @@ coef_HIS_U = 2.3
 AromaticDist = 3.6
 AromaticCutoff = 8.0
 
+cutoff_HPS = 20.0
+
 >>>>
 

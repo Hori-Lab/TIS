@@ -133,13 +133,14 @@ module const_index
      integer :: WCA_ATT
      integer :: BBR
      integer :: LJ1210
+     integer :: HPS
      integer :: MAX           !< Max value
   endtype energy_type
   type(energy_type), parameter :: E_TYPE  &
      != energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20, &
      !              21,22,23,24,25,26,27,28,29,30,31,31)
      = energy_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,&
-                   21,22,23,24,25,26,26)
+                   21,22,23,24,25,26,26,27)
      
   type local_interaction_type
      integer :: NOTHING     !<  1: no interaction
@@ -180,11 +181,12 @@ module const_index
      integer :: CON_GAUSS !< 
      integer :: WCA
      integer :: LJ1210    !< Aromatic Protein / RNA interaction (12-10 LJ potential)
+     integer :: HPS       !< Hydrophobic Protein / RNA interaction (HPS potential)
      integer :: MAX       !< Maximum value
   endtype interaction_type
   type(interaction_type), parameter :: INTERACT  & 
      != interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,16)
-     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,13)
+     = interaction_type(1,2,3,4,5,6,7,8,9,10,11,12,13,14,14)
 
 
   type error_handling
