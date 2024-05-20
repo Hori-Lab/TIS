@@ -12,7 +12,7 @@ subroutine force_HPS(irep, force_mp)
   use const_index
   use var_setp,   only : inperi, inprotrna
   use var_struct, only : xyz_mp_rep, pxyz_mp_rep, &
-                         nHPS, iHPS2mp, coef_HPS, HPS_nat2, nmp_all, lambda
+                         nHPS, iHPS2mp, coef_HPS, HPS_nat2, nmp_all, lambda, HPS_nat
   use mpiconst
 
   implicit none
@@ -30,6 +30,7 @@ subroutine force_HPS(irep, force_mp)
   real(PREC) :: grad_coef_hps
   real(PREC) :: inv_dist2, inv_dist6
   real(PREC) :: v21(3), for(3)
+  real(PREC) :: switch, switch2
 #ifdef MPI_PAR
   integer :: klen
 #endif
@@ -77,26 +78,32 @@ subroutine force_HPS(irep, force_mp)
      dist2 = dot_product(v21,v21)
 
      roverdist2 = HPS_nat2(iHPS) / dist2
-     if(roverdist2 < rcut_off2) cycle
+
 
      inv_dist2       = 1.0_PREC / dist2
      inv_dist6       = inv_dist2 * inv_dist2 * inv_dist2
+
+    !  if(inv_dist2 < rcut_off2) cycle
 
      sig_over_dist_6th = sigma_6th * inv_dist6
      sig_over_dist_12th = sig_over_dist_6th * sig_over_dist_6th
 
     !  lambda = HPS_lambda_half(iHPS) + HPS_lambda_half(iHPS)
 
+     switch = 2.0_PREC * (1.0_PREC / 6) * HPS_nat(iHPS)
+     switch2 = switch * switch
+
      ! this judgement criteria is separating the repulsive and attractive part, r < 2^(1/6) * sigma
      if (sig_over_dist_6th >= 0.5_PREC) then
+    !  if (dist2 < switch2) then
        grad_coef_hps = - inv_dist2 * 4.0_PREC * coef_HPS(iHPS) * (6.0_PREC * sig_over_dist_6th - 12.0_PREC * sig_over_dist_12th)
      else
        grad_coef_hps = - inv_dist2 * lambda(iHPS) * 4.0_PREC * coef_HPS(iHPS) * (6.0_PREC * sig_over_dist_6th - 12.0_PREC * sig_over_dist_12th)
      end if
      
-     if(grad_coef_hps > DE_MAX) then
-      grad_coef_hps = DE_MAX
-     end if
+    !  if(grad_coef_hps > DE_MAX) then
+    !   grad_coef_hps = DE_MAX
+    !  end if
 
      for(1:3) = grad_coef_hps * v21(1:3)
      force_mp(1:3, imp1) = force_mp(1:3, imp1) - for(1:3)
