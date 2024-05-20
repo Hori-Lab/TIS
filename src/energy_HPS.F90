@@ -79,10 +79,6 @@ subroutine energy_HPS(irep, now_HPS, energy_unit, energy)
 
      dist2 = dot_product(v21,v21)
 
-   !   roverdist2 = HPS_nat2(iHPS) / dist2
-   !   roverdist6 = roverdist2 * roverdist2 * roverdist2
-   !   roverdist12 = roverdist6 * roverdist6
-
      if(coef_HPS(iHPS) >= ZERO_JUDGE) then
         now_HPS(2, iHPS) = 1
      else
@@ -100,31 +96,19 @@ subroutine energy_HPS(irep, now_HPS, energy_unit, energy)
      inv_dist2       = 1.0_PREC / dist2
      inv_dist6       = inv_dist2 * inv_dist2 * inv_dist2
 
-   !   if(inv_dist2 < rcut_off2) cycle
+     if(inv_dist2 < rcut_off2) cycle
 
      sig_over_dist_6th = sigma_6th * inv_dist6
      sig_over_dist_12th = sig_over_dist_6th * sig_over_dist_6th
 
      ehps_tmp = 4.0_PREC * coef_HPS(iHPS) * (sig_over_dist_12th - sig_over_dist_6th)
 
-     switch = (HPS_nat(iHPS)**6) / (dist2**3) 
-
      ! this judgement criteria is separating the repulsive and attractive part, r < 2^(1/6) * sigma
      if (sig_over_dist_6th >= 0.5_PREC) then
-   !   if (dist2 < switch2) then
         efull = ehps_tmp + (1.0_PREC - lambda(iHPS)) * coef_HPS(iHPS)
-        if (efull > 200_PREC) then
-         write(*,*) '>= 0.5', efull, 'from', imp1, imp2
-        end if
-     else if (sig_over_dist_6th < 0.5_PREC) then
-        efull = ehps_tmp * lambda(iHPS)
-        if (efull > 200_PREC) then
-         write(*,*) '< 0.5', efull, 'from', imp1, imp2
-        end if
      else
-         write(*,*) 'sig_over_dist not applying correctly'
+        efull = ehps_tmp * lambda(iHPS)
      end if
-
 
      ! --------------------------------------------------------------------
      ! sum of the energy

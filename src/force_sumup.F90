@@ -130,7 +130,7 @@ subroutine force_sumup(force_mp, &  ! [ o]
      call force_con_gauss(irep, force_mp_l(1,1,tn))
 
      if (inmisc%force_flag(INTERACT%HPS)) then
-       call force_HPS(irep, force_mp)
+       call force_HPS(irep, force_mp_l(1,1,tn))
      endif
 !  end if
 

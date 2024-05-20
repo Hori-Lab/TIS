@@ -108,7 +108,7 @@ subroutine energy_LJ(irep, now_LJ, energy_unit, energy)
 
      ! --------------------------------------------------------------------
      ! sum of the energy
-     energy(E_TYPE%HPS) = energy(E_TYPE%GO) + efull
+     energy(E_TYPE%go) = energy(E_TYPE%GO) + efull
 
      iunit = imp2unit(imp1)
      junit = imp2unit(imp2)
