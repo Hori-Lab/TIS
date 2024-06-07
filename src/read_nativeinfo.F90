@@ -326,7 +326,7 @@ subroutine read_nativeinfo(lun, i_ninfo_type, iunit, junit)
         iHPS2unit(2, iHPS) = imp2unit(imp2)
         iHPS2mp(1, iHPS) = imp1
         iHPS2mp(2, iHPS) = imp2
-      HPS_nat(iHPS) = go / (2.0_PREC ** (1.0_PREC/6.0_PREC))
+        HPS_nat(iHPS) = go / (2.0_PREC ** (1.0_PREC/6.0_PREC))
         HPS_nat2(iHPS) = (go / (2.0_PREC ** (1.0_PREC/6.0_PREC)))**2
         coef_HPS(iHPS) = coef
         lambda(iHPS) = lamb
