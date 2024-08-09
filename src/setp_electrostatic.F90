@@ -41,7 +41,6 @@ subroutine setp_electrostatic()
   character(CARRAY_MXCOLM) :: cwkinp(CARRAY_MXLINE)
   character(CARRAY_MXCOLM) :: cvalue
   character(CARRAY_MXCOLM) :: ctmp00
-  character(CARRAY_MXCOLM) :: ctmp02
   character(CARRAY_MXCOLM) :: csides(2, CARRAY_MXEQUA)
   character(CARRAY_MSG_ERROR) :: error_message
 

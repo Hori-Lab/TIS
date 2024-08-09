@@ -432,7 +432,7 @@ subroutine inp_datafile()
                 form = 'unformatted', access = 'stream')
 #endif
            if(iopen_status > 0) then 
-              error_message = 'Error: cannot open the file: ' // cname
+              error_message = 'Error: cannot open the file: ' // trim(cname)
               call util_error(ERROR%STOP_ALL, error_message)
            end if
            n = n + 1

@@ -33,7 +33,7 @@ subroutine setp_pmf()
   iopen_lunnum = iopen_lunnum + 1
   open(iopen_lunnum, file=inpmf%path(itype), status='old', action='read', iostat=input_status)
   if (input_status > 0) then
-     error_message = 'Error: cannot open the file: ' // inpmf%path(itype)
+     error_message = 'Error: cannot open the file: ' // trim(inpmf%path(itype))
      call util_error(ERROR%STOP_ALL, error_message)
   endif
 
