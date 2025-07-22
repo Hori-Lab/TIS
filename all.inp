@@ -50,7 +50,7 @@ i_run_mode = 2
 ** i_simulate_type: define dynamics 
 **           =  0 : Newtonian dynamics  (velocity Verlet)
 **                  with the constant energy
-**           =  1 : Langevin dynamics (recommended)
+**           =  1 : Langevin dynamics
 **           =  2 : Newtonian dynamics (velocity Verlet)
 **                  with Berendsen thermostat
 **           =  3 : Newtonian dynamics (RESPA)
@@ -62,7 +62,7 @@ i_run_mode = 2
 **           =  8 : ND implementation of Langevin dynamics
 **           =  9 : Langevin dynamics, GJF
 **           = 10 : Langevin dynamics, GJF-2GJ
-i_simulate_type = 1
+i_simulate_type = 10
 
 ** i_initial_state: define initial configuration 
 **           = 1 : Random configuration (Extended)
