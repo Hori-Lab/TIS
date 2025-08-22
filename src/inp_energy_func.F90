@@ -21,7 +21,7 @@ subroutine inp_energy_func()
   integer :: k
   integer :: i1 = 1
   integer :: i2 = 1
-  integer :: isw, itype, icol, jcol, i_ninfo
+  integer :: isw, itype, icol, jcol
   integer :: iu, ju, iunit, junit, i_local_type, iint
 !  integer :: isys, istat, iactnum, iact, isw2
   integer :: inunit(2), jnunit(2), instate, instate2
