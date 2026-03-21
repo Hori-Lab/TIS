@@ -11,8 +11,8 @@ subroutine energy_exv_gauss(irep, energy_unit, energy)
   implicit none
 
   integer,    intent(in)  :: irep
-  real(PREC), intent(out) :: energy(:)         ! (E_TYPE%MAX)
-  real(PREC), intent(out) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy(:)         ! (E_TYPE%MAX)
+  real(PREC), intent(inout) :: energy_unit(:,:,:) ! (MXUNIT, MXUNIT, E_TYPE%MAX)
 
   integer :: ksta, kend
   integer :: imp1, imp2, iunit, junit

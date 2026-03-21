@@ -140,7 +140,7 @@ subroutine read_rst(itype_wanted)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(velo_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
+               call MPI_bcast(velo_mp, SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
@@ -181,7 +181,7 @@ subroutine read_rst(itype_wanted)
             endif
 #ifdef MPI_PAR
             if (rank == 0) then
-               call MPI_bcast(accel_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
+               call MPI_bcast(accel_mp, SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
                               0, mpi_comm_local, ierr)
             else
                call MPI_send(irep, 1, MPI_INTEGER, rank, TAG, mpi_comm_rep, ierr)
@@ -382,7 +382,7 @@ subroutine read_rst(itype_wanted)
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(velo_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
+         call MPI_bcast(velo_mp, SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
          write(*,*) '## RESTART: velo_mp has been received.'
          flush(6)
@@ -398,7 +398,7 @@ subroutine read_rst(itype_wanted)
                              0, TAG, mpi_comm_rep, istatus, ierr)
             enddo
          endif
-         call MPI_bcast(accel_mp, SDIM*nmp_all*n_replica_mpi, PREC_MPI, &
+         call MPI_bcast(accel_mp, SDIM*nmp_real*n_replica_mpi, PREC_MPI, &
                         0, mpi_comm_local, ierr)
          write(*,*) '## RESTART: accel_mp has been received.'
          flush(6)
